@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration>
+<configuration>
+    <!-- Configuration XML -->
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener" />
+    <!-- Configuration XML -->
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <!-- Configuration XML -->
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+    <!-- Configuration XML -->
+    <springProperty scope="context" name="APP_NAME" source="spring.application.name" defaultValue="springBoot"/>
+    <!-- Configuration XML -->
+    <property name="LOG_FILE_PATH" value="${LOG_FILE:-${LOG_PATH:-${LOG_TEMP:-${java.io.tmpdir:-/tmp}}}/logs}"/>
+    <!-- Configuration XML -->
+    <springProperty name="LOG_STASH_HOST" scope="context" source="logstash.host" defaultValue="localhost"/>
+    <!-- Configuration XML -->
+    <springProperty name="ENABLE_LOG_STASH" scope="context" source="logstash.enableInnerLog" defaultValue="false"/>
+
+    <!-- Configuration XML -->
+    <appender name="FILE_DEBUG"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- Configuration XML -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>DEBUG</level>
+        </filter>
+        <encoder>
+            <!-- Configuration XML -->
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- Configuration XML -->
+            <fileNamePattern>${LOG_FILE_PATH}/debug/${APP_NAME}-%d{yyyy-MM-dd}-%i.log</fileNamePattern>
+            <!-- Configuration XML -->
+            <maxFileSize>${LOG_FILE_MAX_SIZE:-10MB}</maxFileSize>
+            <!-- Configuration XML -->
+            <maxHistory>${LOG_FILE_MAX_HISTORY:-30}</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <!-- Configuration XML -->
+    <appender name="FILE_ERROR"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- Configuration XML -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <encoder>
+            <!-- Configuration XML -->
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- Configuration XML -->
+            <fileNamePattern>${LOG_FILE_PATH}/error/${APP_NAME}-%d{yyyy-MM-dd}-%i.log</fileNamePattern>
+            <!-- Configuration XML -->
+            <maxFileSize>${LOG_FILE_MAX_SIZE:-10MB}</maxFileSize>
+            <!-- Configuration XML -->
+            <maxHistory>${LOG_FILE_MAX_HISTORY:-30}</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <!-- Configuration XML -->
+    <condition class="ch.qos.logback.core.boolex.PropertyEqualityCondition">
+        <key>ENABLE_LOG_STASH</key>
+        <value>true</value>
+    </condition>
+
+    <if>
+        <then>
+            <!-- Configuration XML -->
+            <appender name="LOG_STASH_DEBUG" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+                <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                    <level>DEBUG</level>
+                </filter>
+                <destination>${LOG_STASH_HOST}:4560</destination>
+                <addDefaultStatusListener>false</addDefaultStatusListener>
+                <encoder charset="UTF-8" class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+                    <providers>
+                        <timestamp>
+                            <timeZone>Asia/Shanghai</timeZone>
+                        </timestamp>
+                        <!-- Configuration XML -->
+                        <pattern>
+                            <pattern>
+                                {
+                                "project": "nexus",
+                                "level": "%level",
+                                "service": "${APP_NAME:-}",
+                                "pid": "${PID:-}",
+                                "thread": "%thread",
+                                "class": "%logger",
+                                "message": "%message",
+                                "stack_trace": "%exception{20}"
+                                }
+                            </pattern>
+                        </pattern>
+                    </providers>
+                </encoder>
+            </appender>
+
+            <!-- Configuration XML -->
+            <appender name="LOG_STASH_ERROR" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+                <filter class="ch.qos.logback.classic.filter.LevelFilter">
+                    <level>ERROR</level>
+                    <onMatch>ACCEPT</onMatch>
+                    <onMismatch>DENY</onMismatch>
+                </filter>
+                <destination>${LOG_STASH_HOST}:4561</destination>
+                <addDefaultStatusListener>false</addDefaultStatusListener>
+                <encoder charset="UTF-8" class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+                    <providers>
+                        <timestamp>
+                            <timeZone>Asia/Shanghai</timeZone>
+                        </timestamp>
+                        <!-- Configuration XML -->
+                        <pattern>
+                            <pattern>
+                                {
+                                "project": "nexus",
+                                "level": "%level",
+                                "service": "${APP_NAME:-}",
+                                "pid": "${PID:-}",
+                                "thread": "%thread",
+                                "class": "%logger",
+                                "message": "%message",
+                                "stack_trace": "%exception{20}"
+                                }
+                            </pattern>
+                        </pattern>
+                    </providers>
+                </encoder>
+            </appender>
+
+            <!-- Configuration XML -->
+            <appender name="LOG_STASH_BUSINESS" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+                <destination>${LOG_STASH_HOST}:4562</destination>
+                <addDefaultStatusListener>false</addDefaultStatusListener>
+                <encoder charset="UTF-8" class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+                    <providers>
+                        <timestamp>
+                            <timeZone>Asia/Shanghai</timeZone>
+                        </timestamp>
+                        <!-- Configuration XML -->
+                        <pattern>
+                            <pattern>
+                                {
+                                "project": "nexus",
+                                "level": "%level",
+                                "service": "${APP_NAME:-}",
+                                "pid": "${PID:-}",
+                                "thread": "%thread",
+                                "class": "%logger",
+                                "message": "%message",
+                                "stack_trace": "%exception{20}"
+                                }
+                            </pattern>
+                        </pattern>
+                    </providers>
+                </encoder>
+            </appender>
+
+            <!-- Configuration XML -->
+            <appender name="LOG_STASH_RECORD" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+                <destination>${LOG_STASH_HOST}:4563</destination>
+                <addDefaultStatusListener>false</addDefaultStatusListener>
+                <encoder charset="UTF-8" class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+                    <providers>
+                        <timestamp>
+                            <timeZone>Asia/Shanghai</timeZone>
+                        </timestamp>
+                        <!-- Configuration XML -->
+                        <pattern>
+                            <pattern>
+                                {
+                                "project": "nexus",
+                                "level": "%level",
+                                "service": "${APP_NAME:-}",
+                                "class": "%logger",
+                                "message": "%message"
+                                }
+                            </pattern>
+                        </pattern>
+                    </providers>
+                </encoder>
+            </appender>
+
+            <root level="DEBUG">
+                <appender-ref ref="LOG_STASH_DEBUG"/>
+                <appender-ref ref="LOG_STASH_ERROR"/>
+            </root>
+            <logger name="com.nexusengine.core.common.log.WebLogAspect" level="DEBUG">
+                <appender-ref ref="LOG_STASH_RECORD"/>
+            </logger>
+            <logger name="com.nexusengine.core" level="DEBUG">
+                <appender-ref ref="LOG_STASH_BUSINESS"/>
+            </logger>
+        </then>
+    </if>
+
+    <!-- Configuration XML -->
+    <logger name="org.slf4j" level="INFO"/>
+    <logger name="springfox" level="INFO"/>
+    <logger name="io.swagger" level="INFO"/>
+    <logger name="org.springframework" level="INFO"/>
+    <logger name="org.hibernate.validator" level="INFO"/>
+
+    <root level="DEBUG">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE_DEBUG"/>
+        <appender-ref ref="FILE_ERROR"/>
+    </root>
+</configuration>

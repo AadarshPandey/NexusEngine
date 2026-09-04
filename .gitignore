@@ -1,0 +1,11 @@
+node_modules/
+target/
+.idea/
+.vscode/
+*.log
+.env
+*.class
+notes.md
+todo.md
+Systemdesign.md
+TODO.md

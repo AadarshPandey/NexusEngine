@@ -1,0 +1,37 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/nexuscore
+    username: nexusPg
+    password: Welcome@123
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+  data:
+    elasticsearch:
+      repositories:
+        enabled: true
+  elasticsearch:
+    uris: localhost:9200
+  rabbitmq:
+    host: localhost
+    port: 5672
+    virtual-host: /nexuscore
+    username: guest
+    password: guest
+
+logging:
+  level:
+    root: info
+    com.nexusengine.core: debug
+
+logstash:
+  host: localhost
+  enableInnerLog: false

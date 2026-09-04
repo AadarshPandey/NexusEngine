@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./NexusCore
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+        cache: maven
+        
+    - name: Build and Test
+      run: mvn -B clean verify
+      
+    - name: Build JARs
+      run: mvn -B package -DskipTests
+      
+    - name: Upload Build Artifacts (Monolith)
+      uses: actions/upload-artifact@v4
+      with:
+        name: nexus-monolith-jar
+        path: NexusCore/mall-application/target/mall-application-1.0-SNAPSHOT.jar
+        retention-days: 7
+        
+    - name: Upload Build Artifacts (Search)
+      uses: actions/upload-artifact@v4
+      with:
+        name: nexus-search-jar
+        path: NexusCore/mall-search/target/mall-search-1.0-SNAPSHOT.jar
+        retention-days: 7
