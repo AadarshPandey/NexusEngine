@@ -1,0 +1,61 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:postgresql://postgres:5432/nexuscore
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+  data:
+    mongodb:
+      uri: mongodb://mongodb:27017/nexuscore
+    redis:
+      host: redis
+      database: 0
+      port: 6379
+      password:
+      timeout: 300ms
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    virtual-host: /nexuscore
+    username: guest
+    password: guest
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY:sk-your-key-here}
+      chat:
+        options:
+          model: gpt-4o-mini
+          temperature: 0.7
+
+stripe:
+  secretKey: ${STRIPE_SECRET_KEY:sk_test_your_key_here}
+  publishableKey: ${STRIPE_PUBLISHABLE_KEY:pk_test_your_key_here}
+  webhookSecret: ${STRIPE_WEBHOOK_SECRET:whsec_your_secret}
+  successUrl: http://localhost:8060/payment/success
+  cancelUrl: http://localhost:8060/payment/cancel
+
+razorpay:
+  keyId: ${RAZORPAY_KEY_ID:}
+  keySecret: ${RAZORPAY_KEY_SECRET:}
+
+logging:
+  level:
+    root: info
+    com.nexusengine.core: debug
+
+logstash:
+  host: logstash
+  enableInnerLog: false

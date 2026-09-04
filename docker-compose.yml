@@ -1,0 +1,206 @@
+services:
+  nexus-application:
+    build:
+      context: ./NexusCore
+      dockerfile: Dockerfile
+      target: mall-application
+    image: nexuscore/mall-application:latest
+    container_name: nexus-application
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    volumes:
+      - /mydata/app/nexus-application/logs:/var/logs
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - RAZORPAY_KEY_ID=${RAZORPAY_KEY_ID}
+      - RAZORPAY_KEY_SECRET=${RAZORPAY_KEY_SECRET}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      mongodb:
+        condition: service_started
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - nexus-network
+
+  nexus-search:
+    build:
+      context: ./NexusCore
+      dockerfile: Dockerfile
+      target: mall-search
+    image: nexuscore/mall-search:latest
+    container_name: nexus-search
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    volumes:
+      - /mydata/app/nexus-search/logs:/var/logs
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    depends_on:
+      postgres:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - nexus-network
+
+  # ─── Infrastructure Services ───────────────────────────
+
+  postgres:
+    image: pgvector/pgvector:pg17
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: nexuscore
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - nexus-network
+
+  redis:
+    image: redis:7.2-alpine
+    container_name: redis
+    restart: always
+    command: redis-server --appendonly yes
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - nexus-network
+
+  mongodb:
+    image: mongo:7.0
+    container_name: mongodb
+    restart: always
+    environment:
+      MONGO_INITDB_DATABASE: nexuscore
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb-data:/data/db
+    networks:
+      - nexus-network
+
+  rabbitmq:
+    image: rabbitmq:4.1-management
+    container_name: rabbitmq
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - nexus-network
+
+  elasticsearch:
+    image: elasticsearch:8.15.5
+    container_name: elasticsearch
+    restart: always
+    environment:
+      - "cluster.name=nexus-cluster"
+      - "discovery.type=single-node"
+      - "ES_JAVA_OPTS=-Xms512m -Xmx1024m"
+      - "xpack.security.enabled=false"
+    ports:
+      - "9200:9200"
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:9200/_cluster/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - nexus-network
+
+  minio:
+    image: minio/minio:latest
+    container_name: minio
+    restart: always
+    command: server /data --console-address ":9001"
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio-data:/data
+    networks:
+      - nexus-network
+
+  # ─── Observability Stack ───────────────────────────────
+
+  prometheus:
+    image: prom/prometheus:v2.54.1
+    container_name: prometheus
+    restart: always
+    volumes:
+      - /mydata/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - nexus-network
+
+  grafana:
+    image: grafana/grafana:11.2.0
+    container_name: grafana
+    restart: always
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+    depends_on:
+      - prometheus
+    networks:
+      - nexus-network
+
+# ─── Volumes (Docker-managed, not host-mounted) ───────
+
+volumes:
+  postgres-data:
+  redis-data:
+  mongodb-data:
+  rabbitmq-data:
+  elasticsearch-data:
+  minio-data:
+  prometheus-data:
+  grafana-data:
+
+# ─── Network ─────────────────────────────────────────
+
+networks:
+  nexus-network:
+    driver: bridge

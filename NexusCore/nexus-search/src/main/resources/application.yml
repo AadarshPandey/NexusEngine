@@ -1,0 +1,37 @@
+spring:
+  application:
+    name: nexus-search
+  profiles:
+    active: dev
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: false
+
+server:
+  port: 8081
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+    doc-expansion: 'none'
+  api-docs:
+    path: /v3/api-docs
+    enabled: true
+  group-configs:
+    - group: 'nexus-search'
+      packages-to-scan: com.nexusengine.core.search.controller
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus

@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.nexusengine.core</groupId>
+    <artifactId>nexus-core</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>nexus-common</module>
+        <module>nexus-data-jpa</module>
+        <module>nexus-security</module>
+        <module>nexus-admin</module>
+        <module>nexus-search</module>
+        <module>nexus-portal</module>
+        <module>nexus-ai</module>
+        <module>nexus-application</module>
+    </modules>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.5.14</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>21</java.version>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <skipTests>true</skipTests>
+        <!-- Module versions -->
+        <nexus-common.version>1.0-SNAPSHOT</nexus-common.version>
+        <nexus-data-jpa.version>1.0-SNAPSHOT</nexus-data-jpa.version>
+        <nexus-security.version>1.0-SNAPSHOT</nexus-security.version>
+        <nexus-ai.version>1.0-SNAPSHOT</nexus-ai.version>
+        <!-- Library versions -->
+        <hutool.version>5.8.40</hutool.version>
+        <springdoc-openapi.version>2.8.17</springdoc-openapi.version>
+        <postgresql.version>42.7.5</postgresql.version>
+        <spring-data-commons.version>3.5.11</spring-data-commons.version>
+        <logstash-logback.version>8.0</logstash-logback.version>
+        <minio.version>8.6.0</minio.version>
+        <okhttp3.version>5.1.0</okhttp3.version>
+        <commons-lang3.version>3.20.0</commons-lang3.version>
+        <bouncycastle.version>1.84</bouncycastle.version>
+        <!-- New dependencies -->
+        <spring-cloud-aws.version>3.3.1</spring-cloud-aws.version>
+        <stripe.version>33.3.0</stripe.version>
+        <resilience4j.version>2.3.0</resilience4j.version>
+        <bucket4j.version>8.14.0</bucket4j.version>
+        <spring-ai.version>1.0.0</spring-ai.version>
+        <micrometer-tracing.version>1.4.4</micrometer-tracing.version>
+        <opentelemetry-exporter.version>1.47.0</opentelemetry-exporter.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <!-- Micrometer Tracing with OpenTelemetry -->
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-tracing-bridge-otel</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.opentelemetry</groupId>
+            <artifactId>opentelemetry-exporter-otlp</artifactId>
+        </dependency>
+        <!-- Micrometer Prometheus for Grafana -->
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+        </dependency>
+    </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- Spring AI BOM -->
+            <dependency>
+                <groupId>org.springframework.ai</groupId>
+                <artifactId>spring-ai-bom</artifactId>
+                <version>${spring-ai.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!-- Spring Cloud AWS BOM -->
+            <dependency>
+                <groupId>io.awspring.cloud</groupId>
+                <artifactId>spring-cloud-aws-dependencies</artifactId>
+                <version>${spring-cloud-aws.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!-- NexusCore common module -->
+            <dependency>
+                <groupId>com.nexusengine.core</groupId>
+                <artifactId>nexus-common</artifactId>
+                <version>${nexus-common.version}</version>
+            </dependency>
+            <!-- NexusCore data JPA module -->
+            <dependency>
+                <groupId>com.nexusengine.core</groupId>
+                <artifactId>nexus-data-jpa</artifactId>
+                <version>${nexus-data-jpa.version}</version>
+            </dependency>
+            <!-- NexusCore security module -->
+            <dependency>
+                <groupId>com.nexusengine.core</groupId>
+                <artifactId>nexus-security</artifactId>
+                <version>${nexus-security.version}</version>
+            </dependency>
+            <!-- NexusCore AI shared module -->
+            <dependency>
+                <groupId>com.nexusengine.core</groupId>
+                <artifactId>nexus-ai</artifactId>
+                <version>${nexus-ai.version}</version>
+            </dependency>
+            <!--Hutool Java utility toolkit-->
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>${hutool.version}</version>
+            </dependency>
+            <!--SpringDoc OpenAPI-->
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+                <version>${springdoc-openapi.version}</version>
+            </dependency>
+            <!--PostgreSQL JDBC driver-->
+            <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>${postgresql.version}</version>
+            </dependency>
+            <!--Spring Data Commons-->
+            <dependency>
+                <groupId>org.springframework.data</groupId>
+                <artifactId>spring-data-commons</artifactId>
+                <version>${spring-data-commons.version}</version>
+            </dependency>
+            <!--Logstash Logback Encoder-->
+            <dependency>
+                <groupId>net.logstash.logback</groupId>
+                <artifactId>logstash-logback-encoder</artifactId>
+                <version>${logstash-logback.version}</version>
+            </dependency>
+            <!--MinIO Java SDK-->
+            <dependency>
+                <groupId>io.minio</groupId>
+                <artifactId>minio</artifactId>
+                <version>${minio.version}</version>
+            </dependency>
+            <!--Apache Commons Lang3-->
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons-lang3.version}</version>
+            </dependency>
+            <!--Bouncy Castle crypto library-->
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-jdk18on</artifactId>
+                <version>${bouncycastle.version}</version>
+            </dependency>
+            <!--OkHttp-->
+            <dependency>
+                <groupId>com.squareup.okhttp3</groupId>
+                <artifactId>okhttp-jvm</artifactId>
+                <version>${okhttp3.version}</version>
+            </dependency>
+            <!--Stripe Java SDK-->
+            <dependency>
+                <groupId>com.stripe</groupId>
+                <artifactId>stripe-java</artifactId>
+                <version>${stripe.version}</version>
+            </dependency>
+            <!--Resilience4j-->
+            <dependency>
+                <groupId>io.github.resilience4j</groupId>
+                <artifactId>resilience4j-spring-boot3</artifactId>
+                <version>${resilience4j.version}</version>
+            </dependency>
+            <!--Redisson for Distributed Locking-->
+            <dependency>
+                <groupId>org.redisson</groupId>
+                <artifactId>redisson-spring-boot-starter</artifactId>
+                <version>3.33.0</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
+            <!-- Parameter Name Retention for Spring Boot 3.2+ and Lombok annotation processing -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <compilerArgs>
+                        <arg>-parameters</arg>
+                    </compilerArgs>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <repositories>
+        <repository>
+            <id>central</id>
+            <name>Maven Central</name>
+            <url>https://repo1.maven.org/maven2/</url>
+        </repository>
+        <repository>
+            <id>spring-milestones</id>
+            <name>Spring Milestones</name>
+            <url>https://repo.spring.io/milestone</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+</project>

@@ -1,0 +1,65 @@
+name: CD (Deploy to AWS ECS)
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_run:
+    workflows: ["CI"]
+    types:
+      - completed
+
+env:
+  AWS_REGION: us-east-1                   # set this to your preferred AWS region
+  ECR_REPOSITORY: nexuscore               # set this to your Amazon ECR repository name
+  ECS_SERVICE_APP: nexus-app-service      # set this to your Amazon ECS service name
+  ECS_CLUSTER: nexus-cluster              # set this to your Amazon ECS cluster name
+  ECS_TASK_DEFINITION: .github/workflows/task-definition.json # path to your ECS task def
+
+jobs:
+  deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'push' }}
+    name: Deploy to Amazon ECS
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
+
+    - name: Build, tag, and push monolith image to Amazon ECR
+      id: build-image
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        IMAGE_TAG: ${{ github.sha }}
+      working-directory: ./NexusCore
+      run: |
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY/mall-application:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY/mall-application:latest -f Dockerfile --target mall-application .
+        docker push -a $ECR_REGISTRY/$ECR_REPOSITORY/mall-application
+        echo "image=$ECR_REGISTRY/$ECR_REPOSITORY/mall-application:$IMAGE_TAG" >> $GITHUB_OUTPUT
+
+    # Note: If deploying to ECS, you would uncomment the following steps once the task definition is created
+    # - name: Fill in the new image ID in the Amazon ECS task definition
+    #   id: task-def
+    #   uses: aws-actions/amazon-ecs-render-task-definition@v1
+    #   with:
+    #     task-definition: ${{ env.ECS_TASK_DEFINITION }}
+    #     container-name: nexus-application
+    #     image: ${{ steps.build-image.outputs.image }}
+
+    # - name: Deploy Amazon ECS task definition
+    #   uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+    #   with:
+    #     task-definition: ${{ steps.task-def.outputs.task-definition }}
+    #     service: ${{ env.ECS_SERVICE_APP }}
+    #     cluster: ${{ env.ECS_CLUSTER }}
+    #     wait-for-service-stability: true
