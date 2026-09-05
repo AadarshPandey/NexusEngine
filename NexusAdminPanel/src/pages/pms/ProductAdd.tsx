@@ -24,11 +24,14 @@ const ProductAdd: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      // Remove any commas the user might have added (e.g. 2,999 -> 2999) before converting to Number
+      const cleanNumber = (val: string) => Number(String(val).replace(/,/g, ''));
+      
       await productCreateAPI({
         ...formData,
-        price: Number(formData.price),
-        originalPrice: Number(formData.originalPrice),
-        stock: Number(formData.stock)
+        price: cleanNumber(formData.price),
+        originalPrice: cleanNumber(formData.originalPrice),
+        stock: cleanNumber(formData.stock)
       } as any);
       alert('Product created successfully!');
       navigate('/pms/product');
@@ -50,13 +53,13 @@ const ProductAdd: React.FC = () => {
               <TextField fullWidth label="Subtitle" value={formData.subTitle} onChange={e => setFormData({...formData, subTitle: e.target.value})} />
             </Grid>
             <Grid item xs={12} md={6}>
-              <TextField fullWidth label="Price (₹)" type="number" required value={formData.price} onChange={e => setFormData({...formData, price: e.target.value})} />
+              <TextField fullWidth label="Price (₹)" type="text" required value={formData.price} onChange={e => setFormData({...formData, price: e.target.value})} />
             </Grid>
             <Grid item xs={12} md={6}>
-              <TextField fullWidth label="Original Price (₹)" type="number" value={formData.originalPrice} onChange={e => setFormData({...formData, originalPrice: e.target.value})} />
+              <TextField fullWidth label="Original Price (₹)" type="text" value={formData.originalPrice} onChange={e => setFormData({...formData, originalPrice: e.target.value})} />
             </Grid>
             <Grid item xs={12} md={6}>
-              <TextField fullWidth label="Stock" type="number" required value={formData.stock} onChange={e => setFormData({...formData, stock: e.target.value})} />
+              <TextField fullWidth label="Stock" type="text" required value={formData.stock} onChange={e => setFormData({...formData, stock: e.target.value})} />
             </Grid>
             <Grid item xs={12} md={6}>
               <TextField fullWidth label="Image URL" value={formData.pic} onChange={e => setFormData({...formData, pic: e.target.value})} />

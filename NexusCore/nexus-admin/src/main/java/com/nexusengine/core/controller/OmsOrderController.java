@@ -109,4 +109,17 @@ public class OmsOrderController {
         }
         return CommonResult.failed();
     }
+
+    @Operation(summary = "Update Order Status Operation")
+    @RequestMapping(value = "/update/status", method = RequestMethod.POST)
+    @ResponseBody
+    public CommonResult updateStatus(@RequestParam("ids") List<Long> ids,
+                                     @RequestParam("status") Integer status,
+                                     @RequestParam(value = "note", required = false) String note) {
+        int count = orderService.updateStatus(ids, status, note);
+        if (count > 0) {
+            return CommonResult.success(count);
+        }
+        return CommonResult.failed();
+    }
 }

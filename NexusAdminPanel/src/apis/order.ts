@@ -87,3 +87,11 @@ export function orderUpdateNoteAPI(params: { id: number; note: string; status: n
     params: params,
   })
 }
+
+export function orderUpdateStatusAPI(params: { ids: string; status: number; note?: string }) {
+  return http({
+    url: '/order/update/status',
+    method: 'post',
+    params: params,
+  })
+}

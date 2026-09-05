@@ -32,3 +32,7 @@ export const addToCart = (data: Partial<OmsCartItem>) => {
 export const deleteCartItem = (ids: number[]) => {
   return request.post<any, any>('/cart/delete', null, { params: { ids: ids.join(',') } });
 };
+
+export const updateCartItemQuantity = (id: number, quantity: number) => {
+  return request.get<any, any>('/cart/update/quantity', { params: { id, quantity } });
+};

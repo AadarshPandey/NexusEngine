@@ -163,4 +163,25 @@ public class OmsOrderServiceImpl implements OmsOrderService {
         orderOperateHistoryRepository.save(h);
         return 1;
     }
+
+    @Override
+    public int updateStatus(List<Long> ids, Integer status, String note) {
+        List<OmsOrder> orders = orderRepository.findAllById(ids);
+        for (OmsOrder order : orders) {
+            order.setStatus(status);
+            order.setModifyTime(new Date());
+            orderRepository.save(order);
+        }
+        List<OmsOrderOperateHistory> historyList = ids.stream().map(id -> {
+            OmsOrderOperateHistory h = new OmsOrderOperateHistory();
+            h.setOrderId(id);
+            h.setCreateTime(new Date());
+            h.setOperateMan("Admin");
+            h.setOrderStatus(status);
+            h.setNote(note != null ? note : "Status updated by Admin");
+            return h;
+        }).collect(Collectors.toList());
+        orderOperateHistoryRepository.saveAll(historyList);
+        return orders.size();
+    }
 }

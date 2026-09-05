@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { fetchCartList, addToCart as apiAddToCart, deleteCartItem as apiDeleteCartItem } from '../../api/cart';
+import { fetchCartList, addToCart as apiAddToCart, deleteCartItem as apiDeleteCartItem, updateCartItemQuantity } from '../../api/cart';
 import type { OmsCartItem } from '../../api/cart';
 import type { RootState } from '../index';
 
@@ -25,6 +25,13 @@ export const removeCartItem = createAsyncThunk('cart/removeItem', async (id: num
   const state = getState() as RootState;
   if (!state.auth.isAuthenticated) return;
   await apiDeleteCartItem([id]);
+  dispatch(loadCartData());
+});
+
+export const updateQuantity = createAsyncThunk('cart/updateQuantity', async ({ id, quantity }: { id: number, quantity: number }, { dispatch, getState }) => {
+  const state = getState() as RootState;
+  if (!state.auth.isAuthenticated) return;
+  await updateCartItemQuantity(id, quantity);
   dispatch(loadCartData());
 });
 

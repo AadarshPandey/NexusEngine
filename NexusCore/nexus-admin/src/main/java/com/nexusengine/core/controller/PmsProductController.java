@@ -30,11 +30,16 @@ public class PmsProductController {
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     @ResponseBody
     public CommonResult create(@RequestBody PmsProductParam productParam) {
-        int count = productService.create(productParam);
-        if (count > 0) {
-            return CommonResult.success(count);
-        } else {
-            return CommonResult.failed();
+        try {
+            int count = productService.create(productParam);
+            if (count > 0) {
+                return CommonResult.success(count);
+            } else {
+                return CommonResult.failed();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return CommonResult.failed("Error: " + e.getMessage() + " | Cause: " + (e.getCause() != null ? e.getCause().getMessage() : "none"));
         }
     }
 

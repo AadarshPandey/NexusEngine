@@ -57,45 +57,86 @@ const Checkout: React.FC = () => {
         return;
       }
       
+      // 1. Generate the actual order in the backend
       const orderRes = await generateOrder({
         memberReceiveAddressId: selectedAddressId as number,
-        payType: 2,
+        payType: 2, // 2 = Razorpay
         cartIds: items.map(i => i.id)
       });
       
-      const orderId = orderRes.data.order.id;
+      const order = orderRes.data.order;
       
-      // Open Mock Payment Modal for Interview Demo
-      setMockOrderId(orderId);
-      setShowMockPayment(true);
-      setPlacingOrder(false);
+      // 2. Import Razorpay APIs
+      const { createRazorpayOrder, verifyRazorpayPayment } = await import('../api/order');
+      
+      // 3. Get Razorpay specific order details from backend
+      const rzpRes = await createRazorpayOrder(order.id);
+      const { razorpayOrderId, keyId, amount } = rzpRes.data;
+
+      // 4. Load Razorpay script
+      const loadScript = (src: string) => new Promise((resolve) => {
+        const script = document.createElement('script');
+        script.src = src;
+        script.onload = () => resolve(true);
+        script.onerror = () => resolve(false);
+        document.body.appendChild(script);
+      });
+      
+      const scriptLoaded = await loadScript('https://checkout.razorpay.com/v1/checkout.js');
+      if (!scriptLoaded) {
+        alert('Failed to load Razorpay SDK. Are you online?');
+        setPlacingOrder(false);
+        return;
+      }
+
+      // 5. Open Razorpay Checkout overlay
+      const options = {
+        key: keyId, 
+        amount: amount, 
+        currency: 'INR',
+        name: 'Nexus Engine',
+        description: `Payment for Order #${order.orderSn}`,
+        order_id: razorpayOrderId,
+        handler: async function (response: any) {
+          try {
+            await verifyRazorpayPayment(
+              order.id, 
+              response.razorpay_payment_id, 
+              response.razorpay_order_id, 
+              response.razorpay_signature
+            );
+            alert('Payment successful!');
+            dispatch(clearCart());
+            navigate('/profile');
+          } catch (err) {
+            alert('Payment verification failed.');
+            navigate('/profile'); // Redirect to profile so they can retry payment later
+          }
+        },
+        prefill: {
+          name: 'Test Customer',
+          contact: '+919000090000'
+        },
+        theme: { color: '#3399cc' },
+        modal: {
+          ondismiss: function() {
+            setPlacingOrder(false);
+            // If they close the modal, the order is created but unpaid.
+            // Redirect to profile to let them pay later.
+            dispatch(clearCart());
+            navigate('/profile');
+          }
+        }
+      };
+      
+      const rzp = new (window as any).Razorpay(options);
+      rzp.on('payment.failed', function (response: any){
+        alert(`Payment Failed: ${response.error.description}`);
+      });
+      rzp.open();
 
     } catch (err: any) {
       setError(err.message || 'Failed to place order or process payment.');
-      setPlacingOrder(false);
-    }
-  };
-
-  const handleMockPaymentSubmit = async () => {
-    if (!cardData.number || !cardData.expiry || !cardData.cvv) {
-      alert("Please enter the test card details (e.g. 4111 1111 1111 1111).");
-      return;
-    }
-    try {
-      // Simulate Razorpay network delay
-      setPlacingOrder(true);
-      await new Promise(r => setTimeout(r, 1500));
-      
-      // Directly call backend to mark order as paid
-      await paySuccess(mockOrderId as number, 2);
-      
-      alert('Payment Successful! Order has been placed and paid.');
-      dispatch(clearCart());
-      setShowMockPayment(false);
-      navigate('/profile');
-    } catch(err) {
-      alert("Payment failed!");
-    } finally {
       setPlacingOrder(false);
     }
   };
@@ -165,49 +206,9 @@ const Checkout: React.FC = () => {
           onClick={handlePlaceOrder}
           disabled={placingOrder}
         >
-          {placingOrder ? 'Processing...' : 'Place Order'}
+          {placingOrder ? 'Processing...' : 'Place Order & Pay'}
         </Button>
       </Paper>
-
-      {/* MOCK PAYMENT MODAL */}
-      {showMockPayment && (
-        <Paper elevation={24} sx={{
-          position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
-          p: 4, width: 400, zIndex: 9999, borderRadius: 2
-        }}>
-          <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold', color: '#6366F1' }}>Razorpay Test Gateway</Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-            Use a test card (e.g. 4111 1111 1111 1111) to simulate a successful payment.
-          </Typography>
-          
-          <TextField 
-            fullWidth label="Card Number" variant="outlined" sx={{ mb: 2 }}
-            value={cardData.number} onChange={e => setCardData({...cardData, number: e.target.value})}
-            placeholder="4111 1111 1111 1111"
-          />
-          <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
-            <TextField 
-              label="Expiry" variant="outlined" placeholder="12/28"
-              value={cardData.expiry} onChange={e => setCardData({...cardData, expiry: e.target.value})}
-            />
-            <TextField 
-              label="CVV" variant="outlined" placeholder="123"
-              value={cardData.cvv} onChange={e => setCardData({...cardData, cvv: e.target.value})}
-            />
-          </Box>
-          
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
-            <Button color="inherit" onClick={() => { setShowMockPayment(false); setPlacingOrder(false); }}>Cancel</Button>
-            <Button variant="contained" onClick={handleMockPaymentSubmit} disabled={placingOrder}>
-              {placingOrder ? 'Authenticating...' : `Pay ₹${confirmData?.calcAmount.payAmount?.toFixed(2)}`}
-            </Button>
-          </Box>
-        </Paper>
-      )}
-      
-      {showMockPayment && (
-        <Box sx={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, bgcolor: 'rgba(0,0,0,0.5)', zIndex: 9998 }} />
-      )}
     </Box>
   );
 };

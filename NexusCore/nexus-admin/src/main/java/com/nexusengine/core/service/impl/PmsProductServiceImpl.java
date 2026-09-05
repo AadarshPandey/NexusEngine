@@ -49,7 +49,8 @@ public class PmsProductServiceImpl implements PmsProductService {
 
     @Override
     public int create(PmsProductParam productParam) {
-        PmsProduct product = productParam;
+        PmsProduct product = new PmsProduct();
+        BeanUtils.copyProperties(productParam, product);
         product.setId(null);
         productRepository.save(product);
         Long productId = product.getId();
@@ -90,7 +91,8 @@ public class PmsProductServiceImpl implements PmsProductService {
 
     @Override
     public int update(Long id, PmsProductParam productParam) {
-        PmsProduct product = productParam;
+        PmsProduct product = new PmsProduct();
+        BeanUtils.copyProperties(productParam, product);
         product.setId(id);
         productRepository.save(product);
         memberPriceRepository.deleteByProductId(id);

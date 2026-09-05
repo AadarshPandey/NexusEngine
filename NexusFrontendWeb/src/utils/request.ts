@@ -4,7 +4,7 @@ import { logout } from '../store/slices/authSlice';
 
 const request = axios.create({
   baseURL: (import.meta.env.VITE_API_BASE_URL || '/api') + '/portal',
-  timeout: 10000,
+  timeout: 30000,
 });
 
 request.interceptors.request.use(

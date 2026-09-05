@@ -245,6 +245,13 @@ Currently, the NexusEngine is a single-vendor application, meaning all orders pu
 
 This project was highly inspired by the incredible open-source work of **[macrozheng/mall](https://github.com/macrozheng/mall)** and **[macrozheng/mall-admin-web](https://github.com/macrozheng/mall-admin-web)**. I extend my deepest gratitude to the original creators for providing a phenomenal architectural foundation, which was heavily utilized and adapted in building NexusEngine's core components.
 
+## Test Cards
+
+  • Visa (Domestic): 4100 2800 0000 1007
+  • Mastercard: 5555 5100 0008 1006
+  • RuPay: 6527 6589 0000 1005
+
+
 ## License
 
 [Apache License 2.0](https://github.com/AadarshPandey/NexusEngine/blob/main/LICENSE)

@@ -55,6 +55,7 @@ secure:
       - /s3/presign
       - /chat/**
       - /dashboard/info
+      - /order/update/status
 
 springdoc:
   swagger-ui:

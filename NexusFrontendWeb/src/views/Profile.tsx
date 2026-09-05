@@ -147,6 +147,7 @@ const Profile: React.FC = () => {
                       <TableCell>Date</TableCell>
                       <TableCell>Status</TableCell>
                       <TableCell align="right">Total Amount</TableCell>
+                      <TableCell align="center">Action</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -158,9 +159,84 @@ const Profile: React.FC = () => {
                           {order.status === 0 ? 'Pending Payment' : 
                            order.status === 1 ? 'Awaiting Shipment' : 
                            order.status === 2 ? 'Shipped' : 
-                           order.status === 3 ? 'Completed' : 'Cancelled'}
+                           order.status === 3 ? 'Completed' : 
+                           order.status === 5 ? 'Out for Delivery' : 
+                           order.status === 6 ? 'Refunded' : 'Cancelled'}
                         </TableCell>
                         <TableCell align="right">₹{order.totalAmount?.toFixed(2)}</TableCell>
+                        <TableCell align="center">
+                          {order.status === 0 && (
+                            <Button 
+                              variant="contained" 
+                              size="small" 
+                              color="primary"
+                              onClick={async () => {
+                                try {
+                                  const { createRazorpayOrder, verifyRazorpayPayment } = await import('../api/order');
+                                  
+                                  // 1. Get Razorpay Order details from backend
+                                  const res = await createRazorpayOrder(order.id);
+                                  const { razorpayOrderId, keyId, amount } = res.data;
+
+                                  // 2. Load Razorpay script dynamically
+                                  const loadScript = (src: string) => new Promise((resolve) => {
+                                    const script = document.createElement('script');
+                                    script.src = src;
+                                    script.onload = () => resolve(true);
+                                    script.onerror = () => resolve(false);
+                                    document.body.appendChild(script);
+                                  });
+                                  const scriptLoaded = await loadScript('https://checkout.razorpay.com/v1/checkout.js');
+                                  if (!scriptLoaded) {
+                                    alert('Failed to load Razorpay SDK. Are you online?');
+                                    return;
+                                  }
+
+                                  // 3. Open Razorpay Checkout
+                                  const options = {
+                                    key: keyId, 
+                                    amount: amount, 
+                                    currency: 'INR',
+                                    name: 'Nexus Engine',
+                                    description: `Payment for Order #${order.orderSn}`,
+                                    order_id: razorpayOrderId,
+                                    handler: async function (response: any) {
+                                      try {
+                                        // 4. Verify payment on backend
+                                        await verifyRazorpayPayment(
+                                          order.id, 
+                                          response.razorpay_payment_id, 
+                                          response.razorpay_order_id, 
+                                          response.razorpay_signature
+                                        );
+                                        alert('Payment successful!');
+                                        loadDashboardData();
+                                      } catch (err) {
+                                        alert('Payment verification failed.');
+                                      }
+                                    },
+                                    prefill: {
+                                      name: memberInfo?.nickname || memberInfo?.username || 'Test Customer',
+                                      contact: '+919000090000'
+                                    },
+                                    theme: { color: '#3399cc' }
+                                  };
+                                  const rzp = new (window as any).Razorpay(options);
+                                  rzp.on('payment.failed', function (response: any){
+                                    alert(`Payment Failed: ${response.error.description}`);
+                                  });
+                                  rzp.open();
+                                  
+                                } catch (e) {
+                                  alert('Failed to initiate payment. Please try again later.');
+                                  console.error(e);
+                                }
+                              }}
+                            >
+                              Pay Now
+                            </Button>
+                          )}
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>

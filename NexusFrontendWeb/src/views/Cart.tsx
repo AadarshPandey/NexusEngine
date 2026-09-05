@@ -1,9 +1,11 @@
 import React, { useEffect } from 'react';
 import { Box, Typography, Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
 import { useSelector, useDispatch } from 'react-redux';
 import type { RootState, AppDispatch } from '../store';
-import { loadCartData, removeCartItem } from '../store/slices/cartSlice';
+import { loadCartData, removeCartItem, updateQuantity } from '../store/slices/cartSlice';
 import { useNavigate } from 'react-router';
 
 const Cart: React.FC = () => {
@@ -50,7 +52,7 @@ const Cart: React.FC = () => {
                   <TableRow>
                     <TableCell>Product</TableCell>
                     <TableCell align="right">Price</TableCell>
-                    <TableCell align="right">Quantity</TableCell>
+                    <TableCell align="center">Quantity</TableCell>
                     <TableCell align="right">Total</TableCell>
                     <TableCell align="right">Action</TableCell>
                   </TableRow>
@@ -63,7 +65,17 @@ const Cart: React.FC = () => {
                         <Typography variant="body2">{item.productName}</Typography>
                       </TableCell>
                       <TableCell align="right">₹{item.price?.toFixed(2)}</TableCell>
-                      <TableCell align="right">{item.quantity}</TableCell>
+                      <TableCell align="center">
+                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <IconButton size="small" onClick={() => { if(item.quantity > 1) dispatch(updateQuantity({ id: item.id, quantity: item.quantity - 1 })) }}>
+                            <RemoveIcon fontSize="small" />
+                          </IconButton>
+                          <Typography sx={{ mx: 1 }}>{item.quantity}</Typography>
+                          <IconButton size="small" onClick={() => dispatch(updateQuantity({ id: item.id, quantity: item.quantity + 1 }))}>
+                            <AddIcon fontSize="small" />
+                          </IconButton>
+                        </Box>
+                      </TableCell>
                       <TableCell align="right">₹{(item.price * item.quantity).toFixed(2)}</TableCell>
                       <TableCell align="right">
                         <IconButton color="error" onClick={() => dispatch(removeCartItem(item.id))}>

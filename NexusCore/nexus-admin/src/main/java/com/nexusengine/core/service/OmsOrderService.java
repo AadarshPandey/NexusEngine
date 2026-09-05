@@ -55,4 +55,10 @@ public interface OmsOrderService {
      */
     @Transactional
     int updateNote(Long id, String note, Integer status);
+
+    /**
+     * Update order status
+     */
+    @Transactional
+    int updateStatus(List<Long> ids, Integer status, String note);
 }
