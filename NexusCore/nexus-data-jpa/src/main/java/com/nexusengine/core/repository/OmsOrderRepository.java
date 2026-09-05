@@ -10,6 +10,7 @@ import java.util.List;
 
 public interface OmsOrderRepository extends JpaRepository<OmsOrder, Long>, JpaSpecificationExecutor<OmsOrder> {
     List<OmsOrder> findByVendorId(Long vendorId);
+    List<OmsOrder> findByVendorIdOrderByCreateTimeDesc(Long vendorId);
     OmsOrder findByOrderSn(String orderSn);
     Page<OmsOrder> findByMemberIdAndDeleteStatusOrderByCreateTimeDesc(Long memberId, Integer deleteStatus, Pageable pageable);
     Page<OmsOrder> findByMemberIdAndStatusAndDeleteStatusOrderByCreateTimeDesc(Long memberId, Integer status, Integer deleteStatus, Pageable pageable);

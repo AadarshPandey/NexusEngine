@@ -76,7 +76,7 @@ const ProductDetail: React.FC = () => {
           <Grid size={{ xs: 12, md: 6 }}>
             <Box
               component="img"
-              src={product.pic || 'https://via.placeholder.com/400'}
+              src={product.pic?.startsWith('file://') ? 'https://via.placeholder.com/400' : (product.pic || 'https://via.placeholder.com/400')}
               alt={product.name}
               sx={{ width: '100%', maxHeight: 500, objectFit: 'contain' }}
             />

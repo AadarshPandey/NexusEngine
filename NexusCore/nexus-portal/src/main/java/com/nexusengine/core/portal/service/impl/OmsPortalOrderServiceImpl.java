@@ -63,6 +63,8 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
     private org.redisson.api.RedissonClient redissonClient;
     @Autowired
     private com.nexusengine.core.repository.OutboxEventRepository outboxEventRepository;
+    @Autowired
+    private com.nexusengine.core.repository.OmsOrderReturnApplyRepository returnApplyRepository;
 
     @Override
     public ConfirmOrderResult generateConfirmOrder(List<Long> cartIds) {
@@ -353,6 +355,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
             OmsOrderDetail orderDetail = new OmsOrderDetail();
             BeanUtil.copyProperties(omsOrder, orderDetail);
             orderDetail.setOrderItemList(orderItemRepository.findByOrderId(omsOrder.getId()));
+            orderDetail.setReturnApplyList(returnApplyRepository.findByOrderId(omsOrder.getId()));
             orderDetailList.add(orderDetail);
         }
         resultPage.setList(orderDetailList);

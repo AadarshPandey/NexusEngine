@@ -17,4 +17,6 @@ import java.util.List;
 public class OmsOrderDetail extends OmsOrder {
     @Schema(title = "Order item list")
     private List<OmsOrderItem> orderItemList;
+    @Schema(title = "Return apply list")
+    private List<com.nexusengine.core.model.OmsOrderReturnApply> returnApplyList;
 }

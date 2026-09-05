@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Paper, Tabs, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Avatar, Divider, CircularProgress, Button, TextField, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { Box, Typography, Paper, Tabs, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Avatar, Divider, CircularProgress, Button, TextField, Dialog, DialogTitle, DialogContent, DialogActions, Chip } from '@mui/material';
 import { useSelector } from 'react-redux';
 import type { RootState } from '../store';
-import { fetchOrderList } from '../api/order';
+import { fetchOrderList, submitReturnApply } from '../api/order';
 import type { OmsOrderDetail } from '../api/order';
 import { fetchMemberInfo, fetchAddressList, addAddress } from '../api/member';
 import type { UmsMember, UmsMemberReceiveAddress } from '../api/member';
@@ -36,6 +36,12 @@ const Profile: React.FC = () => {
   const [newAddress, setNewAddress] = useState<Partial<UmsMemberReceiveAddress> & { coordinates?: string }>({
     name: '', phoneNumber: '', province: '', city: '', region: '', detailAddress: '', postCode: '', coordinates: ''
   });
+
+  // Refund dialog states
+  const [openRefundDialog, setOpenRefundDialog] = useState(false);
+  const [refundOrder, setRefundOrder] = useState<OmsOrderDetail | null>(null);
+  const [selectedRefundItems, setSelectedRefundItems] = useState<any[]>([]);
+  const [refundReason, setRefundReason] = useState('');
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -84,6 +90,64 @@ const Profile: React.FC = () => {
     }
   };
 
+  const handleOpenRefund = (order: OmsOrderDetail) => {
+    setRefundOrder(order);
+    setSelectedRefundItems([]);
+    setRefundReason('');
+    setOpenRefundDialog(true);
+  };
+
+  const handleRefundItemToggle = (item: any) => {
+    const currentIndex = selectedRefundItems.findIndex((i) => i.id === item.id);
+    const newSelected = [...selectedRefundItems];
+    if (currentIndex === -1) {
+      newSelected.push(item);
+    } else {
+      newSelected.splice(currentIndex, 1);
+    }
+    setSelectedRefundItems(newSelected);
+  };
+
+  const handleRefundSubmit = async () => {
+    if (selectedRefundItems.length === 0) {
+      alert('Please select at least one item to refund.');
+      return;
+    }
+    if (!refundReason.trim()) {
+      alert('Please provide a reason for the refund.');
+      return;
+    }
+    if (!refundOrder) return;
+
+    try {
+      await Promise.all(selectedRefundItems.map(item => 
+        submitReturnApply({
+          orderId: refundOrder.id,
+          productId: item.productId,
+          orderSn: refundOrder.orderSn,
+          memberUsername: memberInfo?.username,
+          returnName: memberInfo?.nickname || memberInfo?.username,
+          returnPhone: memberInfo?.phone || '9876543210',
+          productPic: item.productPic,
+          productName: item.productName,
+          productBrand: item.productBrand,
+          productAttr: item.productAttr,
+          productCount: item.productQuantity,
+          productPrice: item.productPrice,
+          productRealPrice: item.realAmount,
+          reason: refundReason,
+          description: refundReason
+        })
+      ));
+      alert('Refund application(s) submitted successfully!');
+      setOpenRefundDialog(false);
+      loadDashboardData();
+    } catch (e) {
+      alert('Failed to submit refund application.');
+      console.error(e);
+    }
+  };
+
   if (!isAuthenticated) return null;
 
   if (loading) {
@@ -96,7 +160,7 @@ const Profile: React.FC = () => {
       <Box sx={{ flex: 1 }}>
         <Paper sx={{ p: 4, textAlign: 'center' }}>
           <Avatar 
-            src={memberInfo?.icon || 'https://via.placeholder.com/100'} 
+            src={memberInfo?.icon?.startsWith('file://') ? 'https://via.placeholder.com/100' : (memberInfo?.icon || 'https://via.placeholder.com/100')} 
             sx={{ width: 100, height: 100, mx: 'auto', mb: 2 }} 
           />
           <Typography variant="h5" gutterBottom>{memberInfo?.nickname || authUser?.username}</Typography>
@@ -156,12 +220,22 @@ const Profile: React.FC = () => {
                         <TableCell>{order.orderSn}</TableCell>
                         <TableCell>{new Date(order.createTime).toLocaleDateString()}</TableCell>
                         <TableCell>
-                          {order.status === 0 ? 'Pending Payment' : 
-                           order.status === 1 ? 'Awaiting Shipment' : 
-                           order.status === 2 ? 'Shipped' : 
-                           order.status === 3 ? 'Completed' : 
-                           order.status === 5 ? 'Out for Delivery' : 
-                           order.status === 6 ? 'Refunded' : 'Cancelled'}
+                          <Typography variant="body2">
+                            {order.status === 0 ? 'Pending Payment' : 
+                             order.status === 1 ? 'Awaiting Shipment' : 
+                             order.status === 2 ? 'Shipped' : 
+                             order.status === 3 ? 'Completed' : 
+                             order.status === 5 ? 'Out for Delivery' : 
+                             order.status === 6 ? 'Refunded' : 'Cancelled'}
+                          </Typography>
+                          {order.returnApplyList && order.returnApplyList.length > 0 && (
+                            <Chip 
+                              label={`${order.returnApplyList.length} Return(s) Logged`} 
+                              size="small" 
+                              color="warning" 
+                              sx={{ mt: 0.5, fontSize: '0.7rem', height: 20 }} 
+                            />
+                          )}
                         </TableCell>
                         <TableCell align="right">₹{order.totalAmount?.toFixed(2)}</TableCell>
                         <TableCell align="center">
@@ -236,6 +310,16 @@ const Profile: React.FC = () => {
                               Pay Now
                             </Button>
                           )}
+                          {order.status === 3 && (
+                            <Button 
+                              variant="outlined" 
+                              size="small" 
+                              color="secondary"
+                              onClick={() => handleOpenRefund(order)}
+                            >
+                              Request Refund
+                            </Button>
+                          )}
                         </TableCell>
                       </TableRow>
                     ))}
@@ -287,6 +371,77 @@ const Profile: React.FC = () => {
         <DialogActions>
           <Button onClick={() => setOpenAddAddress(false)}>Cancel</Button>
           <Button variant="contained" onClick={handleAddAddress}>Save Address</Button>
+        </DialogActions>
+      </Dialog>
+      {/* Refund Dialog */}
+      <Dialog open={openRefundDialog} onClose={() => setOpenRefundDialog(false)} maxWidth="sm" fullWidth>
+        <DialogTitle>Request Refund</DialogTitle>
+        <DialogContent>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            Select the items you wish to return and provide a reason.
+          </Typography>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            {refundOrder?.orderItemList?.map((item: any) => {
+              const isAlreadyReturned = refundOrder?.returnApplyList?.some((r: any) => r.productId === item.productId);
+              const isSelected = selectedRefundItems.some(i => i.id === item.id);
+              return (
+                <Paper 
+                  key={item.id} 
+                  variant="outlined" 
+                  sx={{ 
+                    p: 2, 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: 2,
+                    cursor: isAlreadyReturned ? 'not-allowed' : 'pointer',
+                    borderColor: isSelected ? 'primary.main' : 'divider',
+                    bgcolor: isSelected ? 'rgba(99, 102, 241, 0.08)' : isAlreadyReturned ? 'action.disabledBackground' : 'background.paper',
+                    opacity: isAlreadyReturned ? 0.6 : 1
+                  }}
+                  onClick={() => {
+                    if (!isAlreadyReturned) handleRefundItemToggle(item);
+                  }}
+                >
+                  <img src={item.productPic?.startsWith('file://') ? 'https://via.placeholder.com/60' : (item.productPic || 'https://via.placeholder.com/60')} alt={item.productName} style={{ width: 60, height: 60, objectFit: 'cover' }} />
+                  <Box sx={{ flex: 1 }}>
+                    <Typography variant="subtitle2">{item.productName}</Typography>
+                    <Typography variant="body2" color="text.secondary">{item.productAttr}</Typography>
+                    <Typography variant="body2">Qty: {item.productQuantity} | ₹{item.realAmount}</Typography>
+                    {isAlreadyReturned && (
+                      <Typography variant="caption" color="error" sx={{ fontWeight: 'bold' }}>Refund Requested</Typography>
+                    )}
+                  </Box>
+                  <input 
+                    type="checkbox" 
+                    checked={isSelected || isAlreadyReturned} 
+                    disabled={isAlreadyReturned}
+                    readOnly 
+                    style={{ width: 20, height: 20 }}
+                  />
+                </Paper>
+              );
+            })}
+            <TextField 
+              label="Reason for Refund" 
+              fullWidth 
+              multiline 
+              rows={3} 
+              value={refundReason} 
+              onChange={e => setRefundReason(e.target.value)} 
+              sx={{ mt: 2 }}
+            />
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenRefundDialog(false)}>Cancel</Button>
+          <Button 
+            variant="contained" 
+            color="primary" 
+            onClick={handleRefundSubmit}
+            disabled={selectedRefundItems.length === 0}
+          >
+            Submit Request
+          </Button>
         </DialogActions>
       </Dialog>
     </Box>

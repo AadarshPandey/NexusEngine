@@ -37,7 +37,7 @@ const BannerCarousel: React.FC<BannerCarouselProps> = ({ banners }) => {
             height: '100%',
             opacity: index === activeIndex ? 1 : 0,
             transition: 'opacity 0.8s ease-in-out',
-            backgroundImage: `url(${banner.pic || 'https://via.placeholder.com/1200x400'})`,
+            backgroundImage: `url(${banner.pic?.startsWith('file://') ? 'https://via.placeholder.com/1200x400' : (banner.pic || 'https://via.placeholder.com/1200x400')})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }}

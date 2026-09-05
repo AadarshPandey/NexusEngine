@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { Card, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Chip, Paper, Button } from '@mui/material';
 import { getReturnApplyListAPI } from '@/apis/returnApply';
 import type { OmsOrderReturnApply } from '@/types/returnApply';
+import { useNavigate } from 'react-router';
 
 const ReturnApplyList: React.FC = () => {
   const [applies, setApplies] = useState<OmsOrderReturnApply[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchApplies();
@@ -55,7 +57,7 @@ const ReturnApplyList: React.FC = () => {
                 <TableCell>{getStatusChip(apply.status)}</TableCell>
                 <TableCell>{apply.handleTime ? new Date(apply.handleTime).toLocaleString() : 'N/A'}</TableCell>
                 <TableCell>
-                  <Button size="small" variant="text">View Details</Button>
+                  <Button size="small" variant="text" onClick={() => navigate(`/oms/returnApply/${apply.id}`)}>View Details</Button>
                 </TableCell>
               </TableRow>
             ))}

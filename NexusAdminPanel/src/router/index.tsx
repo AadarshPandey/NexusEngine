@@ -111,7 +111,7 @@ const router = createHashRouter([
       { path: 'oms/deliverOrderList', element: withSuspense(DeliverOrderList) },
       { path: 'oms/orderSetting', element: withSuspense(OrderSetting) },
       { path: 'oms/returnApply', element: withSuspense(ReturnApplyList) },
-      { path: 'oms/returnApplyDetail', element: withSuspense(ReturnApplyDetail) },
+      { path: 'oms/returnApply/:id', element: withSuspense(ReturnApplyDetail) },
       { path: 'oms/returnReason', element: withSuspense(ReturnReasonList) },
       // SMS
       { path: 'sms/flash', element: withSuspense(FlashList) },

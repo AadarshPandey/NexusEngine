@@ -61,7 +61,7 @@ const Cart: React.FC = () => {
                   {items.map((item) => (
                     <TableRow key={item.id}>
                       <TableCell sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                        <img src={item.productPic || 'https://via.placeholder.com/50'} alt={item.productName} style={{ width: 50, height: 50, objectFit: 'contain' }} />
+                        <img src={item.productPic?.startsWith('file://') ? 'https://via.placeholder.com/50' : (item.productPic || 'https://via.placeholder.com/50')} alt={item.productName} style={{ width: 50, height: 50, objectFit: 'contain' }} />
                         <Typography variant="body2">{item.productName}</Typography>
                       </TableCell>
                       <TableCell align="right">₹{item.price?.toFixed(2)}</TableCell>

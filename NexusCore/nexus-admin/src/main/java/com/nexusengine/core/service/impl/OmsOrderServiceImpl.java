@@ -33,9 +33,9 @@ public class OmsOrderServiceImpl implements OmsOrderService {
         com.nexusengine.core.model.UmsAdmin admin = adminService.getAdminByUsername(username);
         Long vendorId = admin != null ? admin.getVendorId() : null;
         if (vendorId != null) {
-            return orderRepository.findByVendorId(vendorId);
+            return orderRepository.findByVendorIdOrderByCreateTimeDesc(vendorId);
         }
-        return orderRepository.findAll();
+        return orderRepository.findAll(org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.DESC, "createTime"));
     }
 
     @Override

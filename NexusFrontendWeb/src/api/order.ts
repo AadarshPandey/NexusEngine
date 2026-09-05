@@ -60,7 +60,13 @@ export interface OmsOrderDetail {
   receiveTime: string;
   commentTime: string;
   modifyTime: string;
+  orderItemList: any[];
+  returnApplyList?: any[];
 }
+
+export const submitReturnApply = (data: any) => {
+  return request.post<any, { data: any }>('/returnApply/create', data);
+};
 
 export const generateConfirmOrder = (cartIds: number[]) => {
   return request.post<any, { data: ConfirmOrderResult }>('/order/generateConfirmOrder', cartIds);

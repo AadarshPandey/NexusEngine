@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Chip, Paper, Button, Menu, MenuItem } from '@mui/material';
+import { Card, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Chip, Paper, Button, Menu, MenuItem, TextField, Grid, FormControl, InputLabel, Select, Box } from '@mui/material';
 import { getOrderListAPI, orderUpdateStatusAPI } from '@/apis/order';
 import type { OmsOrder } from '@/types/order';
 
@@ -8,13 +8,22 @@ const OrderList: React.FC = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedOrder, setSelectedOrder] = useState<OmsOrder | null>(null);
 
+  // Search states
+  const [searchId, setSearchId] = useState('');
+  const [searchSn, setSearchSn] = useState('');
+  const [searchMember, setSearchMember] = useState('');
+  const [searchAmount, setSearchAmount] = useState('');
+  const [searchPayType, setSearchPayType] = useState<number | ''>('');
+  const [searchStatus, setSearchStatus] = useState<number | ''>('');
+  const [searchDate, setSearchDate] = useState('');
+
   useEffect(() => {
     fetchOrders();
   }, []);
 
   const fetchOrders = async () => {
     try {
-      const res = await getOrderListAPI({ pageNum: 1, pageSize: 50 });
+      const res = await getOrderListAPI({ pageNum: 1, pageSize: 500 });
       setOrders(res.data.list);
     } catch (e) {
       console.error(e);
@@ -57,9 +66,81 @@ const OrderList: React.FC = () => {
     }
   };
 
+  const resetSearch = () => {
+    setSearchId('');
+    setSearchSn('');
+    setSearchMember('');
+    setSearchAmount('');
+    setSearchPayType('');
+    setSearchStatus('');
+    setSearchDate('');
+  };
+
+  const filteredOrders = orders.filter(order => {
+    if (searchId && order.id.toString() !== searchId && !order.orderSn?.includes(searchId)) return false;
+    if (searchSn && !order.orderSn?.includes(searchSn)) return false;
+    if (searchMember && !order.memberUsername?.toLowerCase().includes(searchMember.toLowerCase())) return false;
+    if (searchAmount && order.totalAmount?.toString() !== searchAmount) return false;
+    if (searchPayType !== '' && order.payType !== searchPayType) return false;
+    if (searchStatus !== '' && order.status !== searchStatus) return false;
+    if (searchDate && !order.createTime?.startsWith(searchDate)) return false;
+    return true;
+  });
+
   return (
     <Card sx={{ p: 3, m: 3 }}>
       <Typography variant="h5" gutterBottom>Order Management</Typography>
+      
+      <Paper sx={{ p: 2, mb: 3 }} variant="outlined">
+        <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'bold' }}>Search Filters</Typography>
+        <Grid container spacing={2} alignItems="center">
+          <Grid item xs={12} sm={6} md={3} lg={2}>
+            <TextField fullWidth label="Order ID" size="small" value={searchId} onChange={e => setSearchId(e.target.value)} />
+          </Grid>
+          <Grid item xs={12} sm={6} md={3} lg={2}>
+            <TextField fullWidth label="Serial Number" size="small" value={searchSn} onChange={e => setSearchSn(e.target.value)} />
+          </Grid>
+          <Grid item xs={12} sm={6} md={3} lg={2}>
+            <TextField fullWidth label="Member User" size="small" value={searchMember} onChange={e => setSearchMember(e.target.value)} />
+          </Grid>
+          <Grid item xs={12} sm={6} md={3} lg={2}>
+            <TextField fullWidth label="Total Amount" size="small" value={searchAmount} onChange={e => setSearchAmount(e.target.value)} />
+          </Grid>
+          <Grid item xs={12} sm={6} md={3} lg={2}>
+            <FormControl fullWidth size="small">
+              <InputLabel>Payment Type</InputLabel>
+              <Select value={searchPayType} label="Payment Type" onChange={e => setSearchPayType(e.target.value as any)}>
+                <MenuItem value=""><em>All</em></MenuItem>
+                <MenuItem value={0}>Unpaid</MenuItem>
+                <MenuItem value={1}>Alipay</MenuItem>
+                <MenuItem value={2}>Razorpay</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12} sm={6} md={3} lg={2}>
+            <FormControl fullWidth size="small">
+              <InputLabel>Status</InputLabel>
+              <Select value={searchStatus} label="Status" onChange={e => setSearchStatus(e.target.value as any)}>
+                <MenuItem value=""><em>All</em></MenuItem>
+                <MenuItem value={0}>Unpaid</MenuItem>
+                <MenuItem value={1}>Paid/To Ship</MenuItem>
+                <MenuItem value={2}>Shipped</MenuItem>
+                <MenuItem value={5}>Out for Delivery</MenuItem>
+                <MenuItem value={3}>Completed</MenuItem>
+                <MenuItem value={6}>Refunded</MenuItem>
+                <MenuItem value={4}>Canceled</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12} sm={6} md={3} lg={2}>
+            <TextField fullWidth label="Created Date (YYYY-MM-DD)" size="small" value={searchDate} onChange={e => setSearchDate(e.target.value)} />
+          </Grid>
+          <Grid item xs={12} sm={6} md={3} lg={2}>
+            <Button variant="outlined" color="secondary" fullWidth onClick={resetSearch}>Reset</Button>
+          </Grid>
+        </Grid>
+      </Paper>
+
       <TableContainer component={Paper} sx={{ mt: 3 }} elevation={0} variant="outlined">
         <Table>
           <TableHead>
@@ -75,7 +156,7 @@ const OrderList: React.FC = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {orders.map((order) => (
+            {filteredOrders.map((order) => (
               <TableRow key={order.id} hover>
                 <TableCell>{order.id}</TableCell>
                 <TableCell>{order.orderSn}</TableCell>
@@ -89,7 +170,7 @@ const OrderList: React.FC = () => {
                 </TableCell>
               </TableRow>
             ))}
-            {orders.length === 0 && (
+            {filteredOrders.length === 0 && (
               <TableRow>
                 <TableCell colSpan={8} align="center" sx={{ py: 5 }}>No orders found.</TableCell>
               </TableRow>
