@@ -168,6 +168,7 @@ const ProductList: React.FC = () => {
                 <TableCell>Label</TableCell>
                 <TableCell>SKU inventory</TableCell>
                 <TableCell>Sales volume</TableCell>
+                <TableCell>Available stock</TableCell>
                 <TableCell>Review status</TableCell>
                 <TableCell align="center">operate</TableCell>
               </TableRow>
@@ -204,7 +205,8 @@ const ProductList: React.FC = () => {
                   <TableCell align="center">
                     <Button variant="outlined" size="small" sx={{ borderRadius: 20 }}>0</Button>
                   </TableCell>
-                  <TableCell>{row.sale || 100}</TableCell>
+                  <TableCell>{row.sale || 0}</TableCell>
+                  <TableCell>{row.stock || 0}</TableCell>
                   <TableCell>
                     <Typography variant="body2">{row.verifyStatus === 1 ? 'Approved' : 'Not reviewed'}</Typography>
                     <Link href="#" variant="caption" underline="hover">Review details</Link>
@@ -212,11 +214,11 @@ const ProductList: React.FC = () => {
                   <TableCell align="center">
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                       <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
-                        <Button size="small" variant="text">Check</Button>
-                        <Button size="small" variant="text" color="primary">edit</Button>
+                        <Button size="small" variant="text" onClick={() => alert(`Check product ${row.id}`)}>Check</Button>
+                        <Button size="small" variant="text" color="primary" onClick={() => navigate(`/pms/updateProduct?id=${row.id}`)}>edit</Button>
                       </Box>
                       <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
-                        <Button size="small" variant="text" color="info">log</Button>
+                        <Button size="small" variant="text" color="info" onClick={() => alert(`View log for product ${row.id}`)}>log</Button>
                         <Button size="small" variant="text" color="error" onClick={() => handleDelete(row.id)}>delete</Button>
                       </Box>
                     </Box>

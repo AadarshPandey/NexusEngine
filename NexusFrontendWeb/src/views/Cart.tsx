@@ -66,14 +66,25 @@ const Cart: React.FC = () => {
                       </TableCell>
                       <TableCell align="right">₹{item.price?.toFixed(2)}</TableCell>
                       <TableCell align="center">
-                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                          <IconButton size="small" onClick={() => { if(item.quantity > 1) dispatch(updateQuantity({ id: item.id, quantity: item.quantity - 1 })) }}>
-                            <RemoveIcon fontSize="small" />
-                          </IconButton>
-                          <Typography sx={{ mx: 1 }}>{item.quantity}</Typography>
-                          <IconButton size="small" onClick={() => dispatch(updateQuantity({ id: item.id, quantity: item.quantity + 1 }))}>
-                            <AddIcon fontSize="small" />
-                          </IconButton>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <IconButton size="small" onClick={() => { if(item.quantity > 1) dispatch(updateQuantity({ id: item.id, quantity: item.quantity - 1 })) }}>
+                              <RemoveIcon fontSize="small" />
+                            </IconButton>
+                            <Typography sx={{ mx: 1 }}>{item.quantity}</Typography>
+                            <IconButton 
+                              size="small" 
+                              onClick={() => dispatch(updateQuantity({ id: item.id, quantity: item.quantity + 1 }))}
+                              disabled={item.realStock !== undefined && item.quantity >= item.realStock}
+                            >
+                              <AddIcon fontSize="small" />
+                            </IconButton>
+                          </Box>
+                          {item.realStock !== undefined && (
+                            <Typography variant="caption" color="text.secondary">
+                              {item.realStock} available
+                            </Typography>
+                          )}
                         </Box>
                       </TableCell>
                       <TableCell align="right">₹{(item.price * item.quantity).toFixed(2)}</TableCell>

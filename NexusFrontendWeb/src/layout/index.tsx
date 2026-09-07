@@ -35,7 +35,10 @@ const Layout: React.FC = () => {
               <Button color="inherit" onClick={handleLogout}>Logout</Button>
             </Box>
           ) : (
-            <Button color="inherit" component={Link} to="/login">Login</Button>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <Button color="inherit" component={Link} to="/login" sx={{ mr: 1 }}>Login</Button>
+              <Button color="inherit" component={Link} to="/register">Sign Up</Button>
+            </Box>
           )}
         </Toolbar>
       </AppBar>

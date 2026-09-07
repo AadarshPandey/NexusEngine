@@ -31,6 +31,17 @@ spring:
     virtual-host: /nexuscore
     username: guest
     password: guest
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${SMTP_USERNAME}
+    password: ${SMTP_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
   ai:
     openai:
       api-key: ${OPENAI_API_KEY:sk-your-key-here}

@@ -3,10 +3,12 @@ package com.nexusengine.core.portal.dao;
 import com.nexusengine.core.model.OmsOrder;
 import com.nexusengine.core.model.OmsOrderItem;
 import com.nexusengine.core.model.PmsSkuStock;
+import com.nexusengine.core.model.PmsProduct;
 import com.nexusengine.core.portal.domain.OmsOrderDetail;
 import com.nexusengine.core.repository.OmsOrderItemRepository;
 import com.nexusengine.core.repository.OmsOrderRepository;
 import com.nexusengine.core.repository.PmsSkuStockRepository;
+import com.nexusengine.core.repository.PmsProductRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -28,6 +30,9 @@ public class PortalOrderDao {
     @Autowired
     private PmsSkuStockRepository skuStockRepository;
 
+    @Autowired
+    private PmsProductRepository productRepository;
+
     public OmsOrderDetail getDetail(Long orderId) {
         OmsOrder order = orderRepository.findById(orderId).orElse(null);
         if (order == null) return null;
@@ -41,7 +46,6 @@ public class PortalOrderDao {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.MINUTE, -minutes);
         Date deadline = calendar.getTime();
-        // Find orders: status=0 (unpaid), deleteStatus=0, created before deadline
         List<OmsOrder> orders = orderRepository.findAll();
         List<OmsOrderDetail> result = new ArrayList<>();
         for (OmsOrder order : orders) {
@@ -75,8 +79,13 @@ public class PortalOrderDao {
                     skuStock.setStock(skuStock.getStock() - item.getProductQuantity());
                     skuStock.setLockStock(Math.max(0, skuStock.getLockStock() - item.getProductQuantity()));
                     skuStockRepository.save(skuStock);
-                    count++;
                 }
+            }
+            PmsProduct product = productRepository.findById(item.getProductId()).orElse(null);
+            if (product != null) {
+                product.setSale((product.getSale() == null ? 0 : product.getSale()) + item.getProductQuantity());
+                productRepository.save(product);
+                count++;
             }
         }
         return count;
@@ -90,6 +99,11 @@ public class PortalOrderDao {
                     skuStock.setLockStock(Math.max(0, skuStock.getLockStock() - item.getProductQuantity()));
                     skuStockRepository.save(skuStock);
                 }
+            }
+            PmsProduct product = productRepository.findById(item.getProductId()).orElse(null);
+            if (product != null) {
+                product.setStock((product.getStock() == null ? 0 : product.getStock()) + item.getProductQuantity());
+                productRepository.save(product);
             }
         }
     }

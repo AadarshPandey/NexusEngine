@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Box, TextField, Button, Typography, Paper, Alert } from '@mui/material';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router';
+import { useNavigate, Link } from 'react-router';
 import { login } from '../store/slices/authSlice';
 import request from '../utils/request';
 
@@ -55,9 +55,14 @@ const Login: React.FC = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <Button fullWidth type="submit" variant="contained" color="primary" sx={{ mt: 3 }}>
+          <Button fullWidth type="submit" variant="contained" color="primary" sx={{ mt: 3, mb: 2 }}>
             Sign In
           </Button>
+          <Box sx={{ textAlign: 'center' }}>
+            <Typography variant="body2">
+              Don't have an account? <Link to="/register" style={{ textDecoration: 'none' }}>Sign Up here</Link>
+            </Typography>
+          </Box>
         </form>
       </Paper>
     </Box>

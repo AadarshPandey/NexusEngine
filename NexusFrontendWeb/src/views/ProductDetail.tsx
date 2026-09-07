@@ -13,6 +13,7 @@ const ProductDetail: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
+  const cartItems = useSelector((state: RootState) => state.cart.items);
   
   const [productDetail, setProductDetail] = useState<PmsPortalProductDetail | null>(null);
   const [loading, setLoading] = useState(true);
@@ -35,6 +36,10 @@ const ProductDetail: React.FC = () => {
       setLoading(false);
     }
   };
+
+  const currentCartQuantity = cartItems.find(item => item.productId === productDetail?.product.id)?.quantity || 0;
+  const isOutOfStock = !productDetail?.product.stock || productDetail.product.stock <= 0;
+  const isMaxQuantityReached = productDetail?.product.stock ? currentCartQuantity >= productDetail.product.stock : false;
 
   const handleAddToCart = async () => {
     if (!isAuthenticated) {
@@ -87,6 +92,9 @@ const ProductDetail: React.FC = () => {
             <Typography variant="subtitle1" color="text.secondary" gutterBottom>{product.subTitle}</Typography>
             <Divider sx={{ my: 2 }} />
             <Typography variant="h3" color="primary" gutterBottom>₹{product.price?.toFixed(2)}</Typography>
+            <Typography variant="subtitle1" color={product.stock && product.stock > 0 ? "text.secondary" : "error"} gutterBottom>
+              {product.stock && product.stock > 0 ? `Available Stock: ${product.stock} (In Cart: ${currentCartQuantity})` : 'Out of Stock'}
+            </Typography>
             
             <Box sx={{ mt: 4 }}>
               <Button 
@@ -95,9 +103,9 @@ const ProductDetail: React.FC = () => {
                 color="primary" 
                 fullWidth 
                 onClick={handleAddToCart}
-                disabled={addingToCart}
+                disabled={addingToCart || isOutOfStock || isMaxQuantityReached}
               >
-                {addingToCart ? 'Adding...' : 'Add to Cart'}
+                {addingToCart ? 'Adding...' : isMaxQuantityReached ? 'Max Quantity in Cart' : 'Add to Cart'}
               </Button>
             </Box>
 

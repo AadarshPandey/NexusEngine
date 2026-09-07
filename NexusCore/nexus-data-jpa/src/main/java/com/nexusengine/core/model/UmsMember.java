@@ -34,6 +34,9 @@ public class UmsMember implements Serializable {
     @Schema(title = "Phone")
     private String phone;
 
+    @Schema(title = "Email")
+    private String email;
+
     @Schema(title = "Status")
     private Integer status;
 

@@ -2,6 +2,7 @@ import { createBrowserRouter } from 'react-router';
 import Layout from '../layout';
 import Home from '../views/Home';
 import Login from '../views/Login';
+import Register from '../views/Register';
 import NotFound from '../views/NotFound';
 import ProductDetail from '../views/ProductDetail';
 import Cart from '../views/Cart';
@@ -21,6 +22,10 @@ export const router = createBrowserRouter([
       {
         path: 'login',
         element: <Login />,
+      },
+      {
+        path: 'register',
+        element: <Register />,
       },
       {
         path: 'product/:id',

@@ -23,18 +23,18 @@ public interface UmsMemberService {
      * Auto-generated documentation
      */
     @Transactional
-    void register(String username, String password, String telephone, String authCode);
+    void register(String username, String password, String email, String authCode);
 
     /**
      * Auto-generated documentation
      */
-    String generateAuthCode(String telephone);
+    String generateAuthCode(String email);
 
     /**
      * Auto-generated documentation
      */
     @Transactional
-    void updatePassword(String telephone, String password, String authCode);
+    void updatePassword(String email, String password, String authCode);
 
     /**
      * Auto-generated documentation

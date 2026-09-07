@@ -69,17 +69,17 @@ public class UmsMemberServiceImpl implements UmsMemberService {
     }
 
     @Override
-    public void register(String username, String password, String telephone, String authCode) {
-        if (!verifyAuthCode(authCode, telephone)) {
+    public void register(String username, String password, String email, String authCode) {
+        if (!verifyAuthCode(authCode, email)) {
             Asserts.fail("Invalid verification code");
         }
-        List<UmsMember> existing = memberRepository.findByUsernameOrPhone(username, telephone);
+        List<UmsMember> existing = memberRepository.findByUsernameOrEmail(username, email);
         if (!CollectionUtils.isEmpty(existing)) {
             Asserts.fail("User already exists");
         }
         UmsMember umsMember = new UmsMember();
         umsMember.setUsername(username);
-        umsMember.setPhone(telephone);
+        umsMember.setEmail(email);
         umsMember.setPassword(passwordEncoder.encode(password));
         umsMember.setCreateTime(new Date());
         umsMember.setStatus(1);
@@ -90,24 +90,45 @@ public class UmsMemberServiceImpl implements UmsMemberService {
         memberRepository.save(umsMember);
     }
 
+    @Autowired
+    private org.springframework.mail.javamail.JavaMailSender mailSender;
+    @Value("${spring.mail.username}")
+    private String fromEmail;
+
     @Override
-    public String generateAuthCode(String telephone) {
+    public String generateAuthCode(String email) {
         StringBuilder sb = new StringBuilder();
         Random random = new Random();
         for (int i = 0; i < 6; i++) {
             sb.append(random.nextInt(10));
         }
-        memberCacheService.setAuthCode(telephone, sb.toString());
+        memberCacheService.setAuthCode(email, sb.toString());
+        
+        // Send email
+        try {
+            org.springframework.mail.SimpleMailMessage message = new org.springframework.mail.SimpleMailMessage();
+            message.setFrom(fromEmail);
+            message.setTo(email);
+            message.setSubject("Your Registration OTP");
+            message.setText("Your OTP code is: " + sb.toString() + "\nIt is valid for " + (AUTH_CODE_EXPIRE_SECONDS / 60) + " minutes.");
+            mailSender.send(message);
+        } catch (Exception e) {
+            LOGGER.error("Failed to send OTP email", e);
+            org.springframework.security.authentication.BadCredentialsException ex = new org.springframework.security.authentication.BadCredentialsException("Failed to send email. Please check your SMTP configuration.");
+            ex.initCause(e);
+            throw ex;
+        }
+        
         return sb.toString();
     }
 
     @Override
-    public void updatePassword(String telephone, String password, String authCode) {
-        UmsMember member = memberRepository.findByPhone(telephone);
+    public void updatePassword(String email, String password, String authCode) {
+        UmsMember member = memberRepository.findByEmail(email);
         if (member == null) {
             Asserts.fail("Account not found");
         }
-        if (!verifyAuthCode(authCode, telephone)) {
+        if (!verifyAuthCode(authCode, email)) {
             Asserts.fail("Invalid verification code");
         }
         member.setPassword(passwordEncoder.encode(password));
@@ -164,11 +185,11 @@ public class UmsMemberServiceImpl implements UmsMemberService {
         return jwtTokenUtil.refreshHeadToken(token);
     }
 
-    private boolean verifyAuthCode(String authCode, String telephone) {
+    private boolean verifyAuthCode(String authCode, String email) {
         if (StrUtil.isEmpty(authCode)) {
             return false;
         }
-        String realAuthCode = memberCacheService.getAuthCode(telephone);
+        String realAuthCode = memberCacheService.getAuthCode(email);
         return authCode.equals(realAuthCode);
     }
 }

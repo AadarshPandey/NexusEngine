@@ -36,11 +36,11 @@ public class UmsMemberController {
     @Operation(summary = "Register Operation")
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     @ResponseBody
-    public CommonResult register(@RequestParam String username,
-                                 @RequestParam String password,
-                                 @RequestParam String telephone,
-                                 @RequestParam String authCode) {
-        memberService.register(username, password, telephone, authCode);
+    public CommonResult register(@RequestParam("username") String username,
+                                 @RequestParam("password") String password,
+                                 @RequestParam("email") String email,
+                                 @RequestParam("authCode") String authCode) {
+        memberService.register(username, password, email, authCode);
         return CommonResult.success(null,"Success");
     }
 
@@ -73,18 +73,18 @@ public class UmsMemberController {
     @Operation(summary = "Get auth code Operation")
     @RequestMapping(value = "/getAuthCode", method = RequestMethod.GET)
     @ResponseBody
-    public CommonResult getAuthCode(@RequestParam String telephone) {
-        String authCode = memberService.generateAuthCode(telephone);
-        return CommonResult.success(authCode,"Success");
+    public CommonResult getAuthCode(@RequestParam("email") String email) {
+        memberService.generateAuthCode(email);
+        return CommonResult.success(null, "Auth code sent successfully");
     }
 
     @Operation(summary = "Update password Operation")
     @RequestMapping(value = "/updatePassword", method = RequestMethod.POST)
     @ResponseBody
-    public CommonResult updatePassword(@RequestParam String telephone,
+    public CommonResult updatePassword(@RequestParam String email,
                                  @RequestParam String password,
                                  @RequestParam String authCode) {
-        memberService.updatePassword(telephone,password,authCode);
+        memberService.updatePassword(email,password,authCode);
         return CommonResult.success(null,"Success");
     }
 

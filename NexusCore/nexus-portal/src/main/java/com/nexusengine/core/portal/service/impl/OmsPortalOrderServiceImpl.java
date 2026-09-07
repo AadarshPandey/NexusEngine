@@ -561,11 +561,17 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
 
     private void lockStock(List<CartPromotionItem> cartPromotionItemList) {
         for (CartPromotionItem item : cartPromotionItemList) {
-            if (item.getProductSkuId() == null) continue;
-            PmsSkuStock skuStock = skuStockRepository.findById(item.getProductSkuId()).orElse(null);
-            if (skuStock != null) {
-                skuStock.setLockStock(skuStock.getLockStock() + item.getQuantity());
-                skuStockRepository.save(skuStock);
+            if (item.getProductSkuId() != null) {
+                PmsSkuStock skuStock = skuStockRepository.findById(item.getProductSkuId()).orElse(null);
+                if (skuStock != null) {
+                    skuStock.setLockStock(skuStock.getLockStock() + item.getQuantity());
+                    skuStockRepository.save(skuStock);
+                }
+            }
+            PmsProduct product = productRepository.findById(item.getProductId()).orElse(null);
+            if (product != null) {
+                product.setStock(Math.max(0, (product.getStock() == null ? 0 : product.getStock()) - item.getQuantity()));
+                productRepository.save(product);
             }
         }
     }

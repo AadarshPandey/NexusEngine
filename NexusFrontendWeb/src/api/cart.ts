@@ -19,10 +19,11 @@ export interface OmsCartItem {
   productBrand: string;
   productSn: string;
   productAttr: string;
+  realStock?: number;
 }
 
 export const fetchCartList = () => {
-  return request.get<any, { data: OmsCartItem[] }>('/cart/list');
+  return request.get<any, { data: OmsCartItem[] }>('/cart/list/promotion');
 };
 
 export const addToCart = (data: Partial<OmsCartItem>) => {
