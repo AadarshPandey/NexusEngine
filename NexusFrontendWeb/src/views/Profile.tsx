@@ -101,7 +101,9 @@ const Profile: React.FC = () => {
     const currentIndex = selectedRefundItems.findIndex((i) => i.id === item.id);
     const newSelected = [...selectedRefundItems];
     if (currentIndex === -1) {
-      newSelected.push(item);
+      const totalReturnedQty = refundOrder?.returnApplyList?.filter((r: any) => r.productId === item.productId).reduce((sum, r) => sum + (r.productCount || 0), 0) || 0;
+      const maxReturnableQty = item.productQuantity - totalReturnedQty;
+      newSelected.push({ ...item, returnQuantity: maxReturnableQty });
     } else {
       newSelected.splice(currentIndex, 1);
     }
@@ -132,9 +134,9 @@ const Profile: React.FC = () => {
           productName: item.productName,
           productBrand: item.productBrand,
           productAttr: item.productAttr,
-          productCount: item.productQuantity,
+          productCount: item.returnQuantity,
           productPrice: item.productPrice,
-          productRealPrice: item.realAmount,
+          productRealPrice: (item.realAmount / item.productQuantity) * item.returnQuantity,
           reason: refundReason,
           description: refundReason
         })
@@ -215,13 +217,19 @@ const Profile: React.FC = () => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {orders.map((order) => (
+                    {orders.map((order) => {
+                      const totalOrderQty = order.orderItemList?.reduce((sum: number, item: any) => sum + item.productQuantity, 0) || 0;
+                      const totalReturnedQty = order.returnApplyList?.reduce((sum: number, r: any) => sum + (r.productCount || 0), 0) || 0;
+                      const isOrderFullyRefunded = totalOrderQty > 0 && totalReturnedQty >= totalOrderQty;
+
+                      return (
                       <TableRow key={order.id}>
                         <TableCell>{order.orderSn}</TableCell>
                         <TableCell>{new Date(order.createTime).toLocaleDateString()}</TableCell>
                         <TableCell>
                           <Typography variant="body2">
-                            {order.status === 0 ? 'Pending Payment' : 
+                            {isOrderFullyRefunded ? 'Refunded' :
+                             order.status === 0 ? 'Pending Payment' : 
                              order.status === 1 ? 'Awaiting Shipment' : 
                              order.status === 2 ? 'Shipped' : 
                              order.status === 3 ? 'Completed' : 
@@ -310,7 +318,7 @@ const Profile: React.FC = () => {
                               Pay Now
                             </Button>
                           )}
-                          {order.status === 3 && (
+                          {order.status === 3 && !isOrderFullyRefunded && (
                             <Button 
                               variant="outlined" 
                               size="small" 
@@ -322,7 +330,8 @@ const Profile: React.FC = () => {
                           )}
                         </TableCell>
                       </TableRow>
-                    ))}
+                      );
+                    })}
                   </TableBody>
                 </Table>
               </TableContainer>
@@ -382,7 +391,9 @@ const Profile: React.FC = () => {
           </Typography>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             {refundOrder?.orderItemList?.map((item: any) => {
-              const isAlreadyReturned = refundOrder?.returnApplyList?.some((r: any) => r.productId === item.productId);
+              const totalReturnedQty = refundOrder?.returnApplyList?.filter((r: any) => r.productId === item.productId).reduce((sum, r) => sum + (r.productCount || 0), 0) || 0;
+              const maxReturnableQty = item.productQuantity - totalReturnedQty;
+              const isFullyReturned = maxReturnableQty <= 0;
               const isSelected = selectedRefundItems.some(i => i.id === item.id);
               return (
                 <Paper 
@@ -393,13 +404,13 @@ const Profile: React.FC = () => {
                     display: 'flex', 
                     alignItems: 'center', 
                     gap: 2,
-                    cursor: isAlreadyReturned ? 'not-allowed' : 'pointer',
+                    cursor: isFullyReturned ? 'not-allowed' : 'pointer',
                     borderColor: isSelected ? 'primary.main' : 'divider',
-                    bgcolor: isSelected ? 'rgba(99, 102, 241, 0.08)' : isAlreadyReturned ? 'action.disabledBackground' : 'background.paper',
-                    opacity: isAlreadyReturned ? 0.6 : 1
+                    bgcolor: isSelected ? 'rgba(99, 102, 241, 0.08)' : isFullyReturned ? 'action.disabledBackground' : 'background.paper',
+                    opacity: isFullyReturned ? 0.6 : 1
                   }}
                   onClick={() => {
-                    if (!isAlreadyReturned) handleRefundItemToggle(item);
+                    if (!isFullyReturned) handleRefundItemToggle(item);
                   }}
                 >
                   <img src={item.productPic?.startsWith('file://') ? 'https://via.placeholder.com/60' : (item.productPic || 'https://via.placeholder.com/60')} alt={item.productName} style={{ width: 60, height: 60, objectFit: 'cover' }} />
@@ -407,14 +418,39 @@ const Profile: React.FC = () => {
                     <Typography variant="subtitle2">{item.productName}</Typography>
                     <Typography variant="body2" color="text.secondary">{item.productAttr}</Typography>
                     <Typography variant="body2">Qty: {item.productQuantity} | ₹{item.realAmount}</Typography>
-                    {isAlreadyReturned && (
-                      <Typography variant="caption" color="error" sx={{ fontWeight: 'bold' }}>Refund Requested</Typography>
+                    {totalReturnedQty > 0 && isFullyReturned && (
+                      <Typography variant="caption" color="error" sx={{ fontWeight: 'bold' }}>Refund Requested (Fully)</Typography>
+                    )}
+                    {totalReturnedQty > 0 && !isFullyReturned && (
+                      <Typography variant="caption" color="warning.main" sx={{ fontWeight: 'bold', display: 'block' }}>Refunded: {totalReturnedQty}</Typography>
+                    )}
+                    {isSelected && (
+                      <TextField
+                        type="number"
+                        label="Return Qty"
+                        size="small"
+                        inputProps={{ min: 1, max: maxReturnableQty }}
+                        value={selectedRefundItems.find(i => i.id === item.id)?.returnQuantity || 1}
+                        onChange={(e) => {
+                          const val = parseInt(e.target.value);
+                          if (!isNaN(val) && val >= 1 && val <= maxReturnableQty) {
+                            const newSelected = [...selectedRefundItems];
+                            const idx = newSelected.findIndex(i => i.id === item.id);
+                            if (idx > -1) {
+                              newSelected[idx].returnQuantity = val;
+                              setSelectedRefundItems(newSelected);
+                            }
+                          }
+                        }}
+                        sx={{ width: 100, mt: 1 }}
+                        onClick={(e) => e.stopPropagation()}
+                      />
                     )}
                   </Box>
                   <input 
                     type="checkbox" 
-                    checked={isSelected || isAlreadyReturned} 
-                    disabled={isAlreadyReturned}
+                    checked={isSelected || isFullyReturned} 
+                    disabled={isFullyReturned}
                     readOnly 
                     style={{ width: 20, height: 20 }}
                   />

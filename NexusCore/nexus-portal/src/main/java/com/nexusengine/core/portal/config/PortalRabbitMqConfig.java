@@ -76,4 +76,25 @@ public class PortalRabbitMqConfig {
                 .with(QueueEnum.QUEUE_TTL_ORDER_CANCEL.getRouteKey());
     }
 
+    @Bean
+    DirectExchange flashOrderDirect() {
+        return ExchangeBuilder
+                .directExchange(QueueEnum.QUEUE_FLASH_ORDER.getExchange())
+                .durable(true)
+                .build();
+    }
+
+    @Bean
+    public Queue flashOrderQueue() {
+        return new Queue(QueueEnum.QUEUE_FLASH_ORDER.getName());
+    }
+
+    @Bean
+    Binding flashOrderBinding(DirectExchange flashOrderDirect, Queue flashOrderQueue){
+        return BindingBuilder
+                .bind(flashOrderQueue)
+                .to(flashOrderDirect)
+                .with(QueueEnum.QUEUE_FLASH_ORDER.getRouteKey());
+    }
+
 }

@@ -9,6 +9,7 @@ import com.nexusengine.core.service.UmsAdminCacheService;
 import com.nexusengine.core.service.UmsRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -57,8 +58,9 @@ public class UmsRoleServiceImpl implements UmsRoleService {
     }
 
     @Override
-    public List<UmsRole> list(String keyword, Integer pageSize, Integer pageNum) {
-        return roleRepository.findAll(PageRequest.of(pageNum, pageSize)).getContent();
+    public Page<UmsRole> list(String keyword, Integer pageSize, Integer pageNum) {
+        int page = pageNum > 0 ? pageNum - 1 : 0;
+        return roleRepository.findAll(PageRequest.of(page, pageSize));
     }
 
     @Override

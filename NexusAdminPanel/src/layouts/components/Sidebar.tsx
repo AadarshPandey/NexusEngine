@@ -136,7 +136,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             minHeight: 44,
             justifyContent: opened ? 'initial' : 'center',
             backgroundColor: active ? alpha('#6366F1', 0.12) : 'transparent',
-            color: active ? '#6366F1' : '#94A3B8',
+            color: active ? '#6366F1' : 'text.secondary',
             '&:hover': {
               backgroundColor: active ? alpha('#6366F1', 0.16) : alpha('#fff', 0.06),
               color: active ? '#6366F1' : '#E2E8F0',
@@ -188,7 +188,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                 mx: 1,
                 my: 0.3,
                 borderRadius: 2,
-                color: '#94A3B8',
+                color: 'text.secondary',
                 '&:hover': { backgroundColor: alpha('#fff', 0.06), color: '#E2E8F0' },
               }}
             >
@@ -217,7 +217,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                   my: 0.3,
                   borderRadius: 2,
                   justifyContent: 'center',
-                  color: '#94A3B8',
+                  color: 'text.secondary',
                   '&:hover': { backgroundColor: alpha('#fff', 0.06), color: '#E2E8F0' },
                 }}
               >
@@ -254,7 +254,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                           my: 0.2,
                           borderRadius: 2,
                           minHeight: 38,
-                          color: '#94A3B8',
+                          color: 'text.secondary',
                           '&:hover': { backgroundColor: alpha('#fff', 0.06), color: '#E2E8F0' },
                         }}
                       >
@@ -286,7 +286,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                         borderRadius: 2,
                         minHeight: 38,
                         backgroundColor: active ? alpha('#6366F1', 0.12) : 'transparent',
-                        color: active ? '#6366F1' : '#94A3B8',
+                        color: active ? '#6366F1' : 'text.secondary',
                         '&:hover': {
                           backgroundColor: active ? alpha('#6366F1', 0.16) : alpha('#fff', 0.06),
                           color: active ? '#6366F1' : '#E2E8F0',

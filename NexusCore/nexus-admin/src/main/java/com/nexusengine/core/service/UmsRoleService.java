@@ -3,6 +3,7 @@ package com.nexusengine.core.service;
 import com.nexusengine.core.model.UmsMenu;
 import com.nexusengine.core.model.UmsResource;
 import com.nexusengine.core.model.UmsRole;
+import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -35,7 +36,7 @@ public interface UmsRoleService {
     /**
      * Auto-generated documentation
      */
-    List<UmsRole> list(String keyword, Integer pageSize, Integer pageNum);
+    Page<UmsRole> list(String keyword, Integer pageSize, Integer pageNum);
 
     /**
      * Auto-generated documentation

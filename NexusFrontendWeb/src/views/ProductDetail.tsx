@@ -6,6 +6,7 @@ import type { AppDispatch, RootState } from '../store';
 import { fetchProductDetail } from '../api/product';
 import type { PmsPortalProductDetail } from '../api/product';
 import { addItemToCart } from '../store/slices/cartSlice';
+import { ReviewSection } from '../components/ReviewSection';
 
 const ProductDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -108,6 +109,7 @@ const ProductDetail: React.FC = () => {
           </Grid>
         </Grid>
       </Paper>
+      <ReviewSection productId={product.id} />
     </Box>
   );
 };

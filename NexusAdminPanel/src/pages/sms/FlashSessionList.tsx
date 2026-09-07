@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Card, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Switch, Paper, Button, Box } from '@mui/material';
 import { getFlashSessionListAPI } from '@/apis/flashSession';
 import type { SmsFlashPromotionSession } from '@/types/flash';
+import { useNavigate } from 'react-router';
 
 const FlashSessionList: React.FC = () => {
+  const navigate = useNavigate();
   const [sessions, setSessions] = useState<SmsFlashPromotionSession[]>([]);
 
   useEffect(() => {
@@ -55,6 +57,7 @@ const FlashSessionList: React.FC = () => {
                   <Switch size="small" checked={session.status === 1} color="primary" />
                 </TableCell>
                 <TableCell>
+                  <Button size="small" variant="contained" color="secondary" onClick={() => navigate(`/sms/flashProductRelation?flashPromotionId=1&flashPromotionSessionId=${session.id}`)}>Product Config</Button>
                   <Button size="small" variant="text" color="primary">Edit</Button>
                   <Button size="small" variant="text" color="error">Delete</Button>
                 </TableCell>

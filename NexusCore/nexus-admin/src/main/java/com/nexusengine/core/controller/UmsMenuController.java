@@ -76,7 +76,7 @@ public class UmsMenuController {
     public CommonResult<CommonPage<UmsMenu>> list(@PathVariable Long parentId,
                                                   @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
                                                   @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
-        List<UmsMenu> menuList = menuService.list(parentId, pageSize, pageNum);
+        org.springframework.data.domain.Page<UmsMenu> menuList = menuService.list(parentId, pageSize, pageNum);
         return CommonResult.success(CommonPage.restPage(menuList));
     }
 

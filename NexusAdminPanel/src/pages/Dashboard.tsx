@@ -68,10 +68,10 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, icon, color, trend, t
     <CardContent sx={{ p: 3 }}>
       <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
         <Box>
-          <Typography variant="subtitle1" sx={{ color: '#94A3B8', fontSize: '0.8125rem', mb: 1 }}>
+          <Typography variant="subtitle1" sx={{ color: 'text.secondary', fontSize: '0.8125rem', mb: 1 }}>
             {title}
           </Typography>
-          <Typography variant="h4" sx={{ fontWeight: 700, color: '#1E293B', mb: 1 }}>
+          <Typography variant="h4" sx={{ fontWeight: 700, color: 'text.primary', mb: 1 }}>
             {value}
           </Typography>
           {trend && (
@@ -90,7 +90,7 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, icon, color, trend, t
               >
                 {trend}
               </Typography>
-              <Typography sx={{ fontSize: '0.75rem', color: '#94A3B8' }}>
+              <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary' }}>
                 vs last period
               </Typography>
             </Box>
@@ -133,15 +133,15 @@ const PendingItem: React.FC<PendingItemProps> = ({ label, count, icon }) => (
       py: 1.5,
       px: 2,
       borderRadius: 2,
-      '&:hover': { backgroundColor: '#F8FAFC' },
+      '&:hover': { backgroundColor: 'action.hover' },
       transition: 'background-color 0.15s',
     }}
   >
     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
       {React.cloneElement(icon as React.ReactElement, {
-        sx: { fontSize: 18, color: '#64748B' },
+        sx: { fontSize: 18, color: 'text.secondary' },
       })}
-      <Typography sx={{ fontSize: '0.8125rem', color: '#475569' }}>{label}</Typography>
+      <Typography sx={{ fontSize: '0.8125rem', color: 'text.primary' }}>{label}</Typography>
     </Box>
     <Chip
       label={count}
@@ -240,7 +240,7 @@ const Dashboard: React.FC = () => {
                   <Typography variant="h6" sx={{ fontWeight: 600 }}>
                     Order Statistics
                   </Typography>
-                  <Typography variant="body2" sx={{ color: '#94A3B8' }}>
+                  <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                     Order count and revenue trends
                   </Typography>
                 </Box>
@@ -265,32 +265,34 @@ const Dashboard: React.FC = () => {
                           <stop offset="95%" stopColor="#10B981" stopOpacity={0} />
                         </linearGradient>
                       </defs>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" />
+                      <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
                       <XAxis
                         dataKey="date"
-                        tick={{ fontSize: 12, fill: '#94A3B8' }}
+                        tick={{ fontSize: 12, fill: 'text.secondary' }}
                         tickLine={false}
-                        axisLine={{ stroke: '#E2E8F0' }}
+                        axisLine={{ stroke: '#334155' }}
                       />
                       <YAxis
                         yAxisId="left"
-                        tick={{ fontSize: 12, fill: '#94A3B8' }}
+                        tick={{ fontSize: 12, fill: 'text.secondary' }}
                         tickLine={false}
                         axisLine={false}
                       />
                       <YAxis
                         yAxisId="right"
                         orientation="right"
-                        tick={{ fontSize: 12, fill: '#94A3B8' }}
+                        tick={{ fontSize: 12, fill: 'text.secondary' }}
                         tickLine={false}
                         axisLine={false}
                       />
                       <Tooltip
                         contentStyle={{
+                          backgroundColor: 'text.primary',
                           borderRadius: 12,
-                          border: '1px solid #E2E8F0',
-                          boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                          border: '1px solid #334155',
+                          boxShadow: '0 4px 12px rgba(0,0,0,0.5)',
                           fontSize: 13,
+                          color: 'background.default'
                         }}
                       />
                       <Legend wrapperStyle={{ fontSize: 13 }} />
@@ -368,7 +370,7 @@ const Dashboard: React.FC = () => {
                       >
                         {item.value}
                       </Typography>
-                      <Typography sx={{ fontSize: '0.8125rem', color: '#64748B', fontWeight: 500 }}>
+                      <Typography sx={{ fontSize: '0.8125rem', color: 'text.secondary', fontWeight: 500 }}>
                         {item.label}
                       </Typography>
                     </Box>
@@ -399,7 +401,7 @@ const Dashboard: React.FC = () => {
                       >
                         {item.value}
                       </Typography>
-                      <Typography sx={{ fontSize: '0.8125rem', color: '#64748B', fontWeight: 500 }}>
+                      <Typography sx={{ fontSize: '0.8125rem', color: 'text.secondary', fontWeight: 500 }}>
                         {item.label}
                       </Typography>
                     </Box>
@@ -428,10 +430,10 @@ const Dashboard: React.FC = () => {
                 ].map((item) => (
                   <Grid size={{ xs: 12, sm: 6, md: 3 }} key={item.label}>
                     <Box sx={{ p: 2 }}>
-                      <Typography sx={{ color: '#94A3B8', fontSize: '0.8125rem', mb: 1 }}>
+                      <Typography sx={{ color: 'text.secondary', fontSize: '0.8125rem', mb: 1 }}>
                         {item.label}
                       </Typography>
-                      <Typography variant="h5" sx={{ fontWeight: 700, color: '#1E293B', mb: 1 }}>
+                      <Typography variant="h5" sx={{ fontWeight: 700, color: 'text.primary', mb: 1 }}>
                         {item.value}
                       </Typography>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
@@ -444,7 +446,7 @@ const Dashboard: React.FC = () => {
                         >
                           {item.trend}
                         </Typography>
-                        <Typography sx={{ fontSize: '0.75rem', color: '#94A3B8' }}>
+                        <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary' }}>
                           vs previous period
                         </Typography>
                       </Box>

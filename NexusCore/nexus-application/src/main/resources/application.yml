@@ -50,6 +50,9 @@ secure:
       - /portal/product/**
       - /portal/brand/**
       - /portal/stripe/**
+      - /portal/review/product/**
+      - /portal/review/*/replies
+      - /uploads/**
       - /admin/login
       - /admin/register
       - /admin/info

@@ -32,7 +32,7 @@ public interface UmsResourceService {
     /**
      * Auto-generated documentation
      */
-    List<UmsResource> list(Long categoryId, String nameKeyword, String urlKeyword, Integer pageSize, Integer pageNum);
+    org.springframework.data.domain.Page<UmsResource> list(Long categoryId, String nameKeyword, String urlKeyword, Integer pageSize, Integer pageNum);
 
     /**
      * Auto-generated documentation

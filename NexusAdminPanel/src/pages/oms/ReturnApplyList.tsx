@@ -15,7 +15,8 @@ const ReturnApplyList: React.FC = () => {
   const fetchApplies = async () => {
     try {
       const res = await getReturnApplyListAPI({ pageNum: 1, pageSize: 50 });
-      setApplies(res.data.list);
+      const sortedList = res.data.list?.sort((a, b) => new Date(b.createTime).getTime() - new Date(a.createTime).getTime()) || [];
+      setApplies(sortedList);
     } catch (e) {
       console.error(e);
     }

@@ -14,7 +14,7 @@ const NotFound: React.FC = () => {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        background: 'linear-gradient(135deg, #F8FAFC 0%, #E2E8F0 100%)',
+        background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
       }}
     >
       <Typography
@@ -32,10 +32,10 @@ const NotFound: React.FC = () => {
       >
         404
       </Typography>
-      <Typography variant="h5" sx={{ color: '#64748B', mb: 1, fontWeight: 600 }}>
+      <Typography variant="h5" sx={{ color: 'text.primary', mb: 1, fontWeight: 600 }}>
         Page Not Found
       </Typography>
-      <Typography variant="body1" sx={{ color: '#94A3B8', mb: 4, textAlign: 'center', maxWidth: 400 }}>
+      <Typography variant="body1" sx={{ color: 'text.secondary', mb: 4, textAlign: 'center', maxWidth: 400 }}>
         The page you are looking for doesn't exist or has been moved.
       </Typography>
       <Button

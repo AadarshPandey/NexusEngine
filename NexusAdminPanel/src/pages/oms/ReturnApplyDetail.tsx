@@ -99,7 +99,7 @@ const ReturnApplyDetail: React.FC = () => {
         <Typography color="text.secondary">Description: {detail.description || 'No additional description provided.'}</Typography>
       </Paper>
 
-      <Paper sx={{ p: 3, mb: 3, bgcolor: 'grey.50' }} variant="outlined">
+      <Paper sx={{ p: 3, mb: 3 }} variant="outlined">
         <Typography variant="h6" gutterBottom>Processing</Typography>
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6}>

@@ -54,7 +54,7 @@ const AdminLayout: React.FC = () => {
           sx={{
             flexGrow: 1,
             overflow: 'auto',
-            backgroundColor: '#F8FAFC',
+            backgroundColor: 'background.default',
             p: 3,
           }}
         >

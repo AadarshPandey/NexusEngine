@@ -41,6 +41,9 @@ secure:
       - /product/**
       - /brand/**
       - /stripe/**
+      - /portal/review/product/**
+      - /portal/review/*/replies
+      - /uploads/**
       - /chat/**
 
 springdoc:

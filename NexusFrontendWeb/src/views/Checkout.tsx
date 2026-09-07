@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, Button, Paper, Divider, Alert, CircularProgress, Select, MenuItem, FormControl, InputLabel, TextField } from '@mui/material';
+import { Box, Typography, Button, Paper, Divider, Alert, CircularProgress, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 import type { RootState, AppDispatch } from '../store';
-import { generateConfirmOrder, generateOrder, paySuccess } from '../api/order';
+import { generateConfirmOrder, generateOrder } from '../api/order';
 import type { ConfirmOrderResult } from '../api/order';
 import { clearCart } from '../store/slices/cartSlice';
 import { useNavigate } from 'react-router';
@@ -18,10 +18,6 @@ const Checkout: React.FC = () => {
   const [error, setError] = useState('');
   const [placingOrder, setPlacingOrder] = useState(false);
   const [selectedAddressId, setSelectedAddressId] = useState<number | ''>('');
-
-  const [showMockPayment, setShowMockPayment] = useState(false);
-  const [mockOrderId, setMockOrderId] = useState<number | null>(null);
-  const [cardData, setCardData] = useState({ number: '', expiry: '', cvv: '' });
 
   useEffect(() => {
     if (!isAuthenticated || items.length === 0) {

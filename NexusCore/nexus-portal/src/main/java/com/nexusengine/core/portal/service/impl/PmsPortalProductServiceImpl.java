@@ -57,7 +57,12 @@ public class PmsPortalProductServiceImpl implements PmsPortalProductService {
             predicates.add(cb.equal(root.get("deleteStatus"), 0));
             predicates.add(cb.equal(root.get("publishStatus"), 1));
             if (StrUtil.isNotEmpty(keyword)) {
-                predicates.add(cb.like(root.get("name"), "%" + keyword + "%"));
+                String likeKeyword = "%" + keyword.toLowerCase() + "%";
+                predicates.add(cb.or(
+                    cb.like(cb.lower(root.get("name")), likeKeyword),
+                    cb.like(cb.lower(root.get("keywords")), likeKeyword),
+                    cb.like(cb.lower(root.get("subTitle")), likeKeyword)
+                ));
             }
             if (brandId != null) {
                 predicates.add(cb.equal(root.get("brandId"), brandId));

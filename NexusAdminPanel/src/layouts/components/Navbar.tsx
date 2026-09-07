@@ -97,8 +97,9 @@ const Navbar: React.FC<NavbarProps> = ({ onMobileMenuToggle }) => {
       position="sticky"
       elevation={0}
       sx={{
-        backgroundColor: '#FFFFFF',
-        borderBottom: '1px solid #F1F5F9',
+        backgroundColor: 'background.paper',
+        borderBottom: '1px solid',
+        borderColor: 'divider',
         zIndex: (theme) => theme.zIndex.appBar,
       }}
     >
@@ -106,7 +107,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMobileMenuToggle }) => {
         <IconButton
           onClick={handleToggle}
           sx={{
-            color: '#64748B',
+            color: 'text.secondary',
             '&:hover': { color: '#6366F1', backgroundColor: 'rgba(99, 102, 241, 0.08)' },
             transition: 'all 0.2s',
           }}
@@ -116,7 +117,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMobileMenuToggle }) => {
 
         {/* Breadcrumbs */}
         <Breadcrumbs
-          separator={<NavigateNext sx={{ fontSize: 16, color: '#CBD5E1' }} />}
+          separator={<NavigateNext sx={{ fontSize: 16, color: 'text.disabled' }} />}
           sx={{ ml: 2, flex: 1 }}
         >
           <Link
@@ -126,7 +127,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMobileMenuToggle }) => {
             sx={{
               display: 'flex',
               alignItems: 'center',
-              color: '#64748B',
+              color: 'text.secondary',
               fontSize: '0.8125rem',
               cursor: 'pointer',
               '&:hover': { color: '#6366F1' },
@@ -140,7 +141,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMobileMenuToggle }) => {
               key={index}
               sx={{
                 fontSize: '0.8125rem',
-                color: index === breadcrumbTitles.length - 1 ? '#1E293B' : '#64748B',
+                color: index === breadcrumbTitles.length - 1 ? 'text.primary' : 'text.secondary',
                 fontWeight: index === breadcrumbTitles.length - 1 ? 600 : 400,
               }}
             >
@@ -171,7 +172,8 @@ const Navbar: React.FC<NavbarProps> = ({ onMobileMenuToggle }) => {
               sx={{
                 width: 34,
                 height: 34,
-                border: '2px solid #E2E8F0',
+                border: '2px solid',
+                borderColor: 'divider',
                 '&:hover': { borderColor: '#6366F1' },
                 transition: 'border-color 0.2s',
               }}
@@ -190,7 +192,8 @@ const Navbar: React.FC<NavbarProps> = ({ onMobileMenuToggle }) => {
                 mt: 1,
                 minWidth: 160,
                 borderRadius: 2,
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.5)',
+                backgroundColor: 'background.paper',
               },
             }}
           >
@@ -198,7 +201,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMobileMenuToggle }) => {
               onClick={() => { setAnchorEl(null); navigate('/home'); }}
               sx={{ fontSize: '0.8125rem', py: 1 }}
             >
-              <Home sx={{ mr: 1.5, fontSize: 18, color: '#64748B' }} />
+              <Home sx={{ mr: 1.5, fontSize: 18, color: 'text.secondary' }} />
               Dashboard
             </MenuItem>
             <MenuItem

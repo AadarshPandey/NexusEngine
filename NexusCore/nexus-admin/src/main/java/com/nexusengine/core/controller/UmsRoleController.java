@@ -70,7 +70,7 @@ public class UmsRoleController {
     public CommonResult<CommonPage<UmsRole>> list(@RequestParam(value = "keyword", required = false) String keyword,
                                                   @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
                                                   @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
-        List<UmsRole> roleList = roleService.list(keyword, pageSize, pageNum);
+        org.springframework.data.domain.Page<UmsRole> roleList = roleService.list(keyword, pageSize, pageNum);
         return CommonResult.success(CommonPage.restPage(roleList));
     }
 

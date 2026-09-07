@@ -159,7 +159,7 @@ const BrandList: React.FC = () => {
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <Search sx={{ fontSize: 18, color: '#94A3B8' }} />
+                    <Search sx={{ fontSize: 18, color: 'text.secondary' }} />
                   </InputAdornment>
                 ),
               }}
@@ -218,13 +218,13 @@ const BrandList: React.FC = () => {
               {loading ? (
                 <TableRow>
                   <TableCell colSpan={9} sx={{ textAlign: 'center', py: 6 }}>
-                    <Typography sx={{ color: '#94A3B8' }}>Loading...</Typography>
+                    <Typography sx={{ color: 'text.secondary' }}>Loading...</Typography>
                   </TableCell>
                 </TableRow>
               ) : list.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={9} sx={{ textAlign: 'center', py: 6 }}>
-                    <Typography sx={{ color: '#94A3B8' }}>No brands found</Typography>
+                    <Typography sx={{ color: 'text.secondary' }}>No brands found</Typography>
                   </TableCell>
                 </TableRow>
               ) : (
@@ -258,11 +258,11 @@ const BrandList: React.FC = () => {
                       />
                     </TableCell>
                     <TableCell align="center">
-                      <Typography component="span" sx={{ fontSize: '0.8125rem', color: '#64748B' }}>
+                      <Typography component="span" sx={{ fontSize: '0.8125rem', color: 'text.secondary' }}>
                         Products: <Button size="small" sx={{ minWidth: 'auto', p: 0 }}>100</Button>
                       </Typography>
                       {' '}
-                      <Typography component="span" sx={{ fontSize: '0.8125rem', color: '#64748B' }}>
+                      <Typography component="span" sx={{ fontSize: '0.8125rem', color: 'text.secondary' }}>
                         Reviews: <Button size="small" sx={{ minWidth: 'auto', p: 0 }}>1000</Button>
                       </Typography>
                     </TableCell>

@@ -1,6 +1,8 @@
 import React from 'react';
-import PagePlaceholder from '@/components/PagePlaceholder';
+import AdvertiseDetail from './components/AdvertiseDetail';
 
-const AdvertiseAdd: React.FC = () => <PagePlaceholder title="Add Advertisement" module="Marketing" />;
+const AdvertiseAdd: React.FC = () => {
+  return <AdvertiseDetail isEdit={false} />;
+};
 
 export default AdvertiseAdd;

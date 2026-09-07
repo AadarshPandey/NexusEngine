@@ -184,7 +184,7 @@ const ProductList: React.FC = () => {
                     <Typography variant="caption" color="text.secondary" display="block">Brand: {row.brandName}</Typography>
                   </TableCell>
                   <TableCell>
-                    <Typography variant="body2">Price: ¥{row.price}</Typography>
+                    <Typography variant="body2">Price: ₹{row.price}</Typography>
                     <Typography variant="caption" color="text.secondary">Item No.: {row.productSn}</Typography>
                   </TableCell>
                   <TableCell>

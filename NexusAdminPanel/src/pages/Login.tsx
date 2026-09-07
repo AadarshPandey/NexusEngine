@@ -101,7 +101,7 @@ const Login: React.FC = () => {
           boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
           border: '1px solid rgba(255, 255, 255, 0.06)',
           backdropFilter: 'blur(20px)',
-          backgroundColor: 'rgba(255, 255, 255, 0.95)',
+          backgroundColor: 'background.paper',
           position: 'relative',
           overflow: 'visible',
           '&::before': {
@@ -149,7 +149,7 @@ const Login: React.FC = () => {
             >
               Nexus Admin Panel
             </Typography>
-            <Typography variant="body2" sx={{ color: '#64748B', mt: 0.5 }}>
+            <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.5 }}>
               Sign in to your admin account
             </Typography>
           </Box>
@@ -171,7 +171,7 @@ const Login: React.FC = () => {
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <Person sx={{ color: '#94A3B8', fontSize: 20 }} />
+                    <Person sx={{ color: 'text.secondary', fontSize: 20 }} />
                   </InputAdornment>
                 ),
               }}
@@ -188,7 +188,7 @@ const Login: React.FC = () => {
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <Lock sx={{ color: '#94A3B8', fontSize: 20 }} />
+                    <Lock sx={{ color: 'text.secondary', fontSize: 20 }} />
                   </InputAdornment>
                 ),
                 endAdornment: (
@@ -225,7 +225,7 @@ const Login: React.FC = () => {
                   boxShadow: '0 12px 28px rgba(99, 102, 241, 0.45)',
                 },
                 '&:disabled': {
-                  background: '#E2E8F0',
+                  background: '#334155',
                 },
               }}
             >

@@ -47,8 +47,21 @@ public class UmsResourceServiceImpl implements UmsResourceService {
     }
 
     @Override
-    public List<UmsResource> list(Long categoryId, String nameKeyword, String urlKeyword, Integer pageSize, Integer pageNum) {
-        return resourceRepository.findAll(PageRequest.of(pageNum, pageSize)).getContent();
+    public org.springframework.data.domain.Page<UmsResource> list(Long categoryId, String nameKeyword, String urlKeyword, Integer pageSize, Integer pageNum) {
+        int page = pageNum > 0 ? pageNum - 1 : 0;
+        return resourceRepository.findAll((org.springframework.data.jpa.domain.Specification<UmsResource>) (root, query, cb) -> {
+            java.util.List<jakarta.persistence.criteria.Predicate> predicates = new java.util.ArrayList<>();
+            if (categoryId != null) {
+                predicates.add(cb.equal(root.get("categoryId"), categoryId));
+            }
+            if (StrUtil.isNotEmpty(nameKeyword)) {
+                predicates.add(cb.like(root.get("name"), "%" + nameKeyword + "%"));
+            }
+            if (StrUtil.isNotEmpty(urlKeyword)) {
+                predicates.add(cb.like(root.get("url"), "%" + urlKeyword + "%"));
+            }
+            return cb.and(predicates.toArray(new jakarta.persistence.criteria.Predicate[0]));
+        }, PageRequest.of(page, pageSize));
     }
 
     @Override

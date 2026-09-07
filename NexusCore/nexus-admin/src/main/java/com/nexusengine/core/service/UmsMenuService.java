@@ -33,7 +33,7 @@ public interface UmsMenuService {
     /**
      * Auto-generated documentation
      */
-    List<UmsMenu> list(Long parentId, Integer pageSize, Integer pageNum);
+    org.springframework.data.domain.Page<UmsMenu> list(Long parentId, Integer pageSize, Integer pageNum);
 
     /**
      * Auto-generated documentation

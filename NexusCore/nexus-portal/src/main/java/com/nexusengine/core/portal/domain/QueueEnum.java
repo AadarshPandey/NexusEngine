@@ -15,7 +15,11 @@ public enum QueueEnum {
     /**
      * Auto-generated documentation
      */
-    QUEUE_TTL_ORDER_CANCEL("nexus.order.direct.ttl", "nexus.order.cancel.ttl", "nexus.order.cancel.ttl");
+    QUEUE_TTL_ORDER_CANCEL("nexus.order.direct.ttl", "nexus.order.cancel.ttl", "nexus.order.cancel.ttl"),
+    /**
+     * Flash Sale Order Queue
+     */
+    QUEUE_FLASH_ORDER("nexus.flash.direct", "nexus.flash.order", "nexus.flash.order");
 
     /**
      * Auto-generated documentation
