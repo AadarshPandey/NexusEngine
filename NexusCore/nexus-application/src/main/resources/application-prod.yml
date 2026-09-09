@@ -12,7 +12,7 @@ spring:
       maximum-pool-size: 20
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
@@ -44,8 +44,8 @@ stripe:
   secretKey: ${STRIPE_SECRET_KEY:sk_test_your_key_here}
   publishableKey: ${STRIPE_PUBLISHABLE_KEY:pk_test_your_key_here}
   webhookSecret: ${STRIPE_WEBHOOK_SECRET:whsec_your_secret}
-  successUrl: http://localhost:8060/payment/success
-  cancelUrl: http://localhost:8060/payment/cancel
+  successUrl: http://localhost:5174/payment/success
+  cancelUrl: http://localhost:5174/payment/cancel
 
 razorpay:
   keyId: ${RAZORPAY_KEY_ID:}

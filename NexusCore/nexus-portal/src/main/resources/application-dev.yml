@@ -12,14 +12,14 @@ spring:
       maximum-pool-size: 20
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
   data:
     mongodb:
-      uri: mongodb://nexusMongo:Welcome%40123@localhost:27017/nexuscore?authSource=admin
+      uri: mongodb://localhost:27017/nexuscore
     redis:
       host: localhost
       database: 0
@@ -54,8 +54,8 @@ stripe:
   secretKey: ${STRIPE_SECRET_KEY:sk_test_your_key_here}
   publishableKey: ${STRIPE_PUBLISHABLE_KEY:pk_test_your_key_here}
   webhookSecret: ${STRIPE_WEBHOOK_SECRET:whsec_your_secret}
-  successUrl: http://localhost:8060/payment/success
-  cancelUrl: http://localhost:8060/payment/cancel
+  successUrl: http://localhost:5174/payment/success
+  cancelUrl: http://localhost:5174/payment/cancel
 
 logging:
   level:

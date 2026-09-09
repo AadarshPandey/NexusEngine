@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router';
 
 const Checkout: React.FC = () => {
   const { items } = useSelector((state: RootState) => state.cart);
-  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
+  const { isAuthenticated, user } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
@@ -25,7 +25,7 @@ const Checkout: React.FC = () => {
       return;
     }
     loadConfirmOrder();
-  }, [isAuthenticated, items]);
+  }, [isAuthenticated, items.length]);
 
   const loadConfirmOrder = async () => {
     try {
@@ -71,6 +71,10 @@ const Checkout: React.FC = () => {
 
       // 4. Load Razorpay script
       const loadScript = (src: string) => new Promise((resolve) => {
+        if ((window as any).Razorpay) {
+          resolve(true);
+          return;
+        }
         const script = document.createElement('script');
         script.src = src;
         script.onload = () => resolve(true);
@@ -110,8 +114,8 @@ const Checkout: React.FC = () => {
           }
         },
         prefill: {
-          name: 'Test Customer',
-          contact: '+919000090000'
+          name: user?.nickname || user?.username || 'Test Customer',
+          contact: user?.phone || '+919000090000'
         },
         theme: { color: '#3399cc' },
         modal: {
@@ -119,7 +123,6 @@ const Checkout: React.FC = () => {
             setPlacingOrder(false);
             // If they close the modal, the order is created but unpaid.
             // Redirect to profile to let them pay later.
-            dispatch(clearCart());
             navigate('/profile');
           }
         }

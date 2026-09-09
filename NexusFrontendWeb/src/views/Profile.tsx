@@ -49,7 +49,7 @@ const Profile: React.FC = () => {
       return;
     }
     loadDashboardData();
-  }, [isAuthenticated]);
+  }, [isAuthenticated, navigate]);
 
   const loadDashboardData = async () => {
     try {
@@ -262,6 +262,10 @@ const Profile: React.FC = () => {
 
                                   // 2. Load Razorpay script dynamically
                                   const loadScript = (src: string) => new Promise((resolve) => {
+                                    if ((window as any).Razorpay) {
+                                      resolve(true);
+                                      return;
+                                    }
                                     const script = document.createElement('script');
                                     script.src = src;
                                     script.onload = () => resolve(true);
@@ -299,7 +303,7 @@ const Profile: React.FC = () => {
                                     },
                                     prefill: {
                                       name: memberInfo?.nickname || memberInfo?.username || 'Test Customer',
-                                      contact: '+919000090000'
+                                      contact: memberInfo?.phone || '+919000090000'
                                     },
                                     theme: { color: '#3399cc' }
                                   };

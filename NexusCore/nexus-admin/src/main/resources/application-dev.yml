@@ -11,14 +11,14 @@ spring:
       pool-name: NexusCoreHikariCP
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
   data:
     mongodb:
-      uri: mongodb://nexusMongo:Welcome%40123@localhost:27017/nexuscore?authSource=admin
+      uri: mongodb://localhost:27017/nexuscore
     redis:
       host: localhost
       database: 0

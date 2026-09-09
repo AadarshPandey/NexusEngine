@@ -56,7 +56,7 @@ export const ReviewSection: React.FC<{ productId: number }> = ({ productId }) =>
   };
 
   const handleSubmit = async () => {
-    if (!newReviewText) return;
+    if (!newReviewText.trim()) return;
     try {
       await request.post('/review/create', {
         productId,

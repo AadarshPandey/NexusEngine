@@ -51,6 +51,10 @@ const Register: React.FC = () => {
       setError('Please fill in all fields.');
       return;
     }
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters long.');
+      return;
+    }
     try {
       const params = new URLSearchParams();
       params.append('username', username);

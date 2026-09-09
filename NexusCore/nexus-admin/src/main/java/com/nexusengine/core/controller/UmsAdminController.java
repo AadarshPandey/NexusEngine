@@ -60,7 +60,7 @@ public class UmsAdminController {
     public CommonResult login(@Validated @RequestBody UmsAdminLoginParam umsAdminLoginParam) {
         String token = adminService.login(umsAdminLoginParam.getUsername(), umsAdminLoginParam.getPassword());
         if (token == null) {
-            return CommonResult.validateFailed("Success");
+            return CommonResult.validateFailed("Invalid username or password");
         }
         Map<String, String> tokenMap = new HashMap<>();
         tokenMap.put("token", token);
@@ -75,7 +75,7 @@ public class UmsAdminController {
         String token = request.getHeader(tokenHeader);
         String refreshToken = adminService.refreshToken(token);
         if (refreshToken == null) {
-            return CommonResult.failed("Success");
+            return CommonResult.failed("Token refresh failed");
         }
         Map<String, String> tokenMap = new HashMap<>();
         tokenMap.put("token", refreshToken);
@@ -149,11 +149,11 @@ public class UmsAdminController {
         if (status > 0) {
             return CommonResult.success(status);
         } else if (status == -1) {
-            return CommonResult.failed("Success");
+            return CommonResult.failed("Admin not found");
         } else if (status == -2) {
-            return CommonResult.failed("Success");
+            return CommonResult.failed("Incorrect old password");
         } else if (status == -3) {
-            return CommonResult.failed("Success");
+            return CommonResult.failed("Invalid password format");
         } else {
             return CommonResult.failed();
         }

@@ -33,12 +33,12 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: nexus-monolith-jar
-        path: NexusCore/mall-application/target/mall-application-1.0-SNAPSHOT.jar
+        path: NexusCore/nexus-application/target/nexus-application-1.0-SNAPSHOT.jar
         retention-days: 7
         
     - name: Upload Build Artifacts (Search)
       uses: actions/upload-artifact@v4
       with:
         name: nexus-search-jar
-        path: NexusCore/mall-search/target/mall-search-1.0-SNAPSHOT.jar
+        path: NexusCore/nexus-search/target/nexus-search-1.0-SNAPSHOT.jar
         retention-days: 7

@@ -8,6 +8,7 @@ import ProductDetail from '../views/ProductDetail';
 import Cart from '../views/Cart';
 import Checkout from '../views/Checkout';
 import Profile from '../views/Profile';
+import ProtectedRoute from '../components/ProtectedRoute';
 
 export const router = createBrowserRouter([
   {
@@ -32,16 +33,21 @@ export const router = createBrowserRouter([
         element: <ProductDetail />,
       },
       {
-        path: 'cart',
-        element: <Cart />,
-      },
-      {
-        path: 'checkout',
-        element: <Checkout />,
-      },
-      {
-        path: 'profile',
-        element: <Profile />,
+        element: <ProtectedRoute />,
+        children: [
+          {
+            path: 'cart',
+            element: <Cart />,
+          },
+          {
+            path: 'checkout',
+            element: <Checkout />,
+          },
+          {
+            path: 'profile',
+            element: <Profile />,
+          },
+        ],
       },
     ],
   },
