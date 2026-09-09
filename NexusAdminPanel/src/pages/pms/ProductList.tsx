@@ -98,13 +98,13 @@ const ProductList: React.FC = () => {
           </Box>
         </Box>
         <Grid container spacing={3}>
-          <Grid item xs={12} md={4}>
+          <Grid size={{ xs: 12, md: 4 }}>
             <TextField fullWidth label="Product name" size="small" value={searchParams.keyword} onChange={(e) => setSearchParams({ ...searchParams, keyword: e.target.value })} />
           </Grid>
-          <Grid item xs={12} md={4}>
+          <Grid size={{ xs: 12, md: 4 }}>
             <TextField fullWidth label="Product number" size="small" value={searchParams.productSn} onChange={(e) => setSearchParams({ ...searchParams, productSn: e.target.value })} />
           </Grid>
-          <Grid item xs={12} md={4}>
+          <Grid size={{ xs: 12, md: 4 }}>
             <FormControl fullWidth size="small">
               <InputLabel>Product Category</InputLabel>
               <Select label="Product Category" value={searchParams.productCategoryId} onChange={(e) => setSearchParams({ ...searchParams, productCategoryId: e.target.value } as any)}>
@@ -115,7 +115,7 @@ const ProductList: React.FC = () => {
               </Select>
             </FormControl>
           </Grid>
-          <Grid item xs={12} md={4}>
+          <Grid size={{ xs: 12, md: 4 }}>
             <FormControl fullWidth size="small">
               <InputLabel>Product brand</InputLabel>
               <Select label="Product brand" value={searchParams.brandId} onChange={(e) => setSearchParams({ ...searchParams, brandId: e.target.value } as any)}>
@@ -126,7 +126,7 @@ const ProductList: React.FC = () => {
               </Select>
             </FormControl>
           </Grid>
-          <Grid item xs={12} md={4}>
+          <Grid size={{ xs: 12, md: 4 }}>
             <FormControl fullWidth size="small">
               <InputLabel>Available now</InputLabel>
               <Select label="Available now" value={searchParams.publishStatus} onChange={(e) => setSearchParams({ ...searchParams, publishStatus: e.target.value } as any)}>
@@ -136,7 +136,7 @@ const ProductList: React.FC = () => {
               </Select>
             </FormControl>
           </Grid>
-          <Grid item xs={12} md={4}>
+          <Grid size={{ xs: 12, md: 4 }}>
             <FormControl fullWidth size="small">
               <InputLabel>Review status</InputLabel>
               <Select label="Review status" value={searchParams.verifyStatus} onChange={(e) => setSearchParams({ ...searchParams, verifyStatus: e.target.value } as any)}>

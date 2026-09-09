@@ -6,7 +6,7 @@ import type { UmsMember } from '../../api/member';
 interface AuthState {
   token: string | null;
   isAuthenticated: boolean;
-  user: UmsMember | any | null;
+  user: UmsMember | null;
 }
 
 const initialState: AuthState = {

@@ -94,19 +94,19 @@ const OrderList: React.FC = () => {
       <Paper sx={{ p: 2, mb: 3 }} variant="outlined">
         <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'bold' }}>Search Filters</Typography>
         <Grid container spacing={2} alignItems="center">
-          <Grid item xs={12} sm={6} md={3} lg={2}>
+          <Grid size={{xs: 12, sm: 6, md: 3, lg: 2}}>
             <TextField fullWidth label="Order ID" size="small" value={searchId} onChange={e => setSearchId(e.target.value)} />
           </Grid>
-          <Grid item xs={12} sm={6} md={3} lg={2}>
+          <Grid size={{xs: 12, sm: 6, md: 3, lg: 2}}>
             <TextField fullWidth label="Serial Number" size="small" value={searchSn} onChange={e => setSearchSn(e.target.value)} />
           </Grid>
-          <Grid item xs={12} sm={6} md={3} lg={2}>
+          <Grid size={{xs: 12, sm: 6, md: 3, lg: 2}}>
             <TextField fullWidth label="Member User" size="small" value={searchMember} onChange={e => setSearchMember(e.target.value)} />
           </Grid>
-          <Grid item xs={12} sm={6} md={3} lg={2}>
+          <Grid size={{xs: 12, sm: 6, md: 3, lg: 2}}>
             <TextField fullWidth label="Total Amount" size="small" value={searchAmount} onChange={e => setSearchAmount(e.target.value)} />
           </Grid>
-          <Grid item xs={12} sm={6} md={3} lg={2}>
+          <Grid size={{xs: 12, sm: 6, md: 3, lg: 2}}>
             <FormControl fullWidth size="small">
               <InputLabel>Payment Type</InputLabel>
               <Select value={searchPayType} label="Payment Type" onChange={e => setSearchPayType(e.target.value as any)}>
@@ -117,7 +117,7 @@ const OrderList: React.FC = () => {
               </Select>
             </FormControl>
           </Grid>
-          <Grid item xs={12} sm={6} md={3} lg={2}>
+          <Grid size={{xs: 12, sm: 6, md: 3, lg: 2}}>
             <FormControl fullWidth size="small">
               <InputLabel>Status</InputLabel>
               <Select value={searchStatus} label="Status" onChange={e => setSearchStatus(e.target.value as any)}>
@@ -132,10 +132,10 @@ const OrderList: React.FC = () => {
               </Select>
             </FormControl>
           </Grid>
-          <Grid item xs={12} sm={6} md={3} lg={2}>
+          <Grid size={{xs: 12, sm: 6, md: 3, lg: 2}}>
             <TextField fullWidth label="Created Date (YYYY-MM-DD)" size="small" value={searchDate} onChange={e => setSearchDate(e.target.value)} />
           </Grid>
-          <Grid item xs={12} sm={6} md={3} lg={2}>
+          <Grid size={{xs: 12, sm: 6, md: 3, lg: 2}}>
             <Button variant="outlined" color="secondary" fullWidth onClick={resetSearch}>Reset</Button>
           </Grid>
         </Grid>

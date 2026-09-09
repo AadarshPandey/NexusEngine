@@ -3,6 +3,12 @@ spring:
     name: nexus-portal
   profiles:
     active: dev
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY:demo-key}
+      embedding:
+        options:
+          model: text-embedding-ada-002
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
@@ -121,11 +127,3 @@ management:
   otlp:
     tracing:
       endpoint: http://localhost:4318/v1/traces
-
-spring:
-  ai:
-    openai:
-      api-key: ${OPENAI_API_KEY:demo-key}
-      embedding:
-        options:
-          model: text-embedding-ada-002

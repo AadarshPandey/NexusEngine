@@ -70,9 +70,6 @@ const Register: React.FC = () => {
       }, 2000);
     } catch (err: any) {
       let errorMessage = err.message;
-      if (errorMessage === 'Success') {
-        errorMessage = 'Registration failed.';
-      }
       setError(errorMessage || 'Registration failed. Please try again.');
     }
   };

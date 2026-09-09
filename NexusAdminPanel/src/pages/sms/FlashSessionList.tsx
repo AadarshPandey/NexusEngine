@@ -51,8 +51,8 @@ const FlashSessionList: React.FC = () => {
               <TableRow key={session.id} hover>
                 <TableCell>{session.id}</TableCell>
                 <TableCell>{session.name}</TableCell>
-                <TableCell>{formatTime(session.startTime)}</TableCell>
-                <TableCell>{formatTime(session.endTime)}</TableCell>
+                <TableCell>{formatTime(session.startTime || '')}</TableCell>
+                <TableCell>{formatTime(session.endTime || '')}</TableCell>
                 <TableCell>
                   <Switch size="small" checked={session.status === 1} color="primary" />
                 </TableCell>

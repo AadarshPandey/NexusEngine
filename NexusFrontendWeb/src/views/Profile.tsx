@@ -129,7 +129,7 @@ const Profile: React.FC = () => {
           orderSn: refundOrder.orderSn,
           memberUsername: memberInfo?.username,
           returnName: memberInfo?.nickname || memberInfo?.username,
-          returnPhone: memberInfo?.phone || '9876543210',
+          returnPhone: memberInfo?.phone || '',
           productPic: item.productPic,
           productName: item.productName,
           productBrand: item.productBrand,

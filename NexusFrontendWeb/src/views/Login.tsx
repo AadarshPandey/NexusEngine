@@ -25,9 +25,6 @@ const Login: React.FC = () => {
       }
     } catch (err: any) {
       let errorMessage = err.message;
-      if (errorMessage === 'Success') {
-        errorMessage = 'Invalid username or password.';
-      }
       setError(errorMessage || 'Login failed. Please check your credentials.');
     }
   };

@@ -41,9 +41,9 @@ jobs:
         IMAGE_TAG: ${{ github.sha }}
       working-directory: ./NexusCore
       run: |
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY/mall-application:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY/mall-application:latest -f Dockerfile --target mall-application .
-        docker push -a $ECR_REGISTRY/$ECR_REPOSITORY/mall-application
-        echo "image=$ECR_REGISTRY/$ECR_REPOSITORY/mall-application:$IMAGE_TAG" >> $GITHUB_OUTPUT
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY/nexus-application:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY/nexus-application:latest -f Dockerfile --target nexus-application .
+        docker push -a $ECR_REGISTRY/$ECR_REPOSITORY/nexus-application
+        echo "image=$ECR_REGISTRY/$ECR_REPOSITORY/nexus-application:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
     # Note: If deploying to ECS, you would uncomment the following steps once the task definition is created
     # - name: Fill in the new image ID in the Amazon ECS task definition

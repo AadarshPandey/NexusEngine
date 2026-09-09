@@ -69,7 +69,7 @@ const OrderSetting: React.FC = () => {
         {setting && (
           <Grid container spacing={4}>
             {/* 1. Normal Order Overtime */}
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
                 <Typography sx={{ width: 300, fontWeight: 500 }}>Normal Order Timeout:</Typography>
                 <TextField
@@ -89,7 +89,7 @@ const OrderSetting: React.FC = () => {
             </Grid>
 
             {/* 2. Flash Order Overtime */}
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
                 <Typography sx={{ width: 300, fontWeight: 500 }}>Flash Sale Order Timeout:</Typography>
                 <TextField
@@ -109,7 +109,7 @@ const OrderSetting: React.FC = () => {
             </Grid>
 
             {/* 3. Confirm Overtime */}
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
                 <Typography sx={{ width: 300, fontWeight: 500 }}>Auto-Confirm Receipt:</Typography>
                 <TextField
@@ -129,7 +129,7 @@ const OrderSetting: React.FC = () => {
             </Grid>
 
             {/* 4. Finish Overtime */}
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
                 <Typography sx={{ width: 300, fontWeight: 500 }}>Return Request Window:</Typography>
                 <TextField
@@ -149,7 +149,7 @@ const OrderSetting: React.FC = () => {
             </Grid>
 
             {/* 5. Comment Overtime */}
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
                 <Typography sx={{ width: 300, fontWeight: 500 }}>Auto-Comment Window:</Typography>
                 <TextField

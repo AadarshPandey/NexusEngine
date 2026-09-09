@@ -106,7 +106,7 @@ const CouponList: React.FC = () => {
               <Select
                 label="Coupon Type"
                 value={queryParams.type === undefined ? '' : queryParams.type}
-                onChange={(e) => setQueryParams({ ...queryParams, type: e.target.value === '' ? undefined : Number(e.target.value) })}
+                onChange={(e) => setQueryParams({ ...queryParams, type: String(e.target.value) === '' ? undefined : Number(e.target.value) })}
               >
                 <MenuItem value="">All</MenuItem>
                 <MenuItem value={0}>Full Discount</MenuItem>

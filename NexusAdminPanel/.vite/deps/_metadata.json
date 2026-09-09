@@ -1,0 +1,31 @@
+{
+  "hash": "0cced862",
+  "configHash": "00bb9705",
+  "lockfileHash": "d567fd91",
+  "browserHash": "41e54bcc",
+  "optimized": {
+    "react/jsx-dev-runtime": {
+      "src": "../../node_modules/react/jsx-dev-runtime.js",
+      "file": "react_jsx-dev-runtime.js",
+      "fileHash": "0ffe27f9",
+      "needsInterop": true
+    },
+    "react": {
+      "src": "../../node_modules/react/index.js",
+      "file": "react.js",
+      "fileHash": "45db8cb6",
+      "needsInterop": true
+    },
+    "react-dom/client": {
+      "src": "../../node_modules/react-dom/client.js",
+      "file": "react-dom_client.js",
+      "fileHash": "abc956a8",
+      "needsInterop": true
+    }
+  },
+  "chunks": {
+    "chunk-MLZLUVOS": {
+      "file": "chunk-MLZLUVOS.js"
+    }
+  }
+}

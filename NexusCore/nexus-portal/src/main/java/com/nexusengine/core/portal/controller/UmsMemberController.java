@@ -51,7 +51,7 @@ public class UmsMemberController {
                               @RequestParam String password) {
         String token = memberService.login(username, password);
         if (token == null) {
-            return CommonResult.validateFailed("Success");
+            return CommonResult.validateFailed("Invalid username or password");
         }
         Map<String, String> tokenMap = new HashMap<>();
         tokenMap.put("token", token);
@@ -96,7 +96,7 @@ public class UmsMemberController {
         String token = request.getHeader(tokenHeader);
         String refreshToken = memberService.refreshToken(token);
         if (refreshToken == null) {
-            return CommonResult.failed("Success");
+            return CommonResult.failed("Token refresh failed");
         }
         Map<String, String> tokenMap = new HashMap<>();
         tokenMap.put("token", refreshToken);

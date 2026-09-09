@@ -56,16 +56,16 @@ const ReturnApplyDetail: React.FC = () => {
       <Paper sx={{ p: 3, mb: 3 }} variant="outlined">
         <Typography variant="h6" gutterBottom>Basic Information</Typography>
         <Grid container spacing={2}>
-          <Grid item xs={12} sm={6}>
+          <Grid size={{xs: 12, sm: 6}}>
             <Typography color="text.secondary">Service ID: <Typography component="span" color="text.primary">{detail.id}</Typography></Typography>
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid size={{xs: 12, sm: 6}}>
             <Typography color="text.secondary">Order SN: <Typography component="span" color="text.primary">{detail.orderSn}</Typography></Typography>
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid size={{xs: 12, sm: 6}}>
             <Typography color="text.secondary">Customer: <Typography component="span" color="text.primary">{detail.memberUsername}</Typography></Typography>
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid size={{xs: 12, sm: 6}}>
             <Typography color="text.secondary">Status: 
               {detail.status === 0 ? <Chip label="Pending" color="warning" size="small" sx={{ ml: 1 }} /> : 
                detail.status === 1 ? <Chip label="Returning" color="info" size="small" sx={{ ml: 1 }} /> : 
@@ -73,7 +73,7 @@ const ReturnApplyDetail: React.FC = () => {
                <Chip label="Rejected" color="error" size="small" sx={{ ml: 1 }} />}
             </Typography>
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid size={{xs: 12, sm: 6}}>
             <Typography color="text.secondary">Applied Time: <Typography component="span" color="text.primary">{new Date(detail.createTime).toLocaleString()}</Typography></Typography>
           </Grid>
         </Grid>
@@ -102,7 +102,7 @@ const ReturnApplyDetail: React.FC = () => {
       <Paper sx={{ p: 3, mb: 3 }} variant="outlined">
         <Typography variant="h6" gutterBottom>Processing</Typography>
         <Grid container spacing={3}>
-          <Grid item xs={12} sm={6}>
+          <Grid size={{xs: 12, sm: 6}}>
             <TextField 
               fullWidth 
               label="Refund Amount (₹)" 
@@ -112,7 +112,7 @@ const ReturnApplyDetail: React.FC = () => {
               disabled={detail.status !== 0}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={{ xs: 12 }}>
             <TextField 
               fullWidth 
               multiline 

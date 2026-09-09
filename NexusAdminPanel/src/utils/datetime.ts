@@ -1,4 +1,4 @@
-import { dayjs } from 'element-plus'
+import dayjs from 'dayjs';
 
 export const formatDateTime = (time: string) => {
   if (!time) {

@@ -168,7 +168,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMobileMenuToggle }) => {
             sx={{ p: 0.5 }}
           >
             <Avatar
-              src={avatar?.startsWith('file://') ? 'https://picsum.photos/100/100' : avatar}
+              src={avatar?.includes('file') ? 'https://picsum.photos/100/100' : avatar}
               sx={{
                 width: 34,
                 height: 34,
