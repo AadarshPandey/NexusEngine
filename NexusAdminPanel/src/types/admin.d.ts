@@ -18,7 +18,7 @@ export type UserInfoResult = {
 }
 
 export type UserInfo = Pick<UserInfoResult, 'username' | 'menus' | 'roles'> & {
-  password: string
+  password?: string
   token: string
   avatar
 }

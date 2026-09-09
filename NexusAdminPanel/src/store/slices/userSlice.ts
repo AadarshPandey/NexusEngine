@@ -10,7 +10,6 @@ interface UserState {
 const initialState: UserState = {
   userInfo: {
     username: '',
-    password: '',
     avatar: '',
     roles: [],
     token: '',
@@ -57,7 +56,6 @@ const userSlice = createSlice({
     },
     setCredentials(state, action: PayloadAction<LoginParam>) {
       state.userInfo.username = action.payload.username;
-      state.userInfo.password = action.payload.password;
     },
     fedLogout(state) {
       state.userInfo.token = '';

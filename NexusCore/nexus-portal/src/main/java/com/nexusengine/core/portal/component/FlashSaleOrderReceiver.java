@@ -11,9 +11,11 @@ import org.springframework.stereotype.Component;
 @RabbitListener(queues = "nexus.flash.order")
 public class FlashSaleOrderReceiver {
 
-    // Normally we would inject OmsPortalOrderService here to actually write the order to Postgres.
-    // @Autowired
-    // private OmsPortalOrderService portalOrderService;
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.nexusengine.core.repository.OmsOrderRepository orderRepository;
+
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.nexusengine.core.common.service.RedisService redisService;
 
     @RabbitHandler
     public void handle(FlashSaleOrderMessage message) {
@@ -22,15 +24,20 @@ public class FlashSaleOrderReceiver {
             // Simulated delay for DB write
             Thread.sleep(50);
             
-            // Generate standard OrderParam and call OmsPortalOrderService to insert into DB
-            // OrderParam param = new OrderParam();
-            // ... map message data to param ...
-            // portalOrderService.generateOrder(param);
+            com.nexusengine.core.model.OmsOrder order = new com.nexusengine.core.model.OmsOrder();
+            order.setMemberId(message.getMemberId());
+            order.setCreateTime(new java.util.Date());
+            order.setStatus(0);
+            order.setDeleteStatus(0);
+            order.setOrderType(1); // 1 = flash sale
+            orderRepository.save(order);
             
             log.info("Successfully persisted flash order to database for member: {}", message.getMemberId());
         } catch (Exception e) {
             log.error("Failed to process flash order for member: {}", message.getMemberId(), e);
-            // In a real scenario, if DB insert fails, we would decrement the stock back in Redis here
+            String stockKey = "flash:stock:" + message.getFlashPromotionId() + ":" + message.getFlashPromotionSessionId() + ":" + message.getProductId();
+            redisService.incr(stockKey, message.getQuantity());
+            log.info("Compensated Redis stock for key: {}, quantity: {}", stockKey, message.getQuantity());
         }
     }
 }

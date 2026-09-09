@@ -46,16 +46,13 @@ public class PortalOrderDao {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.MINUTE, -minutes);
         Date deadline = calendar.getTime();
-        List<OmsOrder> orders = orderRepository.findAll();
+        List<OmsOrder> orders = orderRepository.findByStatusAndDeleteStatusAndCreateTimeBefore(0, 0, deadline);
         List<OmsOrderDetail> result = new ArrayList<>();
         for (OmsOrder order : orders) {
-            if (order.getStatus() == 0 && order.getDeleteStatus() == 0
-                    && order.getCreateTime() != null && order.getCreateTime().before(deadline)) {
-                OmsOrderDetail detail = new OmsOrderDetail();
-                BeanUtils.copyProperties(order, detail);
-                detail.setOrderItemList(orderItemRepository.findByOrderId(order.getId()));
-                result.add(detail);
-            }
+            OmsOrderDetail detail = new OmsOrderDetail();
+            BeanUtils.copyProperties(order, detail);
+            detail.setOrderItemList(orderItemRepository.findByOrderId(order.getId()));
+            result.add(detail);
         }
         return result;
     }

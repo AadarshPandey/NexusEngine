@@ -35,27 +35,18 @@ redis:
 
 secure:
   ignored:
-    urls:
-      - /swagger-ui.html
-      - /swagger-ui/**
+    urls: # URLs that do not require authentication
+      - /swagger-ui/
       - /swagger-resources/**
-      - /v2/api-docs
-      - /v3/api-docs/**
-      - /*/*.html
-      - /*/*.js
-      - /*/*.css
-      - /*/*.png
+      - /**/v3/api-docs
+      - /**/*.html
+      - /**/*.js
+      - /**/*.css
+      - /**/*.png
+      - /**/*.map
       - /favicon.ico
-      - /actuator/**
       - /admin/login
-      - /admin/register
       - /admin/info
-      - /admin/logout
-      - /minio/upload
-      - /s3/presign
-      - /chat/**
-      - /dashboard/info
-      - /order/update/status
 
 springdoc:
   swagger-ui:

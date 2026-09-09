@@ -85,8 +85,17 @@ public class WebLogAspect {
         logMap.put("parameter",webLog.getParameter());
         logMap.put("spendTime",webLog.getSpendTime());
         logMap.put("description",webLog.getDescription());
-//        LOGGER.info("{}", JSONUtil.parse(webLog));
-        LOGGER.info(Markers.appendEntries(logMap), JSONUtil.parse(webLog).toString());
+        String logJson = JSONUtil.parse(webLog).toString();
+        logJson = logJson.replaceAll("\"(?i)(.*?password.*?)\":\"[^\"]+\"", "\"$1\":\"***\"");
+        
+        // Also mask in the map for structural logging
+        if (webLog.getParameter() != null) {
+            String paramStr = JSONUtil.parse(webLog.getParameter()).toString();
+            paramStr = paramStr.replaceAll("\"(?i)(.*?password.*?)\":\"[^\"]+\"", "\"$1\":\"***\"");
+            logMap.put("parameter", JSONUtil.parse(paramStr));
+        }
+
+        LOGGER.info(Markers.appendEntries(logMap), logJson);
         return result;
     }
 

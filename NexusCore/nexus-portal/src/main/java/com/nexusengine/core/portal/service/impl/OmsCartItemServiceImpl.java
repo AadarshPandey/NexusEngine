@@ -111,7 +111,8 @@ public class OmsCartItemServiceImpl implements OmsCartItemService {
     @Override
     public int updateAttr(OmsCartItem cartItem) {
         OmsCartItem updateCart = cartItemRepository.findById(cartItem.getId()).orElse(null);
-        if (updateCart != null) {
+        UmsMember currentMember = memberService.getCurrentMember();
+        if (updateCart != null && updateCart.getMemberId().equals(currentMember.getId())) {
             updateCart.setModifyDate(new Date());
             updateCart.setDeleteStatus(1);
             cartItemRepository.save(updateCart);

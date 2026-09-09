@@ -26,6 +26,7 @@ public class UmsMember implements Serializable {
     private String username;
 
     @Schema(title = "Password")
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private String password;
 
     @Schema(title = "Nickname")

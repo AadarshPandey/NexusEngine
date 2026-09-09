@@ -83,11 +83,13 @@ public class UmsMemberServiceImplTest {
     @Mock
     private JwtTokenUtil jwtTokenUtil;
     @Mock
-    private UmsMemberRepository memberRepository;
-    @Mock
     private UmsMemberLevelRepository memberLevelRepository;
     @Mock
+    private com.nexusengine.core.repository.UmsMemberRepository memberRepository;
+    @Mock
     private UmsMemberCacheService memberCacheService;
+    @Mock
+    private org.springframework.mail.javamail.JavaMailSender mailSender;
 
     @InjectMocks
     private UmsMemberServiceImpl memberService;
@@ -106,6 +108,8 @@ public class UmsMemberServiceImplTest {
         defaultLevel = new UmsMemberLevel();
         defaultLevel.setId(4L);
         defaultLevel.setDefaultStatus(1);
+        
+        org.springframework.test.util.ReflectionTestUtils.setField(memberService, "AUTH_CODE_EXPIRE_SECONDS", 120L);
     }
 
     @Test
@@ -132,21 +136,21 @@ public class UmsMemberServiceImplTest {
 
     @Test
     void register_Success() {
-        when(memberCacheService.getAuthCode("1234567890")).thenReturn("123456");
-        when(memberRepository.findByUsernameOrPhone("newuser", "1234567890")).thenReturn(Collections.emptyList());
+        when(memberCacheService.getAuthCode("test@test.com")).thenReturn("123456");
+        when(memberRepository.findByUsernameOrEmail("newuser", "test@test.com")).thenReturn(Collections.emptyList());
         when(passwordEncoder.encode("password")).thenReturn("encoded");
         when(memberLevelRepository.findByDefaultStatus(1)).thenReturn(Collections.singletonList(defaultLevel));
 
-        assertDoesNotThrow(() -> memberService.register("newuser", "password", "1234567890", "123456"));
+        assertDoesNotThrow(() -> memberService.register("newuser", "password", "test@test.com", "123456"));
         verify(memberRepository).save(any(UmsMember.class));
     }
 
     @Test
     void register_InvalidAuthCode_ThrowsException() {
-        when(memberCacheService.getAuthCode("1234567890")).thenReturn("654321");
+        when(memberCacheService.getAuthCode("test@test.com")).thenReturn("654321");
 
         assertThrows(ApiException.class, () -> 
-            memberService.register("newuser", "password", "1234567890", "123456")
+            memberService.register("newuser", "password", "test@test.com", "123456")
         );
         verify(memberRepository, never()).save(any());
     }

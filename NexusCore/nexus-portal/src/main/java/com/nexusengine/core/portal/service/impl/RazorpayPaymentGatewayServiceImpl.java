@@ -59,4 +59,16 @@ public class RazorpayPaymentGatewayServiceImpl implements RazorpayPaymentGateway
             throw new RuntimeException("Failed to verify signature", e);
         }
     }
+
+    @Override
+    public boolean verifyPaymentAmount(String paymentId, int expectedAmount) {
+        try {
+            RazorpayClient razorpay = new RazorpayClient(razorpayKeyId, razorpayKeySecret);
+            com.razorpay.Payment payment = razorpay.payments.fetch(paymentId);
+            int amount = payment.get("amount");
+            return amount == expectedAmount;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to fetch payment amount", e);
+        }
+    }
 }

@@ -6,4 +6,5 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 public interface OmsOrderReturnApplyRepository extends JpaRepository<OmsOrderReturnApply, Long>, JpaSpecificationExecutor<OmsOrderReturnApply> {
     java.util.List<OmsOrderReturnApply> findByOrderId(Long orderId);
+    java.util.List<OmsOrderReturnApply> findByOrderIdIn(java.util.List<Long> orderIds);
 }

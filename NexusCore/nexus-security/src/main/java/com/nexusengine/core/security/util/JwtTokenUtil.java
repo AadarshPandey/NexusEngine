@@ -93,6 +93,9 @@ public class JwtTokenUtil {
      */
     public boolean validateToken(String token, UserDetails userDetails) {
         String username = getUserNameFromToken(token);
+        if (username != null && username.contains(":")) {
+            username = username.substring(username.indexOf(":") + 1);
+        }
         return username != null && username.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
 
@@ -139,7 +142,8 @@ public class JwtTokenUtil {
      */
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put(CLAIM_KEY_USERNAME, userDetails.getUsername());
+        String prefix = userDetails.getClass().getSimpleName().contains("Admin") ? "admin:" : "member:";
+        claims.put(CLAIM_KEY_USERNAME, prefix + userDetails.getUsername());
         claims.put(CLAIM_KEY_CREATED, new Date());
         return generateToken(claims);
     }

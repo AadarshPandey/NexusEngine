@@ -1,0 +1,66 @@
+--- a/NexusCore/nexus-portal/src/main/java/com/nexusengine/core/portal/service/impl/OmsPortalOrderServiceImpl.java
++++ b/NexusCore/nexus-portal/src/main/java/com/nexusengine/core/portal/service/impl/OmsPortalOrderServiceImpl.java
+@@ -567,12 +567,11 @@
+                     skuStock.setLockStock(skuStock.getLockStock() + item.getQuantity());
+                     skuStockRepository.save(skuStock);
+                 }
+-            } else {
+-                PmsProduct product = productRepository.findById(item.getProductId()).orElse(null);
+-                if (product != null) {
+-                    product.setStock(Math.max(0, (product.getStock() == null ? 0 : product.getStock()) - item.getQuantity()));
+-                    productRepository.save(product);
+-                }
++            }
++            PmsProduct product = productRepository.findById(item.getProductId()).orElse(null);
++            if (product != null) {
++                product.setStock(Math.max(0, (product.getStock() == null ? 0 : product.getStock()) - item.getQuantity()));
++                productRepository.save(product);
+             }
+         }
+     }
+--- a/NexusCore/nexus-portal/src/main/java/com/nexusengine/core/portal/dao/PortalOrderDao.java
++++ b/NexusCore/nexus-portal/src/main/java/com/nexusengine/core/portal/dao/PortalOrderDao.java
+@@ -79,14 +79,14 @@
+                     }
+                     count++;
+                 }
+-            } else {
+-                PmsProduct product = productRepository.findById(item.getProductId()).orElse(null);
+-                if (product != null) {
+-                    product.setSale((product.getSale() == null ? 0 : product.getSale()) + item.getProductQuantity());
+-                    productRepository.save(product);
+-                    count++;
+-                }
++            } 
++            PmsProduct product = productRepository.findById(item.getProductId()).orElse(null);
++            if (product != null && item.getProductSkuId() == null) {
++                product.setSale((product.getSale() == null ? 0 : product.getSale()) + item.getProductQuantity());
++                productRepository.save(product);
++                count++;
+             }
+         }
+         return count;
+     }
+ 
+     public void releaseSkuStockLock(List<OmsOrderItem> orderItemList) {
+         for (OmsOrderItem item : orderItemList) {
+             if (item.getProductSkuId() != null) {
+                 PmsSkuStock skuStock = skuStockRepository.findById(item.getProductSkuId()).orElse(null);
+                 if (skuStock != null) {
+                     skuStock.setLockStock(Math.max(0, skuStock.getLockStock() - item.getProductQuantity()));
+                     skuStockRepository.save(skuStock);
+                 }
+-            } else {
+-                PmsProduct product = productRepository.findById(item.getProductId()).orElse(null);
+-                if (product != null) {
+-                    product.setStock((product.getStock() == null ? 0 : product.getStock()) + item.getProductQuantity());
+-                    productRepository.save(product);
+-                }
++            }
++            PmsProduct product = productRepository.findById(item.getProductId()).orElse(null);
++            if (product != null) {
++                product.setStock((product.getStock() == null ? 0 : product.getStock()) + item.getProductQuantity());
++                productRepository.save(product);
+             }
+         }
+     }

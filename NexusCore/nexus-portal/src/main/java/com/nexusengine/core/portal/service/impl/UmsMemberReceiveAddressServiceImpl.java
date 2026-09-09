@@ -42,6 +42,10 @@ public class UmsMemberReceiveAddressServiceImpl implements UmsMemberReceiveAddre
     @Override
     public int update(Long id, UmsMemberReceiveAddress address) {
         UmsMember currentMember = memberService.getCurrentMember();
+        UmsMemberReceiveAddress existingAddress = addressRepository.findById(id).orElse(null);
+        if (existingAddress == null || !existingAddress.getMemberId().equals(currentMember.getId())) {
+             throw new RuntimeException("Unauthorized to update this address");
+        }
         address.setId(id);
         address.setMemberId(currentMember.getId());
         if (address.getDefaultStatus() == null) {

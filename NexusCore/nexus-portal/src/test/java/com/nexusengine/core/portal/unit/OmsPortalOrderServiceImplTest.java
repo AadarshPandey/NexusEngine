@@ -101,11 +101,15 @@ public class OmsPortalOrderServiceImplTest {
     @Mock
     private CancelOrderSender cancelOrderSender;
     @Mock
+    private com.nexusengine.core.repository.PmsProductRepository productRepository;
+    @Mock
+    private org.redisson.api.RedissonClient redissonClient;
+    @Mock
+    private com.nexusengine.core.repository.OutboxEventRepository outboxEventRepository;
+    @Mock
     private RedisService redisService;
     @Mock
     private OmsOrderSettingRepository orderSettingRepository;
-    @Mock
-    private com.nexusengine.core.repository.PmsProductRepository productRepository;
 
     @InjectMocks
     private OmsPortalOrderServiceImpl orderService;
@@ -164,7 +168,15 @@ public class OmsPortalOrderServiceImplTest {
         
         PmsProduct mockProduct = new PmsProduct();
         mockProduct.setId(1L);
+        mockProduct.setStock(10);
         when(productRepository.findById(1L)).thenReturn(Optional.of(mockProduct));
+
+        org.redisson.api.RLock mockLock = mock(org.redisson.api.RLock.class);
+        when(redissonClient.getLock(anyString())).thenReturn(mockLock);
+        when(redissonClient.getMultiLock(any(org.redisson.api.RLock[].class))).thenReturn(mockLock);
+        try {
+            when(mockLock.tryLock(anyLong(), anyLong(), any())).thenReturn(true);
+        } catch (InterruptedException e) {}
 
         Map<String, Object> result = orderService.generateOrder(orderParam);
 
@@ -177,7 +189,7 @@ public class OmsPortalOrderServiceImplTest {
         
         verify(skuStockRepository).save(any(PmsSkuStock.class)); // Verifies lockStock
         verify(orderItemRepository).saveAll(anyList());
-        verify(cancelOrderSender).sendMessage(eq(100L), anyLong());
+        verify(outboxEventRepository).save(any(com.nexusengine.core.model.OutboxEvent.class));
     }
 
     @Test
@@ -195,6 +207,18 @@ public class OmsPortalOrderServiceImplTest {
         when(memberService.getCurrentMember()).thenReturn(currentMember);
         when(cartItemService.listPromotion(eq(1L), anyList()))
                 .thenReturn(Collections.singletonList(cartPromotionItem));
+
+        org.redisson.api.RLock mockLock = mock(org.redisson.api.RLock.class);
+        when(redissonClient.getLock(anyString())).thenReturn(mockLock);
+        when(redissonClient.getMultiLock(any(org.redisson.api.RLock[].class))).thenReturn(mockLock);
+        try {
+            when(mockLock.tryLock(anyLong(), anyLong(), any())).thenReturn(true);
+        } catch (InterruptedException e) {}
+        
+        PmsProduct mockProduct = new PmsProduct();
+        mockProduct.setId(1L);
+        mockProduct.setStock(1);
+        when(productRepository.findById(1L)).thenReturn(Optional.of(mockProduct));
 
         assertThrows(ApiException.class, () -> orderService.generateOrder(orderParam));
         verify(orderRepository, never()).save(any());

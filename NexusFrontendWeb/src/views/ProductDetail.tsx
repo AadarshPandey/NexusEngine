@@ -6,6 +6,7 @@ import type { AppDispatch, RootState } from '../store';
 import { fetchProductDetail } from '../api/product';
 import type { PmsPortalProductDetail } from '../api/product';
 import { addItemToCart } from '../store/slices/cartSlice';
+import DOMPurify from 'dompurify';
 import { ReviewSection } from '../components/ReviewSection';
 
 const ProductDetail: React.FC = () => {
@@ -112,7 +113,7 @@ const ProductDetail: React.FC = () => {
             <Box sx={{ mt: 4 }}>
               <Typography variant="h6" gutterBottom>Product Description</Typography>
               {/* Note: Rendering raw HTML needs to be sanitized in production */}
-              <div dangerouslySetInnerHTML={{ __html: product.description || '<p>No description available.</p>' }} />
+              <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product.description || '<p>No description available.</p>') }} />
             </Box>
           </Grid>
         </Grid>

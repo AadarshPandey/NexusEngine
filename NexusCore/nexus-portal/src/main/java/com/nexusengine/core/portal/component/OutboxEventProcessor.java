@@ -18,28 +18,40 @@ public class OutboxEventProcessor {
     @Autowired
     private CancelOrderSender cancelOrderSender;
 
+    @Autowired
+    private org.redisson.api.RedissonClient redissonClient;
+
     @Scheduled(fixedDelay = 5000) // Run every 5 seconds
     @Transactional
     public void processOutboxEvents() {
-        List<OutboxEvent> pendingEvents = outboxEventRepository.findByStatusOrderByCreatedAtAsc("PENDING");
-        
-        for (OutboxEvent event : pendingEvents) {
-            try {
-                if ("CancelOrder".equals(event.getType())) {
-                    Long orderId = Long.parseLong(event.getAggregateId());
-                    Long delayTimes = Long.parseLong(event.getPayload());
-                    
-                    // Actually push to RabbitMQ now
-                    cancelOrderSender.sendMessage(orderId, delayTimes);
-                    
-                    // Mark as sent
-                    event.setStatus("SENT");
-                    outboxEventRepository.save(event);
+        org.redisson.api.RLock lock = redissonClient.getLock("outbox_processor_lock");
+        try {
+            if (lock.tryLock(0, 5, java.util.concurrent.TimeUnit.SECONDS)) {
+                List<OutboxEvent> pendingEvents = outboxEventRepository.findByStatusOrderByCreatedAtAsc("PENDING", org.springframework.data.domain.PageRequest.of(0, 50));
+                
+                for (OutboxEvent event : pendingEvents) {
+                    try {
+                        if ("CancelOrder".equals(event.getType())) {
+                            Long orderId = Long.parseLong(event.getAggregateId());
+                            Long delayTimes = Long.parseLong(event.getPayload());
+                            
+                            // Actually push to RabbitMQ now
+                            cancelOrderSender.sendMessage(orderId, delayTimes);
+                            
+                            // Mark as sent
+                            event.setStatus("SENT");
+                            outboxEventRepository.save(event);
+                        }
+                    } catch (Exception e) {
+                        // ignore
+                    }
                 }
-            } catch (Exception e) {
-                // If RabbitMQ fails, it will remain PENDING and retry on the next schedule
-                // Alternatively, increment a retry count and mark FAILED if max retries exceeded
-                // For FAANG basic implementation, we just catch and leave as PENDING
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } finally {
+            if (lock.isHeldByCurrentThread()) {
+                lock.unlock();
             }
         }
     }

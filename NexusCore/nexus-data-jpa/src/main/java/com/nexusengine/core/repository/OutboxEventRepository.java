@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface OutboxEventRepository extends JpaRepository<OutboxEvent, Long> {
-    List<OutboxEvent> findByStatusOrderByCreatedAtAsc(String status);
+    List<OutboxEvent> findByStatusOrderByCreatedAtAsc(String status, org.springframework.data.domain.Pageable pageable);
 }

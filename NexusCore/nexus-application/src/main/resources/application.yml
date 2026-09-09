@@ -43,7 +43,6 @@ secure:
       - /*/*.css
       - /*/*.png
       - /favicon.ico
-      - /actuator/**
       - /portal/sso/**
       - /portal/home/**
       - /error
@@ -59,7 +58,6 @@ secure:
       - /admin/logout
       - /minio/upload
       - /s3/presign
-      - /chat/**
 
 springdoc:
   swagger-ui:

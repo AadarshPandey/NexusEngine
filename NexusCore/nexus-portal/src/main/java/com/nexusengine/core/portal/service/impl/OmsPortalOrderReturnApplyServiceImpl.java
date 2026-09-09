@@ -26,32 +26,25 @@ public class OmsPortalOrderReturnApplyServiceImpl implements OmsPortalOrderRetur
     @Autowired
     private OmsOrderRepository orderRepository;
 
+    @Autowired
+    private com.nexusengine.core.portal.service.UmsMemberService memberService;
+
     @Override
     public int create(OmsOrderReturnApplyParam returnApply) {
+        com.nexusengine.core.model.UmsMember currentMember = memberService.getCurrentMember();
+        if (returnApply.getOrderId() == null) {
+            return 0;
+        }
+        com.nexusengine.core.model.OmsOrder order = orderRepository.findById(returnApply.getOrderId()).orElse(null);
+        if (order == null || !order.getMemberId().equals(currentMember.getId())) {
+             throw new RuntimeException("Unauthorized to apply return for this order");
+        }
+
         OmsOrderReturnApply realApply = new OmsOrderReturnApply();
         BeanUtils.copyProperties(returnApply, realApply);
         realApply.setCreateTime(new Date());
         realApply.setStatus(0);
         returnApplyRepository.save(realApply);
-
-        // Check if all items in the order have been fully returned
-        Long orderId = realApply.getOrderId();
-        if (orderId != null) {
-            java.util.List<com.nexusengine.core.model.OmsOrderItem> orderItems = orderItemRepository.findByOrderId(orderId);
-            java.util.List<OmsOrderReturnApply> applies = returnApplyRepository.findByOrderId(orderId);
-
-            int totalOrderQty = orderItems.stream().mapToInt(i -> i.getProductQuantity() != null ? i.getProductQuantity() : 0).sum();
-            int totalReturnedQty = applies.stream().mapToInt(a -> a.getProductCount() != null ? a.getProductCount() : 0).sum();
-
-            if (totalOrderQty > 0 && totalReturnedQty >= totalOrderQty) {
-                com.nexusengine.core.model.OmsOrder order = orderRepository.findById(orderId).orElse(null);
-                if (order != null) {
-                    order.setStatus(6); // Set status to Refunded
-                    orderRepository.save(order);
-                }
-            }
-        }
-
         return 1;
     }
 }

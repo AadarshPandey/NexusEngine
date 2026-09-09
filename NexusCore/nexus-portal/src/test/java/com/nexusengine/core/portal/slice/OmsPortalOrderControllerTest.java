@@ -23,6 +23,12 @@ public class OmsPortalOrderControllerTest {
     @Mock
     private RazorpayPaymentGatewayService razorpayPaymentGatewayService;
 
+    @Mock
+    private com.nexusengine.core.portal.service.UmsMemberService memberService;
+
+    @Mock
+    private com.nexusengine.core.repository.OmsOrderRepository omsOrderRepository;
+
     @InjectMocks
     private OmsPortalOrderController orderController;
 
@@ -32,7 +38,19 @@ public class OmsPortalOrderControllerTest {
 
     @Test
     void verifyRazorpayPayment_ValidSignature_CallsPaySuccess() throws Exception {
+        com.nexusengine.core.portal.domain.OmsOrderDetail detail = new com.nexusengine.core.portal.domain.OmsOrderDetail();
+        detail.setMemberId(1L);
+        detail.setStatus(0);
+        detail.setPayAmount(new java.math.BigDecimal("100.00"));
+        when(portalOrderService.detail(100L)).thenReturn(detail);
+        
+        com.nexusengine.core.model.UmsMember member = new com.nexusengine.core.model.UmsMember();
+        member.setId(1L);
+        when(memberService.getCurrentMember()).thenReturn(member);
+        
+        when(omsOrderRepository.existsByPaymentId(paymentId)).thenReturn(false);
         when(razorpayPaymentGatewayService.verifySignature(orderId, paymentId, testSignature)).thenReturn(true);
+        when(razorpayPaymentGatewayService.verifyPaymentAmount(paymentId, 10000)).thenReturn(true);
 
         CommonResult result = orderController.verifyRazorpayPayment(100L, paymentId, orderId, testSignature);
 
@@ -43,6 +61,16 @@ public class OmsPortalOrderControllerTest {
 
     @Test
     void verifyRazorpayPayment_InvalidSignature_ReturnsFailed() {
+        com.nexusengine.core.portal.domain.OmsOrderDetail detail = new com.nexusengine.core.portal.domain.OmsOrderDetail();
+        detail.setMemberId(1L);
+        detail.setStatus(0);
+        when(portalOrderService.detail(100L)).thenReturn(detail);
+        
+        com.nexusengine.core.model.UmsMember member = new com.nexusengine.core.model.UmsMember();
+        member.setId(1L);
+        when(memberService.getCurrentMember()).thenReturn(member);
+        
+        when(omsOrderRepository.existsByPaymentId(paymentId)).thenReturn(false);
         when(razorpayPaymentGatewayService.verifySignature(orderId, paymentId, "invalid_sig")).thenReturn(false);
 
         CommonResult result = orderController.verifyRazorpayPayment(100L, paymentId, orderId, "invalid_sig");

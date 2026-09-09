@@ -28,6 +28,8 @@ import java.util.Map;
 public class OmsPortalOrderController {
     @Autowired
     private OmsPortalOrderService portalOrderService;
+    @Autowired
+    private com.nexusengine.core.portal.service.UmsMemberService memberService;
 
     @Operation(summary = "Generate confirm order Operation")
     @RequestMapping(value = "/generateConfirmOrder", method = RequestMethod.POST)
@@ -45,29 +47,6 @@ public class OmsPortalOrderController {
         return CommonResult.success(result, "Success");
     }
 
-    @Operation(summary = "Pay success Operation")
-    @RequestMapping(value = "/paySuccess", method = RequestMethod.POST)
-    @ResponseBody
-    public CommonResult paySuccess(@RequestParam Long orderId,@RequestParam Integer payType) {
-        Integer count = portalOrderService.paySuccess(orderId,payType);
-        return CommonResult.success(count, "Success");
-    }
-
-    @Operation(summary = "Cancel time out order Operation")
-    @RequestMapping(value = "/cancelTimeOutOrder", method = RequestMethod.POST)
-    @ResponseBody
-    public CommonResult cancelTimeOutOrder() {
-        portalOrderService.cancelTimeOutOrder();
-        return CommonResult.success(null);
-    }
-
-    @Operation(summary = "Cancel order Operation")
-    @RequestMapping(value = "/cancelOrder", method = RequestMethod.POST)
-    @ResponseBody
-    public CommonResult cancelOrder(Long orderId) {
-        portalOrderService.sendDelayMessageCancelOrder(orderId);
-        return CommonResult.success(null);
-    }
 
     @Operation(summary = "API Operation")
     @Parameter(name = "status", description = "Description",
@@ -136,6 +115,9 @@ public class OmsPortalOrderController {
         }
     }
 
+    @Autowired
+    private com.nexusengine.core.repository.OmsOrderRepository omsOrderRepository;
+
     @Operation(summary = "Verify Razorpay Payment")
     @RequestMapping(value = "/verifyRazorpayPayment", method = RequestMethod.POST)
     @ResponseBody
@@ -144,13 +126,36 @@ public class OmsPortalOrderController {
                                               @RequestParam String razorpayOrderId,
                                               @RequestParam String razorpaySignature) {
         try {
-            boolean isValid = razorpayPaymentGatewayService.verifySignature(razorpayOrderId, razorpayPaymentId, razorpaySignature);
-            if (isValid) {
-                portalOrderService.paySuccess(orderId, 2);
-                return CommonResult.success("Payment successful");
-            } else {
-                return CommonResult.failed("Invalid signature");
+            com.nexusengine.core.portal.domain.OmsOrderDetail orderDetail = portalOrderService.detail(orderId);
+            if (orderDetail == null) return CommonResult.failed("Order not found");
+            // Check ownership and status
+            com.nexusengine.core.model.UmsMember currentMember = memberService.getCurrentMember();
+            if (!orderDetail.getMemberId().equals(currentMember.getId())) {
+                return CommonResult.failed("Order ownership verification failed");
             }
+            if (orderDetail.getStatus() != 0) {
+                 return CommonResult.failed("Order already paid or closed");
+            }
+            if (omsOrderRepository.existsByPaymentId(razorpayPaymentId)) {
+                return CommonResult.failed("Payment ID already used");
+            }
+            
+            boolean isValid = razorpayPaymentGatewayService.verifySignature(razorpayOrderId, razorpayPaymentId, razorpaySignature);
+            if (!isValid) return CommonResult.failed("Invalid signature");
+            
+            int expectedAmount = orderDetail.getPayAmount().multiply(new java.math.BigDecimal("100")).intValue();
+            boolean isAmountValid = razorpayPaymentGatewayService.verifyPaymentAmount(razorpayPaymentId, expectedAmount);
+            if (!isAmountValid) return CommonResult.failed("Payment amount does not match order amount");
+            
+            // Store paymentId to prevent replay
+            com.nexusengine.core.model.OmsOrder dbOrder = omsOrderRepository.findById(orderId).orElse(null);
+            if (dbOrder != null) {
+                dbOrder.setPaymentId(razorpayPaymentId);
+                omsOrderRepository.save(dbOrder);
+            }
+            
+            portalOrderService.paySuccess(orderId, 2);
+            return CommonResult.success("Payment successful");
         } catch (Exception e) {
             log.error("Payment verification failed", e);
             return CommonResult.failed("Payment verification failed");

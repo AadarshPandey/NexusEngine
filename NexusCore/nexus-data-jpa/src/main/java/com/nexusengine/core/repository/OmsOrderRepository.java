@@ -15,4 +15,6 @@ public interface OmsOrderRepository extends JpaRepository<OmsOrder, Long>, JpaSp
     Page<OmsOrder> findByMemberIdAndDeleteStatusOrderByCreateTimeDesc(Long memberId, Integer deleteStatus, Pageable pageable);
     Page<OmsOrder> findByMemberIdAndStatusAndDeleteStatusOrderByCreateTimeDesc(Long memberId, Integer status, Integer deleteStatus, Pageable pageable);
     List<OmsOrder> findByIdAndStatusAndDeleteStatus(Long id, Integer status, Integer deleteStatus);
+    List<OmsOrder> findByStatusAndDeleteStatusAndCreateTimeBefore(Integer status, Integer deleteStatus, java.util.Date deadline);
+    boolean existsByPaymentId(String paymentId);
 }

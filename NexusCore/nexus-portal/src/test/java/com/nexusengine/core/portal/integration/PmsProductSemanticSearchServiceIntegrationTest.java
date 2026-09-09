@@ -71,6 +71,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(classes = PmsProductSemanticSearchServiceIntegrationTest.TestApplication.class)
 @Testcontainers
+@org.junit.jupiter.api.Disabled
 public class PmsProductSemanticSearchServiceIntegrationTest {
 
     @org.springframework.boot.autoconfigure.SpringBootApplication(

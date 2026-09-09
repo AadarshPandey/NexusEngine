@@ -6,10 +6,10 @@ package com.nexusengine.core.common.api;
  */
 public enum ResultCode implements IErrorCode {
     SUCCESS(200, "Success"),
-    FAILED(500, "Success"),
-    VALIDATE_FAILED(404, "Success"),
-    UNAUTHORIZED(401, "Success"),
-    FORBIDDEN(403, "Success");
+    FAILED(500, "Failed"),
+    VALIDATE_FAILED(404, "Validate Failed"),
+    UNAUTHORIZED(401, "Unauthorized"),
+    FORBIDDEN(403, "Forbidden");
     private long code;
     private String message;
 

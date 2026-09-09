@@ -21,6 +21,7 @@ public class UmsAdmin implements Serializable {
 
     private String username;
 
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private String password;
 
     @Schema(title = "Icon")

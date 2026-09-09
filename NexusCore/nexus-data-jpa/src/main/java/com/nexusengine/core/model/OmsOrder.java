@@ -167,6 +167,10 @@ public class OmsOrder implements Serializable {
     @Schema(title = "Use integration")
     private Integer useIntegration;
 
+    @Column(name = "payment_id")
+    @Schema(title = "Payment ID")
+    private String paymentId;
+
     @Column(name = "payment_time")
     @Schema(title = "Payment time")
     private Date paymentTime;

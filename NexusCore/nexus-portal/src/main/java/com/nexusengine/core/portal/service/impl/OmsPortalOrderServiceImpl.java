@@ -126,9 +126,18 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
             orderItem.setGiftGrowth(cartPromotionItem.getGrowth());
             orderItemList.add(orderItem);
         }
-        if (!hasStock(cartPromotionItemList)) {
-            Asserts.fail("Insufficient stock");
-        }
+            for (CartPromotionItem item : cartPromotionItemList) {
+                PmsProduct product = productRepository.findById(item.getProductId()).orElse(null);
+                if (product == null || product.getStock() == null || product.getStock() < item.getQuantity()) {
+                    Asserts.fail("Insufficient stock");
+                }
+                if (item.getProductSkuId() != null) {
+                    PmsSkuStock skuStock = skuStockRepository.findById(item.getProductSkuId()).orElse(null);
+                    if (skuStock == null || (skuStock.getStock() - (skuStock.getLockStock() == null ? 0 : skuStock.getLockStock())) < item.getQuantity()) {
+                        Asserts.fail("Insufficient stock for SKU");
+                    }
+                }
+            }
         if (orderParam.getCouponId() == null) {
             for (OmsOrderItem orderItem : orderItemList) {
                 orderItem.setCouponAmount(new BigDecimal(0));
@@ -192,6 +201,9 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
             }
         }
         UmsMemberReceiveAddress address = memberReceiveAddressService.getItem(orderParam.getMemberReceiveAddressId());
+        if (address == null) {
+            Asserts.fail("Invalid shipping address");
+        }
         order.setReceiverName(address.getName());
         order.setReceiverPhone(address.getPhoneNumber());
         order.setReceiverPostCode(address.getPostCode());
@@ -226,6 +238,11 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
         }
         deleteCartItemList(cartPromotionItemList, currentMember);
         sendDelayMessageCancelOrder(order.getId());
+        orderRepository.flush();
+        orderItemRepository.flush();
+        productRepository.flush();
+        skuStockRepository.flush();
+
         Map<String, Object> result = new HashMap<>();
         result.put("order", order);
         result.put("orderItemList", orderItemList);
@@ -243,43 +260,82 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
     }
 
     @Override
+    @org.springframework.transaction.annotation.Transactional
     public Integer paySuccess(Long orderId, Integer payType) {
-        OmsOrder order = orderRepository.findById(orderId).orElse(null);
-        if (order != null) {
-            order.setStatus(1);
-            order.setPaymentTime(new Date());
-            order.setPayType(payType);
-            orderRepository.save(order);
+        org.redisson.api.RLock lock = redissonClient.getLock("order_pay_lock:" + orderId);
+        try {
+            if (lock.tryLock(5, 10, java.util.concurrent.TimeUnit.SECONDS)) {
+                OmsOrder order = orderRepository.findById(orderId).orElse(null);
+                if (order == null || order.getStatus() != 0) return 0; // Only pay if unpaid
+                
+                order.setStatus(1);
+                order.setPaymentTime(new Date());
+                order.setPayType(payType);
+                orderRepository.save(order);
+                orderRepository.flush(); // ensure commit
+
+                OmsOrderDetail orderDetail = portalOrderDao.getDetail(orderId);
+                if (orderDetail != null && !CollectionUtils.isEmpty(orderDetail.getOrderItemList())) {
+                    return portalOrderDao.updateSkuStock(orderDetail.getOrderItemList());
+                }
+                return 1;
+            } else {
+                throw new RuntimeException("Could not acquire lock for order payment");
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException("Payment processing interrupted", e);
+        } finally {
+            if (lock.isHeldByCurrentThread()) {
+                lock.unlock();
+            }
         }
-        OmsOrderDetail orderDetail = portalOrderDao.getDetail(orderId);
-        return portalOrderDao.updateSkuStock(orderDetail.getOrderItemList());
     }
 
     @Override
     public Integer cancelTimeOutOrder() {
-        int count = 0;
-        OmsOrderSetting orderSetting = orderSettingRepository.findById(1L).orElse(null);
-        if (orderSetting == null) return 0;
-        List<OmsOrderDetail> timeOutOrders = portalOrderDao.getTimeOutOrders(orderSetting.getNormalOrderOvertime());
-        if (CollectionUtils.isEmpty(timeOutOrders)) return count;
-        List<Long> ids = timeOutOrders.stream().map(OmsOrderDetail::getId).collect(Collectors.toList());
-        portalOrderDao.updateOrderStatus(ids, 4);
-        for (OmsOrderDetail timeOutOrder : timeOutOrders) {
-            portalOrderDao.releaseSkuStockLock(timeOutOrder.getOrderItemList());
-            updateCouponStatus(timeOutOrder.getCouponId(), timeOutOrder.getMemberId(), 0);
-            if (timeOutOrder.getUseIntegration() != null) {
-                UmsMember member = memberService.getById(timeOutOrder.getMemberId());
-                memberService.updateIntegration(timeOutOrder.getMemberId(), member.getIntegration() + timeOutOrder.getUseIntegration());
+        org.redisson.api.RLock lock = redissonClient.getLock("cancel_timeout_order_lock");
+        try {
+            if (lock.tryLock(0, 30, java.util.concurrent.TimeUnit.SECONDS)) {
+                int count = 0;
+                OmsOrderSetting orderSetting = orderSettingRepository.findById(1L).orElse(null);
+                if (orderSetting == null) return 0;
+                List<OmsOrderDetail> timeOutOrders = portalOrderDao.getTimeOutOrders(orderSetting.getNormalOrderOvertime());
+                if (CollectionUtils.isEmpty(timeOutOrders)) return count;
+                List<Long> ids = timeOutOrders.stream().map(OmsOrderDetail::getId).collect(Collectors.toList());
+                portalOrderDao.updateOrderStatus(ids, 4);
+                for (OmsOrderDetail timeOutOrder : timeOutOrders) {
+                    portalOrderDao.releaseSkuStockLock(timeOutOrder.getOrderItemList());
+                    updateCouponStatus(timeOutOrder.getCouponId(), timeOutOrder.getMemberId(), 0);
+                    if (timeOutOrder.getUseIntegration() != null) {
+                        UmsMember member = memberService.getById(timeOutOrder.getMemberId());
+                        memberService.updateIntegration(timeOutOrder.getMemberId(), member.getIntegration() + timeOutOrder.getUseIntegration());
+                    }
+                }
+                return timeOutOrders.size();
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } finally {
+            if (lock.isHeldByCurrentThread()) {
+                lock.unlock();
             }
         }
-        return timeOutOrders.size();
+        return 0;
     }
 
     @Override
+    @org.springframework.transaction.annotation.Transactional
     public void cancelOrder(Long orderId) {
         List<OmsOrder> cancelOrderList = orderRepository.findByIdAndStatusAndDeleteStatus(orderId, 0, 0);
         if (CollectionUtils.isEmpty(cancelOrderList)) return;
         OmsOrder cancelOrder = cancelOrderList.get(0);
+        
+        UmsMember currentMember = memberService.getCurrentMember();
+        if (currentMember != null && !cancelOrder.getMemberId().equals(currentMember.getId())) {
+            // Internal scheduled tasks might have no current member, but if one exists, it must match.
+            throw new RuntimeException("Unauthorized to cancel this order");
+        }
         cancelOrder.setStatus(4);
         orderRepository.save(cancelOrder);
         List<OmsOrderItem> orderItemList = orderItemRepository.findByOrderId(orderId);
@@ -348,14 +404,18 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
         List<OmsOrder> orderList = orderPage.getContent();
         if (CollUtil.isEmpty(orderList)) return resultPage;
         List<Long> orderIds = orderList.stream().map(OmsOrder::getId).collect(Collectors.toList());
-        List<OmsOrderItem> allOrderItems = orderItemRepository.findAllById(Collections.emptyList());
-        // Fetch items for all orders
+        List<OmsOrderItem> allOrderItems = orderItemRepository.findByOrderIdIn(orderIds);
+        List<OmsOrderReturnApply> allApplies = returnApplyRepository.findByOrderIdIn(orderIds);
+
+        Map<Long, List<OmsOrderItem>> itemMap = allOrderItems.stream().collect(Collectors.groupingBy(OmsOrderItem::getOrderId));
+        Map<Long, List<OmsOrderReturnApply>> applyMap = allApplies.stream().collect(Collectors.groupingBy(OmsOrderReturnApply::getOrderId));
+
         List<OmsOrderDetail> orderDetailList = new ArrayList<>();
         for (OmsOrder omsOrder : orderList) {
             OmsOrderDetail orderDetail = new OmsOrderDetail();
             BeanUtil.copyProperties(omsOrder, orderDetail);
-            orderDetail.setOrderItemList(orderItemRepository.findByOrderId(omsOrder.getId()));
-            orderDetail.setReturnApplyList(returnApplyRepository.findByOrderId(omsOrder.getId()));
+            orderDetail.setOrderItemList(itemMap.getOrDefault(omsOrder.getId(), Collections.emptyList()));
+            orderDetail.setReturnApplyList(applyMap.getOrDefault(omsOrder.getId(), Collections.emptyList()));
             orderDetailList.add(orderDetail);
         }
         resultPage.setList(orderDetailList);
