@@ -10,6 +10,7 @@ import java.util.List;
 
 public interface PmsProductRepository extends JpaRepository<PmsProduct, Long>, JpaSpecificationExecutor<PmsProduct> {
     List<PmsProduct> findByVendorId(Long vendorId);
+    Page<PmsProduct> findByVendorId(Long vendorId, Pageable pageable);
     List<PmsProduct> findByNameContaining(String name);
     List<PmsProduct> findByVendorIdAndNameContaining(Long vendorId, String name);
     Page<PmsProduct> findByBrandIdAndDeleteStatusAndPublishStatus(Long brandId, Integer deleteStatus, Integer publishStatus, Pageable pageable);

@@ -20,7 +20,7 @@ public class GlobalCorsConfig {
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
         // Auto-generated documentation
-        config.addAllowedOriginPattern("*");
+        config.addAllowedOriginPattern("http://localhost:*");
         // Auto-generated documentation
         config.setAllowCredentials(true);
         // Auto-generated documentation

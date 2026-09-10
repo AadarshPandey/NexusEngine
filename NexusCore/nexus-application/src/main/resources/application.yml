@@ -4,8 +4,8 @@ spring:
       region:
         static: us-east-1
       credentials:
-        access-key: minioadmin
-        secret-key: minioadmin
+        access-key: ${AWS_ACCESS_KEY:minioadmin}
+        secret-key: ${AWS_SECRET_KEY:minioadmin}
       s3:
         endpoint: http://localhost:9000
   application:
@@ -26,8 +26,8 @@ spring:
 
 jwt:
   tokenHeader: Authorization
-  secret: nexus-portal-secret
-  expiration: 604800
+  secret: ${JWT_SECRET:8f7b3e2d1c9a4f6b8e0d2a1c3f5b7e9d8f7b3e2d1c9a4f6b8e0d2a1c3f5b7e9d}
+  expiration: 86400
   tokenHead: 'Bearer '
 
 secure:
@@ -55,8 +55,6 @@ secure:
       - /admin/login
       - /admin/info
       - /admin/logout
-      - /minio/upload
-      - /s3/presign
 
 springdoc:
   swagger-ui:
@@ -92,8 +90,8 @@ rabbitmq:
 aws:
   s3:
     endpoint: http://localhost:9000
-    access-key: minioadmin
-    secret-key: minioadmin
+    access-key: ${AWS_ACCESS_KEY:minioadmin}
+    secret-key: ${AWS_SECRET_KEY:minioadmin}
     bucket-name: nexuscore
     region: us-east-1
     policy:

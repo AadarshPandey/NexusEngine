@@ -21,8 +21,8 @@ spring:
 
 jwt:
   tokenHeader: Authorization
-  secret: nexus-admin-secret
-  expiration: 604800
+  secret: ${JWT_SECRET:8f7b3e2d1c9a4f6b8e0d2a1c3f5b7e9d8f7b3e2d1c9a4f6b8e0d2a1c3f5b7e9d}
+  expiration: 86400
   tokenHead: 'Bearer '
 
 redis:
@@ -64,8 +64,8 @@ springdoc:
 aws:
   s3:
     endpoint: http://localhost:9000
-    access-key: minioadmin
-    secret-key: minioadmin
+    access-key: ${AWS_ACCESS_KEY:minioadmin}
+    secret-key: ${AWS_SECRET_KEY:minioadmin}
     bucket-name: nexuscore
     region: us-east-1
     policy:

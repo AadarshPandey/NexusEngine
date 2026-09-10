@@ -48,20 +48,21 @@ public class PmsProductServiceImpl implements PmsProductService {
     private PmsProductVertifyRecordRepository productVertifyRecordRepository;
 
     @Override
+    @org.springframework.transaction.annotation.Transactional(rollbackFor = Exception.class)
     public int create(PmsProductParam productParam) {
         PmsProduct product = new PmsProduct();
         BeanUtils.copyProperties(productParam, product);
         product.setId(null);
         productRepository.save(product);
         Long productId = product.getId();
-        saveRelatedList(memberPriceRepository, productParam.getMemberPriceList(), productId);
-        saveRelatedList(productLadderRepository, productParam.getProductLadderList(), productId);
-        saveRelatedList(productFullReductionRepository, productParam.getProductFullReductionList(), productId);
+        saveMemberPriceList(productParam.getMemberPriceList(), productId);
+        saveProductLadderList(productParam.getProductLadderList(), productId);
+        saveProductFullReductionList(productParam.getProductFullReductionList(), productId);
         handleSkuStockCode(productParam.getSkuStockList(), productId);
-        saveRelatedList(skuStockRepository, productParam.getSkuStockList(), productId);
-        saveRelatedList(productAttributeValueRepository, productParam.getProductAttributeValueList(), productId);
-        saveRelatedList(subjectProductRelationRepository, productParam.getSubjectProductRelationList(), productId);
-        saveRelatedList(prefrenceAreaProductRelationRepository, productParam.getPrefrenceAreaProductRelationList(), productId);
+        saveSkuStockList(productParam.getSkuStockList(), productId);
+        saveProductAttributeValueList(productParam.getProductAttributeValueList(), productId);
+        saveSubjectProductRelationList(productParam.getSubjectProductRelationList(), productId);
+        savePrefrenceAreaProductRelationList(productParam.getPrefrenceAreaProductRelationList(), productId);
         return 1;
     }
 
@@ -90,24 +91,25 @@ public class PmsProductServiceImpl implements PmsProductService {
     }
 
     @Override
+    @org.springframework.transaction.annotation.Transactional(rollbackFor = Exception.class)
     public int update(Long id, PmsProductParam productParam) {
         PmsProduct product = new PmsProduct();
         BeanUtils.copyProperties(productParam, product);
         product.setId(id);
         productRepository.save(product);
         memberPriceRepository.deleteByProductId(id);
-        saveRelatedList(memberPriceRepository, productParam.getMemberPriceList(), id);
+        saveMemberPriceList(productParam.getMemberPriceList(), id);
         productLadderRepository.deleteByProductId(id);
-        saveRelatedList(productLadderRepository, productParam.getProductLadderList(), id);
+        saveProductLadderList(productParam.getProductLadderList(), id);
         productFullReductionRepository.deleteByProductId(id);
-        saveRelatedList(productFullReductionRepository, productParam.getProductFullReductionList(), id);
+        saveProductFullReductionList(productParam.getProductFullReductionList(), id);
         handleUpdateSkuStockList(id, productParam);
         productAttributeValueRepository.deleteByProductId(id);
-        saveRelatedList(productAttributeValueRepository, productParam.getProductAttributeValueList(), id);
+        saveProductAttributeValueList(productParam.getProductAttributeValueList(), id);
         subjectProductRelationRepository.deleteByProductId(id);
-        saveRelatedList(subjectProductRelationRepository, productParam.getSubjectProductRelationList(), id);
+        saveSubjectProductRelationList(productParam.getSubjectProductRelationList(), id);
         prefrenceAreaProductRelationRepository.deleteByProductId(id);
-        saveRelatedList(prefrenceAreaProductRelationRepository, productParam.getPrefrenceAreaProductRelationList(), id);
+        savePrefrenceAreaProductRelationList(productParam.getPrefrenceAreaProductRelationList(), id);
         return 1;
     }
 
@@ -146,10 +148,11 @@ public class PmsProductServiceImpl implements PmsProductService {
         String username = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getName();
         UmsAdmin admin = adminService.getAdminByUsername(username);
         Long vendorId = admin != null ? admin.getVendorId() : null;
+        org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(pageNum - 1 > 0 ? pageNum - 1 : 0, pageSize);
         if (vendorId != null) {
-            return productRepository.findByVendorId(vendorId);
+            return productRepository.findByVendorId(vendorId, pageable).getContent();
         }
-        return productRepository.findAll();
+        return productRepository.findAll(pageable).getContent();
     }
 
     private void checkVendorAuthorization(List<Long> ids) {
@@ -242,24 +245,66 @@ public class PmsProductServiceImpl implements PmsProductService {
         }
     }
 
-    /**
-     * Set productId on each entity and save all via the repository
-     */
-    @SuppressWarnings("unchecked")
-    private void saveRelatedList(Object repository, List dataList, Long productId) {
-        try {
-            if (CollectionUtils.isEmpty(dataList)) return;
-            for (Object item : dataList) {
-                Method setId = item.getClass().getMethod("setId", Long.class);
-                setId.invoke(item, (Long) null);
-                Method setProductId = item.getClass().getMethod("setProductId", Long.class);
-                setProductId.invoke(item, productId);
-            }
-            Method saveAll = repository.getClass().getMethod("saveAll", Iterable.class);
-            saveAll.invoke(repository, dataList);
-        } catch (Exception e) {
-            LOGGER.warn("Error saving product relations: {}", e.getMessage());
-            throw new RuntimeException(e.getMessage());
+    private void saveMemberPriceList(List<PmsMemberPrice> dataList, Long productId) {
+        if (CollectionUtils.isEmpty(dataList)) return;
+        for (PmsMemberPrice item : dataList) {
+            item.setId(null);
+            item.setProductId(productId);
         }
+        memberPriceRepository.saveAll(dataList);
+    }
+
+    private void saveProductLadderList(List<PmsProductLadder> dataList, Long productId) {
+        if (CollectionUtils.isEmpty(dataList)) return;
+        for (PmsProductLadder item : dataList) {
+            item.setId(null);
+            item.setProductId(productId);
+        }
+        productLadderRepository.saveAll(dataList);
+    }
+
+    private void saveProductFullReductionList(List<PmsProductFullReduction> dataList, Long productId) {
+        if (CollectionUtils.isEmpty(dataList)) return;
+        for (PmsProductFullReduction item : dataList) {
+            item.setId(null);
+            item.setProductId(productId);
+        }
+        productFullReductionRepository.saveAll(dataList);
+    }
+
+    private void saveSkuStockList(List<PmsSkuStock> dataList, Long productId) {
+        if (CollectionUtils.isEmpty(dataList)) return;
+        for (PmsSkuStock item : dataList) {
+            item.setId(null);
+            item.setProductId(productId);
+        }
+        skuStockRepository.saveAll(dataList);
+    }
+
+    private void saveProductAttributeValueList(List<PmsProductAttributeValue> dataList, Long productId) {
+        if (CollectionUtils.isEmpty(dataList)) return;
+        for (PmsProductAttributeValue item : dataList) {
+            item.setId(null);
+            item.setProductId(productId);
+        }
+        productAttributeValueRepository.saveAll(dataList);
+    }
+
+    private void saveSubjectProductRelationList(List<CmsSubjectProductRelation> dataList, Long productId) {
+        if (CollectionUtils.isEmpty(dataList)) return;
+        for (CmsSubjectProductRelation item : dataList) {
+            item.setId(null);
+            item.setProductId(productId);
+        }
+        subjectProductRelationRepository.saveAll(dataList);
+    }
+
+    private void savePrefrenceAreaProductRelationList(List<CmsPrefrenceAreaProductRelation> dataList, Long productId) {
+        if (CollectionUtils.isEmpty(dataList)) return;
+        for (CmsPrefrenceAreaProductRelation item : dataList) {
+            item.setId(null);
+            item.setProductId(productId);
+        }
+        prefrenceAreaProductRelationRepository.saveAll(dataList);
     }
 }
