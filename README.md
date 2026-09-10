@@ -90,3 +90,24 @@ NexusEngine includes a fully configured observability stack out-of-the-box. Metr
 
 ---
 *NexusEngine is a portfolio project demonstrating scalable system design and modern full-stack development practices.*
+
+## 💳 Razorpay Test Cards
+
+When checking out in the Customer Portal with the Razorpay test environment, you can use the following test cards to simulate successful domestic payments:
+
+**Visa (Domestic)**
+- Card Number: `4111 1111 1111 1111`
+- Expiry: Any future date (e.g., `12/26`)
+- CVV: Any 3 digits (e.g., `123`)
+
+**RuPay (Domestic)**
+- Card Number: `6521 0000 0000 0001`
+- Expiry: Any future date (e.g., `12/26`)
+- CVV: Any 3 digits (e.g., `123`)
+
+**Mastercard (Domestic)**
+- Card Number: `5555 5555 5555 4444`
+- Expiry: Any future date (e.g., `12/26`)
+- CVV: Any 3 digits (e.g., `123`)
+
+*(Note: During the 3D Secure OTP verification step, you can enter any random 6-digit OTP like `123456` or simply click "Success").*
