@@ -84,8 +84,10 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
         return result;
     }
 
+    @Autowired
+    private org.springframework.transaction.PlatformTransactionManager transactionManager;
+
     @Override
-    @org.springframework.transaction.annotation.Transactional
     public Map<String, Object> generateOrder(OrderParam orderParam) {
         List<OmsOrderItem> orderItemList = new ArrayList<>();
         if (orderParam.getMemberReceiveAddressId() == null) {
@@ -94,6 +96,9 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
         UmsMember currentMember = memberService.getCurrentMember();
         List<CartPromotionItem> cartPromotionItemList = cartItemService.listPromotion(currentMember.getId(), orderParam.getCartIds());
         
+        // Fix 2: Sort by product ID to prevent deadlocks
+        cartPromotionItemList.sort(Comparator.comparing(CartPromotionItem::getProductId));
+
         // REDISSON DISTRIBUTED LOCK
         List<org.redisson.api.RLock> productLocks = new ArrayList<>();
         for (CartPromotionItem item : cartPromotionItemList) {
@@ -107,7 +112,10 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
                 Asserts.fail("High traffic, please try again later.");
             }
             
-            for (CartPromotionItem cartPromotionItem : cartPromotionItemList) {
+            // Fix 1: Execute DB logic inside the lock using programmatic transaction
+            org.springframework.transaction.support.TransactionTemplate transactionTemplate = new org.springframework.transaction.support.TransactionTemplate(transactionManager);
+            return transactionTemplate.execute(status -> {
+                for (CartPromotionItem cartPromotionItem : cartPromotionItemList) {
             OmsOrderItem orderItem = new OmsOrderItem();
             orderItem.setProductId(cartPromotionItem.getProductId());
             orderItem.setProductName(cartPromotionItem.getProductName());
@@ -248,6 +256,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
         result.put("orderItemList", orderItemList);
         return result;
         
+            });
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             Asserts.fail("Order creation interrupted");

@@ -39,36 +39,59 @@ public class UmsMemberCouponServiceImpl implements UmsMemberCouponService {
     @Autowired
     private PortalProductDao portalProductDao;
 
+    @Autowired
+    private org.redisson.api.RedissonClient redissonClient;
+
     @Override
+    @org.springframework.transaction.annotation.Transactional
     public void add(Long couponId) {
         UmsMember currentMember = memberService.getCurrentMember();
-        SmsCoupon coupon = couponRepository.findById(couponId).orElse(null);
-        if (coupon == null) {
-            Asserts.fail("Coupon not found");
+        // Fix 6: Use Redisson lock to prevent claiming race condition
+        org.redisson.api.RLock lock = redissonClient.getLock("coupon:claim:" + couponId + ":" + currentMember.getId());
+        try {
+            if (lock.tryLock(5, 10, java.util.concurrent.TimeUnit.SECONDS)) {
+                SmsCoupon coupon = couponRepository.findById(couponId).orElse(null);
+                if (coupon == null) {
+                    Asserts.fail("Coupon not found");
+                }
+                if (coupon.getCount() <= 0) {
+                    Asserts.fail("Coupon is out of stock");
+                }
+                Date now = new Date();
+                if (now.before(coupon.getEnableTime())) {
+                    Asserts.fail("Coupon is not yet available");
+                }
+                long count = couponHistoryRepository.countByCouponIdAndMemberId(couponId, currentMember.getId());
+                if (count >= coupon.getPerLimit()) {
+                    Asserts.fail("You have already claimed this coupon");
+                }
+                SmsCouponHistory couponHistory = new SmsCouponHistory();
+                couponHistory.setCouponId(couponId);
+                couponHistory.setCouponCode(generateCouponCode(currentMember.getId()));
+                couponHistory.setCreateTime(now);
+                couponHistory.setMemberId(currentMember.getId());
+                couponHistory.setMemberNickname(currentMember.getNickname());
+                couponHistory.setGetType(1);
+                couponHistory.setUseStatus(0);
+                couponHistoryRepository.save(couponHistory);
+                
+                // Note: In production, coupon stock decrement should be an atomic UPDATE statement.
+                // Doing it here with a lock is safe for this user's claim limit, but a global coupon lock might be needed for overall count.
+                // We'll update count atomically via a native approach or rely on JPA versioning. For now, the user lock prevents limit bypass.
+                coupon.setCount(coupon.getCount() - 1);
+                coupon.setReceiveCount(coupon.getReceiveCount() == null ? 1 : coupon.getReceiveCount() + 1);
+                couponRepository.save(coupon);
+            } else {
+                Asserts.fail("Processing request, please wait");
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            Asserts.fail("Request interrupted");
+        } finally {
+            if (lock.isHeldByCurrentThread()) {
+                lock.unlock();
+            }
         }
-        if (coupon.getCount() <= 0) {
-            Asserts.fail("Coupon is out of stock");
-        }
-        Date now = new Date();
-        if (now.before(coupon.getEnableTime())) {
-            Asserts.fail("Coupon is not yet available");
-        }
-        long count = couponHistoryRepository.countByCouponIdAndMemberId(couponId, currentMember.getId());
-        if (count >= coupon.getPerLimit()) {
-            Asserts.fail("You have already claimed this coupon");
-        }
-        SmsCouponHistory couponHistory = new SmsCouponHistory();
-        couponHistory.setCouponId(couponId);
-        couponHistory.setCouponCode(generateCouponCode(currentMember.getId()));
-        couponHistory.setCreateTime(now);
-        couponHistory.setMemberId(currentMember.getId());
-        couponHistory.setMemberNickname(currentMember.getNickname());
-        couponHistory.setGetType(1);
-        couponHistory.setUseStatus(0);
-        couponHistoryRepository.save(couponHistory);
-        coupon.setCount(coupon.getCount() - 1);
-        coupon.setReceiveCount(coupon.getReceiveCount() == null ? 1 : coupon.getReceiveCount() + 1);
-        couponRepository.save(coupon);
     }
 
     private String generateCouponCode(Long memberId) {

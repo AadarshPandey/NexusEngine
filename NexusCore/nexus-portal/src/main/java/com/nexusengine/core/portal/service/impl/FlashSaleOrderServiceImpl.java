@@ -41,10 +41,13 @@ public class FlashSaleOrderServiceImpl implements FlashSaleOrderService {
 
     @PostConstruct
     public void init() {
-        // Lua Script: Checks if stock is enough, then decrements. Returns 1 if success, 0 if out of stock.
+        // Lua Script: Checks if stock is enough and user hasn't bought, then decrements. Returns 1 if success, 0 if out of stock, -1 if already bought.
         String lua = "local stock = tonumber(redis.call('get', KEYS[1])); " +
                      "if stock and stock >= tonumber(ARGV[1]) then " +
+                     "  local bought = redis.call('sismember', KEYS[2], ARGV[2]); " +
+                     "  if bought == 1 then return -1; end; " +
                      "  redis.call('decrby', KEYS[1], tonumber(ARGV[1])); " +
+                     "  redis.call('sadd', KEYS[2], ARGV[2]); " +
                      "  return 1; " +
                      "else " +
                      "  return 0; " +
@@ -54,12 +57,14 @@ public class FlashSaleOrderServiceImpl implements FlashSaleOrderService {
         stockScript.setResultType(Long.class);
     }
 
-    private Bucket resolveBucket(Long memberId) {
-        return buckets.computeIfAbsent(memberId, key -> {
-            // Rate Limit: 1 request per second per user
-            Bandwidth limit = Bandwidth.classic(1, Refill.greedy(1, Duration.ofSeconds(1)));
-            return Bucket.builder().addLimit(limit).build();
-        });
+    // Fix 4: Distributed rate limiting using Redis instead of in-memory ConcurrentHashMap
+    private boolean isRateLimited(Long memberId) {
+        String key = "flash:rate_limit:" + memberId;
+        Long current = redisTemplate.opsForValue().increment(key);
+        if (current != null && current == 1) {
+            redisTemplate.expire(key, Duration.ofSeconds(1));
+        }
+        return current != null && current > 1;
     }
 
     @Override
@@ -69,18 +74,20 @@ public class FlashSaleOrderServiceImpl implements FlashSaleOrderService {
             return CommonResult.unauthorized(null);
         }
 
-        // 1. Rate Limiting (API Gateway / User level)
-        Bucket bucket = resolveBucket(currentMember.getId());
-        if (!bucket.tryConsume(1)) {
+        // Fix 4: Rate Limiting (API Gateway / User level) using Redis
+        if (isRateLimited(currentMember.getId())) {
             return CommonResult.failed("Request too frequent, please try again later.");
         }
 
-        // 2. Redis Gatekeeper: Atomic stock deduction
+        // Fix 3: Redis Gatekeeper: Atomic stock deduction and 1-per-user check
         String stockKey = "flash:stock:" + flashPromotionId + ":" + flashPromotionSessionId + ":" + productId;
-        Long result = redisTemplate.execute(stockScript, Collections.singletonList(stockKey), String.valueOf(quantity));
+        String userSetKey = "flash:users:" + flashPromotionId + ":" + flashPromotionSessionId + ":" + productId;
+        Long result = redisTemplate.execute(stockScript, java.util.Arrays.asList(stockKey, userSetKey), String.valueOf(quantity), String.valueOf(currentMember.getId()));
         
         if (result == null || result == 0L) {
             return CommonResult.failed("Flash sale inventory is sold out!");
+        } else if (result == -1L) {
+            return CommonResult.failed("You have already purchased this flash sale item!");
         }
 
         // 3. Asynchronous Order Processing (RabbitMQ)

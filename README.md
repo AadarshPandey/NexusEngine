@@ -44,7 +44,9 @@ Services will be available at:
 - **Customer Portal (Frontend)**: http://localhost:5174
 - **Admin Panel**: http://localhost:5173
 - **Backend API**: http://localhost:8080
+- **Backend API Swagger UI**: http://localhost:8080/swagger-ui.html
 - **Search API**: http://localhost:8081
+- **Search API Swagger UI**: http://localhost:8081/swagger-ui.html
 - **Grafana (Monitoring)**: http://localhost:3000 (admin/admin)
 - **MinIO Console**: http://localhost:9001 (minioadmin/minioadmin)
 

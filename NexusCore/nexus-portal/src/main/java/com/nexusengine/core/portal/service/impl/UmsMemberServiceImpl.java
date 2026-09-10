@@ -70,6 +70,11 @@ public class UmsMemberServiceImpl implements UmsMemberService {
 
     @Override
     public void register(String username, String password, String email, String authCode) {
+        // Fix 9: Username validation to prevent prefix injection (like "admin:macro")
+        if (username == null || !username.matches("^[a-zA-Z0-9_]+$")) {
+            Asserts.fail("Username can only contain alphanumeric characters and underscores");
+        }
+        
         if (!verifyAuthCode(authCode, email)) {
             Asserts.fail("Invalid verification code");
         }
@@ -140,6 +145,9 @@ public class UmsMemberServiceImpl implements UmsMemberService {
     public UmsMember getCurrentMember() {
         SecurityContext ctx = SecurityContextHolder.getContext();
         Authentication auth = ctx.getAuthentication();
+        if (auth == null || !auth.isAuthenticated() || !(auth.getPrincipal() instanceof MemberDetails)) {
+            return null;
+        }
         MemberDetails memberDetails = (MemberDetails) auth.getPrincipal();
         return memberDetails.getUmsMember();
     }

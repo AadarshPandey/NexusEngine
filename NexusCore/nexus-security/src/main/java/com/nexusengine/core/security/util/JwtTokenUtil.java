@@ -47,8 +47,8 @@ public class JwtTokenUtil {
      * Auto-generated documentation
      */
     private String generateToken(Map<String, Object> claims) {
-        // Auto-generated documentation
-        long expireTime = System.currentTimeMillis() + expiration * 1000;
+        // Fix 8: Standard JWT exp claim must be in seconds since epoch, not milliseconds.
+        long expireTime = (System.currentTimeMillis() / 1000) + expiration;
         claims.put("exp", expireTime);
         return JWTUtil.createToken(claims, getSigningKey());
     }

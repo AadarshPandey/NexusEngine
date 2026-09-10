@@ -66,12 +66,10 @@ public class DynamicAuthorizationManager implements AuthorizationManager<Request
         List<String> needAuthorities = configAttributeList.stream()
                 .map(ConfigAttribute::getAttribute)
                 .collect(Collectors.toList());
-        // Auto-generated documentation
         if (CollUtil.isEmpty(needAuthorities)) {
-            Authentication currentAuth = authentication.get();
-            if (currentAuth != null && currentAuth.isAuthenticated() && !currentAuth.getPrincipal().equals("anonymousUser")) {
-                return new AuthorizationDecision(true);
-            }
+            // Fix 5: Fail-closed instead of fail-open.
+            // If the endpoint is not explicitly mapped in UmsResource, deny access
+            // instead of blindly allowing any authenticated user (e.g. member) to access it.
             return new AuthorizationDecision(false);
         }
 
