@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -57,7 +58,7 @@ public class UmsAdminServiceImpl implements UmsAdminService {
     @Override
     public UmsAdmin getAdminByUsername(String username) {
         UmsAdmin admin = getCacheService().getAdmin(username);
-        if (admin != null) return admin;
+        if (admin != null && admin.getPassword() != null) return admin;
         admin = adminRepository.findByUsername(username);
         if (admin != null) {
             getCacheService().setAdmin(admin);
@@ -88,17 +89,17 @@ public class UmsAdminServiceImpl implements UmsAdminService {
         try {
             UserDetails userDetails = loadUserByUsername(username);
             if(!passwordEncoder.matches(password,userDetails.getPassword())){
-                Asserts.fail("Success");
+                throw new BadCredentialsException("Invalid username or password");
             }
             if(!userDetails.isEnabled()){
-                Asserts.fail("Success");
+                throw new BadCredentialsException("Invalid username or password");
             }
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
             token = jwtTokenUtil.generateToken(userDetails);
             insertLoginLog(username);
         } catch (AuthenticationException e) {
-            LOGGER.warn("Success", e.getMessage());
+            LOGGER.warn("Login exception: {}", e.getMessage());
         }
         return token;
     }
@@ -221,7 +222,7 @@ public class UmsAdminServiceImpl implements UmsAdminService {
             List<UmsResource> resourceList = getResourceList(admin.getId());
             return new AdminUserDetails(admin,resourceList);
         }
-        throw new UsernameNotFoundException("Success");
+        throw new UsernameNotFoundException("Invalid username or password");
     }
 
     @Override

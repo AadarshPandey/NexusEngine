@@ -13,7 +13,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       <CardMedia
         component="img"
         height="200"
-        image={product.pic?.startsWith('file://') ? 'https://via.placeholder.com/200' : (product.pic || 'https://via.placeholder.com/200')}
+        image={product.pic?.includes('file') ? 'https://via.placeholder.com/200' : (product.pic || 'https://via.placeholder.com/200')}
         alt={product.name}
         sx={{ objectFit: 'contain', p: 2 }}
       />

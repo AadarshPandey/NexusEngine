@@ -162,7 +162,7 @@ const Profile: React.FC = () => {
       <Box sx={{ flex: 1 }}>
         <Paper sx={{ p: 4, textAlign: 'center' }}>
           <Avatar 
-            src={memberInfo?.icon?.startsWith('file://') ? 'https://via.placeholder.com/100' : (memberInfo?.icon || 'https://via.placeholder.com/100')} 
+            src={memberInfo?.icon?.includes('file') ? 'https://via.placeholder.com/100' : (memberInfo?.icon || 'https://via.placeholder.com/100')} 
             sx={{ width: 100, height: 100, mx: 'auto', mb: 2 }} 
           />
           <Typography variant="h5" gutterBottom>{memberInfo?.nickname || authUser?.username}</Typography>
@@ -303,7 +303,8 @@ const Profile: React.FC = () => {
                                     },
                                     prefill: {
                                       name: memberInfo?.nickname || memberInfo?.username || 'Test Customer',
-                                      contact: memberInfo?.phone || '+919000090000'
+                                      email: 'test@example.com',
+                                      contact: '9000090000'
                                     },
                                     theme: { color: '#3399cc' }
                                   };
@@ -417,7 +418,7 @@ const Profile: React.FC = () => {
                     if (!isFullyReturned) handleRefundItemToggle(item);
                   }}
                 >
-                  <img src={item.productPic?.startsWith('file://') ? 'https://via.placeholder.com/60' : (item.productPic || 'https://via.placeholder.com/60')} alt={item.productName} style={{ width: 60, height: 60, objectFit: 'cover' }} />
+                  <img src={item.productPic?.includes('file') ? 'https://via.placeholder.com/60' : (item.productPic || 'https://via.placeholder.com/60')} alt={item.productName} style={{ width: 60, height: 60, objectFit: 'cover' }} />
                   <Box sx={{ flex: 1 }}>
                     <Typography variant="subtitle2">{item.productName}</Typography>
                     <Typography variant="body2" color="text.secondary">{item.productAttr}</Typography>
@@ -433,7 +434,7 @@ const Profile: React.FC = () => {
                         type="number"
                         label="Return Qty"
                         size="small"
-                        inputProps={{ min: 1, max: maxReturnableQty }}
+                        slotProps={{ htmlInput: { min: 1, max: maxReturnableQty } }} //{{ min: 1, max: maxReturnableQty }}
                         value={selectedRefundItems.find(i => i.id === item.id)?.returnQuantity || 1}
                         onChange={(e) => {
                           const val = parseInt(e.target.value);

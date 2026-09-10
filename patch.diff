@@ -1,0 +1,14 @@
+--- /home/aadarsh/Documents/NexusEngine/NexusCore/nexus-application/src/main/resources/application.yml
++++ /home/aadarsh/Documents/NexusEngine/NexusCore/nexus-application/src/main/resources/application.yml
+@@ -124,11 +124,10 @@
+       exposure:
+         include: health,info,metrics,prometheus
+   tracing:
+-    enabled: false
++    enabled: false
+     sampling:
+       probability: 1.0
+   otlp:
+     tracing:
+-    enabled: false
+       endpoint: http://localhost:4318/v1/traces

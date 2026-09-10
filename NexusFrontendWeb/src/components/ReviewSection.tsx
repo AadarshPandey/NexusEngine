@@ -95,7 +95,7 @@ export const ReviewSection: React.FC<{ productId: number }> = ({ productId }) =>
             <input hidden accept="image/*,video/*" type="file" onChange={handleUpload} />
             <PhotoCamera />
           </IconButton>
-          {mediaList.map((m, i) => (
+          {mediaList.map((_m, i) => (
             <Typography key={i} variant="caption">Uploaded Media {i + 1}</Typography>
           ))}
         </Box>

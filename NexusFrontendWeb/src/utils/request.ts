@@ -26,8 +26,10 @@ request.interceptors.response.use(
     const res = response.data;
     if (res.code !== 200) {
       if (res.code === 401) {
-        store.dispatch(logout());
-        window.location.href = '/login';
+        if (window.location.pathname !== '/login') {
+            store.dispatch(logout());
+            window.location.href = '/login';
+        }
       }
       return Promise.reject(new Error(res.message || 'Error'));
     }
@@ -35,10 +37,13 @@ request.interceptors.response.use(
   },
   (error) => {
     if (error.response && error.response.status === 401) {
-      store.dispatch(logout());
-      window.location.href = '/login';
+      if (window.location.pathname !== '/login') {
+          store.dispatch(logout());
+          window.location.href = '/login';
+      }
     }
-    return Promise.reject(error);
+    const errMsg = error.response?.data?.message || error.message;
+    return Promise.reject(new Error(errMsg));
   }
 );
 

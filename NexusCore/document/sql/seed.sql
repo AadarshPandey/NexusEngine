@@ -27,7 +27,7 @@ ON CONFLICT (id) DO NOTHING;
 
 -- Customer member (password: macro123)
 INSERT INTO ums_member (id, username, password, phone, status, gender, city, icon, member_level_id, growth, integration, create_time)
-VALUES (1, 'customer1', '$2a$10$yBHlid11MRH9e6vDsETdJufyIgz/AASiNSUJdsirodt8IUr16xWDO', '13800138000', 1, 1, 'Mumbai', NULL, 4, 0, 0, '2024-01-01 00:00:00')
+VALUES (1, 'customer1', '$2a$10$yBHlid11MRH9e6vDsETdJufyIgz/AASiNSUJdsirodt8IUr16xWDO', '+919876543210', 1, 1, 'Mumbai', NULL, 4, 0, 0, '2024-01-01 00:00:00')
 ON CONFLICT (id) DO NOTHING;
 
 -- Product categories

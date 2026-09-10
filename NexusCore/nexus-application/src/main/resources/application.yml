@@ -125,6 +125,7 @@ management:
       exposure:
         include: health,info,metrics,prometheus
   tracing:
+    enabled: false
     sampling:
       probability: 1.0
   otlp:

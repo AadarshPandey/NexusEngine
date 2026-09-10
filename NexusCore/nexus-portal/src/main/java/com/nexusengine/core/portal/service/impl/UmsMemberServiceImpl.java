@@ -54,7 +54,7 @@ public class UmsMemberServiceImpl implements UmsMemberService {
     @Override
     public UmsMember getByUsername(String username) {
         UmsMember member = memberCacheService.getMember(username);
-        if (member != null) return member;
+        if (member != null && member.getPassword() != null) return member;
         member = memberRepository.findByUsername(username);
         if (member != null) {
             memberCacheService.setMember(member);

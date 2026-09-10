@@ -115,7 +115,8 @@ const Checkout: React.FC = () => {
         },
         prefill: {
           name: user?.nickname || user?.username || 'Test Customer',
-          contact: user?.phone || '+919000090000'
+          email: 'test@example.com',
+          contact: '9000090000'
         },
         theme: { color: '#3399cc' },
         modal: {
