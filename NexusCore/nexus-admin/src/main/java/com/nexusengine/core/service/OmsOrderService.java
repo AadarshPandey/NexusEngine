@@ -7,51 +7,72 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/10/11.
+ * Represents the OmsOrderService component.
+ * Provides core functionality and operations for OmsOrderService.
  */
 public interface OmsOrderService {
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param queryParam the queryParam
+     * @param pageSize the pageSize
+     * @param pageNum the pageNum
+     * @return the result of the operation
      */
     List<OmsOrder> list(OmsOrderQueryParam queryParam, Integer pageSize, Integer pageNum);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param deliveryParamList the deliveryParamList
+     * @return the result of the operation
      */
     @Transactional
     int delivery(List<OmsOrderDeliveryParam> deliveryParamList);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param ids the ids
+     * @param note the note
+     * @return the result of the operation
      */
     @Transactional
     int close(List<Long> ids, String note);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param ids the ids
+     * @return the result of the operation
      */
     int delete(List<Long> ids);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param id the id
+     * @return the result of the operation
      */
     OmsOrderDetail detail(Long id);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param receiverInfoParam the receiverInfoParam
+     * @return the result of the operation
      */
     @Transactional
     int updateReceiverInfo(OmsReceiverInfoParam receiverInfoParam);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param moneyInfoParam the moneyInfoParam
+     * @return the result of the operation
      */
     @Transactional
     int updateMoneyInfo(OmsMoneyInfoParam moneyInfoParam);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param id the id
+     * @param note the note
+     * @param status the status
+     * @return the result of the operation
      */
     @Transactional
     int updateNote(Long id, String note, Integer status);

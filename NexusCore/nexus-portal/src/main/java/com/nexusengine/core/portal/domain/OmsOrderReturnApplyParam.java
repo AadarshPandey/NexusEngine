@@ -7,8 +7,8 @@ import lombok.Setter;
 import java.math.BigDecimal;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/10/17.
+ * Represents the OmsOrderReturnApplyParam component.
+ * Provides core functionality and operations for OmsOrderReturnApplyParam.
  */
 @Getter
 @Setter

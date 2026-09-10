@@ -5,15 +5,18 @@ import com.nexusengine.core.model.SmsCouponHistory;
 import java.util.List;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/11/6.
+ * Represents the SmsCouponHistoryService component.
+ * Provides core functionality and operations for SmsCouponHistoryService.
  */
 public interface SmsCouponHistoryService {
-    /**
-     * Auto-generated documentation
-     * Auto-generated documentation
-     * Auto-generated documentation
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param couponId the couponId
+     * @param useStatus the useStatus
+     * @param orderSn the orderSn
+     * @param pageSize the pageSize
+     * @param pageNum the pageNum
+     * @return the result of the operation
      */
     List<SmsCouponHistory> list(Long couponId, Integer useStatus, String orderSn, Integer pageSize, Integer pageNum);
 }

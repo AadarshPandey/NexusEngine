@@ -16,7 +16,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Auto-generated documentation
+ * Represents the UmsAdminCacheServiceImpl component.
+ * Provides core functionality and operations for UmsAdminCacheServiceImpl.
  */
 @Service
 public class UmsAdminCacheServiceImpl implements UmsAdminCacheService {

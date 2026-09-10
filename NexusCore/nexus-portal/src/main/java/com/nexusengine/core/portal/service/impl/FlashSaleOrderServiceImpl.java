@@ -60,10 +60,11 @@ public class FlashSaleOrderServiceImpl implements FlashSaleOrderService {
     // Fix 4: Distributed rate limiting using Redis instead of in-memory ConcurrentHashMap
     private boolean isRateLimited(Long memberId) {
         String key = "flash:rate_limit:" + memberId;
-        Long current = redisTemplate.opsForValue().increment(key);
-        if (current != null && current == 1) {
-            redisTemplate.expire(key, Duration.ofSeconds(1));
-        }
+        String script = "local c = redis.call('incr', KEYS[1]); if c == 1 then redis.call('expire', KEYS[1], 1) end; return c";
+        Long current = redisTemplate.execute(
+            new org.springframework.data.redis.core.script.DefaultRedisScript<>(script, Long.class),
+            java.util.Collections.singletonList(key)
+        );
         return current != null && current > 1;
     }
 

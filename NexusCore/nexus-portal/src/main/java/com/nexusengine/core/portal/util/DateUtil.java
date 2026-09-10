@@ -4,13 +4,15 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2019/1/29.
+ * Represents the DateUtil component.
+ * Provides core functionality and operations for DateUtil.
  */
 public class DateUtil {
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param date the date
+     * @return the result of the operation
      */
     public static Date getDate(Date date) {
         Calendar calendar = Calendar.getInstance();
@@ -21,8 +23,10 @@ public class DateUtil {
         return calendar.getTime();
     }
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param date the date
+     * @return the result of the operation
      */
     public static Date getTime(Date date) {
         Calendar calendar = Calendar.getInstance();

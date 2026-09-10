@@ -23,17 +23,17 @@ export interface OmsCartItem {
 }
 
 export const fetchCartList = () => {
-  return request.get<any, { data: OmsCartItem[] }>('/cart/list/promotion');
+  return request.get<unknown, { data: OmsCartItem[] }>('/cart/list/promotion');
 };
 
 export const addToCart = (data: Partial<OmsCartItem>) => {
-  return request.post<any, { data: any }>('/cart/add', data);
+  return request.post<unknown, { data: unknown }>('/cart/add', data);
 };
 
 export const deleteCartItem = (ids: number[]) => {
-  return request.post<any, any>('/cart/delete', null, { params: { ids: ids.join(',') } });
+  return request.post<unknown, unknown>('/cart/delete', null, { params: { ids: ids.join(',') } });
 };
 
 export const updateCartItemQuantity = (id: number, quantity: number) => {
-  return request.get<any, any>('/cart/update/quantity', { params: { id, quantity } });
+  return request.get<unknown, unknown>('/cart/update/quantity', { params: { id, quantity } });
 };

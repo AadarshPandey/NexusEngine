@@ -5,8 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/10/18.
+ * Represents the OmsReturnApplyQueryParam component.
+ * Provides core functionality and operations for OmsReturnApplyQueryParam.
  */
 @Getter
 @Setter

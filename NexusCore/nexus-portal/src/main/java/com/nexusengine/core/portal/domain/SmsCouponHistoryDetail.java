@@ -11,8 +11,8 @@ import lombok.Setter;
 import java.util.List;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/8/29.
+ * Represents the SmsCouponHistoryDetail component.
+ * Provides core functionality and operations for SmsCouponHistoryDetail.
  */
 @Getter
 @Setter

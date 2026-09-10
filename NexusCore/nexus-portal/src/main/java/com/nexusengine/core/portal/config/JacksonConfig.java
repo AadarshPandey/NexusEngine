@@ -10,9 +10,8 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 
 /**
- * Auto-generated documentation
- * Auto-generated documentation
- * Created by macro on 2018/8/2.
+ * Represents the JacksonConfig component.
+ * Provides core functionality and operations for JacksonConfig.
  */
 @Configuration
 public class JacksonConfig {
@@ -21,11 +20,6 @@ public class JacksonConfig {
     @ConditionalOnMissingBean(ObjectMapper.class)
     public ObjectMapper jacksonObjectMapper(Jackson2ObjectMapperBuilder builder) {
         ObjectMapper objectMapper = builder.createXmlMapper(false).build();
-        // Auto-generated documentation
-        // Auto-generated documentation
-        // Auto-generated documentation
-        // Auto-generated documentation
-        // Auto-generated documentation
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         return objectMapper;
     }

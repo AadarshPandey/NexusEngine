@@ -1,21 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Chip, Paper } from '@mui/material';
 import { getCouponHistoryListAPI } from '@/apis/coupon';
+import { useParams } from 'react-router-dom';
 
 const CouponHistory: React.FC = () => {
-  const [history, setHistory] = useState<any[]>([]);
+  const { id } = useParams();
+  const [history, setHistory] = useState<import('@/types/coupon').SmsCouponHistory[]>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetchHistory();
-  }, []);
+    if (id) {
+      fetchHistory(Number(id));
+    }
+  }, [id]);
 
-  const fetchHistory = async () => {
+  const fetchHistory = async (couponId: number) => {
     try {
-      const res = await getCouponHistoryListAPI({ pageNum: 1, pageSize: 50 } as any);
-      // @ts-ignore
+      setLoading(true);
+      const res = await getCouponHistoryListAPI({ couponId, pageNum: 1, pageSize: 50 } as unknown as import('@/types/coupon').SmsCouponHistoryQueryParam);
       setHistory(res.data?.list || []);
     } catch (e) {
       console.error(e);
+    } finally {
+      setLoading(false);
     }
   };
 

@@ -6,37 +6,43 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/8/28.
+ * Represents the UmsMemberReceiveAddressService component.
+ * Provides core functionality and operations for UmsMemberReceiveAddressService.
  */
 public interface UmsMemberReceiveAddressService {
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param address the address
+     * @return the result of the operation
      */
     int add(UmsMemberReceiveAddress address);
 
-    /**
-     * Auto-generated documentation
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param id the id
+     * @return the result of the operation
      */
     int delete(Long id);
 
-    /**
-     * Auto-generated documentation
-     * Auto-generated documentation
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param id the id
+     * @param address the address
+     * @return the result of the operation
      */
     @Transactional
     int update(Long id, UmsMemberReceiveAddress address);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @return the result of the operation
      */
     List<UmsMemberReceiveAddress> list();
 
-    /**
-     * Auto-generated documentation
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param id the id
+     * @return the result of the operation
      */
     UmsMemberReceiveAddress getItem(Long id);
 }

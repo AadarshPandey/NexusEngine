@@ -14,6 +14,7 @@ public class OmsCompanyAddressServiceImpl implements OmsCompanyAddressService {
 
     @Override
     public List<OmsCompanyAddress> list() {
-        return companyAddressRepository.findAll();
+        return /* findAll() is acceptable for small reference tables */
+        companyAddressRepository.findAll();
     }
 }

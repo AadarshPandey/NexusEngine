@@ -1,5 +1,6 @@
 package com.nexusengine.core.controller;
 
+import org.springframework.web.bind.annotation.RestController;
 import com.nexusengine.core.common.api.CommonPage;
 import com.nexusengine.core.common.api.CommonResult;
 import com.nexusengine.core.model.SmsHomeAdvertise;
@@ -7,16 +8,15 @@ import com.nexusengine.core.service.SmsHomeAdvertiseService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/11/7.
+ * Represents the SmsHomeAdvertiseController component.
+ * Provides core functionality and operations for SmsHomeAdvertiseController.
  */
-@Controller
+@RestController
 @Tag(name = "SmsHomeAdvertiseController", description = "Sms home advertise controller APIs")
 @RequestMapping("/home/advertise")
 public class SmsHomeAdvertiseController {
@@ -25,7 +25,7 @@ public class SmsHomeAdvertiseController {
 
     @Operation(summary = "Create Operation")
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    @ResponseBody
+
     public CommonResult create(@RequestBody SmsHomeAdvertise advertise) {
         int count = advertiseService.create(advertise);
         if (count > 0)
@@ -35,7 +35,7 @@ public class SmsHomeAdvertiseController {
 
     @Operation(summary = "Delete Operation")
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
-    @ResponseBody
+
     public CommonResult delete(@RequestParam("ids") List<Long> ids) {
         int count = advertiseService.delete(ids);
         if (count > 0)
@@ -45,7 +45,7 @@ public class SmsHomeAdvertiseController {
 
     @Operation(summary = "Update status Operation")
     @RequestMapping(value = "/update/status/{id}", method = RequestMethod.POST)
-    @ResponseBody
+
     public CommonResult updateStatus(@PathVariable Long id, Integer status) {
         int count = advertiseService.updateStatus(id, status);
         if (count > 0)
@@ -55,7 +55,7 @@ public class SmsHomeAdvertiseController {
 
     @Operation(summary = "Get item Operation")
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    @ResponseBody
+
     public CommonResult<SmsHomeAdvertise> getItem(@PathVariable Long id) {
         SmsHomeAdvertise advertise = advertiseService.getItem(id);
         return CommonResult.success(advertise);
@@ -63,7 +63,7 @@ public class SmsHomeAdvertiseController {
 
     @Operation(summary = "Update Operation")
     @RequestMapping(value = "/update/{id}", method = RequestMethod.POST)
-    @ResponseBody
+
     public CommonResult update(@PathVariable Long id, @RequestBody SmsHomeAdvertise advertise) {
         int count = advertiseService.update(id, advertise);
         if (count > 0)
@@ -73,7 +73,7 @@ public class SmsHomeAdvertiseController {
 
     @Operation(summary = "List Operation")
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    @ResponseBody
+
     public CommonResult<CommonPage<SmsHomeAdvertise>> list(@RequestParam(value = "name", required = false) String name,
                                                            @RequestParam(value = "type", required = false) Integer type,
                                                            @RequestParam(value = "endTime", required = false) String endTime,

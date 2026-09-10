@@ -10,6 +10,7 @@ import com.nexusengine.core.service.SmsCouponService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.PageRequest;
 import java.util.List;
 
 @Service
@@ -73,7 +74,7 @@ public class SmsCouponServiceImpl implements SmsCouponService {
 
     @Override
     public List<SmsCoupon> list(String name, Integer type, Integer pageSize, Integer pageNum) {
-        return couponRepository.findAll();
+        return couponRepository.findAll(PageRequest.of(0, 1000)).getContent();
     }
 
     @Override

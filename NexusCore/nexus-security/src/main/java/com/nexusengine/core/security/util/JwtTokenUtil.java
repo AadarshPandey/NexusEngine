@@ -14,15 +14,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Auto-generated documentation
- * Auto-generated documentation
- * Auto-generated documentation
  * {"alg": "HS512","typ": "JWT"}
- * Auto-generated documentation
  * {"sub":"wang","created":1489079981393,"exp":1489684781}
- * Auto-generated documentation
  * HMACSHA512(base64UrlEncode(header) + "." +base64UrlEncode(payload),secret)
- * Created by macro on 2018/4/26.
  * Refactored to use Hutool JWTUtil
  */
 public class JwtTokenUtil {
@@ -36,15 +30,18 @@ public class JwtTokenUtil {
     @Value("${jwt.tokenHead}")
     private String tokenHead;
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @return the result of the operation
      */
     private byte[] getSigningKey() {
         return secret.getBytes(StandardCharsets.UTF_8);
     }
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param claims the claims
+     * @return the result of the operation
      */
     private String generateToken(Map<String, Object> claims) {
         // Fix 8: Standard JWT exp claim must be in seconds since epoch, not milliseconds.
@@ -53,26 +50,28 @@ public class JwtTokenUtil {
         return JWTUtil.createToken(claims, getSigningKey());
     }
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param token the token
+     * @return the result of the operation
      */
     private Map<String, Object> getPayloadFromToken(String token) {
         try {
-            // Auto-generated documentation
             if (!JWTUtil.verify(token, getSigningKey())) {
-                LOGGER.info("Success", token);
+                LOGGER.debug("JWT token signature verification failed");
                 return null;
             }
-            // Auto-generated documentation
             return JWTUtil.parseToken(token).getPayloads();
         } catch (Exception e) {
-            LOGGER.info("Success", token);
+            LOGGER.debug("JWT token verification failed", e);
             return null;
         }
     }
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param token the token
+     * @return the result of the operation
      */
     public String getUserNameFromToken(String token) {
         String username;
@@ -86,10 +85,7 @@ public class JwtTokenUtil {
     }
 
     /**
-     * Auto-generated documentation
      *
-     * Auto-generated documentation
-     * Auto-generated documentation
      */
     public boolean validateToken(String token, UserDetails userDetails) {
         String username = getUserNameFromToken(token);
@@ -99,12 +95,13 @@ public class JwtTokenUtil {
         return username != null && username.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param token the token
+     * @return the result of the operation
      */
     private boolean isTokenExpired(String token) {
         try {
-            // Auto-generated documentation
             Map<String, Object> payload = getPayloadFromToken(token);
             if (payload == null) {
                 return true;
@@ -114,14 +111,16 @@ public class JwtTokenUtil {
                 return false;
             }
             long expTime = exp instanceof Long ? (Long) exp : ((Number) exp).longValue();
-            return expTime < System.currentTimeMillis();
+            return expTime < (System.currentTimeMillis() / 1000);
         } catch (Exception e) {
             return true;
         }
     }
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param token the token
+     * @return the result of the operation
      */
     private Date getExpiredDateFromToken(String token) {
         Map<String, Object> payload = getPayloadFromToken(token);
@@ -137,8 +136,10 @@ public class JwtTokenUtil {
         return null;
     }
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param userDetails the userDetails
+     * @return the result of the operation
      */
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
@@ -149,9 +150,7 @@ public class JwtTokenUtil {
     }
 
     /**
-     * Auto-generated documentation
      *
-     * Auto-generated documentation
      */
     public String refreshHeadToken(String oldToken) {
         if (StrUtil.isEmpty(oldToken)) {
@@ -161,16 +160,13 @@ public class JwtTokenUtil {
         if (StrUtil.isEmpty(token)) {
             return null;
         }
-        // Auto-generated documentation
         Map<String, Object> payload = getPayloadFromToken(token);
         if (payload == null) {
             return null;
         }
-        // Auto-generated documentation
         if (isTokenExpired(token)) {
             return null;
         }
-        // Auto-generated documentation
         if (tokenRefreshJustBefore(token, 30 * 60)) {
             return token;
         } else {
@@ -180,10 +176,7 @@ public class JwtTokenUtil {
     }
 
     /**
-     * Auto-generated documentation
      *
-     * Auto-generated documentation
-     * Auto-generated documentation
      */
     private boolean tokenRefreshJustBefore(String token, int time) {
         Map<String, Object> payload = getPayloadFromToken(token);
@@ -201,7 +194,6 @@ public class JwtTokenUtil {
             return false;
         }
         Date refreshDate = new Date();
-        // Auto-generated documentation
         return refreshDate.after(createdDate) && refreshDate.before(DateUtil.offsetSecond(createdDate, time));
     }
 }

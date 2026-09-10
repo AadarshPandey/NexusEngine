@@ -6,13 +6,14 @@ import com.nexusengine.core.portal.domain.CartPromotionItem;
 import java.util.List;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/8/27.
+ * Represents the OmsPromotionService component.
+ * Provides core functionality and operations for OmsPromotionService.
  */
 public interface OmsPromotionService {
-    /**
-     * Auto-generated documentation
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param cartItemList the cartItemList
+     * @return the result of the operation
      */
     List<CartPromotionItem> calcCartPromotion(List<OmsCartItem> cartItemList);
 }

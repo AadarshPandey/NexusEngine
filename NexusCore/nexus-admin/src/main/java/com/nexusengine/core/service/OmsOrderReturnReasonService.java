@@ -5,37 +5,50 @@ import com.nexusengine.core.model.OmsOrderReturnReason;
 import java.util.List;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/10/17.
+ * Represents the OmsOrderReturnReasonService component.
+ * Provides core functionality and operations for OmsOrderReturnReasonService.
  */
 public interface OmsOrderReturnReasonService {
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param returnReason the returnReason
      */
     int create(OmsOrderReturnReason returnReason);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param id the id
+     * @param returnReason the returnReason
      */
     int update(Long id, OmsOrderReturnReason returnReason);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param ids the ids
+     * @return the result of the operation
      */
     int delete(List<Long> ids);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param pageSize the pageSize
+     * @param pageNum the pageNum
+     * @return the result of the operation
      */
     List<OmsOrderReturnReason> list(Integer pageSize, Integer pageNum);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param ids the ids
+     * @param status the status
+     * @return the result of the operation
      */
     int updateStatus(List<Long> ids, Integer status);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param id the id
+     * @return the result of the operation
      */
     OmsOrderReturnReason getItem(Long id);
 }

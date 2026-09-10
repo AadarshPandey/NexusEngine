@@ -9,8 +9,8 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/4/26.
+ * Represents the PmsBrandParam component.
+ * Provides core functionality and operations for PmsBrandParam.
  */
 @Data
 @EqualsAndHashCode

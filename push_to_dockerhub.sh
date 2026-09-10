@@ -31,8 +31,8 @@ docker compose build
 echo ""
 echo "Step 3: Tagging images with your Docker Hub namespace"
 # Tag backend services
-docker tag nexuscore/mall-application:latest "$USERNAME/nexus-engine-backend:latest"
-docker tag nexuscore/mall-search:latest "$USERNAME/nexus-engine-search:latest"
+docker tag nexuscore/nexus-application:latest "$USERNAME/nexus-engine-backend:latest"
+docker tag nexuscore/nexus-search:latest "$USERNAME/nexus-engine-search:latest"
 
 # Tag frontend services
 docker tag nexuscore/nexus-frontend-web:latest "$USERNAME/nexus-engine-frontend-store:latest"

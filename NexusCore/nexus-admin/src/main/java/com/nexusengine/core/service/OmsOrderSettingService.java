@@ -3,17 +3,22 @@ package com.nexusengine.core.service;
 import com.nexusengine.core.model.OmsOrderSetting;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/10/16.
+ * Represents the OmsOrderSettingService component.
+ * Provides core functionality and operations for OmsOrderSettingService.
  */
 public interface OmsOrderSettingService {
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param id the id
+     * @return the result of the operation
      */
     OmsOrderSetting getItem(Long id);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param id the id
+     * @param orderSetting the orderSetting
+     * @return the result of the operation
      */
     int update(Long id, OmsOrderSetting orderSetting);
 }

@@ -109,7 +109,7 @@ const OrderList: React.FC = () => {
           <Grid size={{xs: 12, sm: 6, md: 3, lg: 2}}>
             <FormControl fullWidth size="small">
               <InputLabel>Payment Type</InputLabel>
-              <Select value={searchPayType} label="Payment Type" onChange={e => setSearchPayType(e.target.value as any)}>
+              <Select value={searchPayType} label="Payment Type" onChange={e => setSearchPayType(e.target.value as number | '')}>
                 <MenuItem value=""><em>All</em></MenuItem>
                 <MenuItem value={0}>Unpaid</MenuItem>
                 <MenuItem value={1}>Alipay</MenuItem>
@@ -120,7 +120,7 @@ const OrderList: React.FC = () => {
           <Grid size={{xs: 12, sm: 6, md: 3, lg: 2}}>
             <FormControl fullWidth size="small">
               <InputLabel>Status</InputLabel>
-              <Select value={searchStatus} label="Status" onChange={e => setSearchStatus(e.target.value as any)}>
+              <Select value={searchStatus} label="Status" onChange={e => setSearchStatus(e.target.value as number | '')}>
                 <MenuItem value=""><em>All</em></MenuItem>
                 <MenuItem value={0}>Unpaid</MenuItem>
                 <MenuItem value={1}>Paid/To Ship</MenuItem>

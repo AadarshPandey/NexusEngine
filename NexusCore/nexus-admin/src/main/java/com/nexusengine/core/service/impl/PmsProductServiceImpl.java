@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.util.CollectionUtils;
 
 import java.lang.reflect.Method;
@@ -241,7 +242,7 @@ public class PmsProductServiceImpl implements PmsProductService {
             if (hasKeyword) {
                 return productRepository.findByNameContaining(keyword);
             }
-            return productRepository.findAll();
+            return productRepository.findAll(PageRequest.of(0, 1000)).getContent();
         }
     }
 

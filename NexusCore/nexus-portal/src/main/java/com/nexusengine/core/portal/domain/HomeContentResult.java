@@ -11,8 +11,8 @@ import lombok.Setter;
 import java.util.List;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2019/1/28.
+ * Represents the HomeContentResult component.
+ * Provides core functionality and operations for HomeContentResult.
  */
 @Getter
 @Setter

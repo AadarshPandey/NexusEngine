@@ -69,6 +69,12 @@ public class UmsAdminServiceImpl implements UmsAdminService {
 
     @Override
     public UmsAdmin register(UmsAdminParam umsAdminParam) {
+        if (umsAdminParam.getPassword() == null || umsAdminParam.getPassword().length() < 8) {
+            Asserts.fail("Password must be at least 8 characters long");
+        }
+        if (!umsAdminParam.getPassword().matches(".*[A-Z].*") || !umsAdminParam.getPassword().matches(".*[a-z].*") || !umsAdminParam.getPassword().matches(".*\\\\d.*")) {
+            Asserts.fail("Password must contain at least one uppercase letter, one lowercase letter, and one digit");
+        }
         UmsAdmin umsAdmin = new UmsAdmin();
         BeanUtils.copyProperties(umsAdminParam, umsAdmin);
         umsAdmin.setCreateTime(new Date());
@@ -201,6 +207,12 @@ public class UmsAdminServiceImpl implements UmsAdminService {
                 ||StrUtil.isEmpty(param.getOldPassword())
                 ||StrUtil.isEmpty(param.getNewPassword())){
             return -1;
+        }
+        if (param.getNewPassword().length() < 8) {
+            Asserts.fail("Password must be at least 8 characters long");
+        }
+        if (!param.getNewPassword().matches(".*[A-Z].*") || !param.getNewPassword().matches(".*[a-z].*") || !param.getNewPassword().matches(".*\\\\d.*")) {
+            Asserts.fail("Password must contain at least one uppercase letter, one lowercase letter, and one digit");
         }
         UmsAdmin umsAdmin = adminRepository.findByUsername(param.getUsername());
         if(umsAdmin == null){

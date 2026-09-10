@@ -231,7 +231,8 @@ const HomeBrand: React.FC = () => {
             <FormControl size="small" sx={{ width: 180 }}>
               <Select
                 value={recommendStatus}
-                onChange={(e) => setRecommendStatus(e.target.value as any)}
+                label="Recommend status"
+                onChange={(e) => setRecommendStatus(e.target.value as number | '')}
                 displayEmpty
               >
                 <MenuItem value="">All Status</MenuItem>

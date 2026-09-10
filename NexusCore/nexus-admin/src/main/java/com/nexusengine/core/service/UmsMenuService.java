@@ -6,42 +6,59 @@ import com.nexusengine.core.model.UmsMenu;
 import java.util.List;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2020/2/2.
+ * Represents the UmsMenuService component.
+ * Provides core functionality and operations for UmsMenuService.
  */
 public interface UmsMenuService {
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param umsMenu the umsMenu
+     * @return the result of the operation
      */
     int create(UmsMenu umsMenu);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param id the id
+     * @param umsMenu the umsMenu
+     * @return the result of the operation
      */
     int update(Long id, UmsMenu umsMenu);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param id the id
+     * @return the result of the operation
      */
     UmsMenu getItem(Long id);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param id the id
+     * @return the result of the operation
      */
     int delete(Long id);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param parentId the parentId
+     * @param pageSize the pageSize
+     * @param pageNum the pageNum
+     * @return the result of the operation
      */
     org.springframework.data.domain.Page<UmsMenu> list(Long parentId, Integer pageSize, Integer pageNum);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @return the result of the operation
      */
     List<UmsMenuNode> treeList();
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param id the id
+     * @param hidden the hidden
+     * @return the result of the operation
      */
     int updateHidden(Long id, Integer hidden);
 }

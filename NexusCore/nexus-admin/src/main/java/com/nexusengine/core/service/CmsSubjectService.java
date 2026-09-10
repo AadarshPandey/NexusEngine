@@ -5,17 +5,22 @@ import com.nexusengine.core.model.CmsSubject;
 import java.util.List;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/6/1.
+ * Represents the CmsSubjectService component.
+ * Provides core functionality and operations for CmsSubjectService.
  */
 public interface CmsSubjectService {
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @return the result of the operation
      */
     List<CmsSubject> listAll();
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param keyword the keyword
+     * @param pageNum the pageNum
+     * @param pageSize the pageSize
+     * @return the result of the operation
      */
     List<CmsSubject> list(String keyword, Integer pageNum, Integer pageSize);
 }

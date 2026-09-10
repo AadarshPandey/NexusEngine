@@ -7,8 +7,8 @@ import lombok.EqualsAndHashCode;
 import java.util.List;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/8/30.
+ * Represents the OrderParam component.
+ * Provides core functionality and operations for OrderParam.
  */
 @Data
 @EqualsAndHashCode

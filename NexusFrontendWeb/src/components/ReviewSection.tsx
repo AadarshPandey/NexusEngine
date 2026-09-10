@@ -32,10 +32,13 @@ export const ReviewSection: React.FC<{ productId: number }> = ({ productId }) =>
 
   const loadReviews = async () => {
     try {
-      const res = await request.get<any, { data: { list: Review[] } }>(`/review/product/${productId}`);
-      setReviews(res.data.list);
-    } catch (e) {
-      console.error(e);
+      setLoading(true);
+      const res = await request.get<unknown, { data: { list: Review[] } }>(`/review/product/${productId}`);
+      setReviews(res.data.list || []);
+    } catch (error) {
+      console.error('Failed to load reviews', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -44,13 +47,17 @@ export const ReviewSection: React.FC<{ productId: number }> = ({ productId }) =>
       const file = e.target.files[0];
       const formData = new FormData();
       formData.append('file', file);
+      
       try {
-        const res = await request.post<any, { data: { url: string } }>('/review/upload', formData, {
+        setUploading(true);
+        const res = await request.post<unknown, { data: { url: string } }>('/review/upload', formData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
         setMediaList([...mediaList, { mediaType: file.type.startsWith('video/') ? 'VIDEO' : 'IMAGE', mediaUrl: res.data.url, sortOrder: mediaList.length }]);
       } catch (err) {
         alert('Upload failed');
+      } finally {
+        setUploading(false);
       }
     }
   };

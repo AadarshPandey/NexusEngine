@@ -3,12 +3,13 @@ package com.nexusengine.core.portal.service;
 import com.nexusengine.core.portal.domain.OmsOrderReturnApplyParam;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/10/17.
+ * Represents the OmsPortalOrderReturnApplyService component.
+ * Provides core functionality and operations for OmsPortalOrderReturnApplyService.
  */
 public interface OmsPortalOrderReturnApplyService {
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param returnApply the returnApply
      */
     int create(OmsOrderReturnApplyParam returnApply);
 }

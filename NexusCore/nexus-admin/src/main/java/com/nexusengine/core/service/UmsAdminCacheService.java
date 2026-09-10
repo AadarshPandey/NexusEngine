@@ -10,48 +10,60 @@ import java.util.List;
  * Created by macro on 2020/3/13.
  */
 public interface UmsAdminCacheService {
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param adminId the adminId
      */
     void delAdmin(Long adminId);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param adminId the adminId
      */
     void delResourceList(Long adminId);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param roleId the roleId
      */
     void delResourceListByRole(Long roleId);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param roleIds the roleIds
      */
     void delResourceListByRoleIds(List<Long> roleIds);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param resourceId the resourceId
      */
     void delResourceListByResource(Long resourceId);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param username the username
+     * @return the result of the operation
      */
     UmsAdmin getAdmin(String username);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param admin the admin
      */
     void setAdmin(UmsAdmin admin);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param adminId the adminId
+     * @return the result of the operation
      */
     List<UmsResource> getResourceList(Long adminId);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param adminId the adminId
+     * @param resourceList the resourceList
      */
     void setResourceList(Long adminId, List<UmsResource> resourceList);
 }

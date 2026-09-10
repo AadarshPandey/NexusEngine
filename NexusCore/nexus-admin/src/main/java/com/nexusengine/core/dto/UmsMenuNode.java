@@ -8,8 +8,8 @@ import lombok.Setter;
 import java.util.List;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2020/2/4.
+ * Represents the UmsMenuNode component.
+ * Provides core functionality and operations for UmsMenuNode.
  */
 @Getter
 @Setter

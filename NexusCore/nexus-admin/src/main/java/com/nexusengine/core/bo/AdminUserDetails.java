@@ -11,13 +11,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/4/26.
+ * Represents the AdminUserDetails component.
+ * Provides core functionality and operations for AdminUserDetails.
  */
 public class AdminUserDetails implements UserDetails {
-    // Auto-generated documentation
     private final UmsAdmin umsAdmin;
-    // Auto-generated documentation
     private final List<UmsResource> resourceList;
 
     public AdminUserDetails(UmsAdmin umsAdmin,List<UmsResource> resourceList) {
@@ -27,7 +25,6 @@ public class AdminUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // Auto-generated documentation
         return resourceList.stream()
                 .map(resource ->new SimpleGrantedAuthority(resource.getId()+":"+resource.getName()))
                 .collect(Collectors.toList());

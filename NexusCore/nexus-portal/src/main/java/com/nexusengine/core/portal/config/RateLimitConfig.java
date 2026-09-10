@@ -15,6 +15,6 @@ public class RateLimitConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(rateLimitInterceptor)
-                .addPathPatterns("/portal/product/list", "/sso/login", "/portal/order/createRazorpayOrder", "/portal/order/verifyRazorpayPayment");
+                .addPathPatterns("/portal/product/list", "/sso/login", "/portal/order/createRazorpayOrder", "/portal/order/verifyRazorpayPayment", "/sso/getAuthCode");
     }
 }

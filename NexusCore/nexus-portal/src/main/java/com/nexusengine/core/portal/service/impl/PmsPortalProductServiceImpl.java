@@ -76,7 +76,7 @@ public class PmsPortalProductServiceImpl implements PmsPortalProductService {
 
     @Override
     public List<PmsProductCategoryNode> categoryTreeList() {
-        List<PmsProductCategory> allList = productCategoryRepository.findAll();
+        List<PmsProductCategory> allList = productCategoryRepository.findAll(PageRequest.of(0, 1000)).getContent();
         return allList.stream()
                 .filter(item -> item.getParentId().equals(0L))
                 .map(item -> covert(item, allList))

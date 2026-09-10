@@ -19,8 +19,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/4/26.
+ * JWT authentication filter that intercepts every request, validates the Bearer token,
+ * and sets the Spring Security authentication context for the current user.
  */
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtAuthenticationTokenFilter.class);
@@ -40,8 +40,13 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         String authHeader = request.getHeader(this.tokenHeader);
         if (authHeader != null && authHeader.startsWith(this.tokenHead)) {
             String authToken = authHeader.substring(this.tokenHead.length());// The part after "Bearer "
-            String username = jwtTokenUtil.getUserNameFromToken(authToken);
-            LOGGER.info("checking username:{}", username);
+            String rawUsername = jwtTokenUtil.getUserNameFromToken(authToken);
+            // Strip the role prefix (admin: or member:) from JWT claims for DB lookup
+            String username = rawUsername;
+            if (rawUsername != null && rawUsername.contains(":")) {
+                username = rawUsername.substring(rawUsername.indexOf(":") + 1);
+            }
+            LOGGER.debug("Authenticating user from JWT: {}", username);
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 try {
                     UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);

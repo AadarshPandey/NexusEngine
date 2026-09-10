@@ -10,8 +10,8 @@ import jakarta.validation.constraints.NotEmpty;
 import java.util.List;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/4/26.
+ * Represents the PmsProductCategoryParam component.
+ * Provides core functionality and operations for PmsProductCategoryParam.
  */
 @Data
 @EqualsAndHashCode

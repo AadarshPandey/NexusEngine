@@ -3,23 +3,25 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 
 import type { UmsMember } from '../../api/member';
 
+export type User = Partial<UmsMember>;
+
 interface AuthState {
   token: string | null;
   isAuthenticated: boolean;
-  user: UmsMember | null;
+  user: User | null;
 }
 
 const initialState: AuthState = {
   token: null,
   isAuthenticated: false,
   user: null,
-};
+}
 
 export const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    login: (state, action: PayloadAction<{ token: string; user: any }>) => {
+    login: (state, action: PayloadAction<{ token: string; user: User }>) => {
       state.token = action.payload.token;
       state.user = action.payload.user;
       state.isAuthenticated = true;

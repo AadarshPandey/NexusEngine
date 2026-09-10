@@ -6,8 +6,8 @@ import lombok.EqualsAndHashCode;
 import java.util.List;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/6/27.
+ * Represents the EsProductRelatedInfo component.
+ * Provides core functionality and operations for EsProductRelatedInfo.
  */
 @Data
 @EqualsAndHashCode

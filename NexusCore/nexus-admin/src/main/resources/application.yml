@@ -13,7 +13,7 @@ spring:
   jpa:
     open-in-view: false
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
@@ -21,7 +21,7 @@ spring:
 
 jwt:
   tokenHeader: Authorization
-  secret: ${JWT_SECRET:8f7b3e2d1c9a4f6b8e0d2a1c3f5b7e9d8f7b3e2d1c9a4f6b8e0d2a1c3f5b7e9d}
+  secret: ${JWT_SECRET:local-development-jwt-secret-key-needs-32-bytes}
   expiration: 86400
   tokenHead: 'Bearer '
 

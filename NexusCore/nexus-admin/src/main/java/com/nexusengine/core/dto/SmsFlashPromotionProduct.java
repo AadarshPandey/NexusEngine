@@ -7,8 +7,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/11/16.
+ * Represents the SmsFlashPromotionProduct component.
+ * Provides core functionality and operations for SmsFlashPromotionProduct.
  */
 public class SmsFlashPromotionProduct extends SmsFlashPromotionProductRelation{
     @Getter

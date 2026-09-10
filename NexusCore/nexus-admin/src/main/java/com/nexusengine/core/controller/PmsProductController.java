@@ -1,5 +1,6 @@
 package com.nexusengine.core.controller;
 
+import org.springframework.web.bind.annotation.RestController;
 import com.nexusengine.core.common.api.CommonPage;
 import com.nexusengine.core.common.api.CommonResult;
 import com.nexusengine.core.dto.PmsProductParam;
@@ -10,25 +11,25 @@ import com.nexusengine.core.service.PmsProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/4/26.
+ * Represents the PmsProductController component.
+ * Provides core functionality and operations for PmsProductController.
  */
-@Controller
+@RestController
 @Tag(name = "PmsProductController", description = "Pms product controller APIs")
 @RequestMapping("/product")
 public class PmsProductController {
+    private static final org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(PmsProductController.class);
     @Autowired
     private PmsProductService productService;
 
     @Operation(summary = "Create Operation")
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    @ResponseBody
+
     public CommonResult create(@RequestBody PmsProductParam productParam) {
         try {
             int count = productService.create(productParam);
@@ -37,15 +38,18 @@ public class PmsProductController {
             } else {
                 return CommonResult.failed();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return CommonResult.failed("Error: " + e.getMessage() + " | Cause: " + (e.getCause() != null ? e.getCause().getMessage() : "none"));
+        } catch (IllegalArgumentException e) {
+            LOGGER.error("Invalid product data:", e);
+            return CommonResult.failed("Invalid product data: " + e.getMessage());
+        } catch (org.springframework.dao.DataAccessException e) {
+            LOGGER.error("Database error during product creation:", e);
+            return CommonResult.failed("Database error during product creation");
         }
     }
 
     @Operation(summary = "Get update info Operation")
     @RequestMapping(value = "/updateInfo/{id}", method = RequestMethod.GET)
-    @ResponseBody
+
     public CommonResult<PmsProductResult> getUpdateInfo(@PathVariable Long id) {
         PmsProductResult productResult = productService.getUpdateInfo(id);
         return CommonResult.success(productResult);
@@ -53,7 +57,7 @@ public class PmsProductController {
 
     @Operation(summary = "Update Operation")
     @RequestMapping(value = "/update/{id}", method = RequestMethod.POST)
-    @ResponseBody
+
     public CommonResult update(@PathVariable Long id, @RequestBody PmsProductParam productParam) {
         int count = productService.update(id, productParam);
         if (count > 0) {
@@ -65,7 +69,7 @@ public class PmsProductController {
 
     @Operation(summary = "Get list Operation")
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    @ResponseBody
+
     public CommonResult<CommonPage<PmsProduct>> getList(PmsProductQueryParam productQueryParam,
                                                         @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
                                                         @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
@@ -75,7 +79,7 @@ public class PmsProductController {
 
     @Operation(summary = "Get list Operation")
     @RequestMapping(value = "/simpleList", method = RequestMethod.GET)
-    @ResponseBody
+
     public CommonResult<List<PmsProduct>> getList(String keyword) {
         List<PmsProduct> productList = productService.list(keyword);
         return CommonResult.success(productList);
@@ -83,7 +87,7 @@ public class PmsProductController {
 
     @Operation(summary = "Update verify status Operation")
     @RequestMapping(value = "/update/verifyStatus", method = RequestMethod.POST)
-    @ResponseBody
+
     public CommonResult updateVerifyStatus(@RequestParam("ids") List<Long> ids,
                                            @RequestParam("verifyStatus") Integer verifyStatus,
                                            @RequestParam("detail") String detail) {
@@ -97,7 +101,7 @@ public class PmsProductController {
 
     @Operation(summary = "Update publish status Operation")
     @RequestMapping(value = "/update/publishStatus", method = RequestMethod.POST)
-    @ResponseBody
+
     public CommonResult updatePublishStatus(@RequestParam("ids") List<Long> ids,
                                             @RequestParam("publishStatus") Integer publishStatus) {
         int count = productService.updatePublishStatus(ids, publishStatus);
@@ -110,7 +114,7 @@ public class PmsProductController {
 
     @Operation(summary = "Update recommend status Operation")
     @RequestMapping(value = "/update/recommendStatus", method = RequestMethod.POST)
-    @ResponseBody
+
     public CommonResult updateRecommendStatus(@RequestParam("ids") List<Long> ids,
                                               @RequestParam("recommendStatus") Integer recommendStatus) {
         int count = productService.updateRecommendStatus(ids, recommendStatus);
@@ -123,7 +127,7 @@ public class PmsProductController {
 
     @Operation(summary = "Update new status Operation")
     @RequestMapping(value = "/update/newStatus", method = RequestMethod.POST)
-    @ResponseBody
+
     public CommonResult updateNewStatus(@RequestParam("ids") List<Long> ids,
                                         @RequestParam("newStatus") Integer newStatus) {
         int count = productService.updateNewStatus(ids, newStatus);
@@ -136,7 +140,7 @@ public class PmsProductController {
 
     @Operation(summary = "Update delete status Operation")
     @RequestMapping(value = "/update/deleteStatus", method = RequestMethod.POST)
-    @ResponseBody
+
     public CommonResult updateDeleteStatus(@RequestParam("ids") List<Long> ids,
                                            @RequestParam("deleteStatus") Integer deleteStatus) {
         int count = productService.updateDeleteStatus(ids, deleteStatus);

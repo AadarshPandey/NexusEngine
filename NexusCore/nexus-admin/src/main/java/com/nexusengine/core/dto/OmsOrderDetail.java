@@ -10,8 +10,8 @@ import lombok.Setter;
 import java.util.List;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/10/11.
+ * Represents the OmsOrderDetail component.
+ * Provides core functionality and operations for OmsOrderDetail.
  */
 public class OmsOrderDetail extends OmsOrder {
     @Getter

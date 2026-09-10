@@ -8,8 +8,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/8/24.
+ * Represents the OrderTimeOutCancelTask component.
+ * Provides core functionality and operations for OrderTimeOutCancelTask.
  */
 //@Component
 public class OrderTimeOutCancelTask {
@@ -17,9 +17,8 @@ public class OrderTimeOutCancelTask {
     @Autowired
     private OmsPortalOrderService portalOrderService;
 
-    /**
-     * Auto-generated documentation
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
      */
     @Scheduled(cron = "0 0/10 * ? * ?")
     private void cancelTimeOutOrder(){

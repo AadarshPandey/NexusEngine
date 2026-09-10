@@ -8,8 +8,8 @@ import lombok.Setter;
 import java.util.List;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/5/25.
+ * Represents the PmsProductCategoryWithChildrenItem component.
+ * Provides core functionality and operations for PmsProductCategoryWithChildrenItem.
  */
 public class PmsProductCategoryWithChildrenItem extends PmsProductCategory {
     @Getter

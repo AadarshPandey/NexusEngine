@@ -3,32 +3,46 @@ package com.nexusengine.core.portal.service;
 import com.nexusengine.core.model.UmsMember;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2020/3/14.
+ * Represents the UmsMemberCacheService component.
+ * Provides core functionality and operations for UmsMemberCacheService.
  */
 public interface UmsMemberCacheService {
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param memberId the memberId
      */
     void delMember(Long memberId);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param username the username
+     * @return the result of the operation
      */
     UmsMember getMember(String username);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param member the member
      */
     void setMember(UmsMember member);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param telephone the telephone
+     * @param authCode the authCode
      */
     void setAuthCode(String telephone, String authCode);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param telephone the telephone
+     * @return the result of the operation
      */
     String getAuthCode(String telephone);
+
+        /**
+     * Executes the operation.
+     * @param telephone the telephone
+     */
+    void delAuthCode(String telephone);
 }

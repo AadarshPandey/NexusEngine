@@ -10,28 +10,27 @@ import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2024/3/5.
+ * Represents the SpringDocConfig component.
+ * Provides core functionality and operations for SpringDocConfig.
  */
 @Configuration
 public class SpringDocConfig implements WebMvcConfigurer {
 
     @Bean
-    public OpenAPI mallAdminOpenAPI() {
+    public OpenAPI nexusSearchOpenAPI() {
         return new OpenAPI()
-                .info(new Info().title("Success")
-                        .description("Success")
+                .info(new Info().title("NexusEngine Search API")
+                        .description("Product search and indexing REST API")
                         .version("v1.0.0")
                         .license(new License().name("Apache 2.0")
-                                .url("https://github.com/macrozheng/mall-learning")))
+                                .url("https://github.com/AadarshPandey/NexusEngine")))
                 .externalDocs(new ExternalDocumentation()
                         .description("Success")
-                        .url("http://www.macrozheng.com"));
+                        .url("https://github.com/AadarshPandey/NexusEngine"));
     }
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        // Auto-generated documentation
         registry.addViewController("/swagger-ui/").setViewName("redirect:/swagger-ui/index.html");
     }
 

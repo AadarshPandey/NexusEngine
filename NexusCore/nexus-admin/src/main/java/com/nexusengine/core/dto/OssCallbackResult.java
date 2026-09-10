@@ -5,8 +5,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/5/17.
+ * Represents the OssCallbackResult component.
+ * Provides core functionality and operations for OssCallbackResult.
  */
 @Data
 @EqualsAndHashCode

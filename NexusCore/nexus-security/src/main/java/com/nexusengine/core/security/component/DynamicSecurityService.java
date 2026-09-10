@@ -5,12 +5,13 @@ import org.springframework.security.access.ConfigAttribute;
 import java.util.Map;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2020/2/7.
+ * Represents the DynamicSecurityService component.
+ * Provides core functionality and operations for DynamicSecurityService.
  */
 public interface DynamicSecurityService {
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @return the result of the operation
      */
     Map<String, ConfigAttribute> loadDataSource();
 }

@@ -47,7 +47,7 @@ const AllocResource: React.FC = () => {
       setResources(resRes.data);
       
       // @ts-ignore
-      const allocatedIds = allocRes.data.map((r: any) => r.id);
+      const allocatedIds = allocRes.data.map((r: { id: number }) => r.id);
       setSelectedResourceIds(allocatedIds);
     }).catch(console.error);
   }, [roleId, navigate]);

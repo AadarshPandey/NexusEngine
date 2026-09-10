@@ -30,8 +30,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/4/26.
+ * Represents the WebLogAspect component.
+ * Provides core functionality and operations for WebLogAspect.
  */
 @Aspect
 @Component
@@ -54,10 +54,8 @@ public class WebLogAspect {
     @Around("webLog()")
     public Object doAround(ProceedingJoinPoint joinPoint) throws Throwable {
         long startTime = System.currentTimeMillis();
-        // Auto-generated documentation
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
-        // Auto-generated documentation
         WebLog webLog = new WebLog();
         Object result = joinPoint.proceed();
         Signature signature = joinPoint.getSignature();
@@ -99,19 +97,20 @@ public class WebLogAspect {
         return result;
     }
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param method the method
+     * @param args the args
+     * @return the result of the operation
      */
     private Object getParameter(Method method, Object[] args) {
         List<Object> argList = new ArrayList<>();
         Parameter[] parameters = method.getParameters();
         for (int i = 0; i < parameters.length; i++) {
-            // Auto-generated documentation
             RequestBody requestBody = parameters[i].getAnnotation(RequestBody.class);
             if (requestBody != null) {
                 argList.add(args[i]);
             }
-            // Auto-generated documentation
             RequestParam requestParam = parameters[i].getAnnotation(RequestParam.class);
             if (requestParam != null) {
                 Map<String, Object> map = new HashMap<>();

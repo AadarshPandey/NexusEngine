@@ -1,5 +1,6 @@
 package com.nexusengine.core.controller;
 
+import org.springframework.web.bind.annotation.RestController;
 import com.nexusengine.core.common.api.CommonPage;
 import com.nexusengine.core.common.api.CommonResult;
 import com.nexusengine.core.model.OmsOrderReturnReason;
@@ -7,16 +8,15 @@ import com.nexusengine.core.service.OmsOrderReturnReasonService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/10/17.
+ * Represents the OmsOrderReturnReasonController component.
+ * Provides core functionality and operations for OmsOrderReturnReasonController.
  */
-@Controller
+@RestController
 @Tag(name = "OmsOrderReturnReasonController", description = "Oms order return reason controller APIs")
 @RequestMapping("/returnReason")
 public class OmsOrderReturnReasonController {
@@ -25,7 +25,7 @@ public class OmsOrderReturnReasonController {
 
     @Operation(summary = "Create Operation")
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    @ResponseBody
+
     public CommonResult create(@RequestBody OmsOrderReturnReason returnReason) {
         int count = orderReturnReasonService.create(returnReason);
         if (count > 0) {
@@ -36,7 +36,7 @@ public class OmsOrderReturnReasonController {
 
     @Operation(summary = "Update Operation")
     @RequestMapping(value = "/update/{id}", method = RequestMethod.POST)
-    @ResponseBody
+
     public CommonResult update(@PathVariable Long id, @RequestBody OmsOrderReturnReason returnReason) {
         int count = orderReturnReasonService.update(id, returnReason);
         if (count > 0) {
@@ -47,7 +47,7 @@ public class OmsOrderReturnReasonController {
 
     @Operation(summary = "Delete Operation")
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
-    @ResponseBody
+
     public CommonResult delete(@RequestParam("ids") List<Long> ids) {
         int count = orderReturnReasonService.delete(ids);
         if (count > 0) {
@@ -58,7 +58,7 @@ public class OmsOrderReturnReasonController {
 
     @Operation(summary = "List Operation")
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    @ResponseBody
+
     public CommonResult<CommonPage<OmsOrderReturnReason>> list(@RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
                                                                @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
         List<OmsOrderReturnReason> reasonList = orderReturnReasonService.list(pageSize, pageNum);
@@ -67,7 +67,7 @@ public class OmsOrderReturnReasonController {
 
     @Operation(summary = "Get item Operation")
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    @ResponseBody
+
     public CommonResult<OmsOrderReturnReason> getItem(@PathVariable Long id) {
         OmsOrderReturnReason reason = orderReturnReasonService.getItem(id);
         return CommonResult.success(reason);
@@ -75,7 +75,7 @@ public class OmsOrderReturnReasonController {
 
     @Operation(summary = "Update status Operation")
     @RequestMapping(value = "/update/status", method = RequestMethod.POST)
-    @ResponseBody
+
     public CommonResult updateStatus(@RequestParam(value = "status") Integer status,
                                      @RequestParam("ids") List<Long> ids) {
         int count = orderReturnReasonService.updateStatus(ids, status);

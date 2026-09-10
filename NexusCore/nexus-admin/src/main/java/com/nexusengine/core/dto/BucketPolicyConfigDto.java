@@ -7,8 +7,8 @@ import lombok.EqualsAndHashCode;
 import java.util.List;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2020/8/11.
+ * Represents the BucketPolicyConfigDto component.
+ * Provides core functionality and operations for BucketPolicyConfigDto.
  */
 @Data
 @EqualsAndHashCode

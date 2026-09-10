@@ -20,8 +20,8 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2023/11/3.
+ * Represents the DynamicAuthorizationManager component.
+ * Provides core functionality and operations for DynamicAuthorizationManager.
  */
 public class DynamicAuthorizationManager implements AuthorizationManager<RequestAuthorizationContext> {
 
@@ -40,14 +40,12 @@ public class DynamicAuthorizationManager implements AuthorizationManager<Request
         HttpServletRequest request = requestAuthorizationContext.getRequest();
         String path = request.getRequestURI();
         PathMatcher pathMatcher = new AntPathMatcher();
-        // Auto-generated documentation
         List<String> ignoreUrls = ignoreUrlsConfig.getUrls();
         for (String ignoreUrl : ignoreUrls) {
             if (pathMatcher.match(ignoreUrl, path)) {
                 return new AuthorizationDecision(true);
             }
         }
-        // Auto-generated documentation
         if(request.getMethod().equals(HttpMethod.OPTIONS.name())){
             return new AuthorizationDecision(true);
         }
@@ -74,7 +72,6 @@ public class DynamicAuthorizationManager implements AuthorizationManager<Request
         }
 
         Authentication currentAuth = authentication.get();
-        // Auto-generated documentation
         if(currentAuth.isAuthenticated()){
             Collection<? extends GrantedAuthority> grantedAuthorities = currentAuth.getAuthorities();
             List<? extends GrantedAuthority> hasAuth = grantedAuthorities.stream()

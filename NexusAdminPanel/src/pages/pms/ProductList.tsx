@@ -6,9 +6,9 @@ import { getBrandListAPI } from '@/apis/brand';
 import { getProductCategoryListWithChildrenAPI } from '@/apis/productCate';
 
 const ProductList: React.FC = () => {
-  const [products, setProducts] = useState<any[]>([]);
-  const [brands, setBrands] = useState<any[]>([]);
-  const [categories, setCategories] = useState<any[]>([]);
+  const [products, setProducts] = useState<import('@/types/product').PmsProduct[]>([]);
+  const [brands, setBrands] = useState<import('@/types/brand').PmsBrand[]>([]);
+  const [categories, setCategories] = useState<import('@/types/productCate').PmsProductCategory[]>([]);
   const [searchParams, setSearchParams] = useState({
     keyword: '',
     productSn: '',
@@ -42,7 +42,7 @@ const ProductList: React.FC = () => {
 
   const fetchProducts = async () => {
     try {
-      const res = await getProductListAPI(searchParams as any);
+      const res = await getProductListAPI(searchParams as unknown as import('@/types/product').PmsProductQueryParam);
       setProducts(res.data?.list || []);
     } catch (error) {
       console.error('Failed to fetch products', error);
@@ -107,9 +107,9 @@ const ProductList: React.FC = () => {
           <Grid size={{ xs: 12, md: 4 }}>
             <FormControl fullWidth size="small">
               <InputLabel>Product Category</InputLabel>
-              <Select label="Product Category" value={searchParams.productCategoryId} onChange={(e) => setSearchParams({ ...searchParams, productCategoryId: e.target.value } as any)}>
+              <Select label="Product Category" value={searchParams.productCategoryId} onChange={(e) => setSearchParams({ ...searchParams, productCategoryId: e.target.value as string })}>
                 <MenuItem value="">Please select</MenuItem>
-                {categories.map((c: any) => (
+                {categories.map((c: import('@/types/productCate').PmsProductCategory) => (
                   <MenuItem key={c.id} value={c.id}>{c.name}</MenuItem>
                 ))}
               </Select>
@@ -118,9 +118,9 @@ const ProductList: React.FC = () => {
           <Grid size={{ xs: 12, md: 4 }}>
             <FormControl fullWidth size="small">
               <InputLabel>Product brand</InputLabel>
-              <Select label="Product brand" value={searchParams.brandId} onChange={(e) => setSearchParams({ ...searchParams, brandId: e.target.value } as any)}>
+              <Select label="Product brand" value={searchParams.brandId} onChange={(e) => setSearchParams({ ...searchParams, brandId: e.target.value as string })}>
                 <MenuItem value="">Please select brand</MenuItem>
-                {brands.map((b: any) => (
+                {brands.map((b: import('@/types/brand').PmsBrand) => (
                   <MenuItem key={b.id} value={b.id}>{b.name}</MenuItem>
                 ))}
               </Select>
@@ -129,7 +129,7 @@ const ProductList: React.FC = () => {
           <Grid size={{ xs: 12, md: 4 }}>
             <FormControl fullWidth size="small">
               <InputLabel>Available now</InputLabel>
-              <Select label="Available now" value={searchParams.publishStatus} onChange={(e) => setSearchParams({ ...searchParams, publishStatus: e.target.value } as any)}>
+              <Select label="Available now" value={searchParams.publishStatus} onChange={(e) => setSearchParams({ ...searchParams, publishStatus: e.target.value as string })}>
                 <MenuItem value="">All</MenuItem>
                 <MenuItem value={1}>On shelves</MenuItem>
                 <MenuItem value={0}>Off shelves</MenuItem>
@@ -139,7 +139,7 @@ const ProductList: React.FC = () => {
           <Grid size={{ xs: 12, md: 4 }}>
             <FormControl fullWidth size="small">
               <InputLabel>Review status</InputLabel>
-              <Select label="Review status" value={searchParams.verifyStatus} onChange={(e) => setSearchParams({ ...searchParams, verifyStatus: e.target.value } as any)}>
+              <Select label="Review status" value={searchParams.verifyStatus} onChange={(e) => setSearchParams({ ...searchParams, verifyStatus: e.target.value as string })}>
                 <MenuItem value="">All</MenuItem>
                 <MenuItem value={1}>Approved</MenuItem>
                 <MenuItem value={0}>Not reviewed</MenuItem>

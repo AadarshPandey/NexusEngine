@@ -54,7 +54,8 @@ public class UmsRoleServiceImpl implements UmsRoleService {
 
     @Override
     public List<UmsRole> list() {
-        return roleRepository.findAll();
+        return /* findAll() is acceptable for small reference tables */
+        roleRepository.findAll();
     }
 
     @Override

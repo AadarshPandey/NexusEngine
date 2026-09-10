@@ -75,7 +75,7 @@ const theme = createTheme({
     '0 20px 25px -5px rgb(0 0 0 / 0.6), 0 8px 10px -6px rgb(0 0 0 / 0.6)',
     '0 25px 50px -12px rgb(0 0 0 / 0.8)',
     ...Array(18).fill('none'),
-  ] as any,
+  ] as import('@mui/material/styles').Shadows,
   components: {
     MuiButton: {
       styleOverrides: {

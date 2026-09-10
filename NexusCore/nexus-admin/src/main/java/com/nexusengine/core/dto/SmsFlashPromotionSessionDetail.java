@@ -6,8 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/11/19.
+ * Represents the SmsFlashPromotionSessionDetail component.
+ * Provides core functionality and operations for SmsFlashPromotionSessionDetail.
  */
 public class SmsFlashPromotionSessionDetail extends SmsFlashPromotionSession {
     @Setter

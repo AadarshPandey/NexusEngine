@@ -12,36 +12,36 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode
 @Builder
 public class SwaggerProperties {
-    /**
-     * Auto-generated documentation
+        /**
+     * The apiBasePackage property.
      */
     private String apiBasePackage;
-    /**
-     * Auto-generated documentation
+        /**
+     * The enableSecurity property.
      */
     private boolean enableSecurity;
-    /**
-     * Auto-generated documentation
+        /**
+     * The title property.
      */
     private String title;
-    /**
-     * Auto-generated documentation
+        /**
+     * The description property.
      */
     private String description;
-    /**
-     * Auto-generated documentation
+        /**
+     * The version property.
      */
     private String version;
-    /**
-     * Auto-generated documentation
+        /**
+     * The contactName property.
      */
     private String contactName;
-    /**
-     * Auto-generated documentation
+        /**
+     * The contactUrl property.
      */
     private String contactUrl;
-    /**
-     * Auto-generated documentation
+        /**
+     * The contactEmail property.
      */
     private String contactEmail;
 }

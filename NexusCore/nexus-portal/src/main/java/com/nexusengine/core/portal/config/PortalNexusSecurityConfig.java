@@ -7,8 +7,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2019/11/5.
+ * Represents the PortalNexusSecurityConfig component.
+ * Provides core functionality and operations for PortalNexusSecurityConfig.
  */
 @Configuration
 public class PortalNexusSecurityConfig {
@@ -18,7 +18,6 @@ public class PortalNexusSecurityConfig {
 
     @Bean
     public UserDetailsService memberUserDetailsService() {
-        // Auto-generated documentation
         return username -> memberService.loadUserByUsername(username);
     }
 }

@@ -38,8 +38,8 @@ const Register: React.FC = () => {
       await request.get('/sso/getAuthCode', { params: { email } });
       setSuccess('OTP sent successfully. Please check your email inbox.');
       setCountdown(60);
-    } catch (err: any) {
-      setError(err.message || 'Failed to get auth code.');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Failed to get auth code.');
     } finally {
       setGettingCode(false);
     }
@@ -68,9 +68,9 @@ const Register: React.FC = () => {
       setTimeout(() => {
         navigate('/login');
       }, 2000);
-    } catch (err: any) {
-      let errorMessage = err.message;
-      setError(errorMessage || 'Registration failed. Please try again.');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Registration failed. Please try again.';
+      setError(errorMessage);
     }
   };
 

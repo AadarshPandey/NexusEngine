@@ -1,5 +1,6 @@
 package com.nexusengine.core.controller;
 
+import org.springframework.web.bind.annotation.RestController;
 import com.nexusengine.core.common.api.CommonPage;
 import com.nexusengine.core.common.api.CommonResult;
 import com.nexusengine.core.dto.SmsCouponParam;
@@ -8,16 +9,15 @@ import com.nexusengine.core.service.SmsCouponService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/8/28.
+ * Represents the SmsCouponController component.
+ * Provides core functionality and operations for SmsCouponController.
  */
-@Controller
+@RestController
 @Tag(name = "SmsCouponController", description = "Sms coupon controller APIs")
 @RequestMapping("/coupon")
 public class SmsCouponController {
@@ -25,7 +25,7 @@ public class SmsCouponController {
     private SmsCouponService couponService;
     @Operation(summary = "Add Operation")
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    @ResponseBody
+
     public CommonResult add(@RequestBody SmsCouponParam couponParam) {
         int count = couponService.create(couponParam);
         if(count>0){
@@ -36,7 +36,7 @@ public class SmsCouponController {
 
     @Operation(summary = "Delete Operation")
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
-    @ResponseBody
+
     public CommonResult delete(@PathVariable Long id) {
         int count = couponService.delete(id);
         if(count>0){
@@ -47,7 +47,7 @@ public class SmsCouponController {
 
     @Operation(summary = "Update Operation")
     @RequestMapping(value = "/update/{id}", method = RequestMethod.POST)
-    @ResponseBody
+
     public CommonResult update(@PathVariable Long id,@RequestBody SmsCouponParam couponParam) {
         int count = couponService.update(id,couponParam);
         if(count>0){
@@ -58,7 +58,7 @@ public class SmsCouponController {
 
     @Operation(summary = "List Operation")
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    @ResponseBody
+
     public CommonResult<CommonPage<SmsCoupon>> list(
             @RequestParam(value = "name",required = false) String name,
             @RequestParam(value = "type",required = false) Integer type,
@@ -70,7 +70,7 @@ public class SmsCouponController {
 
     @Operation(summary = "Get item Operation")
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    @ResponseBody
+
     public CommonResult<SmsCouponParam> getItem(@PathVariable Long id) {
         SmsCouponParam couponParam = couponService.getItem(id);
         return CommonResult.success(couponParam);

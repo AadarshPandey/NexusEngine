@@ -10,8 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2020/3/14.
+ * Represents the UmsMemberCacheServiceImpl component.
+ * Provides core functionality and operations for UmsMemberCacheServiceImpl.
  */
 @Service
 public class UmsMemberCacheServiceImpl implements UmsMemberCacheService {
@@ -63,5 +63,11 @@ public class UmsMemberCacheServiceImpl implements UmsMemberCacheService {
     public String getAuthCode(String telephone) {
         String key = REDIS_DATABASE + ":" + REDIS_KEY_AUTH_CODE + ":" + telephone;
         return (String) redisService.get(key);
+    }
+
+    @Override
+    public void delAuthCode(String telephone) {
+        String key = REDIS_DATABASE + ":" + REDIS_KEY_AUTH_CODE + ":" + telephone;
+        redisService.del(key);
     }
 }

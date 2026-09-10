@@ -7,8 +7,8 @@ import lombok.Setter;
 import jakarta.validation.constraints.NotEmpty;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2019/10/9.
+ * Represents the UpdateAdminPasswordParam component.
+ * Provides core functionality and operations for UpdateAdminPasswordParam.
  */
 @Getter
 @Setter

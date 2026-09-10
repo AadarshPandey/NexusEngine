@@ -5,37 +5,53 @@ import com.nexusengine.core.model.UmsResource;
 import java.util.List;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2020/2/2.
+ * Represents the UmsResourceService component.
+ * Provides core functionality and operations for UmsResourceService.
  */
 public interface UmsResourceService {
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param umsResource the umsResource
+     * @return the result of the operation
      */
     int create(UmsResource umsResource);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param id the id
+     * @param umsResource the umsResource
+     * @return the result of the operation
      */
     int update(Long id, UmsResource umsResource);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param id the id
+     * @return the result of the operation
      */
     UmsResource getItem(Long id);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param id the id
+     * @return the result of the operation
      */
     int delete(Long id);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param categoryId the categoryId
+     * @param nameKeyword the nameKeyword
+     * @param urlKeyword the urlKeyword
+     * @param pageSize the pageSize
+     * @param pageNum the pageNum
+     * @return the result of the operation
      */
     org.springframework.data.domain.Page<UmsResource> list(Long categoryId, String nameKeyword, String urlKeyword, Integer pageSize, Integer pageNum);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @return the result of the operation
      */
     List<UmsResource> listAll();
 }

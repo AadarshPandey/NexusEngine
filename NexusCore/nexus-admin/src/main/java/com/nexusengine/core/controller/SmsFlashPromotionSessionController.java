@@ -1,5 +1,6 @@
 package com.nexusengine.core.controller;
 
+import org.springframework.web.bind.annotation.RestController;
 import com.nexusengine.core.common.api.CommonResult;
 import com.nexusengine.core.dto.SmsFlashPromotionSessionDetail;
 import com.nexusengine.core.model.SmsFlashPromotionSession;
@@ -7,16 +8,15 @@ import com.nexusengine.core.service.SmsFlashPromotionSessionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/11/16.
+ * Represents the SmsFlashPromotionSessionController component.
+ * Provides core functionality and operations for SmsFlashPromotionSessionController.
  */
-@Controller
+@RestController
 @Tag(name = "SmsFlashPromotionSessionController", description = "Sms flash promotion session controller APIs")
 @RequestMapping("/flashSession")
 public class SmsFlashPromotionSessionController {
@@ -25,7 +25,7 @@ public class SmsFlashPromotionSessionController {
 
     @Operation(summary = "Create Operation")
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    @ResponseBody
+
     public CommonResult create(@RequestBody SmsFlashPromotionSession promotionSession) {
         int count = flashPromotionSessionService.create(promotionSession);
         if (count > 0) {
@@ -36,7 +36,7 @@ public class SmsFlashPromotionSessionController {
 
     @Operation(summary = "Update Operation")
     @RequestMapping(value = "/update/{id}", method = RequestMethod.POST)
-    @ResponseBody
+
     public CommonResult update(@PathVariable Long id, @RequestBody SmsFlashPromotionSession promotionSession) {
         int count = flashPromotionSessionService.update(id, promotionSession);
         if (count > 0) {
@@ -47,7 +47,7 @@ public class SmsFlashPromotionSessionController {
 
     @Operation(summary = "Update status Operation")
     @RequestMapping(value = "/update/status/{id}", method = RequestMethod.POST)
-    @ResponseBody
+
     public CommonResult updateStatus(@PathVariable Long id, Integer status) {
         int count = flashPromotionSessionService.updateStatus(id, status);
         if (count > 0) {
@@ -58,7 +58,7 @@ public class SmsFlashPromotionSessionController {
 
     @Operation(summary = "Delete Operation")
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
-    @ResponseBody
+
     public CommonResult delete(@PathVariable Long id) {
         int count = flashPromotionSessionService.delete(id);
         if (count > 0) {
@@ -69,7 +69,7 @@ public class SmsFlashPromotionSessionController {
 
     @Operation(summary = "Get item Operation")
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    @ResponseBody
+
     public CommonResult<SmsFlashPromotionSession> getItem(@PathVariable Long id) {
         SmsFlashPromotionSession promotionSession = flashPromotionSessionService.getItem(id);
         return CommonResult.success(promotionSession);
@@ -77,7 +77,7 @@ public class SmsFlashPromotionSessionController {
 
     @Operation(summary = "List Operation")
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    @ResponseBody
+
     public CommonResult<List<SmsFlashPromotionSession>> list() {
         List<SmsFlashPromotionSession> promotionSessionList = flashPromotionSessionService.list();
         return CommonResult.success(promotionSessionList);
@@ -85,7 +85,7 @@ public class SmsFlashPromotionSessionController {
 
     @Operation(summary = "Select list Operation")
     @RequestMapping(value = "/selectList", method = RequestMethod.GET)
-    @ResponseBody
+
     public CommonResult<List<SmsFlashPromotionSessionDetail>> selectList(Long flashPromotionId) {
         List<SmsFlashPromotionSessionDetail> promotionSessionList = flashPromotionSessionService.selectList(flashPromotionId);
         return CommonResult.success(promotionSessionList);

@@ -12,8 +12,8 @@ import jakarta.annotation.PostConstruct;
 import java.util.*;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2020/2/7.
+ * Represents the DynamicSecurityMetadataSource component.
+ * Provides core functionality and operations for DynamicSecurityMetadataSource.
  */
 public class DynamicSecurityMetadataSource implements FilterInvocationSecurityMetadataSource {
 
@@ -33,26 +33,22 @@ public class DynamicSecurityMetadataSource implements FilterInvocationSecurityMe
 
     @Override
     public Collection<ConfigAttribute> getAttributes(Object o) throws IllegalArgumentException {
-        // Auto-generated documentation
         String url = ((FilterInvocation) o).getRequestUrl();
         String path = URLUtil.getPath(url);
         return getConfigAttributesWithPath(path);
     }
 
-    // Auto-generated documentation
     public List<ConfigAttribute> getConfigAttributesWithPath(String path) {
         if (configAttributeMap == null) this.loadDataSource();
         List<ConfigAttribute>  configAttributes = new ArrayList<>();
         PathMatcher pathMatcher = new AntPathMatcher();
         Iterator<String> iterator = configAttributeMap.keySet().iterator();
-        // Auto-generated documentation
         while (iterator.hasNext()) {
             String pattern = iterator.next();
             if (pathMatcher.match(pattern, path)) {
                 configAttributes.add(configAttributeMap.get(pattern));
             }
         }
-        // Auto-generated documentation
         return configAttributes;
     }
 

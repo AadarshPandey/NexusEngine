@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/10/16.
+ * Represents the OmsOrderSettingServiceImpl component.
+ * Provides core functionality and operations for OmsOrderSettingServiceImpl.
  */
 @Service
 public class OmsOrderSettingServiceImpl implements OmsOrderSettingService {

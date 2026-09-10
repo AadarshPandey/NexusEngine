@@ -10,28 +10,28 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode
 public class WebLog {
-    /**
-     * Auto-generated documentation
+        /**
+     * The description property.
      */
     private String description;
 
-    /**
-     * Auto-generated documentation
+        /**
+     * The username property.
      */
     private String username;
 
-    /**
-     * Auto-generated documentation
+        /**
+     * The startTime property.
      */
     private Long startTime;
 
-    /**
-     * Auto-generated documentation
+        /**
+     * The spendTime property.
      */
     private Integer spendTime;
 
-    /**
-     * Auto-generated documentation
+        /**
+     * The basePath property.
      */
     private String basePath;
 
@@ -45,23 +45,23 @@ public class WebLog {
      */
     private String url;
 
-    /**
-     * Auto-generated documentation
+        /**
+     * The method property.
      */
     private String method;
 
-    /**
-     * Auto-generated documentation
+        /**
+     * The ip property.
      */
     private String ip;
 
-    /**
-     * Auto-generated documentation
+        /**
+     * The parameter property.
      */
     private Object parameter;
 
-    /**
-     * Auto-generated documentation
+        /**
+     * The result property.
      */
     private Object result;
 

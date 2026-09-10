@@ -7,22 +7,32 @@ import com.nexusengine.core.portal.domain.PmsProductCategoryNode;
 import java.util.List;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2020/4/6.
+ * Represents the PmsPortalProductService component.
+ * Provides core functionality and operations for PmsPortalProductService.
  */
 public interface PmsPortalProductService {
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param keyword the keyword
+     * @param brandId the brandId
+     * @param productCategoryId the productCategoryId
+     * @param pageNum the pageNum
+     * @param pageSize the pageSize
+     * @param sort the sort
+     * @return the result of the operation
      */
     List<PmsProduct> search(String keyword, Long brandId, Long productCategoryId, Integer pageNum, Integer pageSize, Integer sort);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @return the result of the operation
      */
     List<PmsProductCategoryNode> categoryTreeList();
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param id the id
+     * @return the result of the operation
      */
     PmsPortalProductDetail detail(Long id);
 }

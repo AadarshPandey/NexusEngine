@@ -17,8 +17,8 @@ spring:
 minio:
   endpoint: http://minio:9000
   bucketName: nexuscore
-  accessKey: minioadmin
-  secretKey: minioadmin
+  accessKey: ${MINIO_ACCESS_KEY:minioadmin}
+  secretKey: ${MINIO_SECRET_KEY:minioadmin}
 
 logging:
   level:

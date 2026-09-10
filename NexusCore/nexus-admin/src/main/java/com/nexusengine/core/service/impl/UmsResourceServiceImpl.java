@@ -66,6 +66,7 @@ public class UmsResourceServiceImpl implements UmsResourceService {
 
     @Override
     public List<UmsResource> listAll() {
-        return resourceRepository.findAll();
+        return /* findAll() is acceptable for small reference tables */
+        resourceRepository.findAll();
     }
 }

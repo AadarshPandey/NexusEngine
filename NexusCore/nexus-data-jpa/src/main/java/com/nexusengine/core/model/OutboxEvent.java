@@ -27,6 +27,9 @@ public class OutboxEvent {
     @Column(nullable = false)
     private String status; // PENDING, SENT, FAILED
 
+    @Column(columnDefinition = "INTEGER DEFAULT 0")
+    private Integer retryCount = 0;
+
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
 }

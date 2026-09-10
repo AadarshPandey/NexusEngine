@@ -1,4 +1,5 @@
 package com.nexusengine.core.portal.dao;
+import org.springframework.data.domain.PageRequest;
 
 import com.nexusengine.core.model.*;
 import com.nexusengine.core.portal.domain.CartProduct;
@@ -79,7 +80,7 @@ public class PortalProductDao {
      * Get available coupons for a product (by product ID or product category ID)
      */
     public List<SmsCoupon> getAvailableCouponList(Long productId, Long productCategoryId) {
-        List<SmsCoupon> allCoupons = couponRepository.findAll();
+        List<SmsCoupon> allCoupons = couponRepository.findAll(PageRequest.of(0, 1000)).getContent();
         // Filter coupons that are usable (type=0 for all products, or matching product/category)
         return allCoupons.stream()
                 .filter(coupon -> {

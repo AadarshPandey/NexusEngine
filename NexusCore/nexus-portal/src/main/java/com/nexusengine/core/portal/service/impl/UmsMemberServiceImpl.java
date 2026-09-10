@@ -28,7 +28,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
+import java.security.SecureRandom;
 
 /**
  * Member management Service implementation
@@ -75,6 +75,14 @@ public class UmsMemberServiceImpl implements UmsMemberService {
             Asserts.fail("Username can only contain alphanumeric characters and underscores");
         }
         
+        // Password strength validation
+        if (password == null || password.length() < 8) {
+            Asserts.fail("Password must be at least 8 characters long");
+        }
+        if (!password.matches(".*[A-Z].*") || !password.matches(".*[a-z].*") || !password.matches(".*\\d.*")) {
+            Asserts.fail("Password must contain at least one uppercase letter, one lowercase letter, and one digit");
+        }
+        
         if (!verifyAuthCode(authCode, email)) {
             Asserts.fail("Invalid verification code");
         }
@@ -101,9 +109,9 @@ public class UmsMemberServiceImpl implements UmsMemberService {
     private String fromEmail;
 
     @Override
-    public String generateAuthCode(String email) {
+    public void generateAuthCode(String email) {
         StringBuilder sb = new StringBuilder();
-        Random random = new Random();
+        SecureRandom random = new SecureRandom();
         for (int i = 0; i < 6; i++) {
             sb.append(random.nextInt(10));
         }
@@ -123,8 +131,6 @@ public class UmsMemberServiceImpl implements UmsMemberService {
             ex.initCause(e);
             throw ex;
         }
-        
-        return sb.toString();
     }
 
     @Override
@@ -135,6 +141,13 @@ public class UmsMemberServiceImpl implements UmsMemberService {
         }
         if (!verifyAuthCode(authCode, email)) {
             Asserts.fail("Invalid verification code");
+        }
+        // Password strength validation
+        if (password == null || password.length() < 8) {
+            Asserts.fail("Password must be at least 8 characters long");
+        }
+        if (!password.matches(".*[A-Z].*") || !password.matches(".*[a-z].*") || !password.matches(".*\\d.*")) {
+            Asserts.fail("Password must contain at least one uppercase letter, one lowercase letter, and one digit");
         }
         member.setPassword(passwordEncoder.encode(password));
         memberRepository.save(member);
@@ -198,6 +211,10 @@ public class UmsMemberServiceImpl implements UmsMemberService {
             return false;
         }
         String realAuthCode = memberCacheService.getAuthCode(email);
-        return authCode.equals(realAuthCode);
+        if (realAuthCode != null && java.security.MessageDigest.isEqual(authCode.getBytes(), realAuthCode.getBytes())) {
+            memberCacheService.delAuthCode(email);
+            return true;
+        }
+        return false;
     }
 }

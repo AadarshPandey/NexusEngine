@@ -11,8 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/9/14.
+ * Represents the CancelOrderSender component.
+ * Provides core functionality and operations for CancelOrderSender.
  */
 @Component
 public class CancelOrderSender {
@@ -21,11 +21,9 @@ public class CancelOrderSender {
     private AmqpTemplate amqpTemplate;
 
     public void sendMessage(Long orderId,final long delayTimes){
-        // Auto-generated documentation
         amqpTemplate.convertAndSend(QueueEnum.QUEUE_TTL_ORDER_CANCEL.getExchange(), QueueEnum.QUEUE_TTL_ORDER_CANCEL.getRouteKey(), orderId, new MessagePostProcessor() {
             @Override
             public Message postProcessMessage(Message message) throws AmqpException {
-                // Auto-generated documentation
                 message.getMessageProperties().setExpiration(String.valueOf(delayTimes));
                 return message;
             }

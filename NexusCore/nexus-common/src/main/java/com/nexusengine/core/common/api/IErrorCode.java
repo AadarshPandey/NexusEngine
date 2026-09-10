@@ -1,17 +1,19 @@
 package com.nexusengine.core.common.api;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2019/4/19.
+ * Represents the IErrorCode component.
+ * Provides core functionality and operations for IErrorCode.
  */
 public interface IErrorCode {
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @return the result of the operation
      */
     long getCode();
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @return the result of the operation
      */
     String getMessage();
 }

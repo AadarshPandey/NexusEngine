@@ -1,47 +1,23 @@
 package com.nexusengine.core.common.util;
 
 import jakarta.servlet.http.HttpServletRequest;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2020/10/8.
+ * Utility for extracting client IP addresses from HTTP requests.
  */
 public class RequestUtil {
 
+    private static final Logger log = LoggerFactory.getLogger(RequestUtil.class);
+
     /**
-     * Auto-generated documentation
+     * Returns the client IP address.
+     * Uses remoteAddr for security — X-Forwarded-For headers are client-controlled
+     * and should only be trusted when the app sits behind a known reverse proxy
+     * configured to overwrite (not append to) the header.
      */
     public static String getRequestIp(HttpServletRequest request) {
-        // Auto-generated documentation
-        String ipAddress = request.getHeader("x-forwarded-for");
-        if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
-            ipAddress = request.getHeader("Proxy-Client-IP");
-        }
-        if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
-            ipAddress = request.getHeader("WL-Proxy-Client-IP");
-        }
-        if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
-            ipAddress = request.getRemoteAddr();
-            // Auto-generated documentation
-            if (ipAddress.equals("127.0.0.1") || ipAddress.equals("0:0:0:0:0:0:0:1")) {
-                InetAddress inetAddress = null;
-                try {
-                    inetAddress = InetAddress.getLocalHost();
-                } catch (UnknownHostException e) {
-                    e.printStackTrace();
-                }
-                ipAddress = inetAddress.getHostAddress();
-            }
-        }
-        // Auto-generated documentation
-        if (ipAddress != null && ipAddress.length() > 15) {
-            if (ipAddress.indexOf(",") > 0) {
-                ipAddress = ipAddress.substring(0, ipAddress.indexOf(","));
-            }
-        }
-        return ipAddress;
+        return request.getRemoteAddr();
     }
-
 }

@@ -11,49 +11,72 @@ import java.util.List;
  * Created by macro on 2018/4/26.
  */
 public interface PmsBrandService {
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @return the result of the operation
      */
     List<PmsBrand> listAllBrand();
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param pmsBrandParam the pmsBrandParam
+     * @return the result of the operation
      */
     int createBrand(PmsBrandParam pmsBrandParam);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param id the id
+     * @param pmsBrandParam the pmsBrandParam
+     * @return the result of the operation
      */
     @Transactional
     int updateBrand(Long id, PmsBrandParam pmsBrandParam);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param id the id
+     * @return the result of the operation
      */
     int deleteBrand(Long id);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param ids the ids
+     * @return the result of the operation
      */
     int deleteBrand(List<Long> ids);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param keyword the keyword
+     * @param showStatus the showStatus
+     * @param pageNum the pageNum
+     * @param pageSize the pageSize
+     * @return the result of the operation
      */
     List<PmsBrand> listBrand(String keyword, Integer showStatus, int pageNum, int pageSize);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param id the id
+     * @return the result of the operation
      */
     PmsBrand getBrand(Long id);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param ids the ids
+     * @param showStatus the showStatus
+     * @return the result of the operation
      */
     int updateShowStatus(List<Long> ids, Integer showStatus);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param ids the ids
+     * @param factoryStatus the factoryStatus
+     * @return the result of the operation
      */
     int updateFactoryStatus(List<Long> ids, Integer factoryStatus);
 }

@@ -8,8 +8,8 @@ import lombok.Setter;
 import java.math.BigDecimal;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/8/27.
+ * Represents the CartPromotionItem component.
+ * Provides core functionality and operations for CartPromotionItem.
  */
 @Getter
 @Setter

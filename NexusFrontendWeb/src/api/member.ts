@@ -36,13 +36,13 @@ export interface UmsMemberReceiveAddress {
 }
 
 export const fetchMemberInfo = () => {
-  return request.get<any, { data: UmsMember }>('/sso/info');
+  return request.get<unknown, { data: UmsMember }>('/sso/info');
 };
 
 export const fetchAddressList = () => {
-  return request.get<any, { data: UmsMemberReceiveAddress[] }>('/member/address/list');
+  return request.get<unknown, { data: UmsMemberReceiveAddress[] }>('/member/address/list');
 };
 
 export const addAddress = (address: Partial<UmsMemberReceiveAddress>) => {
-  return request.post<any, { data: any }>('/member/address/add', address);
+  return request.post<unknown, { data: unknown }>('/member/address/add', address);
 };

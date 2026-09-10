@@ -2,18 +2,19 @@ package com.nexusengine.core.portal.domain;
 
 import lombok.Getter;
 
-/**
- * Auto-generated documentation
- * Created by macro on 2018/9/14.
- */
+    /**
+     * The { property.
+     */
 @Getter
 public enum QueueEnum {
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @return the result of the operation
      */
     QUEUE_ORDER_CANCEL("nexus.order.direct", "nexus.order.cancel", "nexus.order.cancel"),
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @return the result of the operation
      */
     QUEUE_TTL_ORDER_CANCEL("nexus.order.direct.ttl", "nexus.order.cancel.ttl", "nexus.order.cancel.ttl"),
     /**
@@ -21,16 +22,16 @@ public enum QueueEnum {
      */
     QUEUE_FLASH_ORDER("nexus.flash.direct", "nexus.flash.order", "nexus.flash.order");
 
-    /**
-     * Auto-generated documentation
+        /**
+     * The exchange property.
      */
     private final String exchange;
-    /**
-     * Auto-generated documentation
+        /**
+     * The name property.
      */
     private final String name;
-    /**
-     * Auto-generated documentation
+        /**
+     * The routeKey property.
      */
     private final String routeKey;
 

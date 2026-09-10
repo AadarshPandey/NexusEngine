@@ -5,12 +5,13 @@ import com.nexusengine.core.model.OmsCompanyAddress;
 import java.util.List;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/10/18.
+ * Represents the OmsCompanyAddressService component.
+ * Provides core functionality and operations for OmsCompanyAddressService.
  */
 public interface OmsCompanyAddressService {
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @return the result of the operation
      */
     List<OmsCompanyAddress> list();
 }

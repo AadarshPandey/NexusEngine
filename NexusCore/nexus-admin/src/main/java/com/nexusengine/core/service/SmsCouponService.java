@@ -7,36 +7,49 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/8/28.
+ * Represents the SmsCouponService component.
+ * Provides core functionality and operations for SmsCouponService.
  */
 public interface SmsCouponService {
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param couponParam the couponParam
+     * @return the result of the operation
      */
     @Transactional
     int create(SmsCouponParam couponParam);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param id the id
+     * @return the result of the operation
      */
     @Transactional
     int delete(Long id);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param id the id
+     * @param couponParam the couponParam
+     * @return the result of the operation
      */
     @Transactional
     int update(Long id, SmsCouponParam couponParam);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param name the name
+     * @param type the type
+     * @param pageSize the pageSize
+     * @param pageNum the pageNum
+     * @return the result of the operation
      */
     List<SmsCoupon> list(String name, Integer type, Integer pageSize, Integer pageNum);
 
-    /**
-     * Auto-generated documentation
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param id the id
+     * @return the result of the operation
      */
     SmsCouponParam getItem(Long id);
 }

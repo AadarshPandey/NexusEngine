@@ -5,12 +5,13 @@ import com.nexusengine.core.model.CmsPrefrenceArea;
 import java.util.List;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/6/1.
+ * Represents the CmsPrefrenceAreaService component.
+ * Provides core functionality and operations for CmsPrefrenceAreaService.
  */
 public interface CmsPrefrenceAreaService {
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @return the result of the operation
      */
     List<CmsPrefrenceArea> listAll();
 }

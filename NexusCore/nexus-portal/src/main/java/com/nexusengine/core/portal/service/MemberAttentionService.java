@@ -4,32 +4,41 @@ import com.nexusengine.core.portal.domain.MemberBrandAttention;
 import org.springframework.data.domain.Page;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/8/2.
+ * Represents the MemberAttentionService component.
+ * Provides core functionality and operations for MemberAttentionService.
  */
 public interface MemberAttentionService {
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param memberBrandAttention the memberBrandAttention
+     * @return the result of the operation
      */
     int add(MemberBrandAttention memberBrandAttention);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param brandId the brandId
+     * @return the result of the operation
      */
     int delete(Long brandId);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param pageNum the pageNum
+     * @param pageSize the pageSize
+     * @return the result of the operation
      */
     Page<MemberBrandAttention> list(Integer pageNum, Integer pageSize);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param brandId the brandId
+     * @return the result of the operation
      */
     MemberBrandAttention detail(Long brandId);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
      */
     void clear();
 }

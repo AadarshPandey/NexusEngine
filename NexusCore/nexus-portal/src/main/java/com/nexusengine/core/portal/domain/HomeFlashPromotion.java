@@ -8,8 +8,8 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2019/1/28.
+ * Represents the HomeFlashPromotion component.
+ * Provides core functionality and operations for HomeFlashPromotion.
  */
 @Getter
 @Setter

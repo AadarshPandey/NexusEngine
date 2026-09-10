@@ -6,14 +6,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/9/14.
+ * Represents the PortalRabbitMqConfig component.
+ * Provides core functionality and operations for PortalRabbitMqConfig.
  */
 @Configuration
 public class PortalRabbitMqConfig {
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @return the result of the operation
      */
     @Bean
     DirectExchange orderDirect() {
@@ -23,8 +24,9 @@ public class PortalRabbitMqConfig {
                 .build();
     }
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @return the result of the operation
      */
     @Bean
     DirectExchange orderTtlDirect() {
@@ -34,28 +36,33 @@ public class PortalRabbitMqConfig {
                 .build();
     }
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @return the result of the operation
      */
     @Bean
     public Queue orderQueue() {
         return new Queue(QueueEnum.QUEUE_ORDER_CANCEL.getName());
     }
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @return the result of the operation
      */
     @Bean
     public Queue orderTtlQueue() {
         return QueueBuilder
                 .durable(QueueEnum.QUEUE_TTL_ORDER_CANCEL.getName())
-                .withArgument("x-dead-letter-exchange", QueueEnum.QUEUE_ORDER_CANCEL.getExchange())// Auto-generated documentation
-                .withArgument("x-dead-letter-routing-key", QueueEnum.QUEUE_ORDER_CANCEL.getRouteKey())// Auto-generated documentation
+                .withArgument("x-dead-letter-exchange", QueueEnum.QUEUE_ORDER_CANCEL.getExchange())
+                .withArgument("x-dead-letter-routing-key", QueueEnum.QUEUE_ORDER_CANCEL.getRouteKey())
                 .build();
     }
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param orderDirect the orderDirect
+     * @param orderQueue the orderQueue
+     * @return the result of the operation
      */
     @Bean
     Binding orderBinding(DirectExchange orderDirect,Queue orderQueue){
@@ -65,8 +72,11 @@ public class PortalRabbitMqConfig {
                 .with(QueueEnum.QUEUE_ORDER_CANCEL.getRouteKey());
     }
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param orderTtlDirect the orderTtlDirect
+     * @param orderTtlQueue the orderTtlQueue
+     * @return the result of the operation
      */
     @Bean
     Binding orderTtlBinding(DirectExchange orderTtlDirect,Queue orderTtlQueue){

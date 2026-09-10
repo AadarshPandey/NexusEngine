@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/11/5.
+ * Represents the IgnoreUrlsConfig component.
+ * Provides core functionality and operations for IgnoreUrlsConfig.
  */
 @Getter
 @Setter

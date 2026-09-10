@@ -8,8 +8,8 @@ import lombok.EqualsAndHashCode;
 import jakarta.validation.constraints.NotEmpty;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/4/26.
+ * Represents the PmsProductAttributeParam component.
+ * Provides core functionality and operations for PmsProductAttributeParam.
  */
 @Data
 @EqualsAndHashCode

@@ -5,6 +5,7 @@ import com.nexusengine.core.model.SmsCouponHistory;
 import com.nexusengine.core.service.SmsCouponHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.PageRequest;
 import java.util.List;
 
 @Service
@@ -20,6 +21,6 @@ public class SmsCouponHistoryServiceImpl implements SmsCouponHistoryService {
         if (couponId != null) {
             return historyRepository.findByCouponId(couponId);
         }
-        return historyRepository.findAll();
+        return historyRepository.findAll(PageRequest.of(0, 1000)).getContent();
     }
 }

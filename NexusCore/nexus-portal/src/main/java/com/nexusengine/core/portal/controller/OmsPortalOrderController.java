@@ -1,5 +1,6 @@
 package com.nexusengine.core.portal.controller;
 
+import org.springframework.web.bind.annotation.RestController;
 import com.nexusengine.core.common.api.CommonPage;
 import com.nexusengine.core.common.api.CommonResult;
 import com.nexusengine.core.portal.domain.ConfirmOrderResult;
@@ -12,16 +13,16 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
 
 /**
- * Auto-generated documentation
+ * Customer-facing order management controller.
+ * Handles order creation, listing, cancellation, and Razorpay payment integration.
  */
-@Controller
+@RestController
 @Tag(name = "OmsPortalOrderController", description = "Oms portal order controller APIs")
 @RequestMapping("/portal/order")
 @lombok.extern.slf4j.Slf4j
@@ -33,7 +34,7 @@ public class OmsPortalOrderController {
 
     @Operation(summary = "Generate confirm order Operation")
     @RequestMapping(value = "/generateConfirmOrder", method = RequestMethod.POST)
-    @ResponseBody
+
     public CommonResult<ConfirmOrderResult> generateConfirmOrder(@RequestBody List<Long> cartIds) {
         ConfirmOrderResult confirmOrderResult = portalOrderService.generateConfirmOrder(cartIds);
         return CommonResult.success(confirmOrderResult);
@@ -41,7 +42,7 @@ public class OmsPortalOrderController {
 
     @Operation(summary = "Generate order Operation")
     @RequestMapping(value = "/generateOrder", method = RequestMethod.POST)
-    @ResponseBody
+
     public CommonResult generateOrder(@RequestBody OrderParam orderParam) {
         Map<String, Object> result = portalOrderService.generateOrder(orderParam);
         return CommonResult.success(result, "Success");
@@ -52,7 +53,7 @@ public class OmsPortalOrderController {
     @Parameter(name = "status", description = "Description",
             in = ParameterIn.QUERY, schema = @Schema(type = "integer",defaultValue = "-1",allowableValues = {"-1","0","1","2","3","4"}))
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    @ResponseBody
+
     public CommonResult<CommonPage<OmsOrderDetail>> list(@RequestParam Integer status,
                                                    @RequestParam(required = false, defaultValue = "1") Integer pageNum,
                                                    @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
@@ -62,7 +63,7 @@ public class OmsPortalOrderController {
 
     @Operation(summary = "Detail Operation")
     @RequestMapping(value = "/detail/{orderId}", method = RequestMethod.GET)
-    @ResponseBody
+
     public CommonResult<OmsOrderDetail> detail(@PathVariable Long orderId) {
         OmsOrderDetail orderDetail = portalOrderService.detail(orderId);
         return CommonResult.success(orderDetail);
@@ -70,7 +71,7 @@ public class OmsPortalOrderController {
 
     @Operation(summary = "Cancel user order Operation")
     @RequestMapping(value = "/cancelUserOrder", method = RequestMethod.POST)
-    @ResponseBody
+
     public CommonResult cancelUserOrder(Long orderId) {
         portalOrderService.cancelOrder(orderId);
         return CommonResult.success(null);
@@ -78,7 +79,7 @@ public class OmsPortalOrderController {
 
     @Operation(summary = "Confirm receive order Operation")
     @RequestMapping(value = "/confirmReceiveOrder", method = RequestMethod.POST)
-    @ResponseBody
+
     public CommonResult confirmReceiveOrder(Long orderId) {
         portalOrderService.confirmReceiveOrder(orderId);
         return CommonResult.success(null);
@@ -86,7 +87,7 @@ public class OmsPortalOrderController {
 
     @Operation(summary = "Delete order Operation")
     @RequestMapping(value = "/deleteOrder", method = RequestMethod.POST)
-    @ResponseBody
+
     public CommonResult deleteOrder(Long orderId) {
         portalOrderService.deleteOrder(orderId);
         return CommonResult.success(null);
@@ -96,7 +97,7 @@ public class OmsPortalOrderController {
 
     @Operation(summary = "Create Razorpay Order")
     @RequestMapping(value = "/createRazorpayOrder", method = RequestMethod.POST)
-    @ResponseBody
+
     public CommonResult<Map<String, String>> createRazorpayOrder(@RequestParam Long orderId) {
         try {
             OmsOrderDetail orderDetail = portalOrderService.detail(orderId);
@@ -106,12 +107,12 @@ public class OmsPortalOrderController {
             Map<String, String> result = razorpayPaymentGatewayService.createOrder(amount, orderDetail.getOrderSn());
             
             return CommonResult.success(result);
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             log.error("Failed to create Razorpay order", e);
             if (e.getMessage() != null && e.getMessage().contains("Payment service temporarily unavailable")) {
                 return CommonResult.failed("Payment service temporarily unavailable");
             }
-            return CommonResult.failed("Failed to create Razorpay order: " + e.getMessage());
+            return CommonResult.failed("Failed to create Razorpay order");
         }
     }
 
@@ -120,7 +121,7 @@ public class OmsPortalOrderController {
 
     @Operation(summary = "Verify Razorpay Payment")
     @RequestMapping(value = "/verifyRazorpayPayment", method = RequestMethod.POST)
-    @ResponseBody
+
     public CommonResult verifyRazorpayPayment(@RequestParam Long orderId, 
                                               @RequestParam String razorpayPaymentId,
                                               @RequestParam String razorpayOrderId,
@@ -156,7 +157,10 @@ public class OmsPortalOrderController {
             
             portalOrderService.paySuccess(orderId, 2);
             return CommonResult.success("Payment successful");
-        } catch (Exception e) {
+        } catch (org.springframework.dao.DataAccessException e) {
+            log.error("Database error during payment verification", e);
+            return CommonResult.failed("Payment verification failed due to database error");
+        } catch (RuntimeException e) {
             log.error("Payment verification failed", e);
             return CommonResult.failed("Payment verification failed");
         }

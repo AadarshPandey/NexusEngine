@@ -11,6 +11,7 @@ import java.util.List;
 
 @Component
 public class OutboxEventProcessor {
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(OutboxEventProcessor.class);
 
     @Autowired
     private OutboxEventRepository outboxEventRepository;
@@ -42,8 +43,17 @@ public class OutboxEventProcessor {
                             event.setStatus("SENT");
                             outboxEventRepository.save(event);
                         }
-                    } catch (Exception e) {
-                        // ignore
+                    } catch (NumberFormatException e) {
+                        log.error("Invalid outbox event data for event {}: {}", event.getId(), e.getMessage());
+                        event.setStatus("FAILED");
+                        outboxEventRepository.save(event);
+                    } catch (org.springframework.amqp.AmqpException e) {
+                        log.error("Failed to process outbox event {}: {}", event.getId(), e.getMessage(), e);
+                        event.setRetryCount(event.getRetryCount() != null ? event.getRetryCount() + 1 : 1);
+                        if (event.getRetryCount() >= 3) {
+                            event.setStatus("FAILED");
+                        }
+                        outboxEventRepository.save(event);
                     }
                 }
             }

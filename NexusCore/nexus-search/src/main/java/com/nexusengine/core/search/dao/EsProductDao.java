@@ -19,6 +19,7 @@ import java.util.List;
  */
 @Repository
 public class EsProductDao {
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(EsProductDao.class);
     @Autowired
     private PmsProductRepository productRepository;
     @Autowired
@@ -33,7 +34,7 @@ public class EsProductDao {
         if (id != null) {
             products = productRepository.findAllById(Collections.singletonList(id));
         } else {
-            products = productRepository.findAll();
+            products = /* Intentional unbounded findAll for bulk ES indexing */ productRepository.findAll();
         }
         List<EsProduct> result = new ArrayList<>();
         for (PmsProduct product : products) {
@@ -65,7 +66,7 @@ public class EsProductDao {
                 attrValues = attributeValueRepository.findAll((root, query, cb) ->
                         cb.equal(root.get("productId"), product.getId()), org.springframework.data.domain.Pageable.unpaged()).getContent();
             } catch (Exception e) {
-                // Fallback
+                log.warn("Failed to load attribute values for product {}: {}", product.getId(), e.getMessage());
             }
             for (PmsProductAttributeValue attrValue : attrValues) {
                 EsProductAttributeValue esAttrValue = new EsProductAttributeValue();

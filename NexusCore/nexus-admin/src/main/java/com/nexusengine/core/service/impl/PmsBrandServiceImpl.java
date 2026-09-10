@@ -22,7 +22,7 @@ public class PmsBrandServiceImpl implements PmsBrandService {
 
     @Override
     public List<PmsBrand> listAllBrand() {
-        return brandRepository.findAll();
+        return brandRepository.findAll(PageRequest.of(0, 1000)).getContent();
     }
 
     @Override

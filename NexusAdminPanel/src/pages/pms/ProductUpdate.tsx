@@ -66,7 +66,7 @@ const ProductUpdate: React.FC = () => {
         price: cleanNumber(formData.price),
         originalPrice: cleanNumber(formData.originalPrice),
         stock: cleanNumber(formData.stock)
-      } as any);
+      } as unknown as import('@/types/product').PmsProductParam);
       alert('Product updated successfully!');
       navigate('/pms/product');
     } catch (error) {

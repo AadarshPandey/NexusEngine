@@ -15,8 +15,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2019/11/9.
+ * Represents the AdminNexusSecurityConfig component.
+ * Provides core functionality and operations for AdminNexusSecurityConfig.
  */
 @Configuration
 public class AdminNexusSecurityConfig {
@@ -28,7 +28,6 @@ public class AdminNexusSecurityConfig {
 
     @Bean
     public UserDetailsService adminUserDetailsService() {
-        // Auto-generated documentation
         return username -> adminService.loadUserByUsername(username);
     }
 

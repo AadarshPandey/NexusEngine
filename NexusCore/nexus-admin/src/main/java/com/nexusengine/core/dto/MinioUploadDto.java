@@ -5,8 +5,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2019/12/25.
+ * Represents the MinioUploadDto component.
+ * Provides core functionality and operations for MinioUploadDto.
  */
 @Data
 @EqualsAndHashCode

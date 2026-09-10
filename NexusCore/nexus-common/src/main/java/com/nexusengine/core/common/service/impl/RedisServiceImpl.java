@@ -10,8 +10,8 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2020/3/3.
+ * Represents the RedisServiceImpl component.
+ * Provides core functionality and operations for RedisServiceImpl.
  */
 public class RedisServiceImpl implements RedisService {
     @Autowired

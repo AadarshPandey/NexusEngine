@@ -5,8 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/4/26.
+ * Represents the PmsProductResult component.
+ * Provides core functionality and operations for PmsProductResult.
  */
 public class PmsProductResult extends PmsProductParam {
     @Getter

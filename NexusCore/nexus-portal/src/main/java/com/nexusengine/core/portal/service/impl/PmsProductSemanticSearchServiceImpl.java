@@ -10,6 +10,7 @@ import org.springframework.ai.embedding.EmbeddingModel;
 import org.springframework.ai.embedding.EmbeddingResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,7 +37,7 @@ public class PmsProductSemanticSearchServiceImpl implements PmsProductSemanticSe
             return 0;
         }
 
-        List<PmsProduct> products = productRepository.findAll();
+        List<PmsProduct> products = productRepository.findAll(PageRequest.of(0, 1000)).getContent();
         int count = 0;
         
         // Batch processing to avoid rate limits

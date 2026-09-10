@@ -6,33 +6,48 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/11/6.
+ * Represents the SmsHomeBrandService component.
+ * Provides core functionality and operations for SmsHomeBrandService.
  */
 public interface SmsHomeBrandService {
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param homeBrandList the homeBrandList
+     * @return the result of the operation
      */
     @Transactional
     int create(List<SmsHomeBrand> homeBrandList);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param id the id
+     * @param sort the sort
+     * @return the result of the operation
      */
     int updateSort(Long id, Integer sort);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param ids the ids
+     * @return the result of the operation
      */
     int delete(List<Long> ids);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param ids the ids
+     * @param recommendStatus the recommendStatus
+     * @return the result of the operation
      */
     int updateRecommendStatus(List<Long> ids, Integer recommendStatus);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param brandName the brandName
+     * @param recommendStatus the recommendStatus
+     * @param pageSize the pageSize
+     * @param pageNum the pageNum
+     * @return the result of the operation
      */
     List<SmsHomeBrand> list(String brandName, Integer recommendStatus, Integer pageSize, Integer pageNum);
 }

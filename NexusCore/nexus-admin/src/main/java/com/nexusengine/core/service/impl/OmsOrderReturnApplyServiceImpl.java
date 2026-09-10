@@ -9,6 +9,7 @@ import com.nexusengine.core.service.OmsOrderReturnApplyService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.PageRequest;
 import java.util.Date;
 import java.util.List;
 
@@ -19,7 +20,7 @@ public class OmsOrderReturnApplyServiceImpl implements OmsOrderReturnApplyServic
 
     @Override
     public List<OmsOrderReturnApply> list(OmsReturnApplyQueryParam queryParam, Integer pageSize, Integer pageNum) {
-        return returnApplyRepository.findAll();
+        return returnApplyRepository.findAll(PageRequest.of(0, 1000)).getContent();
     }
 
     @Override

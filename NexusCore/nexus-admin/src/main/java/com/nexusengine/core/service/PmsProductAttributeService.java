@@ -8,41 +8,55 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/4/26.
+ * Represents the PmsProductAttributeService component.
+ * Provides core functionality and operations for PmsProductAttributeService.
  */
 public interface PmsProductAttributeService {
-    /**
-     * Auto-generated documentation
-     * Auto-generated documentation
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param cid the cid
+     * @param type the type
+     * @param pageSize the pageSize
+     * @param pageNum the pageNum
+     * @return the result of the operation
      */
     List<PmsProductAttribute> getList(Long cid, Integer type, Integer pageSize, Integer pageNum);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param pmsProductAttributeParam the pmsProductAttributeParam
+     * @return the result of the operation
      */
     @Transactional
     int create(PmsProductAttributeParam pmsProductAttributeParam);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param id the id
+     * @param productAttributeParam the productAttributeParam
+     * @return the result of the operation
      */
     int update(Long id, PmsProductAttributeParam productAttributeParam);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param id the id
+     * @return the result of the operation
      */
     PmsProductAttribute getItem(Long id);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param ids the ids
+     * @return the result of the operation
      */
     @Transactional
     int delete(List<Long> ids);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param productCategoryId the productCategoryId
+     * @return the result of the operation
      */
     List<ProductAttrInfo> getProductAttrInfo(Long productCategoryId);
 }

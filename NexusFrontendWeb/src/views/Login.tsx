@@ -23,9 +23,9 @@ const Login: React.FC = () => {
         dispatch(login({ token: response.data.token, user: { username } }));
         navigate('/');
       }
-    } catch (err: any) {
-      let errorMessage = err.message;
-      setError(errorMessage || 'Login failed. Please check your credentials.');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Login failed. Please check your credentials.';
+      setError(errorMessage);
     }
   };
 

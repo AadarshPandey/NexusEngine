@@ -8,8 +8,8 @@ import lombok.Setter;
 import java.math.BigDecimal;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2019/1/28.
+ * Represents the FlashPromotionProduct component.
+ * Provides core functionality and operations for FlashPromotionProduct.
  */
 @Getter
 @Setter

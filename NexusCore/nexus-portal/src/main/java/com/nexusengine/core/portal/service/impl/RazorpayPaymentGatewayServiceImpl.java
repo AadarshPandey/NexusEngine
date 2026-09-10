@@ -12,6 +12,8 @@ import java.util.Map;
 @Service
 public class RazorpayPaymentGatewayServiceImpl implements RazorpayPaymentGatewayService {
 
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(RazorpayPaymentGatewayServiceImpl.class);
+
     @Value("${razorpay.keyId}")
     private String razorpayKeyId;
 
@@ -36,14 +38,13 @@ public class RazorpayPaymentGatewayServiceImpl implements RazorpayPaymentGateway
             result.put("keyId", razorpayKeyId);
             result.put("amount", String.valueOf(amount));
             return result;
-        } catch (Exception e) {
+        } catch (com.razorpay.RazorpayException e) {
             throw new RuntimeException("Failed to create Razorpay order: " + e.getMessage(), e);
         }
     }
 
     public Map<String, String> createOrderFallback(int amount, String receipt, Throwable t) {
-        System.err.println("Razorpay Fallback Triggered. Underlying Error: " + t.getMessage());
-        t.printStackTrace();
+        log.error("Razorpay circuit breaker fallback triggered for order (amount={}, receipt={})", amount, receipt, t);
         throw new RuntimeException("Payment service temporarily unavailable");
     }
 
@@ -55,7 +56,7 @@ public class RazorpayPaymentGatewayServiceImpl implements RazorpayPaymentGateway
             options.put("razorpay_payment_id", paymentId);
             options.put("razorpay_signature", signature);
             return com.razorpay.Utils.verifyPaymentSignature(options, razorpayKeySecret);
-        } catch (Exception e) {
+        } catch (com.razorpay.RazorpayException e) {
             throw new RuntimeException("Failed to verify signature", e);
         }
     }
@@ -67,7 +68,7 @@ public class RazorpayPaymentGatewayServiceImpl implements RazorpayPaymentGateway
             com.razorpay.Payment payment = razorpay.payments.fetch(paymentId);
             int amount = payment.get("amount");
             return amount == expectedAmount;
-        } catch (Exception e) {
+        } catch (com.razorpay.RazorpayException e) {
             throw new RuntimeException("Failed to fetch payment amount", e);
         }
     }

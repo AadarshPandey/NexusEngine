@@ -15,14 +15,16 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.config.Customizer;
 
 
 /**
- * Auto-generated documentation
- * Created by macro on 2019/11/5.
+ * Represents the SecurityConfig component.
+ * Provides core functionality and operations for SecurityConfig.
  */
 @Configuration
 @EnableWebSecurity
+@org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 public class SecurityConfig {
 
     @Autowired
@@ -39,23 +41,17 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeHttpRequests(registry -> {
-            // Auto-generated documentation
             for (String url : ignoreUrlsConfig.getUrls()) {
                 registry.requestMatchers(url).permitAll();
             }
-            // Auto-generated documentation
             registry.requestMatchers(HttpMethod.OPTIONS).permitAll();
             
-            // Auto-generated documentation
             registry.anyRequest().access(dynamicAuthorizationManager==null? AuthenticatedAuthorizationManager.authenticated():dynamicAuthorizationManager);
         })
-        // Auto-generated documentation
         .csrf(AbstractHttpConfigurer::disable)
-        // Auto-generated documentation
+        .cors(Customizer.withDefaults())
         .sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        // Auto-generated documentation
         .exceptionHandling(configurer -> configurer.accessDeniedHandler(restfulAccessDeniedHandler).authenticationEntryPoint(restAuthenticationEntryPoint))
-        // Auto-generated documentation
         .addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
         return httpSecurity.build();
     }

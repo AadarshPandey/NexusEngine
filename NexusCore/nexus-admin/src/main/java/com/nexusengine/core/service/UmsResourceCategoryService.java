@@ -5,28 +5,36 @@ import com.nexusengine.core.model.UmsResourceCategory;
 import java.util.List;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2020/2/5.
+ * Represents the UmsResourceCategoryService component.
+ * Provides core functionality and operations for UmsResourceCategoryService.
  */
 public interface UmsResourceCategoryService {
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @return the result of the operation
      */
     List<UmsResourceCategory> listAll();
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param umsResourceCategory the umsResourceCategory
+     * @return the result of the operation
      */
     int create(UmsResourceCategory umsResourceCategory);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param id the id
+     * @param umsResourceCategory the umsResourceCategory
+     * @return the result of the operation
      */
     int update(Long id, UmsResourceCategory umsResourceCategory);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param id the id
+     * @return the result of the operation
      */
     int delete(Long id);
 }

@@ -4,10 +4,9 @@ import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 import java.lang.annotation.*;
 
-/**
- * Auto-generated documentation
- * Created by macro on 2018/4/26.
- */
+    /**
+     * The { property.
+     */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD,ElementType.PARAMETER})

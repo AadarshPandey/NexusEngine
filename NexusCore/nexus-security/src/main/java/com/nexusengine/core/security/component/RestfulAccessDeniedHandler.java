@@ -12,15 +12,14 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/4/26.
+ * Represents the RestfulAccessDeniedHandler component.
+ * Provides core functionality and operations for RestfulAccessDeniedHandler.
  */
 public class RestfulAccessDeniedHandler implements AccessDeniedHandler{
     @Override
     public void handle(HttpServletRequest request,
                        HttpServletResponse response,
                        AccessDeniedException e) throws IOException {
-        response.setHeader("Access-Control-Allow-Origin", "*");
         response.setHeader("Cache-Control","no-cache");
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json");

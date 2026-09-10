@@ -14,6 +14,7 @@ public class CmsPrefrenceAreaServiceImpl implements CmsPrefrenceAreaService {
 
     @Override
     public List<CmsPrefrenceArea> listAll() {
-        return prefrenceAreaRepository.findAll();
+        return /* findAll() is acceptable for small reference tables */
+        prefrenceAreaRepository.findAll();
     }
 }

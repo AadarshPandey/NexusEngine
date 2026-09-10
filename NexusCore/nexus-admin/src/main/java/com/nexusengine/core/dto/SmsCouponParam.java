@@ -10,8 +10,8 @@ import lombok.Setter;
 import java.util.List;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/8/28.
+ * Represents the SmsCouponParam component.
+ * Provides core functionality and operations for SmsCouponParam.
  */
 public class SmsCouponParam extends SmsCoupon {
     @Getter

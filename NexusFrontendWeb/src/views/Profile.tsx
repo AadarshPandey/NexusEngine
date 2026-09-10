@@ -40,7 +40,7 @@ const Profile: React.FC = () => {
   // Refund dialog states
   const [openRefundDialog, setOpenRefundDialog] = useState(false);
   const [refundOrder, setRefundOrder] = useState<OmsOrderDetail | null>(null);
-  const [selectedRefundItems, setSelectedRefundItems] = useState<any[]>([]);
+  const [selectedRefundItems, setSelectedRefundItems] = useState<(import('../api/order').OmsOrderItem & { returnQuantity: number })[]>([]);
   const [refundReason, setRefundReason] = useState('');
 
   useEffect(() => {
@@ -97,11 +97,11 @@ const Profile: React.FC = () => {
     setOpenRefundDialog(true);
   };
 
-  const handleRefundItemToggle = (item: any) => {
+  const handleRefundItemToggle = (item: import('../api/order').OmsOrderItem) => {
     const currentIndex = selectedRefundItems.findIndex((i) => i.id === item.id);
     const newSelected = [...selectedRefundItems];
     if (currentIndex === -1) {
-      const totalReturnedQty = refundOrder?.returnApplyList?.filter((r: any) => r.productId === item.productId).reduce((sum, r) => sum + (r.productCount || 0), 0) || 0;
+      const totalReturnedQty = refundOrder?.returnApplyList?.filter((r: import('../api/order').OmsOrderReturnApply) => r.productId === item.productId).reduce((sum, r) => sum + (r.productCount || 0), 0) || 0;
       const maxReturnableQty = item.productQuantity - totalReturnedQty;
       newSelected.push({ ...item, returnQuantity: maxReturnableQty });
     } else {
@@ -218,8 +218,8 @@ const Profile: React.FC = () => {
                   </TableHead>
                   <TableBody>
                     {orders.map((order) => {
-                      const totalOrderQty = order.orderItemList?.reduce((sum: number, item: any) => sum + item.productQuantity, 0) || 0;
-                      const totalReturnedQty = order.returnApplyList?.reduce((sum: number, r: any) => sum + (r.productCount || 0), 0) || 0;
+                      const totalOrderQty = order.orderItemList?.reduce((sum: number, item: import('../api/order').OmsOrderItem) => sum + item.productQuantity, 0) || 0;
+                      const totalReturnedQty = order.returnApplyList?.reduce((sum: number, r: import('../api/order').OmsOrderReturnApply) => sum + (r.productCount || 0), 0) || 0;
                       const isOrderFullyRefunded = totalOrderQty > 0 && totalReturnedQty >= totalOrderQty;
 
                       return (
@@ -262,7 +262,7 @@ const Profile: React.FC = () => {
 
                                   // 2. Load Razorpay script dynamically
                                   const loadScript = (src: string) => new Promise((resolve) => {
-                                    if ((window as any).Razorpay) {
+                                    if (window.Razorpay) {
                                       resolve(true);
                                       return;
                                     }
@@ -286,7 +286,7 @@ const Profile: React.FC = () => {
                                     name: 'Nexus Engine',
                                     description: `Payment for Order #${order.orderSn}`,
                                     order_id: razorpayOrderId,
-                                    handler: async function (response: any) {
+                                    handler: async function (response: RazorpayResponse) {
                                       try {
                                         // 4. Verify payment on backend
                                         await verifyRazorpayPayment(
@@ -308,13 +308,13 @@ const Profile: React.FC = () => {
                                     },
                                     theme: { color: '#3399cc' }
                                   };
-                                  const rzp = new (window as any).Razorpay(options);
-                                  rzp.on('payment.failed', function (response: any){
+                                  const rzp = new window.Razorpay(options);
+                                  rzp.on('payment.failed', function (response: RazorpayFailedResponse){
                                     alert(`Payment Failed: ${response.error.description}`);
                                   });
                                   rzp.open();
                                   
-                                } catch (e) {
+                                } catch (e: unknown) {
                                   alert('Failed to initiate payment. Please try again later.');
                                   console.error(e);
                                 }
@@ -395,8 +395,8 @@ const Profile: React.FC = () => {
             Select the items you wish to return and provide a reason.
           </Typography>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            {refundOrder?.orderItemList?.map((item: any) => {
-              const totalReturnedQty = refundOrder?.returnApplyList?.filter((r: any) => r.productId === item.productId).reduce((sum, r) => sum + (r.productCount || 0), 0) || 0;
+            {refundOrder?.orderItemList?.map((item: import('../api/order').OmsOrderItem) => {
+              const totalReturnedQty = refundOrder?.returnApplyList?.filter((r: import('../api/order').OmsOrderReturnApply) => r.productId === item.productId).reduce((sum, r) => sum + (r.productCount || 0), 0) || 0;
               const maxReturnableQty = item.productQuantity - totalReturnedQty;
               const isFullyReturned = maxReturnableQty <= 0;
               const isSelected = selectedRefundItems.some(i => i.id === item.id);

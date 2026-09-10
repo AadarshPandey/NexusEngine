@@ -1,6 +1,6 @@
 -- Create admin user
 INSERT INTO ums_admin (id, username, password, icon, email, nick_name, note, create_time, login_time, status)
-VALUES (1, 'admin', '$2a$10$yBHlid11MRH9e6vDsETdJufyIgz/AASiNSUJdsirodt8IUr16xWDO', 'http://macro-oss.oss-cn-shenzhen.aliyuncs.com/nexus/images/20180607/timg.jpg', 'admin@macrozheng.com', 'System Administrator', 'System Administrator', '2018-10-08 13:32:47', '2019-04-20 12:43:33', 1) ON CONFLICT (id) DO UPDATE SET password = '$2a$10$yBHlid11MRH9e6vDsETdJufyIgz/AASiNSUJdsirodt8IUr16xWDO';
+VALUES (1, 'admin', '$2a$10$yBHlid11MRH9e6vDsETdJufyIgz/AASiNSUJdsirodt8IUr16xWDO', '/assets/default-avatar.png', 'admin@nexusengine.com', 'System Administrator', 'System Administrator', '2018-10-08 13:32:47', '2019-04-20 12:43:33', 1) ON CONFLICT (id) DO UPDATE SET password = '$2a$10$yBHlid11MRH9e6vDsETdJufyIgz/AASiNSUJdsirodt8IUr16xWDO';
 
 -- Create role
 INSERT INTO ums_role (id, name, description, admin_count, create_time, status, sort)

@@ -13,8 +13,8 @@ import java.math.BigDecimal;
 import java.util.List;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/6/19.
+ * Represents the EsProduct component.
+ * Provides core functionality and operations for EsProduct.
  */
 @Data
 @EqualsAndHashCode

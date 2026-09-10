@@ -7,25 +7,27 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2019/7/27.
+ * Represents the GlobalCorsConfig component.
+ * Provides core functionality and operations for GlobalCorsConfig.
  */
 @Configuration
 public class GlobalCorsConfig {
 
-    /**
-     * Auto-generated documentation
+    @org.springframework.beans.factory.annotation.Value("${cors.allowed-origins:http://localhost:5173,http://localhost:5174}")
+    private String[] allowedOrigins;
+
+        /**
+     * Executes the operation.
+     * @return the result of the operation
      */
     @Bean
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
-        // Auto-generated documentation
-        config.addAllowedOriginPattern("http://localhost:*");
-        // Auto-generated documentation
+        for (String origin : allowedOrigins) {
+            config.addAllowedOriginPattern(origin);
+        }
         config.setAllowCredentials(true);
-        // Auto-generated documentation
         config.addAllowedHeader("*");
-        // Auto-generated documentation
         config.addAllowedMethod("*");
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);

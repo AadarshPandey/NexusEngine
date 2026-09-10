@@ -4,8 +4,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2019/4/8.
+ * Represents the SpringTaskConfig component.
+ * Provides core functionality and operations for SpringTaskConfig.
  */
 @Configuration
 @EnableScheduling

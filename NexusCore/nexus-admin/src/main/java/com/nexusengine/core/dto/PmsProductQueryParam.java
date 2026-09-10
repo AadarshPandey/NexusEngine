@@ -5,8 +5,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/4/27.
+ * Represents the PmsProductQueryParam component.
+ * Provides core functionality and operations for PmsProductQueryParam.
  */
 @Data
 @EqualsAndHashCode

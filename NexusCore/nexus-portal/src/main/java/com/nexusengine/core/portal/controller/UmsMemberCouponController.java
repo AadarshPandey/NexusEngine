@@ -1,5 +1,6 @@
 package com.nexusengine.core.portal.controller;
 
+import org.springframework.web.bind.annotation.RestController;
 import com.nexusengine.core.common.api.CommonResult;
 import com.nexusengine.core.model.SmsCoupon;
 import com.nexusengine.core.model.SmsCouponHistory;
@@ -14,16 +15,15 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/8/29.
+ * Represents the UmsMemberCouponController component.
+ * Provides core functionality and operations for UmsMemberCouponController.
  */
-@Controller
+@RestController
 @Tag(name = "UmsMemberCouponController", description = "Ums member coupon controller APIs")
 @RequestMapping("/portal/member/coupon")
 public class UmsMemberCouponController {
@@ -36,7 +36,7 @@ public class UmsMemberCouponController {
 
     @Operation(summary = "Add Operation")
     @RequestMapping(value = "/add/{couponId}", method = RequestMethod.POST)
-    @ResponseBody
+
     public CommonResult add(@PathVariable Long couponId) {
         memberCouponService.add(couponId);
         return CommonResult.success(null,"Success");
@@ -46,7 +46,7 @@ public class UmsMemberCouponController {
     @Parameter(name = "useStatus", description = "Description",
             in = ParameterIn.QUERY,schema = @Schema(type = "integer",allowableValues = {"0","1","2"}))
     @RequestMapping(value = "/listHistory", method = RequestMethod.GET)
-    @ResponseBody
+
     public CommonResult<List<SmsCouponHistory>> listHistory(@RequestParam(value = "useStatus", required = false) Integer useStatus) {
         List<SmsCouponHistory> couponHistoryList = memberCouponService.listHistory(useStatus);
         return CommonResult.success(couponHistoryList);
@@ -56,7 +56,7 @@ public class UmsMemberCouponController {
     @Parameter(name = "useStatus", description = "Description",
             in = ParameterIn.QUERY,schema = @Schema(type = "integer",allowableValues = {"0","1","2"}))
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    @ResponseBody
+
     public CommonResult<List<SmsCoupon>> list(@RequestParam(value = "useStatus", required = false) Integer useStatus) {
         List<SmsCoupon> couponList = memberCouponService.list(useStatus);
         return CommonResult.success(couponList);
@@ -66,7 +66,7 @@ public class UmsMemberCouponController {
     @Parameter(name = "type", description = "Description",
             in = ParameterIn.PATH,schema = @Schema(type = "integer",defaultValue = "1",allowableValues = {"0","1"}))
     @RequestMapping(value = "/list/cart/{type}", method = RequestMethod.GET)
-    @ResponseBody
+
     public CommonResult<List<SmsCouponHistoryDetail>> listCart(@PathVariable Integer type) {
         List<CartPromotionItem> cartPromotionItemList = cartItemService.listPromotion(memberService.getCurrentMember().getId(), null);
         List<SmsCouponHistoryDetail> couponHistoryList = memberCouponService.listCart(cartPromotionItemList, type);
@@ -75,7 +75,7 @@ public class UmsMemberCouponController {
 
     @Operation(summary = "List by product Operation")
     @RequestMapping(value = "/listByProduct/{productId}", method = RequestMethod.GET)
-    @ResponseBody
+
     public CommonResult<List<SmsCoupon>> listByProduct(@PathVariable Long productId) {
         List<SmsCoupon> couponHistoryList = memberCouponService.listByProduct(productId);
         return CommonResult.success(couponHistoryList);

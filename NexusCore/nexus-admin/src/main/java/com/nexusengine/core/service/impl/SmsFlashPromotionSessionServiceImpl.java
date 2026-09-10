@@ -8,6 +8,7 @@ import com.nexusengine.core.service.SmsFlashPromotionSessionService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.PageRequest;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -55,13 +56,13 @@ public class SmsFlashPromotionSessionServiceImpl implements SmsFlashPromotionSes
 
     @Override
     public List<SmsFlashPromotionSession> list() {
-        return promotionSessionRepository.findAll();
+        return promotionSessionRepository.findAll(PageRequest.of(0, 1000)).getContent();
     }
 
     @Override
     public List<SmsFlashPromotionSessionDetail> selectList(Long flashPromotionId) {
         List<SmsFlashPromotionSessionDetail> result = new ArrayList<>();
-        List<SmsFlashPromotionSession> list = promotionSessionRepository.findAll();
+        List<SmsFlashPromotionSession> list = promotionSessionRepository.findAll(PageRequest.of(0, 1000)).getContent();
         for (SmsFlashPromotionSession promotionSession : list) {
             SmsFlashPromotionSessionDetail detail = new SmsFlashPromotionSessionDetail();
             BeanUtils.copyProperties(promotionSession, detail);

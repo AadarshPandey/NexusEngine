@@ -38,8 +38,12 @@ public class ProductChangeConsumer {
                 default:
                     LOGGER.warn("Unknown action: {}", action);
             }
+        } catch (NumberFormatException e) {
+            LOGGER.error("Invalid product sync message format '{}': {}", message, e.getMessage());
         } catch (Exception e) {
-            LOGGER.error("Failed to process product sync event: {}", e.getMessage());
+            LOGGER.error("Failed to process product sync event '{}'", message, e);
+            throw new org.springframework.amqp.AmqpRejectAndDontRequeueException(
+                    "Failed to process product sync event", e);
         }
     }
 }

@@ -4,32 +4,41 @@ import com.nexusengine.core.portal.domain.MemberProductCollection;
 import org.springframework.data.domain.Page;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/8/2.
+ * Represents the MemberCollectionService component.
+ * Provides core functionality and operations for MemberCollectionService.
  */
 public interface MemberCollectionService {
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param productCollection the productCollection
+     * @return the result of the operation
      */
     int add(MemberProductCollection productCollection);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param productId the productId
+     * @return the result of the operation
      */
     int delete(Long productId);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param pageNum the pageNum
+     * @param pageSize the pageSize
+     * @return the result of the operation
      */
     Page<MemberProductCollection> list(Integer pageNum, Integer pageSize);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param productId the productId
+     * @return the result of the operation
      */
     MemberProductCollection detail(Long productId);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
      */
     void clear();
 }

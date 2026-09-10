@@ -11,9 +11,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 /**
- * Auto-generated documentation
- * Auto-generated documentation
- * Created by macro on 2022/5/20.
+ * Represents the CommonSecurityConfig component.
+ * Provides core functionality and operations for CommonSecurityConfig.
  */
 @Configuration
 @EnableConfigurationProperties(IgnoreUrlsConfig.class)

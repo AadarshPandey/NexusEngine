@@ -13,54 +13,78 @@ import java.util.List;
  * Created by macro on 2018/9/30.
  */
 public interface UmsRoleService {
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param role the role
+     * @return the result of the operation
      */
     int create(UmsRole role);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param id the id
+     * @param role the role
+     * @return the result of the operation
      */
     int update(Long id, UmsRole role);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param ids the ids
+     * @return the result of the operation
      */
     int delete(List<Long> ids);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @return the result of the operation
      */
     List<UmsRole> list();
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param keyword the keyword
+     * @param pageSize the pageSize
+     * @param pageNum the pageNum
+     * @return the result of the operation
      */
     Page<UmsRole> list(String keyword, Integer pageSize, Integer pageNum);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param adminId the adminId
+     * @return the result of the operation
      */
     List<UmsMenu> getMenuList(Long adminId);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param roleId the roleId
+     * @return the result of the operation
      */
     List<UmsMenu> listMenu(Long roleId);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param roleId the roleId
+     * @return the result of the operation
      */
     List<UmsResource> listResource(Long roleId);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param roleId the roleId
+     * @param menuIds the menuIds
+     * @return the result of the operation
      */
     @Transactional
     int allocMenu(Long roleId, List<Long> menuIds);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param roleId the roleId
+     * @param resourceIds the resourceIds
+     * @return the result of the operation
      */
     @Transactional
     int allocResource(Long roleId, List<Long> resourceIds);

@@ -20,6 +20,8 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class RateLimitInterceptor implements HandlerInterceptor {
 
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(RateLimitInterceptor.class);
+
     @Autowired
     private RedissonClient redissonClient;
     @Autowired
@@ -47,7 +49,8 @@ public class RateLimitInterceptor implements HandlerInterceptor {
             try {
                 currentMember = memberService.getCurrentMember();
             } catch (Exception e) {
-                // Not logged in or token invalid
+                // User not authenticated — skip user-level rate limiting, proceed with request
+                log.debug("Could not resolve current member for rate limiting: {}", e.getMessage());
             }
             
             if (currentMember != null) {
@@ -77,11 +80,12 @@ public class RateLimitInterceptor implements HandlerInterceptor {
         response.getWriter().write(objectMapper.writeValueAsString(result));
     }
 
+    /**
+     * Returns the client IP for rate limiting.
+     * Uses remoteAddr which is set by the reverse proxy (Nginx/ALB) and cannot be spoofed.
+     * X-Forwarded-For is NOT used because it can be trivially forged by clients.
+     */
     private String getClientIP(HttpServletRequest request) {
-        String xfHeader = request.getHeader("X-Forwarded-For");
-        if (xfHeader == null || xfHeader.isEmpty() || !xfHeader.contains(request.getRemoteAddr())) {
-            return request.getRemoteAddr();
-        }
-        return xfHeader.split(",")[0];
+        return request.getRemoteAddr();
     }
 }

@@ -18,6 +18,7 @@ public class UmsMemberLevelServiceImpl implements UmsMemberLevelService {
         if (defaultStatus != null) {
             return memberLevelRepository.findByDefaultStatus(defaultStatus);
         }
-        return memberLevelRepository.findAll();
+        return /* findAll() is acceptable for small reference tables */
+        memberLevelRepository.findAll();
     }
 }

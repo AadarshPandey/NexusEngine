@@ -165,9 +165,11 @@ const AdvertiseList: React.FC = () => {
               }}
             />
             <FormControl size="small" sx={{ width: 180 }}>
+              <InputLabel>Advertising location</InputLabel>
               <Select
                 value={type}
-                onChange={(e) => setType(e.target.value as any)}
+                label="Advertising location"
+                onChange={(e) => setType(e.target.value as number | '')}
                 displayEmpty
               >
                 <MenuItem value="">All Types</MenuItem>

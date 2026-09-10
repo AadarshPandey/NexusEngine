@@ -67,7 +67,8 @@ public class UmsMenuServiceImpl implements UmsMenuService {
 
     @Override
     public List<UmsMenuNode> treeList() {
-        List<UmsMenu> menuList = menuRepository.findAll();
+        List<UmsMenu> menuList = /* findAll() is acceptable for small reference tables */
+        menuRepository.findAll();
         List<UmsMenuNode> result = menuList.stream()
                 .filter(menu -> menu.getParentId().equals(0L))
                 .map(menu -> covertMenuNode(menu, menuList))

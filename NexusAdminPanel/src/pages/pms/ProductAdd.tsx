@@ -32,7 +32,7 @@ const ProductAdd: React.FC = () => {
         price: cleanNumber(formData.price),
         originalPrice: cleanNumber(formData.originalPrice),
         stock: cleanNumber(formData.stock)
-      } as any);
+      } as unknown as import('@/types/product').PmsProductParam);
       alert('Product created successfully!');
       navigate('/pms/product');
     } catch (error) {

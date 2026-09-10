@@ -9,33 +9,43 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/8/29.
+ * Represents the UmsMemberCouponService component.
+ * Provides core functionality and operations for UmsMemberCouponService.
  */
 public interface UmsMemberCouponService {
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param couponId the couponId
      */
     @Transactional
     void add(Long couponId);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param useStatus the useStatus
+     * @return the result of the operation
      */
     List<SmsCouponHistory> listHistory(Integer useStatus);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param cartItemList the cartItemList
+     * @param type the type
+     * @return the result of the operation
      */
     List<SmsCouponHistoryDetail> listCart(List<CartPromotionItem> cartItemList, Integer type);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param productId the productId
+     * @return the result of the operation
      */
     List<SmsCoupon> listByProduct(Long productId);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param useStatus the useStatus
+     * @return the result of the operation
      */
     List<SmsCoupon> list(Integer useStatus);
 }

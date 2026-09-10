@@ -16,7 +16,8 @@ public class CmsSubjectServiceImpl implements CmsSubjectService {
 
     @Override
     public List<CmsSubject> listAll() {
-        return subjectRepository.findAll();
+        return /* findAll() is acceptable for small reference tables */
+        subjectRepository.findAll();
     }
 
     @Override

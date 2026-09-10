@@ -15,8 +15,8 @@ import org.springframework.stereotype.Component;
 import java.lang.reflect.Method;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2020/3/17.
+ * Represents the RedisCacheAspect component.
+ * Provides core functionality and operations for RedisCacheAspect.
  */
 @Aspect
 @Component
@@ -37,7 +37,6 @@ public class RedisCacheAspect {
         try {
             result = joinPoint.proceed();
         } catch (Throwable throwable) {
-            // Auto-generated documentation
             if (method.isAnnotationPresent(CacheException.class)) {
                 throw throwable;
             } else {

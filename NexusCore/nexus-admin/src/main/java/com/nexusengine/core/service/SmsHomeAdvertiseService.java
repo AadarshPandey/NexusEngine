@@ -5,37 +5,55 @@ import com.nexusengine.core.model.SmsHomeAdvertise;
 import java.util.List;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/11/7.
+ * Represents the SmsHomeAdvertiseService component.
+ * Provides core functionality and operations for SmsHomeAdvertiseService.
  */
 public interface SmsHomeAdvertiseService {
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param advertise the advertise
+     * @return the result of the operation
      */
     int create(SmsHomeAdvertise advertise);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param ids the ids
+     * @return the result of the operation
      */
     int delete(List<Long> ids);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param id the id
+     * @param status the status
+     * @return the result of the operation
      */
     int updateStatus(Long id, Integer status);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param id the id
+     * @return the result of the operation
      */
     SmsHomeAdvertise getItem(Long id);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param id the id
+     * @param advertise the advertise
+     * @return the result of the operation
      */
     int update(Long id, SmsHomeAdvertise advertise);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param name the name
+     * @param type the type
+     * @param endTime the endTime
+     * @param pageSize the pageSize
+     * @param pageNum the pageNum
+     * @return the result of the operation
      */
     List<SmsHomeAdvertise> list(String name, Integer type, String endTime, Integer pageSize, Integer pageNum);
 }

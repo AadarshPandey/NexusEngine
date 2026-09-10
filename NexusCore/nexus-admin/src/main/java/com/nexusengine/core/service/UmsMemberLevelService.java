@@ -5,13 +5,14 @@ import com.nexusengine.core.model.UmsMemberLevel;
 import java.util.List;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/4/26.
+ * Represents the UmsMemberLevelService component.
+ * Provides core functionality and operations for UmsMemberLevelService.
  */
 public interface UmsMemberLevelService {
-    /**
-     * Auto-generated documentation
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param defaultStatus the defaultStatus
+     * @return the result of the operation
      */
     List<UmsMemberLevel> list(Integer defaultStatus);
 }

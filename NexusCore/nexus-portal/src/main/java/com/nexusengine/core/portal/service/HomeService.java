@@ -8,40 +8,54 @@ import com.nexusengine.core.portal.domain.HomeContentResult;
 import java.util.List;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2019/1/28.
+ * Represents the HomeService component.
+ * Provides core functionality and operations for HomeService.
  */
 public interface HomeService {
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @return the result of the operation
      */
     HomeContentResult content();
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param pageSize the pageSize
+     * @param pageNum the pageNum
+     * @return the result of the operation
      */
     List<PmsProduct> recommendProductList(Integer pageSize, Integer pageNum);
 
-    /**
-     * Auto-generated documentation
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param parentId the parentId
+     * @return the result of the operation
      */
     List<PmsProductCategory> getProductCateList(Long parentId);
 
-    /**
-     * Auto-generated documentation
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param cateId the cateId
+     * @param pageSize the pageSize
+     * @param pageNum the pageNum
+     * @return the result of the operation
      */
     List<CmsSubject> getSubjectList(Long cateId, Integer pageSize, Integer pageNum);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param pageNum the pageNum
+     * @param pageSize the pageSize
+     * @return the result of the operation
      */
     List<PmsProduct> hotProductList(Integer pageNum, Integer pageSize);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param pageNum the pageNum
+     * @param pageSize the pageSize
+     * @return the result of the operation
      */
     List<PmsProduct> newProductList(Integer pageNum, Integer pageSize);
 }

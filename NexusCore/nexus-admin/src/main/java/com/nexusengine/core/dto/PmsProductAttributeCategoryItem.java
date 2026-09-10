@@ -9,8 +9,8 @@ import lombok.Setter;
 import java.util.List;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/5/24.
+ * Represents the PmsProductAttributeCategoryItem component.
+ * Provides core functionality and operations for PmsProductAttributeCategoryItem.
  */
 public class PmsProductAttributeCategoryItem extends PmsProductAttributeCategory {
     @Getter

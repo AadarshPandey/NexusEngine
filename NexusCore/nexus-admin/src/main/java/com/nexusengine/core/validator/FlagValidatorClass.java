@@ -4,8 +4,8 @@ import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/4/26.
+ * Represents the FlagValidatorClass component.
+ * Provides core functionality and operations for FlagValidatorClass.
  */
 public class FlagValidatorClass implements ConstraintValidator<FlagValidator,Integer> {
     private String[] values;
@@ -18,7 +18,6 @@ public class FlagValidatorClass implements ConstraintValidator<FlagValidator,Int
     public boolean isValid(Integer value, ConstraintValidatorContext constraintValidatorContext) {
         boolean isValid = false;
         if(value==null){
-            // Auto-generated documentation
             return true;
         }
         for(int i=0;i<values.length;i++){

@@ -157,11 +157,16 @@ public class UmsMemberServiceImplTest {
 
     @Test
     void generateAuthCode_ReturnsCodeAndCaches() {
-        String code = memberService.generateAuthCode("1234567890");
+        memberService.generateAuthCode("1234567890");
         
+        org.mockito.ArgumentCaptor<String> captor = org.mockito.ArgumentCaptor.forClass(String.class);
+        verify(memberCacheService).setAuthCode(eq("1234567890"), captor.capture());
+        
+        String code = captor.getValue();
         assertNotNull(code);
         assertEquals(6, code.length());
-        verify(memberCacheService).setAuthCode(eq("1234567890"), eq(code));
+        
+        verify(mailSender).send(any(org.springframework.mail.SimpleMailMessage.class));
     }
 
     @Test

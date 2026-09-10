@@ -9,8 +9,8 @@ import java.util.Arrays;
 import java.util.Collection;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/8/3.
+ * Represents the MemberDetails component.
+ * Provides core functionality and operations for MemberDetails.
  */
 public class MemberDetails implements UserDetails {
     private final UmsMember umsMember;
@@ -21,7 +21,6 @@ public class MemberDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // Auto-generated documentation
         return Arrays.asList(new SimpleGrantedAuthority("TEST"));
     }
 

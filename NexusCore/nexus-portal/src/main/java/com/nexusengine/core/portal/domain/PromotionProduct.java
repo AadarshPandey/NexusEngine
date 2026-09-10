@@ -10,16 +10,13 @@ import lombok.Setter;
 import java.util.List;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/8/27.
+ * Represents the PromotionProduct component.
+ * Provides core functionality and operations for PromotionProduct.
  */
 @Getter
 @Setter
 public class PromotionProduct extends PmsProduct {
-    // Auto-generated documentation
     private List<PmsSkuStock> skuStockList;
-    // Auto-generated documentation
     private List<PmsProductLadder> productLadderList;
-    // Auto-generated documentation
     private List<PmsProductFullReduction> productFullReductionList;
 }

@@ -5,8 +5,8 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2020/3/2.
+ * Represents the RedisConfig component.
+ * Provides core functionality and operations for RedisConfig.
  */
 @EnableCaching
 @Configuration

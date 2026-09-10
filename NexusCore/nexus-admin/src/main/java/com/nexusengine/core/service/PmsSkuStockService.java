@@ -5,17 +5,23 @@ import com.nexusengine.core.model.PmsSkuStock;
 import java.util.List;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/4/27.
+ * Represents the PmsSkuStockService component.
+ * Provides core functionality and operations for PmsSkuStockService.
  */
 public interface PmsSkuStockService {
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param pid the pid
+     * @param keyword the keyword
+     * @return the result of the operation
      */
     List<PmsSkuStock> getList(Long pid, String keyword);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param pid the pid
+     * @param skuStockList the skuStockList
+     * @return the result of the operation
      */
     int update(Long pid, List<PmsSkuStock> skuStockList);
 }

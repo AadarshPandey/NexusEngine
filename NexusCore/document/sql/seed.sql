@@ -1,7 +1,7 @@
 -- NexusEngine Database Seed Script
 -- Run after Hibernate creates the tables: docker exec -i postgres psql -U postgres -d nexuscore < NexusCore/document/sql/seed.sql
 
--- Admin user (password: macro123)
+-- Admin user (password: admin123)
 INSERT INTO ums_admin (id, username, password, icon, email, nick_name, note, create_time, login_time, status, vendor_id)
 VALUES (1, 'admin', '$2a$10$yBHlid11MRH9e6vDsETdJufyIgz/AASiNSUJdsirodt8IUr16xWDO', NULL, 'admin@nexusengine.com', 'System Administrator', 'System Administrator', '2018-10-08 13:32:47', '2019-04-20 12:43:33', 1, NULL)
 ON CONFLICT (id) DO UPDATE SET password = EXCLUDED.password;
@@ -25,7 +25,7 @@ INSERT INTO ums_member_level (id, name, growth_point, default_status, free_freig
 VALUES (4, 'Gold Member', 1000, 1, 199, 5, 1, 1, 1, 1, 1, 1, 'Default member level')
 ON CONFLICT (id) DO NOTHING;
 
--- Customer member (password: macro123)
+-- Customer member (password: admin123)
 INSERT INTO ums_member (id, username, password, phone, status, gender, city, icon, member_level_id, growth, integration, create_time)
 VALUES (1, 'customer1', '$2a$10$yBHlid11MRH9e6vDsETdJufyIgz/AASiNSUJdsirodt8IUr16xWDO', '+919876543210', 1, 1, 'Mumbai', NULL, 4, 0, 0, '2024-01-01 00:00:00')
 ON CONFLICT (id) DO NOTHING;

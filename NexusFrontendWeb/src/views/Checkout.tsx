@@ -34,11 +34,11 @@ const Checkout: React.FC = () => {
       const res = await generateConfirmOrder(cartIds);
       setConfirmData(res.data);
       if (res.data.memberReceiveAddressList && res.data.memberReceiveAddressList.length > 0) {
-        const defaultAddr = res.data.memberReceiveAddressList.find((a: any) => a.defaultStatus === 1) || res.data.memberReceiveAddressList[0];
+        const defaultAddr = res.data.memberReceiveAddressList.find((a: import('../api/member').UmsMemberReceiveAddress) => a.defaultStatus === 1) || res.data.memberReceiveAddressList[0];
         setSelectedAddressId(defaultAddr.id);
       }
-    } catch (err: any) {
-      setError(err.message || 'Failed to load order confirmation data.');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Failed to load order confirmation data.');
     } finally {
       setLoading(false);
     }
@@ -71,7 +71,7 @@ const Checkout: React.FC = () => {
 
       // 4. Load Razorpay script
       const loadScript = (src: string) => new Promise((resolve) => {
-        if ((window as any).Razorpay) {
+        if (window.Razorpay) {
           resolve(true);
           return;
         }
@@ -97,7 +97,7 @@ const Checkout: React.FC = () => {
         name: 'Nexus Engine',
         description: `Payment for Order #${order.orderSn}`,
         order_id: razorpayOrderId,
-        handler: async function (response: any) {
+        handler: async function (response: RazorpayResponse) {
           try {
             await verifyRazorpayPayment(
               order.id, 
@@ -129,14 +129,14 @@ const Checkout: React.FC = () => {
         }
       };
       
-      const rzp = new (window as any).Razorpay(options);
-      rzp.on('payment.failed', function (response: any){
+      const rzp = new window.Razorpay(options);
+      rzp.on('payment.failed', function (response: RazorpayFailedResponse){
         alert(`Payment Failed: ${response.error.description}`);
       });
       rzp.open();
 
-    } catch (err: any) {
-      setError(err.message || 'Failed to place order or process payment.');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Failed to place order or process payment.');
       setPlacingOrder(false);
     }
   };
@@ -161,7 +161,7 @@ const Checkout: React.FC = () => {
               label="Select Shipping Address"
               onChange={(e) => setSelectedAddressId(e.target.value as number)}
             >
-              {confirmData.memberReceiveAddressList.map((addr: any) => (
+              {confirmData.memberReceiveAddressList.map((addr: import('../api/member').UmsMemberReceiveAddress) => (
                 <MenuItem key={addr.id} value={addr.id}>
                   {addr.name} - {addr.phoneNumber} ({addr.province}, {addr.city}, {addr.region}, {addr.detailAddress} - PIN: {addr.postCode})
                 </MenuItem>

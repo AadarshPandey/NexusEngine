@@ -48,32 +48,32 @@ export interface PmsProductCategory {
 }
 
 export interface HomeContentResult {
-  advertiseList: any[];
-  brandList: any[];
-  homeFlashPromotion: any;
+  advertiseList: unknown[];
+  brandList: unknown[];
+  homeFlashPromotion: unknown;
   newProductList: PmsProduct[];
   hotProductList: PmsProduct[];
   subjectList: CmsSubject[];
 }
 
 export const fetchHomeContent = () => {
-  return request.get<any, { data: HomeContentResult }>('/home/content');
+  return request.get<unknown, { data: HomeContentResult }>('/home/content');
 };
 
 export const fetchRecommendProductList = (pageSize: number = 4, pageNum: number = 1) => {
-  return request.get<any, { data: PmsProduct[] }>('/home/recommendProductList', {
+  return request.get<unknown, { data: PmsProduct[] }>('/home/recommendProductList', {
     params: { pageSize, pageNum },
   });
 };
 
 export const fetchHotProductList = (pageSize: number = 6, pageNum: number = 1) => {
-  return request.get<any, { data: PmsProduct[] }>('/home/hotProductList', {
+  return request.get<unknown, { data: PmsProduct[] }>('/home/hotProductList', {
     params: { pageSize, pageNum },
   });
 };
 
 export const fetchNewProductList = (pageSize: number = 6, pageNum: number = 1) => {
-  return request.get<any, { data: PmsProduct[] }>('/home/newProductList', {
+  return request.get<unknown, { data: PmsProduct[] }>('/home/newProductList', {
     params: { pageSize, pageNum },
   });
 };

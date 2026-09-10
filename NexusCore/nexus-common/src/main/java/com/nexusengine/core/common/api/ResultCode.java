@@ -1,9 +1,8 @@
 package com.nexusengine.core.common.api;
 
-/**
- * Auto-generated documentation
- * Created by macro on 2019/4/19.
- */
+    /**
+     * The { property.
+     */
 public enum ResultCode implements IErrorCode {
     SUCCESS(200, "Success"),
     FAILED(500, "Failed"),

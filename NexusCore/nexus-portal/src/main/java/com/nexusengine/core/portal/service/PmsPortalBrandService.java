@@ -7,22 +7,31 @@ import com.nexusengine.core.model.PmsProduct;
 import java.util.List;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2020/5/15.
+ * Represents the PmsPortalBrandService component.
+ * Provides core functionality and operations for PmsPortalBrandService.
  */
 public interface PmsPortalBrandService {
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param pageNum the pageNum
+     * @param pageSize the pageSize
+     * @return the result of the operation
      */
     List<PmsBrand> recommendList(Integer pageNum, Integer pageSize);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param brandId the brandId
+     * @return the result of the operation
      */
     PmsBrand detail(Long brandId);
 
-    /**
-     * Auto-generated documentation
+        /**
+     * Executes the operation.
+     * @param brandId the brandId
+     * @param pageNum the pageNum
+     * @param pageSize the pageSize
+     * @return the result of the operation
      */
     CommonPage<PmsProduct> productList(Long brandId, Integer pageNum, Integer pageSize);
 }

@@ -9,8 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
- *  Auto-generated documentation
- * Created by macro on 2018/9/14.
+ * Represents the CancelOrderReceiver component.
+ * Provides core functionality and operations for CancelOrderReceiver.
  */
 @Component
 @RabbitListener(queues = "nexus.order.cancel")
@@ -20,7 +20,12 @@ public class CancelOrderReceiver {
     private OmsPortalOrderService portalOrderService;
     @RabbitHandler
     public void handle(Long orderId){
-        portalOrderService.cancelOrder(orderId);
-        LOGGER.info("process orderId:{}",orderId);
+        try {
+            portalOrderService.cancelOrder(orderId);
+            LOGGER.info("process orderId:{}",orderId);
+        } catch (Exception e) {
+            LOGGER.error("Failed to process cancellation for order {}: {}", orderId, e.getMessage());
+            throw new org.springframework.amqp.AmqpRejectAndDontRequeueException("Failed to cancel order", e);
+        }
     }
 }

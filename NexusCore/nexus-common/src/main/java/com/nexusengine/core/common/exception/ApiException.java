@@ -3,8 +3,8 @@ package com.nexusengine.core.common.exception;
 import com.nexusengine.core.common.api.IErrorCode;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2020/2/27.
+ * Represents the ApiException component.
+ * Provides core functionality and operations for ApiException.
  */
 public class ApiException extends RuntimeException {
     private IErrorCode errorCode;

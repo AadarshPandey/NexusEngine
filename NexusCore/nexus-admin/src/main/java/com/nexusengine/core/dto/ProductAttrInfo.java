@@ -6,8 +6,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
- * Auto-generated documentation
- * Created by macro on 2018/5/23.
+ * Represents the ProductAttrInfo component.
+ * Provides core functionality and operations for ProductAttrInfo.
  */
 @Data
 @EqualsAndHashCode

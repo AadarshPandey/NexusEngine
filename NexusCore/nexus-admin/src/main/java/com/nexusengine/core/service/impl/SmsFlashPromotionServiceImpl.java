@@ -6,6 +6,7 @@ import com.nexusengine.core.model.SmsFlashPromotion;
 import com.nexusengine.core.service.SmsFlashPromotionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.PageRequest;
 import java.util.Date;
 import java.util.List;
 
@@ -50,6 +51,6 @@ public class SmsFlashPromotionServiceImpl implements SmsFlashPromotionService {
 
     @Override
     public List<SmsFlashPromotion> list(String keyword, Integer pageSize, Integer pageNum) {
-        return flashPromotionRepository.findAll();
+        return flashPromotionRepository.findAll(PageRequest.of(0, 1000)).getContent();
     }
 }

@@ -59,8 +59,8 @@ const ProductDetail: React.FC = () => {
         productName: productDetail.product.name,
       })).unwrap();
       alert('Item added to cart!');
-    } catch (error: any) {
-      alert(error.message || 'Failed to add to cart');
+    } catch (error: unknown) {
+      alert(error instanceof Error ? error.message : 'Failed to add to cart');
     } finally {
       setAddingToCart(false);
     }

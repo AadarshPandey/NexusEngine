@@ -230,7 +230,7 @@ const HomeSubject: React.FC = () => {
             <FormControl size="small" sx={{ width: 180 }}>
               <Select
                 value={recommendStatus}
-                onChange={(e) => setRecommendStatus(e.target.value as any)}
+                onChange={(e) => setRecommendStatus(e.target.value as number | '')}
                 displayEmpty
               >
                 <MenuItem value="">All Status</MenuItem>
