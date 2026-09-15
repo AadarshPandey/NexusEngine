@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Box, IconButton, Typography } from '@mui/material';
-import type { CmsSubject } from '../api/home';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 interface BannerCarouselProps {
-  banners: CmsSubject[];
+  banners: any[];
 }
 
 const BannerCarousel: React.FC<BannerCarouselProps> = ({ banners }) => {
@@ -28,7 +27,7 @@ const BannerCarousel: React.FC<BannerCarouselProps> = ({ banners }) => {
     <Box sx={{ position: 'relative', width: '100%', height: { xs: 200, md: 400 }, overflow: 'hidden', borderRadius: 2, bgcolor: '#000' }}>
       {banners.map((banner, index) => (
         <Box
-          key={banner.id}
+          key={banner.id || index}
           sx={{
             position: 'absolute',
             top: 0,
@@ -36,23 +35,63 @@ const BannerCarousel: React.FC<BannerCarouselProps> = ({ banners }) => {
             width: '100%',
             height: '100%',
             opacity: index === activeIndex ? 1 : 0,
-            transition: 'opacity 0.8s ease-in-out',
-            backgroundImage: `url(${banner.pic?.includes('file') ? 'https://via.placeholder.com/1200x400' : (banner.pic || 'https://via.placeholder.com/1200x400')})`,
+            transition: 'opacity 0.5s ease-in-out',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundImage: `url(${banner.pic})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }}
         >
-          <Box sx={{ position: 'absolute', bottom: 0, left: 0, right: 0, bgcolor: 'rgba(0,0,0,0.5)', p: 2, color: 'white' }}>
-            <Typography variant="h5">{banner.title}</Typography>
+          <Box sx={{ 
+            p: 2, 
+            bgcolor: 'rgba(0,0,0,0.5)', 
+            borderRadius: 1, 
+            textAlign: 'center',
+            mt: 'auto',
+            mb: 4
+          }}>
+            <Typography variant="h4" color="white" fontWeight="bold">
+              {banner.name || banner.title || 'Special Promotion'}
+            </Typography>
+            <Typography variant="subtitle1" color="white">
+              {banner.note || banner.description || 'Check out our latest deals!'}
+            </Typography>
           </Box>
         </Box>
       ))}
-      <IconButton onClick={handlePrev} sx={{ position: 'absolute', left: 16, top: '50%', transform: 'translateY(-50%)', color: 'white', bgcolor: 'rgba(0,0,0,0.3)', '&:hover': { bgcolor: 'rgba(0,0,0,0.5)' } }}>
+
+      <IconButton 
+        onClick={handlePrev} 
+        sx={{ position: 'absolute', left: 16, top: '50%', transform: 'translateY(-50%)', color: 'white', bgcolor: 'rgba(0,0,0,0.3)', '&:hover': { bgcolor: 'rgba(0,0,0,0.5)' } }}
+      >
         <ArrowBackIosIcon />
       </IconButton>
-      <IconButton onClick={handleNext} sx={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)', color: 'white', bgcolor: 'rgba(0,0,0,0.3)', '&:hover': { bgcolor: 'rgba(0,0,0,0.5)' } }}>
+      <IconButton 
+        onClick={handleNext} 
+        sx={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)', color: 'white', bgcolor: 'rgba(0,0,0,0.3)', '&:hover': { bgcolor: 'rgba(0,0,0,0.5)' } }}
+      >
         <ArrowForwardIosIcon />
       </IconButton>
+      
+      {/* Indicators */}
+      <Box sx={{ position: 'absolute', bottom: 16, left: 0, right: 0, display: 'flex', justifyContent: 'center', gap: 1 }}>
+        {banners.map((_, index) => (
+          <Box
+            key={index}
+            onClick={() => setActiveIndex(index)}
+            sx={{
+              width: 10,
+              height: 10,
+              borderRadius: '50%',
+              bgcolor: index === activeIndex ? 'white' : 'rgba(255,255,255,0.5)',
+              cursor: 'pointer',
+            }}
+          />
+        ))}
+      </Box>
     </Box>
   );
 };

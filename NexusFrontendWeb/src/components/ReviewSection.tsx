@@ -25,6 +25,8 @@ export const ReviewSection: React.FC<{ productId: number }> = ({ productId }) =>
   const [newReviewText, setNewReviewText] = useState('');
   const [rating, setRating] = useState<number | null>(5);
   const [mediaList, setMediaList] = useState<MediaParam[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
   
   useEffect(() => {
     loadReviews();
@@ -123,9 +125,9 @@ export const ReviewSection: React.FC<{ productId: number }> = ({ productId }) =>
               {review.mediaList && review.mediaList.map((m, i) => (
                 <Box key={i} sx={{ mt: 1 }}>
                   {m.mediaType === 'IMAGE' ? (
-                    <img src={(import.meta.env.VITE_API_BASE_URL || '/api') + m.mediaUrl} alt="review" style={{ maxWidth: 200 }} />
+                    <img src={m.mediaUrl.startsWith('http') ? m.mediaUrl : (import.meta.env.VITE_API_BASE_URL || '/api') + m.mediaUrl} alt="review" style={{ maxWidth: 200 }} />
                   ) : (
-                    <video src={(import.meta.env.VITE_API_BASE_URL || '/api') + m.mediaUrl} controls style={{ maxWidth: 300 }} />
+                    <video src={m.mediaUrl.startsWith('http') ? m.mediaUrl : (import.meta.env.VITE_API_BASE_URL || '/api') + m.mediaUrl} controls style={{ maxWidth: 300 }} />
                   )}
                 </Box>
               ))}

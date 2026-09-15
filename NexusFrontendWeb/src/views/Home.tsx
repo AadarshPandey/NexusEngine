@@ -127,7 +127,7 @@ const Home: React.FC = () => {
       ) : (
         <>
           {/* Hero Banner Section */}
-          {content?.subjectList && <BannerCarousel banners={content.subjectList} />}
+          {content?.advertiseList && <BannerCarousel banners={content.advertiseList} />}
 
           {/* New Arrivals Section */}
           {content?.newProductList && content.newProductList.length > 0 && (

@@ -323,14 +323,14 @@ const Profile: React.FC = () => {
                               Pay Now
                             </Button>
                           )}
-                          {order.status === 3 && !isOrderFullyRefunded && (
+                          {[1, 2, 3, 5].includes(order.status) && !isOrderFullyRefunded && (
                             <Button 
                               variant="outlined" 
                               size="small" 
                               color="secondary"
                               onClick={() => handleOpenRefund(order)}
                             >
-                              Request Refund
+                              {order.status === 3 ? 'Request Refund' : 'Request Cancellation'}
                             </Button>
                           )}
                         </TableCell>
@@ -389,7 +389,7 @@ const Profile: React.FC = () => {
       </Dialog>
       {/* Refund Dialog */}
       <Dialog open={openRefundDialog} onClose={() => setOpenRefundDialog(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>Request Refund</DialogTitle>
+        <DialogTitle>{refundOrder?.status === 3 ? 'Request Refund' : 'Request Cancellation'}</DialogTitle>
         <DialogContent>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
             Select the items you wish to return and provide a reason.
