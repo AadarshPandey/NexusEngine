@@ -8,8 +8,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "cms_prefrence_area_product_relation")
-public class CmsPrefrenceAreaProductRelation implements Serializable {
+@Table(name = "cms_preference_area_product_relation")
+public class CmsPreferenceAreaProductRelation implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -17,8 +17,8 @@ public class CmsPrefrenceAreaProductRelation implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "prefrence_area_id")
-    private Long prefrenceAreaId;
+    @Column(name = "preference_area_id")
+    private Long preferenceAreaId;
 
     @Column(name = "product_id")
     private Long productId;

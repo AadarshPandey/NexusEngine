@@ -8,8 +8,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "cms_prefrence_area")
-public class CmsPrefrenceArea implements Serializable {
+@Table(name = "cms_preference_area")
+public class CmsPreferenceArea implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

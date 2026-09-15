@@ -169,7 +169,7 @@ public class UmsMemberServiceImpl implements UmsMemberService {
     public void updateIntegration(Long id, Integer integration) {
         UmsMember member = memberRepository.findById(id).orElse(null);
         if (member != null) {
-            member.setIntegration(integration);
+            member.setRewardPoints(integration);
             memberRepository.save(member);
             memberCacheService.delMember(id);
         }

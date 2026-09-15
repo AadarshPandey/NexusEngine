@@ -44,9 +44,9 @@ public class PmsProductServiceImpl implements PmsProductService {
     @Autowired
     private CmsSubjectProductRelationRepository subjectProductRelationRepository;
     @Autowired
-    private CmsPrefrenceAreaProductRelationRepository prefrenceAreaProductRelationRepository;
+    private CmsPreferenceAreaProductRelationRepository preferenceAreaProductRelationRepository;
     @Autowired
-    private PmsProductVertifyRecordRepository productVertifyRecordRepository;
+    private PmsProductVerifyRecordRepository productVerifyRecordRepository;
 
     @Override
     @org.springframework.transaction.annotation.Transactional(rollbackFor = Exception.class)
@@ -63,7 +63,7 @@ public class PmsProductServiceImpl implements PmsProductService {
         saveSkuStockList(productParam.getSkuStockList(), productId);
         saveProductAttributeValueList(productParam.getProductAttributeValueList(), productId);
         saveSubjectProductRelationList(productParam.getSubjectProductRelationList(), productId);
-        savePrefrenceAreaProductRelationList(productParam.getPrefrenceAreaProductRelationList(), productId);
+        savePreferenceAreaProductRelationList(productParam.getPreferenceAreaProductRelationList(), productId);
         return 1;
     }
 
@@ -109,8 +109,8 @@ public class PmsProductServiceImpl implements PmsProductService {
         saveProductAttributeValueList(productParam.getProductAttributeValueList(), id);
         subjectProductRelationRepository.deleteByProductId(id);
         saveSubjectProductRelationList(productParam.getSubjectProductRelationList(), id);
-        prefrenceAreaProductRelationRepository.deleteByProductId(id);
-        savePrefrenceAreaProductRelationList(productParam.getPrefrenceAreaProductRelationList(), id);
+        preferenceAreaProductRelationRepository.deleteByProductId(id);
+        savePreferenceAreaProductRelationList(productParam.getPreferenceAreaProductRelationList(), id);
         return 1;
     }
 
@@ -179,17 +179,17 @@ public class PmsProductServiceImpl implements PmsProductService {
             product.setVerifyStatus(verifyStatus);
             productRepository.save(product);
         }
-        List<PmsProductVertifyRecord> records = new ArrayList<>();
+        List<PmsProductVerifyRecord> records = new ArrayList<>();
         for (Long id : ids) {
-            PmsProductVertifyRecord record = new PmsProductVertifyRecord();
+            PmsProductVerifyRecord record = new PmsProductVerifyRecord();
             record.setProductId(id);
             record.setCreateTime(new Date());
             record.setDetail(detail);
             record.setStatus(verifyStatus);
-            record.setVertifyMan("admin");
+            record.setReviewerName("admin");
             records.add(record);
         }
-        productVertifyRecordRepository.saveAll(records);
+        productVerifyRecordRepository.saveAll(records);
         return products.size();
     }
 
@@ -300,12 +300,12 @@ public class PmsProductServiceImpl implements PmsProductService {
         subjectProductRelationRepository.saveAll(dataList);
     }
 
-    private void savePrefrenceAreaProductRelationList(List<CmsPrefrenceAreaProductRelation> dataList, Long productId) {
+    private void savePreferenceAreaProductRelationList(List<CmsPreferenceAreaProductRelation> dataList, Long productId) {
         if (CollectionUtils.isEmpty(dataList)) return;
-        for (CmsPrefrenceAreaProductRelation item : dataList) {
+        for (CmsPreferenceAreaProductRelation item : dataList) {
             item.setId(null);
             item.setProductId(productId);
         }
-        prefrenceAreaProductRelationRepository.saveAll(dataList);
+        preferenceAreaProductRelationRepository.saveAll(dataList);
     }
 }

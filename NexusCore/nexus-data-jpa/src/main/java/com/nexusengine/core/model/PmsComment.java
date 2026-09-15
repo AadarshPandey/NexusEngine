@@ -45,8 +45,8 @@ public class PmsComment implements Serializable {
     @Schema(title = "Product attribute")
     private String productAttribute;
 
-    @Column(name = "collect_couont")
-    private Integer collectCouont;
+    @Column(name = "likes_count")
+    private Integer likesCount;
 
     @Column(name = "read_count")
     private Integer readCount;
@@ -58,8 +58,8 @@ public class PmsComment implements Serializable {
     @Schema(title = "Member icon")
     private String memberIcon;
 
-    @Column(name = "replay_count")
-    private Integer replayCount;
+    @Column(name = "reply_count")
+    private Integer replyCount;
 
     private String content;
 }

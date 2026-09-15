@@ -28,37 +28,37 @@ public class UmsMemberLevel implements Serializable {
     @Schema(title = "Default status")
     private Integer defaultStatus;
 
-    @Column(name = "free_freight_point")
+    @Column(name = "free_shipping_threshold")
     @Schema(title = "Free freight point")
-    private BigDecimal freeFreightPoint;
+    private BigDecimal freeShippingThreshold;
 
-    @Column(name = "comment_growth_point")
+    @Column(name = "review_reward_xp")
     @Schema(title = "Comment growth point")
-    private Integer commentGrowthPoint;
+    private Integer reviewRewardXp;
 
-    @Column(name = "priviledge_free_freight")
+    @Column(name = "has_free_shipping_perk")
     @Schema(title = "Priviledge free freight")
-    private Integer priviledgeFreeFreight;
+    private Integer hasFreeShippingPerk;
 
-    @Column(name = "priviledge_sign_in")
+    @Column(name = "can_earn_login_rewards")
     @Schema(title = "Priviledge sign in")
-    private Integer priviledgeSignIn;
+    private Integer canEarnLoginRewards;
 
-    @Column(name = "priviledge_comment")
+    @Column(name = "has_review_privilege")
     @Schema(title = "Priviledge comment")
-    private Integer priviledgeComment;
+    private Integer hasReviewPrivilege;
 
-    @Column(name = "priviledge_promotion")
+    @Column(name = "has_promotion_privilege")
     @Schema(title = "Priviledge promotion")
-    private Integer priviledgePromotion;
+    private Integer hasPromotionPrivilege;
 
-    @Column(name = "priviledge_member_price")
+    @Column(name = "has_vip_pricing")
     @Schema(title = "Priviledge member price")
-    private Integer priviledgeMemberPrice;
+    private Integer hasVipPricing;
 
-    @Column(name = "priviledge_birthday")
+    @Column(name = "has_birthday_privilege")
     @Schema(title = "Priviledge birthday")
-    private Integer priviledgeBirthday;
+    private Integer hasBirthdayPrivilege;
 
     private String note;
 }

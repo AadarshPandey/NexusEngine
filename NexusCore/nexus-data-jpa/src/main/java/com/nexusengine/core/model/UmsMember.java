@@ -69,16 +69,16 @@ public class UmsMember implements Serializable {
     private Integer sourceType;
 
     @Schema(title = "Integration")
-    private Integer integration;
+    private Integer rewardPoints;
 
     @Schema(title = "Growth")
-    private Integer growth;
+    private Integer experiencePoints;
 
-    @Column(name = "luckey_count")
+    @Column(name = "bonus_draws_remaining")
     @Schema(title = "Luckey count")
-    private Integer luckeyCount;
+    private Integer bonusDrawsRemaining;
 
-    @Column(name = "history_integration")
+    @Column(name = "lifetime_reward_points")
     @Schema(title = "History integration")
-    private Integer historyIntegration;
+    private Integer lifetimeRewardPoints;
 }

@@ -26,6 +26,6 @@ public class PmsProductParam extends PmsProduct{
     private List<PmsProductAttributeValue> productAttributeValueList;
     @Schema(title = "Subject product relation list")
     private List<CmsSubjectProductRelation> subjectProductRelationList;
-    @Schema(title = "Prefrence area product relation list")
-    private List<CmsPrefrenceAreaProductRelation> prefrenceAreaProductRelationList;
+    @Schema(title = "Preference area product relation list")
+    private List<CmsPreferenceAreaProductRelation> preferenceAreaProductRelationList;
 }

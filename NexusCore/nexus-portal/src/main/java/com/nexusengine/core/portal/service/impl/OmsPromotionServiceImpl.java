@@ -57,8 +57,8 @@ public class OmsPromotionServiceImpl implements OmsPromotionService {
                     } else {
                         cartPromotionItem.setRealStock(promotionProduct.getStock());
                     }
-                    cartPromotionItem.setIntegration(promotionProduct.getGiftPoint());
-                    cartPromotionItem.setGrowth(promotionProduct.getGiftGrowth());
+                    cartPromotionItem.setRewardPoints(promotionProduct.getGiftPoint());
+                    cartPromotionItem.setExperiencePoints(promotionProduct.getGiftGrowth());
                     cartPromotionItemList.add(cartPromotionItem);
                 }
             } else if (promotionType == 3) {
@@ -78,8 +78,8 @@ public class OmsPromotionServiceImpl implements OmsPromotionService {
                         } else {
                             cartPromotionItem.setRealStock(promotionProduct.getStock());
                         }
-                        cartPromotionItem.setIntegration(promotionProduct.getGiftPoint());
-                        cartPromotionItem.setGrowth(promotionProduct.getGiftGrowth());
+                        cartPromotionItem.setRewardPoints(promotionProduct.getGiftPoint());
+                        cartPromotionItem.setExperiencePoints(promotionProduct.getGiftGrowth());
                         cartPromotionItemList.add(cartPromotionItem);
                     }
                 } else {
@@ -102,8 +102,8 @@ public class OmsPromotionServiceImpl implements OmsPromotionService {
                         } else {
                             cartPromotionItem.setRealStock(promotionProduct.getStock());
                         }
-                        cartPromotionItem.setIntegration(promotionProduct.getGiftPoint());
-                        cartPromotionItem.setGrowth(promotionProduct.getGiftGrowth());
+                        cartPromotionItem.setRewardPoints(promotionProduct.getGiftPoint());
+                        cartPromotionItem.setExperiencePoints(promotionProduct.getGiftGrowth());
                         cartPromotionItemList.add(cartPromotionItem);
                     }
                 } else {
@@ -145,8 +145,8 @@ public class OmsPromotionServiceImpl implements OmsPromotionService {
                 } else {
                     cartPromotionItem.setRealStock(promotionProduct.getStock());
                 }
-                cartPromotionItem.setIntegration(promotionProduct.getGiftPoint());
-                cartPromotionItem.setGrowth(promotionProduct.getGiftGrowth());
+                cartPromotionItem.setRewardPoints(promotionProduct.getGiftPoint());
+                cartPromotionItem.setExperiencePoints(promotionProduct.getGiftGrowth());
             }
             cartPromotionItemList.add(cartPromotionItem);
         }

@@ -18,8 +18,8 @@ export interface UmsMember {
   sourceType: number;
   integration: number;
   growth: number;
-  luckeyCount: number;
-  historyIntegration: number;
+  bonusDrawsRemaining: number;
+  lifetimeRewardPoints: number;
 }
 
 export interface UmsMemberReceiveAddress {

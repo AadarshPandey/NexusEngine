@@ -10,8 +10,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "pms_product_vertify_record")
-public class PmsProductVertifyRecord implements Serializable {
+@Table(name = "pms_product_verify_record")
+public class PmsProductVerifyRecord implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -25,9 +25,9 @@ public class PmsProductVertifyRecord implements Serializable {
     @Column(name = "create_time")
     private Date createTime;
 
-    @Column(name = "vertify_man")
+    @Column(name = "reviewer_name")
     @Schema(title = "Vertify man")
-    private String vertifyMan;
+    private String reviewerName;
 
     private Integer status;
 

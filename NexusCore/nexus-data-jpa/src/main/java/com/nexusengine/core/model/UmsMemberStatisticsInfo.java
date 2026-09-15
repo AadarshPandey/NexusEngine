@@ -55,17 +55,17 @@ public class UmsMemberStatisticsInfo implements Serializable {
     @Schema(title = "Fans count")
     private Integer fansCount;
 
-    @Column(name = "collect_product_count")
-    private Integer collectProductCount;
+    @Column(name = "saved_products_count")
+    private Integer savedProductsCount;
 
-    @Column(name = "collect_subject_count")
-    private Integer collectSubjectCount;
+    @Column(name = "saved_articles_count")
+    private Integer savedArticlesCount;
 
-    @Column(name = "collect_topic_count")
-    private Integer collectTopicCount;
+    @Column(name = "saved_topics_count")
+    private Integer savedTopicsCount;
 
-    @Column(name = "collect_comment_count")
-    private Integer collectCommentCount;
+    @Column(name = "liked_comments_count")
+    private Integer likedCommentsCount;
 
     @Column(name = "invite_friend_count")
     private Integer inviteFriendCount;

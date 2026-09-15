@@ -26,8 +26,8 @@ public class PmsProduct implements Serializable {
     @Column(name = "product_category_id")
     private Long productCategoryId;
 
-    @Column(name = "feight_template_id")
-    private Long feightTemplateId;
+    @Column(name = "freight_template_id")
+    private Long freightTemplateId;
 
     @Column(name = "product_attribute_category_id")
     private Long productAttributeCategoryId;

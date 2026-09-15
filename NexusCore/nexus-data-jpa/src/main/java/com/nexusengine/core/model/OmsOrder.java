@@ -95,10 +95,10 @@ public class OmsOrder implements Serializable {
     private Integer autoConfirmDay;
 
     @Schema(title = "Integration")
-    private Integer integration;
+    private Integer rewardPoints;
 
     @Schema(title = "Growth")
-    private Integer growth;
+    private Integer experiencePoints;
 
     @Column(name = "promotion_info")
     @Schema(title = "Promotion info")

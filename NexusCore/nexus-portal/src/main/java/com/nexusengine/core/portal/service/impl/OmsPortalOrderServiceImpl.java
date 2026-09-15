@@ -76,7 +76,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
         result.setMemberReceiveAddressList(memberReceiveAddressList);
         List<SmsCouponHistoryDetail> couponHistoryDetailList = memberCouponService.listCart(cartPromotionItemList, 1);
         result.setCouponHistoryDetailList(couponHistoryDetailList);
-        result.setMemberIntegration(currentMember.getIntegration());
+        result.setMemberIntegration(currentMember.getRewardPoints());
         UmsIntegrationConsumeSetting integrationConsumeSetting = integrationConsumeSettingRepository.findById(1L).orElse(null);
         result.setIntegrationConsumeSetting(integrationConsumeSetting);
         ConfirmOrderResult.CalcAmount calcAmount = calcCartAmount(cartPromotionItemList);
@@ -130,8 +130,8 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
             orderItem.setProductCategoryId(cartPromotionItem.getProductCategoryId());
             orderItem.setPromotionAmount(cartPromotionItem.getReduceAmount());
             orderItem.setPromotionName(cartPromotionItem.getPromotionMessage());
-            orderItem.setGiftIntegration(cartPromotionItem.getIntegration());
-            orderItem.setGiftGrowth(cartPromotionItem.getGrowth());
+            orderItem.setGiftIntegration(cartPromotionItem.getRewardPoints());
+            orderItem.setGiftGrowth(cartPromotionItem.getExperiencePoints());
             orderItemList.add(orderItem);
         }
             for (CartPromotionItem item : cartPromotionItemList) {
@@ -188,10 +188,10 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
             order.setCouponAmount(calcCouponAmount(orderItemList));
         }
         if (orderParam.getUseIntegration() == null) {
-            order.setIntegration(0);
+            order.setRewardPoints(0);
             order.setIntegrationAmount(new BigDecimal(0));
         } else {
-            order.setIntegration(orderParam.getUseIntegration());
+            order.setRewardPoints(orderParam.getUseIntegration());
             order.setIntegrationAmount(calcIntegrationAmount(orderItemList));
         }
         order.setPayAmount(calcPayAmount(order));
@@ -221,8 +221,8 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
         order.setReceiverDetailAddress(address.getDetailAddress());
         order.setConfirmStatus(0);
         order.setDeleteStatus(0);
-        order.setIntegration(calcGifIntegration(orderItemList));
-        order.setGrowth(calcGiftGrowth(orderItemList));
+        order.setRewardPoints(calcGifIntegration(orderItemList));
+        order.setExperiencePoints(calcGiftGrowth(orderItemList));
         order.setOrderSn(generateOrderSn(order));
         OmsOrderSetting orderSetting = orderSettingRepository.findById(1L).orElse(null);
         if (orderSetting != null) {
@@ -239,10 +239,10 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
         }
         if (orderParam.getUseIntegration() != null) {
             order.setUseIntegration(orderParam.getUseIntegration());
-            if (currentMember.getIntegration() == null) {
-                currentMember.setIntegration(0);
+            if (currentMember.getRewardPoints() == null) {
+                currentMember.setRewardPoints(0);
             }
-            memberService.updateIntegration(currentMember.getId(), currentMember.getIntegration() - orderParam.getUseIntegration());
+            memberService.updateIntegration(currentMember.getId(), currentMember.getRewardPoints() - orderParam.getUseIntegration());
         }
         deleteCartItemList(cartPromotionItemList, currentMember);
         sendDelayMessageCancelOrder(order.getId());
@@ -318,7 +318,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
                     updateCouponStatus(timeOutOrder.getCouponId(), timeOutOrder.getMemberId(), 0);
                     if (timeOutOrder.getUseIntegration() != null) {
                         UmsMember member = memberService.getById(timeOutOrder.getMemberId());
-                        memberService.updateIntegration(timeOutOrder.getMemberId(), member.getIntegration() + timeOutOrder.getUseIntegration());
+                        memberService.updateIntegration(timeOutOrder.getMemberId(), member.getRewardPoints() + timeOutOrder.getUseIntegration());
                     }
                 }
                 return timeOutOrders.size();
@@ -354,7 +354,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
         updateCouponStatus(cancelOrder.getCouponId(), cancelOrder.getMemberId(), 0);
         if (cancelOrder.getUseIntegration() != null) {
             UmsMember member = memberService.getById(cancelOrder.getMemberId());
-            memberService.updateIntegration(cancelOrder.getMemberId(), member.getIntegration() + cancelOrder.getUseIntegration());
+            memberService.updateIntegration(cancelOrder.getMemberId(), member.getRewardPoints() + cancelOrder.getUseIntegration());
         }
     }
 
@@ -564,7 +564,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
 
     private BigDecimal getUseIntegrationAmount(Integer useIntegration, BigDecimal totalAmount, UmsMember currentMember, boolean hasCoupon) {
         BigDecimal zeroAmount = new BigDecimal(0);
-        if (useIntegration.compareTo(currentMember.getIntegration()) > 0) return zeroAmount;
+        if (useIntegration.compareTo(currentMember.getRewardPoints()) > 0) return zeroAmount;
         UmsIntegrationConsumeSetting setting = integrationConsumeSettingRepository.findById(1L).orElse(null);
         if (setting == null) return zeroAmount;
         if (hasCoupon && setting.getCouponStatus().equals(0)) return zeroAmount;

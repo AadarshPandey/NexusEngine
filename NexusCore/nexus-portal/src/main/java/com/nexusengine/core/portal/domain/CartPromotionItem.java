@@ -21,7 +21,7 @@ public class CartPromotionItem extends OmsCartItem{
     @Schema(title = "Real stock")
     private Integer realStock;
     @Schema(title = "Integration")
-    private Integer integration;
+    private Integer rewardPoints;
     @Schema(title = "Growth")
-    private Integer growth;
+    private Integer experiencePoints;
 }

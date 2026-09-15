@@ -124,7 +124,7 @@ public class OmsPortalOrderServiceImplTest {
         currentMember = new UmsMember();
         currentMember.setId(1L);
         currentMember.setUsername("testuser");
-        currentMember.setIntegration(100);
+        currentMember.setRewardPoints(100);
 
         orderParam = new OrderParam();
         orderParam.setMemberReceiveAddressId(1L);
@@ -138,8 +138,8 @@ public class OmsPortalOrderServiceImplTest {
         cartPromotionItem.setQuantity(2);
         cartPromotionItem.setPrice(new BigDecimal("100.00"));
         cartPromotionItem.setReduceAmount(new BigDecimal("0.00"));
-        cartPromotionItem.setIntegration(0);
-        cartPromotionItem.setGrowth(0);
+        cartPromotionItem.setRewardPoints(0);
+        cartPromotionItem.setExperiencePoints(0);
         cartPromotionItem.setRealStock(10); // Added realStock to pass hasStock() check
 
         skuStock = new PmsSkuStock();

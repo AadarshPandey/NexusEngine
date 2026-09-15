@@ -10,8 +10,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "pms_feight_template")
-public class PmsFeightTemplate implements Serializable {
+@Table(name = "pms_freight_template")
+public class PmsFreightTemplate implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -25,19 +25,19 @@ public class PmsFeightTemplate implements Serializable {
     @Schema(title = "Charge type")
     private Integer chargeType;
 
-    @Column(name = "first_weight")
+    @Column(name = "base_weight")
     @Schema(title = "First weight")
-    private BigDecimal firstWeight;
+    private BigDecimal baseWeight;
 
-    @Column(name = "first_fee")
+    @Column(name = "base_shipping_fee")
     @Schema(title = "First fee")
-    private BigDecimal firstFee;
+    private BigDecimal baseShippingFee;
 
-    @Column(name = "continue_weight")
-    private BigDecimal continueWeight;
+    @Column(name = "incremental_weight_unit")
+    private BigDecimal incrementalWeightUnit;
 
-    @Column(name = "continme_fee")
-    private BigDecimal continmeFee;
+    @Column(name = "incremental_fee")
+    private BigDecimal incrementalFee;
 
     @Schema(title = "Dest")
     private String dest;

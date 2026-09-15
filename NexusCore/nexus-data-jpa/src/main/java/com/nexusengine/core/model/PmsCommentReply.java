@@ -10,8 +10,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "pms_comment_replay")
-public class PmsCommentReplay implements Serializable {
+@Table(name = "pms_comment_reply")
+public class PmsCommentReply implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

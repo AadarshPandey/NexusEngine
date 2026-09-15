@@ -21,10 +21,10 @@ public class UmsMemberTask implements Serializable {
     private String name;
 
     @Schema(title = "Growth")
-    private Integer growth;
+    private Integer experiencePoints;
 
-    @Schema(title = "Intergration")
-    private Integer intergration;
+    @Schema(title = "RewardPoints")
+    private Integer rewardPoints;
 
     @Schema(title = "Type")
     private Integer type;
