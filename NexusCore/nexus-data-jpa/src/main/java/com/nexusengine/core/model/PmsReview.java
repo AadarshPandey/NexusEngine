@@ -45,6 +45,7 @@ public class PmsReview implements Serializable {
     @Column(name = "created_time")
     private Date createdTime;
 
-    @OneToMany(mappedBy = "reviewId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "review_id")
     private List<PmsReviewMedia> mediaList;
 }
