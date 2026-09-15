@@ -15,7 +15,7 @@ spring:
   jpa:
     open-in-view: false
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
@@ -127,3 +127,9 @@ management:
   otlp:
     tracing:
       endpoint: http://localhost:4318/v1/traces
+
+spring:
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    baseline-version: 1

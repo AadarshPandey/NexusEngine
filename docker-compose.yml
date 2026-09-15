@@ -9,7 +9,6 @@ services:
     restart: unless-stopped
     ports:
       - "8080:8080"
-    volumes:
     environment:
       - SPRING_PROFILES_ACTIVE=prod
       - RAZORPAY_KEY_ID=${RAZORPAY_KEY_ID}
@@ -36,7 +35,6 @@ services:
     restart: unless-stopped
     ports:
       - "8081:8081"
-    volumes:
     environment:
       - SPRING_PROFILES_ACTIVE=prod
     depends_on:
