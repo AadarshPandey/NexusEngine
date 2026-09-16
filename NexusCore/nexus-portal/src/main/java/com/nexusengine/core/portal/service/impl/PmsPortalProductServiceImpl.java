@@ -38,7 +38,7 @@ public class PmsPortalProductServiceImpl implements PmsPortalProductService {
         if (products != null) {
             products.forEach(p -> {
                 if (p.getMediaList() != null) {
-                    p.getMediaList().size();
+                    org.hibernate.Hibernate.initialize(p.getMediaList());
                 }
             });
         }
@@ -93,7 +93,7 @@ public class PmsPortalProductServiceImpl implements PmsPortalProductService {
         PmsPortalProductDetail result = new PmsPortalProductDetail();
         PmsProduct product = productRepository.findById(id).orElse(null);
         if (product != null && product.getMediaList() != null) {
-            product.getMediaList().size();
+            org.hibernate.Hibernate.initialize(product.getMediaList());
         }
         result.setProduct(product);
         if (product == null) return result;

@@ -28,7 +28,7 @@ public class HomeServiceImpl implements HomeService {
         if (products != null) {
             products.forEach(p -> {
                 if (p.getMediaList() != null) {
-                    p.getMediaList().size();
+                    org.hibernate.Hibernate.initialize(p.getMediaList());
                 }
             });
         }
