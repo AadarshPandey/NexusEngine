@@ -60,6 +60,29 @@ public class UmsMemberController {
 
     @Operation(summary = "Update Profile Operation")
     @RequestMapping(value = "/updateProfile", method = RequestMethod.POST)
+    
+    @Operation(summary = "Upload Avatar")
+    @RequestMapping(value = "/uploadAvatar", method = RequestMethod.POST)
+    public CommonResult uploadAvatar(@org.springframework.web.bind.annotation.RequestParam("file") org.springframework.web.multipart.MultipartFile file) {
+        try {
+            io.minio.MinioClient minioClient = io.minio.MinioClient.builder()
+                    .endpoint("http://localhost:9000")
+                    .credentials("minioadmin", "minioadmin")
+                    .build();
+            String filename = "avatar_" + System.currentTimeMillis() + "_" + file.getOriginalFilename();
+            minioClient.putObject(io.minio.PutObjectArgs.builder()
+                    .bucket("nexus-media")
+                    .object("public/users/" + filename)
+                    .stream(file.getInputStream(), file.getSize(), -1)
+                    .contentType(file.getContentType())
+                    .build());
+            return CommonResult.success("http://localhost:9000/nexus-media/public/users/" + filename);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return CommonResult.failed(e.getMessage());
+        }
+    }
+
     public CommonResult updateProfile(@org.springframework.web.bind.annotation.RequestBody UmsMember member) {
         UmsMember current = memberService.getCurrentMember();
         if (member.getNickname() != null) current.setNickname(member.getNickname());

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, Paper, Tabs, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Avatar, Divider, CircularProgress, Button, TextField, Dialog, DialogTitle, DialogContent, DialogActions, Chip } from '@mui/material';
 import { useSelector } from 'react-redux';
-import type { RootState } from '../store';
+import store, { RootState } from '../store';
 import { fetchOrderList, submitReturnApply } from '../api/order';
 import type { OmsOrderDetail } from '../api/order';
 import { fetchMemberInfo, fetchAddressList, addAddress, updateProfile } from '../api/member';
@@ -520,15 +520,49 @@ const Profile: React.FC = () => {
             <TextField label="Nickname" fullWidth value={editProfileData.nickname} onChange={e => setEditProfileData({...editProfileData, nickname: e.target.value})} />
             <TextField label="Phone Number" fullWidth value={editProfileData.phone} onChange={e => setEditProfileData({...editProfileData, phone: e.target.value})} />
             
+            
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
               <Avatar src={editProfileData.icon} sx={{ width: 64, height: 64 }} />
-              <Button 
-                variant="outlined" 
-                onClick={() => setEditProfileData({...editProfileData, icon: `https://api.dicebear.com/7.x/avataaars/svg?seed=${Math.random().toString(36).substring(7)}`})}
-              >
-                Change Image
-              </Button>
+              <input 
+                type="file" 
+                accept="image/*" 
+                style={{ display: 'none' }} 
+                id="avatar-upload" 
+                onChange={async (e) => {
+                  if (e.target.files && e.target.files[0]) {
+                    const file = e.target.files[0];
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    try {
+                      // Note: We need to hit the upload API
+                      const token = (store.getState() as RootState).auth.token;
+                      const res = await fetch('/api/portal/sso/uploadAvatar', {
+                        method: 'POST',
+                        headers: {
+                          'Authorization': `Bearer ${token}`
+                        },
+                        body: formData
+                      });
+                      const data = await res.json();
+                      if (data.code === 200) {
+                        setEditProfileData({...editProfileData, icon: data.data});
+                      } else {
+                        alert('Upload failed: ' + data.message);
+                      }
+                    } catch (err) {
+                      console.error(err);
+                      alert('Error uploading avatar');
+                    }
+                  }
+                }}
+              />
+              <label htmlFor="avatar-upload">
+                <Button variant="outlined" component="span">
+                  Change Image
+                </Button>
+              </label>
             </Box>
+
 
           </Box>
         </DialogContent>
