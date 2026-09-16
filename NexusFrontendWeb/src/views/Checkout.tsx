@@ -97,7 +97,7 @@ const Checkout: React.FC = () => {
         name: 'Nexus Engine',
         description: `Payment for Order #${order.orderSn}`,
         order_id: razorpayOrderId,
-        handler: async function (response: RazorpayResponse) {
+        handler: async function (response: any) {
           try {
             await verifyRazorpayPayment(
               order.id, 
@@ -130,7 +130,7 @@ const Checkout: React.FC = () => {
       };
       
       const rzp = new window.Razorpay(options);
-      rzp.on('payment.failed', function (response: RazorpayFailedResponse){
+      rzp.on('payment.failed', function (response: any){
         alert(`Payment Failed: ${response.error.description}`);
       });
       rzp.open();

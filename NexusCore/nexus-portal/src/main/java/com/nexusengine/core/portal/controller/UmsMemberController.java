@@ -58,9 +58,6 @@ public class UmsMemberController {
         return CommonResult.success(tokenMap);
     }
 
-    @Operation(summary = "Update Profile Operation")
-    @RequestMapping(value = "/updateProfile", method = RequestMethod.POST)
-    
     @Operation(summary = "Upload Avatar")
     @RequestMapping(value = "/uploadAvatar", method = RequestMethod.POST)
     public CommonResult uploadAvatar(@org.springframework.web.bind.annotation.RequestParam("file") org.springframework.web.multipart.MultipartFile file) {
@@ -83,6 +80,8 @@ public class UmsMemberController {
         }
     }
 
+    @Operation(summary = "Update Profile Operation")
+    @RequestMapping(value = "/updateProfile", method = RequestMethod.POST)
     public CommonResult updateProfile(@org.springframework.web.bind.annotation.RequestBody UmsMember member) {
         UmsMember current = memberService.getCurrentMember();
         if (member.getNickname() != null) current.setNickname(member.getNickname());

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, Paper, Tabs, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Avatar, Divider, CircularProgress, Button, TextField, Dialog, DialogTitle, DialogContent, DialogActions, Chip } from '@mui/material';
 import { useSelector } from 'react-redux';
-import store, { RootState } from '../store';
+import { store } from '../store';
+import type { RootState } from '../store';
 import { fetchOrderList, submitReturnApply } from '../api/order';
 import type { OmsOrderDetail } from '../api/order';
 import { fetchMemberInfo, fetchAddressList, addAddress, updateProfile } from '../api/member';
@@ -55,7 +56,7 @@ const Profile: React.FC = () => {
     try {
       await updateProfile(editProfileData);
       setOpenEditProfile(false);
-      loadData();
+      loadDashboardData();
     } catch (e) {
       console.error(e);
       alert('Failed to update profile');
@@ -312,7 +313,7 @@ const Profile: React.FC = () => {
                                     name: 'Nexus Engine',
                                     description: `Payment for Order #${order.orderSn}`,
                                     order_id: razorpayOrderId,
-                                    handler: async function (response: RazorpayResponse) {
+                                    handler: async function (response: any) {
                                       try {
                                         // 4. Verify payment on backend
                                         await verifyRazorpayPayment(
@@ -335,7 +336,7 @@ const Profile: React.FC = () => {
                                     theme: { color: '#3399cc' }
                                   };
                                   const rzp = new window.Razorpay(options);
-                                  rzp.on('payment.failed', function (response: RazorpayFailedResponse){
+                                  rzp.on('payment.failed', function (response: any){
                                     alert(`Payment Failed: ${response.error.description}`);
                                   });
                                   rzp.open();

@@ -38,6 +38,7 @@ secure:
   ignored:
     urls:
       - /swagger-ui.html
+      - /actuator/**
       - /swagger-ui/**
       - /swagger-resources/**
       - /v2/api-docs
