@@ -20,11 +20,11 @@ import java.util.List;
 @RestController
 @Tag(name = "SmsCouponController", description = "Sms coupon controller APIs")
 @RequestMapping("/coupon")
+@lombok.RequiredArgsConstructor
 public class SmsCouponController {
-    @Autowired
-    private SmsCouponService couponService;
+    private final SmsCouponService couponService;
     @Operation(summary = "Add Operation")
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    @PostMapping("/create")
 
     public CommonResult add(@RequestBody SmsCouponParam couponParam) {
         int count = couponService.create(couponParam);
@@ -35,7 +35,7 @@ public class SmsCouponController {
     }
 
     @Operation(summary = "Delete Operation")
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
+    @PostMapping("/delete/{id}")
 
     public CommonResult delete(@PathVariable Long id) {
         int count = couponService.delete(id);
@@ -46,7 +46,7 @@ public class SmsCouponController {
     }
 
     @Operation(summary = "Update Operation")
-    @RequestMapping(value = "/update/{id}", method = RequestMethod.POST)
+    @PostMapping("/update/{id}")
 
     public CommonResult update(@PathVariable Long id,@RequestBody SmsCouponParam couponParam) {
         int count = couponService.update(id,couponParam);
@@ -57,7 +57,7 @@ public class SmsCouponController {
     }
 
     @Operation(summary = "List Operation")
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @GetMapping("/list")
 
     public CommonResult<CommonPage<SmsCoupon>> list(
             @RequestParam(value = "name",required = false) String name,
@@ -69,7 +69,7 @@ public class SmsCouponController {
     }
 
     @Operation(summary = "Get item Operation")
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @GetMapping("/{id}")
 
     public CommonResult<SmsCouponParam> getItem(@PathVariable Long id) {
         SmsCouponParam couponParam = couponService.getItem(id);

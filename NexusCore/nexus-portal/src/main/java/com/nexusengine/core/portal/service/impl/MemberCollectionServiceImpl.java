@@ -19,13 +19,11 @@ import java.util.Date;
  * Member product collection/favorites Service implementation
  */
 @Service
+@lombok.RequiredArgsConstructor
 public class MemberCollectionServiceImpl implements MemberCollectionService {
-    @Autowired
-    private PmsProductRepository productRepository;
-    @Autowired
-    private MemberProductCollectionRepository productCollectionRepository;
-    @Autowired
-    private UmsMemberService memberService;
+    private final PmsProductRepository productRepository;
+    private final MemberProductCollectionRepository productCollectionRepository;
+    private final UmsMemberService memberService;
 
     @Override
     public int add(MemberProductCollection productCollection) {

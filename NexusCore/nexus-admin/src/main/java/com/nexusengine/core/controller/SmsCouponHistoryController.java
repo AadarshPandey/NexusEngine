@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -21,12 +22,12 @@ import java.util.List;
 @RestController
 @Tag(name = "SmsCouponHistoryController", description = "Sms coupon history controller APIs")
 @RequestMapping("/couponHistory")
+@lombok.RequiredArgsConstructor
 public class SmsCouponHistoryController {
-    @Autowired
-    private SmsCouponHistoryService historyService;
+    private final SmsCouponHistoryService historyService;
 
     @Operation(summary = "List Operation")
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @GetMapping("/list")
 
     public CommonResult<CommonPage<SmsCouponHistory>> list(@RequestParam(value = "couponId", required = false) Long couponId,
                                                            @RequestParam(value = "useStatus", required = false) Integer useStatus,

@@ -26,16 +26,14 @@ import java.util.List;
 @RestController
 @Tag(name = "UmsMemberCouponController", description = "Ums member coupon controller APIs")
 @RequestMapping("/portal/member/coupon")
+@lombok.RequiredArgsConstructor
 public class UmsMemberCouponController {
-    @Autowired
-    private UmsMemberCouponService memberCouponService;
-    @Autowired
-    private OmsCartItemService cartItemService;
-    @Autowired
-    private UmsMemberService memberService;
+    private final UmsMemberCouponService memberCouponService;
+    private final OmsCartItemService cartItemService;
+    private final UmsMemberService memberService;
 
     @Operation(summary = "Add Operation")
-    @RequestMapping(value = "/add/{couponId}", method = RequestMethod.POST)
+    @PostMapping("/add/{couponId}")
 
     public CommonResult add(@PathVariable Long couponId) {
         memberCouponService.add(couponId);
@@ -45,7 +43,7 @@ public class UmsMemberCouponController {
     @Operation(summary = "API Operation")
     @Parameter(name = "useStatus", description = "Description",
             in = ParameterIn.QUERY,schema = @Schema(type = "integer",allowableValues = {"0","1","2"}))
-    @RequestMapping(value = "/listHistory", method = RequestMethod.GET)
+    @GetMapping("/listHistory")
 
     public CommonResult<List<SmsCouponHistory>> listHistory(@RequestParam(value = "useStatus", required = false) Integer useStatus) {
         List<SmsCouponHistory> couponHistoryList = memberCouponService.listHistory(useStatus);
@@ -55,7 +53,7 @@ public class UmsMemberCouponController {
     @Operation(summary = "API Operation")
     @Parameter(name = "useStatus", description = "Description",
             in = ParameterIn.QUERY,schema = @Schema(type = "integer",allowableValues = {"0","1","2"}))
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @GetMapping("/list")
 
     public CommonResult<List<SmsCoupon>> list(@RequestParam(value = "useStatus", required = false) Integer useStatus) {
         List<SmsCoupon> couponList = memberCouponService.list(useStatus);
@@ -65,7 +63,7 @@ public class UmsMemberCouponController {
     @Operation(summary = "API Operation")
     @Parameter(name = "type", description = "Description",
             in = ParameterIn.PATH,schema = @Schema(type = "integer",defaultValue = "1",allowableValues = {"0","1"}))
-    @RequestMapping(value = "/list/cart/{type}", method = RequestMethod.GET)
+    @GetMapping("/list/cart/{type}")
 
     public CommonResult<List<SmsCouponHistoryDetail>> listCart(@PathVariable Integer type) {
         List<CartPromotionItem> cartPromotionItemList = cartItemService.listPromotion(memberService.getCurrentMember().getId(), null);
@@ -74,7 +72,7 @@ public class UmsMemberCouponController {
     }
 
     @Operation(summary = "List by product Operation")
-    @RequestMapping(value = "/listByProduct/{productId}", method = RequestMethod.GET)
+    @GetMapping("/listByProduct/{productId}")
 
     public CommonResult<List<SmsCoupon>> listByProduct(@PathVariable Long productId) {
         List<SmsCoupon> couponHistoryList = memberCouponService.listByProduct(productId);

@@ -18,13 +18,11 @@ import java.util.List;
  * Portal brand management Service implementation
  */
 @Service
+@lombok.RequiredArgsConstructor
 public class PmsPortalBrandServiceImpl implements PmsPortalBrandService {
-    @Autowired
-    private HomeDao homeDao;
-    @Autowired
-    private PmsBrandRepository brandRepository;
-    @Autowired
-    private PmsProductRepository productRepository;
+    private final HomeDao homeDao;
+    private final PmsBrandRepository brandRepository;
+    private final PmsProductRepository productRepository;
 
     @Override
     public List<PmsBrand> recommendList(Integer pageNum, Integer pageSize) {

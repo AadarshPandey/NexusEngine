@@ -18,19 +18,19 @@ import java.util.List;
 @RestController
 @Tag(name = "PmsSkuStockController", description = "Pms sku stock controller APIs")
 @RequestMapping("/sku")
+@lombok.RequiredArgsConstructor
 public class PmsSkuStockController {
-    @Autowired
-    private PmsSkuStockService skuStockService;
+    private final PmsSkuStockService skuStockService;
 
     @Operation(summary = "Get list Operation")
-    @RequestMapping(value = "/{pid}", method = RequestMethod.GET)
+    @GetMapping("/{pid}")
 
     public CommonResult<List<PmsSkuStock>> getList(@PathVariable Long pid, @RequestParam(value = "keyword",required = false) String keyword) {
         List<PmsSkuStock> skuStockList = skuStockService.getList(pid, keyword);
         return CommonResult.success(skuStockList);
     }
     @Operation(summary = "Update Operation")
-    @RequestMapping(value = "/update/{pid}",method = RequestMethod.POST)
+    @PostMapping("/update/{pid}")
 
     public CommonResult update(@PathVariable Long pid,@RequestBody List<PmsSkuStock> skuStockList){
         int count = skuStockService.update(pid,skuStockList);

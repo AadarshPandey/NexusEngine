@@ -22,11 +22,11 @@ import java.util.UUID;
  * S3 service implementation
  */
 @Service
+@lombok.RequiredArgsConstructor
 public class S3ServiceImpl implements S3Service {
     private static final Logger LOGGER = LoggerFactory.getLogger(S3ServiceImpl.class);
 
-    @Autowired
-    private S3Presigner s3Presigner;
+    private final S3Presigner s3Presigner;
 
     @Value("${aws.s3.bucket-name}")
     private String bucketName;

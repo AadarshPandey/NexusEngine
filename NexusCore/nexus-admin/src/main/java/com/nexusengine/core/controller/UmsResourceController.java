@@ -20,15 +20,14 @@ import java.util.List;
 @RestController
 @Tag(name = "UmsResourceController", description = "Ums resource controller APIs")
 @RequestMapping("/resource")
+@lombok.RequiredArgsConstructor
 public class UmsResourceController {
 
-    @Autowired
-    private UmsResourceService resourceService;
-    @Autowired
-    private DynamicSecurityMetadataSource dynamicSecurityMetadataSource;
+    private final UmsResourceService resourceService;
+    private final DynamicSecurityMetadataSource dynamicSecurityMetadataSource;
 
     @Operation(summary = "Create Operation")
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    @PostMapping("/create")
 
     public CommonResult create(@RequestBody UmsResource umsResource) {
         int count = resourceService.create(umsResource);
@@ -41,7 +40,7 @@ public class UmsResourceController {
     }
 
     @Operation(summary = "Update Operation")
-    @RequestMapping(value = "/update/{id}", method = RequestMethod.POST)
+    @PostMapping("/update/{id}")
 
     public CommonResult update(@PathVariable Long id,
                                @RequestBody UmsResource umsResource) {
@@ -55,7 +54,7 @@ public class UmsResourceController {
     }
 
     @Operation(summary = "Get item Operation")
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @GetMapping("/{id}")
 
     public CommonResult<UmsResource> getItem(@PathVariable Long id) {
         UmsResource umsResource = resourceService.getItem(id);
@@ -63,7 +62,7 @@ public class UmsResourceController {
     }
 
     @Operation(summary = "Delete Operation")
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
+    @PostMapping("/delete/{id}")
 
     public CommonResult delete(@PathVariable Long id) {
         int count = resourceService.delete(id);
@@ -76,7 +75,7 @@ public class UmsResourceController {
     }
 
     @Operation(summary = "List Operation")
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @GetMapping("/list")
 
     public CommonResult<CommonPage<UmsResource>> list(@RequestParam(required = false) Long categoryId,
                                                       @RequestParam(required = false) String nameKeyword,
@@ -88,7 +87,7 @@ public class UmsResourceController {
     }
 
     @Operation(summary = "List all Operation")
-    @RequestMapping(value = "/listAll", method = RequestMethod.GET)
+    @GetMapping("/listAll")
 
     public CommonResult<List<UmsResource>> listAll() {
         List<UmsResource> resourceList = resourceService.listAll();

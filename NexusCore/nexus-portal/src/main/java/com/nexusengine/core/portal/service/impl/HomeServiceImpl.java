@@ -15,17 +15,13 @@ import java.util.List;
  * Home page content Service implementation - Purged of legacy CMS/SMS dependencies
  */
 @Service
+@lombok.RequiredArgsConstructor
 public class HomeServiceImpl implements HomeService {
-    @Autowired
-    private SmsHomeAdvertiseRepository advertiseRepository;
-    @Autowired
-    private HomeDao homeDao;
-    @Autowired
-    private PmsProductRepository productRepository;
-    @Autowired
-    private PmsProductCategoryRepository productCategoryRepository;
-    @Autowired
-    private com.nexusengine.core.portal.service.PmsProductSemanticSearchService semanticSearchService;
+    private final SmsHomeAdvertiseRepository advertiseRepository;
+    private final HomeDao homeDao;
+    private final PmsProductRepository productRepository;
+    private final PmsProductCategoryRepository productCategoryRepository;
+    private final com.nexusengine.core.portal.service.PmsProductSemanticSearchService semanticSearchService;
 
     @Override
     public HomeContentResult content() {

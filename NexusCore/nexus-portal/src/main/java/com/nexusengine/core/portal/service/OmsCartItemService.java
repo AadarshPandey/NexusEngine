@@ -3,7 +3,6 @@ package com.nexusengine.core.portal.service;
 import com.nexusengine.core.model.OmsCartItem;
 import com.nexusengine.core.portal.domain.CartProduct;
 import com.nexusengine.core.portal.domain.CartPromotionItem;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -17,7 +16,6 @@ public interface OmsCartItemService {
      * @param cartItem the cartItem
      * @return the result of the operation
      */
-    @Transactional
     int add(OmsCartItem cartItem);
 
         /**
@@ -64,7 +62,6 @@ public interface OmsCartItemService {
      * @param cartItem the cartItem
      * @return the result of the operation
      */
-    @Transactional
     int updateAttr(OmsCartItem cartItem);
 
         /**

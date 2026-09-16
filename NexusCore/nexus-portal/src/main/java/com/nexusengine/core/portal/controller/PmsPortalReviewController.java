@@ -16,13 +16,13 @@ import java.util.Map;
 @RestController
 @Tag(name = "PmsPortalReviewController", description = "Product Review Management")
 @RequestMapping("/portal/review")
+@lombok.RequiredArgsConstructor
 public class PmsPortalReviewController {
 
-    @Autowired
-    private PmsPortalReviewService reviewService;
+    private final PmsPortalReviewService reviewService;
 
     @Operation(summary = "Get reviews for product")
-    @RequestMapping(value = "/product/{productId}", method = RequestMethod.GET)
+    @GetMapping("/product/{productId}")
     public CommonResult<CommonPage<PmsReview>> list(
             @PathVariable Long productId,
             @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
@@ -31,19 +31,19 @@ public class PmsPortalReviewController {
     }
 
     @Operation(summary = "Get replies to a review")
-    @RequestMapping(value = "/{parentId}/replies", method = RequestMethod.GET)
+    @GetMapping("/{parentId}/replies")
     public CommonResult<List<PmsReview>> listReplies(@PathVariable Long parentId) {
         return CommonResult.success(reviewService.listReplies(parentId));
     }
 
     @Operation(summary = "Create review or reply")
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    @PostMapping("/create")
     public CommonResult<PmsReview> create(@RequestBody ReviewParam param) {
         return CommonResult.success(reviewService.create(param));
     }
 
     @Operation(summary = "Upload media for review")
-    @RequestMapping(value = "/upload", method = RequestMethod.POST)
+    @PostMapping("/upload")
     public CommonResult<Map<String, String>> upload(@RequestParam("file") MultipartFile file) {
         return CommonResult.success(reviewService.uploadMedia(file));
     }

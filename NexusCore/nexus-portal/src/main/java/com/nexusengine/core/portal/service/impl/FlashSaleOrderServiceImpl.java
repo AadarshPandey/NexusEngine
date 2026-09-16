@@ -23,16 +23,14 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @Service
+@lombok.RequiredArgsConstructor
 public class FlashSaleOrderServiceImpl implements FlashSaleOrderService {
 
-    @Autowired
-    private StringRedisTemplate redisTemplate;
+    private final StringRedisTemplate redisTemplate;
 
-    @Autowired
-    private AmqpTemplate amqpTemplate;
+    private final AmqpTemplate amqpTemplate;
 
-    @Autowired
-    private UmsMemberService memberService;
+    private final UmsMemberService memberService;
 
     private DefaultRedisScript<Long> stockScript;
 

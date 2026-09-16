@@ -7,19 +7,20 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @Tag(name = "OmsPortalFlashOrderController", description = "Flash sale order controller APIs")
 @RequestMapping("/portal/flash-order")
+@lombok.RequiredArgsConstructor
 public class OmsPortalFlashOrderController {
 
-    @Autowired
-    private FlashSaleOrderService flashSaleOrderService;
+    private final FlashSaleOrderService flashSaleOrderService;
 
     @Operation(summary = "Generate Flash Sale Order (High Concurrency)")
-    @RequestMapping(value = "/generate", method = RequestMethod.POST)
+    @PostMapping("/generate")
 
     public CommonResult generateFlashOrder(@RequestParam Long productId,
                                            @RequestParam Long flashPromotionId,

@@ -16,16 +16,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@lombok.RequiredArgsConstructor
 public class OmsOrderServiceImpl implements OmsOrderService {
-    @Autowired
-    private OmsOrderRepository orderRepository;
-    @Autowired
-    private OmsOrderItemRepository orderItemRepository;
-    @Autowired
-    private OmsOrderOperateHistoryRepository orderOperateHistoryRepository;
+    private final OmsOrderRepository orderRepository;
+    private final OmsOrderItemRepository orderItemRepository;
+    private final OmsOrderOperateHistoryRepository orderOperateHistoryRepository;
 
-    @Autowired
-    private com.nexusengine.core.service.UmsAdminService adminService;
+    private final com.nexusengine.core.service.UmsAdminService adminService;
 
     @Override
     public List<OmsOrder> list(OmsOrderQueryParam queryParam, Integer pageSize, Integer pageNum) {

@@ -16,11 +16,10 @@ import java.util.List;
 import java.util.ArrayList;
 
 @Service
+@lombok.RequiredArgsConstructor
 public class PmsProductAttributeServiceImpl implements PmsProductAttributeService {
-    @Autowired
-    private PmsProductAttributeRepository productAttributeRepository;
-    @Autowired
-    private PmsProductAttributeCategoryRepository productAttributeCategoryRepository;
+    private final PmsProductAttributeRepository productAttributeRepository;
+    private final PmsProductAttributeCategoryRepository productAttributeCategoryRepository;
 
     @Override
     public List<PmsProductAttribute> getList(Long cid, Integer type, Integer pageSize, Integer pageNum) {

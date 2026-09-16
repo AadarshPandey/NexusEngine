@@ -16,18 +16,15 @@ import java.util.Date;
  * Order return apply Service implementation
  */
 @Service
+@lombok.RequiredArgsConstructor
 public class OmsPortalOrderReturnApplyServiceImpl implements OmsPortalOrderReturnApplyService {
-    @Autowired
-    private OmsOrderReturnApplyRepository returnApplyRepository;
+    private final OmsOrderReturnApplyRepository returnApplyRepository;
 
-    @Autowired
-    private OmsOrderItemRepository orderItemRepository;
+    private final OmsOrderItemRepository orderItemRepository;
 
-    @Autowired
-    private OmsOrderRepository orderRepository;
+    private final OmsOrderRepository orderRepository;
 
-    @Autowired
-    private com.nexusengine.core.portal.service.UmsMemberService memberService;
+    private final com.nexusengine.core.portal.service.UmsMemberService memberService;
 
     @Override
     public int create(OmsOrderReturnApplyParam returnApply) {

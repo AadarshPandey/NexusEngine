@@ -23,12 +23,12 @@ import java.util.List;
 @RestController
 @Tag(name = "EsProductController",description = "Es product controller APIs")
 @RequestMapping("/esProduct")
+@lombok.RequiredArgsConstructor
 public class EsProductController {
-    @Autowired
-    private EsProductService esProductService;
+    private final EsProductService esProductService;
 
     @Operation(summary = "Import all list Operation")
-    @RequestMapping(value = "/importAll", method = RequestMethod.POST)
+    @PostMapping("/importAll")
 
     public CommonResult<Integer> importAllList() {
         int count = esProductService.importAll();
@@ -36,7 +36,7 @@ public class EsProductController {
     }
 
     @Operation(summary = "Delete Operation")
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
+    @GetMapping("/delete/{id}")
 
     public CommonResult<Object> delete(@PathVariable Long id) {
         esProductService.delete(id);
@@ -44,7 +44,7 @@ public class EsProductController {
     }
 
     @Operation(summary = "Delete Operation")
-    @RequestMapping(value = "/delete/batch", method = RequestMethod.POST)
+    @PostMapping("/delete/batch")
 
     public CommonResult<Object> delete(@RequestParam("ids") List<Long> ids) {
         esProductService.delete(ids);
@@ -52,7 +52,7 @@ public class EsProductController {
     }
 
     @Operation(summary = "Create Operation")
-    @RequestMapping(value = "/create/{id}", method = RequestMethod.POST)
+    @PostMapping("/create/{id}")
 
     public CommonResult<EsProduct> create(@PathVariable Long id) {
         EsProduct esProduct = esProductService.create(id);
@@ -64,7 +64,7 @@ public class EsProductController {
     }
 
     @Operation(summary = "Search Operation")
-    @RequestMapping(value = "/search/simple", method = RequestMethod.GET)
+    @GetMapping("/search/simple")
 
     public CommonResult<CommonPage<EsProduct>> search(@RequestParam(required = false) String keyword,
                                                       @RequestParam(required = false, defaultValue = "0") Integer pageNum,
@@ -75,7 +75,7 @@ public class EsProductController {
 
     @Operation(summary = "Search Operation")
     @Parameter(name = "sort", description = "Sort field: 0->Relevance; 1->Newest; 2->Sales; 3->Price low to high; 4->Price high to low", in = ParameterIn.QUERY, schema = @Schema(type = "integer",defaultValue = "0",allowableValues = {"0","1","2","3","4"}))
-    @RequestMapping(value = "/search", method = RequestMethod.GET)
+    @GetMapping("/search")
 
     public CommonResult<CommonPage<EsProduct>> search(@RequestParam(required = false) String keyword,
                                                       @RequestParam(required = false) Long brandId,
@@ -88,7 +88,7 @@ public class EsProductController {
     }
 
     @Operation(summary = "Recommend Operation")
-    @RequestMapping(value = "/recommend/{id}", method = RequestMethod.GET)
+    @GetMapping("/recommend/{id}")
 
     public CommonResult<CommonPage<EsProduct>> recommend(@PathVariable Long id,
                                                          @RequestParam(required = false, defaultValue = "0") Integer pageNum,
@@ -98,7 +98,7 @@ public class EsProductController {
     }
 
     @Operation(summary = "Search related info Operation")
-    @RequestMapping(value = "/search/relate", method = RequestMethod.GET)
+    @GetMapping("/search/relate")
 
     public CommonResult<EsProductRelatedInfo> searchRelatedInfo(@RequestParam(required = false) String keyword) {
         EsProductRelatedInfo productRelatedInfo = esProductService.searchRelatedInfo(keyword);

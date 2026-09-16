@@ -9,6 +9,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -24,16 +26,16 @@ import java.util.Map;
 @RestController
 @Tag(name = "UmsMemberController", description = "Ums member controller APIs")
 @RequestMapping("/portal/sso")
+@lombok.RequiredArgsConstructor
 public class UmsMemberController {
     @Value("${jwt.tokenHeader}")
     private String tokenHeader;
     @Value("${jwt.tokenHead}")
     private String tokenHead;
-    @Autowired
-    private UmsMemberService memberService;
+    private final UmsMemberService memberService;
 
     @Operation(summary = "Register Operation")
-    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    @PostMapping("/register")
 
     public CommonResult register(@RequestParam("username") String username,
                                  @RequestParam("password") String password,
@@ -44,7 +46,7 @@ public class UmsMemberController {
     }
 
     @Operation(summary = "Login Operation")
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    @PostMapping("/login")
 
     public CommonResult login(@RequestParam String username,
                               @RequestParam String password) {
@@ -59,7 +61,7 @@ public class UmsMemberController {
     }
 
     @Operation(summary = "Upload Avatar")
-    @RequestMapping(value = "/uploadAvatar", method = RequestMethod.POST)
+    @PostMapping("/uploadAvatar")
     public CommonResult uploadAvatar(@org.springframework.web.bind.annotation.RequestParam("file") org.springframework.web.multipart.MultipartFile file) {
         try {
             io.minio.MinioClient minioClient = io.minio.MinioClient.builder()
@@ -81,7 +83,7 @@ public class UmsMemberController {
     }
 
     @Operation(summary = "Update Profile Operation")
-    @RequestMapping(value = "/updateProfile", method = RequestMethod.POST)
+    @PostMapping("/updateProfile")
     public CommonResult updateProfile(@org.springframework.web.bind.annotation.RequestBody UmsMember member) {
         UmsMember current = memberService.getCurrentMember();
         if (member.getNickname() != null) current.setNickname(member.getNickname());
@@ -92,7 +94,7 @@ public class UmsMemberController {
     }
 
     @Operation(summary = "Info Operation")
-    @RequestMapping(value = "/info", method = RequestMethod.GET)
+    @GetMapping("/info")
     public CommonResult info(Principal principal) {
         if(principal==null){
             return CommonResult.unauthorized(null);
@@ -102,7 +104,7 @@ public class UmsMemberController {
     }
 
     @Operation(summary = "Request OTP verification code via email")
-    @RequestMapping(value = "/getAuthCode", method = RequestMethod.POST)
+    @PostMapping("/getAuthCode")
 
     public CommonResult getAuthCode(@RequestParam("email") String email) {
         memberService.generateAuthCode(email);
@@ -110,7 +112,7 @@ public class UmsMemberController {
     }
 
     @Operation(summary = "Update password Operation")
-    @RequestMapping(value = "/updatePassword", method = RequestMethod.POST)
+    @PostMapping("/updatePassword")
 
     public CommonResult updatePassword(@RequestParam String email,
                                  @RequestParam String password,
@@ -121,7 +123,7 @@ public class UmsMemberController {
 
 
     @Operation(summary = "Refresh token Operation")
-    @RequestMapping(value = "/refreshToken", method = RequestMethod.GET)
+    @GetMapping("/refreshToken")
 
     public CommonResult refreshToken(HttpServletRequest request) {
         String token = request.getHeader(tokenHeader);

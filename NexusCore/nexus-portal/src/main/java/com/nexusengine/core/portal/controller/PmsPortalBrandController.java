@@ -20,13 +20,13 @@ import java.util.List;
 @RestController
 @Tag(name = "PmsPortalBrandController", description = "Pms portal brand controller APIs")
 @RequestMapping("/portal/brand")
+@lombok.RequiredArgsConstructor
 public class PmsPortalBrandController {
 
-    @Autowired
-    private PmsPortalBrandService portalBrandService;
+    private final PmsPortalBrandService portalBrandService;
 
     @Operation(summary = "Recommend list Operation")
-    @RequestMapping(value = "/recommendList", method = RequestMethod.GET)
+    @GetMapping("/recommendList")
 
     public CommonResult<List<PmsBrand>> recommendList(@RequestParam(value = "pageSize", defaultValue = "6") Integer pageSize,
                                                       @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
@@ -35,7 +35,7 @@ public class PmsPortalBrandController {
     }
 
     @Operation(summary = "Detail Operation")
-    @RequestMapping(value = "/detail/{brandId}", method = RequestMethod.GET)
+    @GetMapping("/detail/{brandId}")
 
     public CommonResult<PmsBrand> detail(@PathVariable Long brandId) {
         PmsBrand brand = portalBrandService.detail(brandId);
@@ -43,7 +43,7 @@ public class PmsPortalBrandController {
     }
 
     @Operation(summary = "Product list Operation")
-    @RequestMapping(value = "/productList", method = RequestMethod.GET)
+    @GetMapping("/productList")
 
     public CommonResult<CommonPage<PmsProduct>> productList(@RequestParam Long brandId,
                                                             @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,

@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
@@ -18,12 +19,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @RestController
 @Tag(name = "OmsPortalOrderReturnApplyController",description = "Oms portal order return apply controller APIs")
 @RequestMapping("/portal/returnApply")
+@lombok.RequiredArgsConstructor
 public class OmsPortalOrderReturnApplyController {
-    @Autowired
-    private OmsPortalOrderReturnApplyService returnApplyService;
+    private final OmsPortalOrderReturnApplyService returnApplyService;
 
     @Operation(summary = "Create Operation")
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    @PostMapping("/create")
 
     public CommonResult create(@RequestBody OmsOrderReturnApplyParam returnApply) {
         int count = returnApplyService.create(returnApply);

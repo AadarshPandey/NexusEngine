@@ -8,9 +8,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@lombok.RequiredArgsConstructor
 public class OmsCompanyAddressServiceImpl implements OmsCompanyAddressService {
-    @Autowired
-    private OmsCompanyAddressRepository companyAddressRepository;
+    private final OmsCompanyAddressRepository companyAddressRepository;
 
     @Override
     public List<OmsCompanyAddress> list() {

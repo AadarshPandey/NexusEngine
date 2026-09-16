@@ -17,13 +17,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@lombok.RequiredArgsConstructor
 public class PmsProductCategoryServiceImpl implements PmsProductCategoryService {
-    @Autowired
-    private PmsProductCategoryRepository productCategoryRepository;
-    @Autowired
-    private PmsProductRepository productRepository;
-    @Autowired
-    private PmsProductCategoryAttributeRelationRepository productCategoryAttributeRelationRepository;
+    private final PmsProductCategoryRepository productCategoryRepository;
+    private final PmsProductRepository productRepository;
+    private final PmsProductCategoryAttributeRelationRepository productCategoryAttributeRelationRepository;
 
     @Override
     public int create(PmsProductCategoryParam pmsProductCategoryParam) {

@@ -21,25 +21,17 @@ import java.util.stream.Collectors;
  * Portal product management Service implementation
  */
 @Service
+@lombok.RequiredArgsConstructor
 public class PmsPortalProductServiceImpl implements PmsPortalProductService {
-    @Autowired
-    private PmsProductRepository productRepository;
-    @Autowired
-    private PmsProductCategoryRepository productCategoryRepository;
-    @Autowired
-    private PmsBrandRepository brandRepository;
-    @Autowired
-    private PmsProductAttributeRepository productAttributeRepository;
-    @Autowired
-    private PmsProductAttributeValueRepository productAttributeValueRepository;
-    @Autowired
-    private PmsSkuStockRepository skuStockRepository;
-    @Autowired
-    private PmsProductLadderRepository productLadderRepository;
-    @Autowired
-    private PmsProductFullReductionRepository productFullReductionRepository;
-    @Autowired
-    private PortalProductDao portalProductDao;
+    private final PmsProductRepository productRepository;
+    private final PmsProductCategoryRepository productCategoryRepository;
+    private final PmsBrandRepository brandRepository;
+    private final PmsProductAttributeRepository productAttributeRepository;
+    private final PmsProductAttributeValueRepository productAttributeValueRepository;
+    private final PmsSkuStockRepository skuStockRepository;
+    private final PmsProductLadderRepository productLadderRepository;
+    private final PmsProductFullReductionRepository productFullReductionRepository;
+    private final PortalProductDao portalProductDao;
 
     @Override
     public List<PmsProduct> search(String keyword, Long brandId, Long productCategoryId, Integer pageNum, Integer pageSize, Integer sort) {

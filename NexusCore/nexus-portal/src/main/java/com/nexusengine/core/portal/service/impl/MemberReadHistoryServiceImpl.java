@@ -21,13 +21,11 @@ import java.util.List;
  * Member browse history Service implementation
  */
 @Service
+@lombok.RequiredArgsConstructor
 public class MemberReadHistoryServiceImpl implements MemberReadHistoryService {
-    @Autowired
-    private PmsProductRepository productRepository;
-    @Autowired
-    private MemberReadHistoryRepository memberReadHistoryRepository;
-    @Autowired
-    private UmsMemberService memberService;
+    private final PmsProductRepository productRepository;
+    private final MemberReadHistoryRepository memberReadHistoryRepository;
+    private final UmsMemberService memberService;
 
     @Override
     public int create(MemberReadHistory memberReadHistory) {

@@ -22,12 +22,12 @@ import java.util.List;
 @RestController
 @Tag(name = "OmsOrderReturnApplyController", description = "Oms order return apply controller APIs")
 @RequestMapping("/returnApply")
+@lombok.RequiredArgsConstructor
 public class OmsOrderReturnApplyController {
-    @Autowired
-    private OmsOrderReturnApplyService returnApplyService;
+    private final OmsOrderReturnApplyService returnApplyService;
 
     @Operation(summary = "List Operation")
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @GetMapping("/list")
 
     public CommonResult<CommonPage<OmsOrderReturnApply>> list(OmsReturnApplyQueryParam queryParam,
                                                               @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
@@ -37,7 +37,7 @@ public class OmsOrderReturnApplyController {
     }
 
     @Operation(summary = "Delete Operation")
-    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    @PostMapping("/delete")
 
     public CommonResult delete(@RequestParam("ids") List<Long> ids) {
         int count = returnApplyService.delete(ids);
@@ -48,7 +48,7 @@ public class OmsOrderReturnApplyController {
     }
 
     @Operation(summary = "Get item Operation")
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @GetMapping("/{id}")
 
     public CommonResult getItem(@PathVariable Long id) {
         OmsOrderReturnApplyResult result = returnApplyService.getItem(id);
@@ -56,7 +56,7 @@ public class OmsOrderReturnApplyController {
     }
 
     @Operation(summary = "Update status Operation")
-    @RequestMapping(value = "/update/status/{id}", method = RequestMethod.POST)
+    @PostMapping("/update/status/{id}")
 
     public CommonResult updateStatus(@PathVariable Long id, @RequestBody OmsUpdateStatusParam statusParam) {
         int count = returnApplyService.updateStatus(id, statusParam);

@@ -21,14 +21,13 @@ import java.util.List;
 @RestController
 @Tag(name = "OmsCartItemController", description = "Oms cart item controller APIs")
 @RequestMapping("/portal/cart")
+@lombok.RequiredArgsConstructor
 public class OmsCartItemController {
-    @Autowired
-    private OmsCartItemService cartItemService;
-    @Autowired
-    private UmsMemberService memberService;
+    private final OmsCartItemService cartItemService;
+    private final UmsMemberService memberService;
 
     @Operation(summary = "Add Operation")
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    @PostMapping("/add")
 
     public CommonResult add(@RequestBody OmsCartItem cartItem) {
         int count = cartItemService.add(cartItem);
@@ -39,7 +38,7 @@ public class OmsCartItemController {
     }
 
     @Operation(summary = "List Operation")
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @GetMapping("/list")
 
     public CommonResult<List<OmsCartItem>> list() {
         List<OmsCartItem> cartItemList = cartItemService.list(memberService.getCurrentMember().getId());
@@ -47,7 +46,7 @@ public class OmsCartItemController {
     }
 
     @Operation(summary = "List promotion Operation")
-    @RequestMapping(value = "/list/promotion", method = RequestMethod.GET)
+    @GetMapping("/list/promotion")
 
     public CommonResult<List<CartPromotionItem>> listPromotion(@RequestParam(required = false) List<Long> cartIds) {
         List<CartPromotionItem> cartPromotionItemList = cartItemService.listPromotion(memberService.getCurrentMember().getId(), cartIds);
@@ -55,7 +54,7 @@ public class OmsCartItemController {
     }
 
     @Operation(summary = "Update quantity Operation")
-    @RequestMapping(value = "/update/quantity", method = RequestMethod.GET)
+    @GetMapping("/update/quantity")
 
     public CommonResult updateQuantity(@RequestParam Long id,
                                        @RequestParam Integer quantity) {
@@ -67,7 +66,7 @@ public class OmsCartItemController {
     }
 
     @Operation(summary = "Get cart product Operation")
-    @RequestMapping(value = "/getProduct/{productId}", method = RequestMethod.GET)
+    @GetMapping("/getProduct/{productId}")
 
     public CommonResult<CartProduct> getCartProduct(@PathVariable Long productId) {
         CartProduct cartProduct = cartItemService.getCartProduct(productId);
@@ -75,7 +74,7 @@ public class OmsCartItemController {
     }
 
     @Operation(summary = "Update attr Operation")
-    @RequestMapping(value = "/update/attr", method = RequestMethod.POST)
+    @PostMapping("/update/attr")
 
     public CommonResult updateAttr(@RequestBody OmsCartItem cartItem) {
         int count = cartItemService.updateAttr(cartItem);
@@ -86,7 +85,7 @@ public class OmsCartItemController {
     }
 
     @Operation(summary = "Delete Operation")
-    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    @PostMapping("/delete")
 
     public CommonResult delete(@RequestParam("ids") List<Long> ids) {
         int count = cartItemService.delete(memberService.getCurrentMember().getId(), ids);
@@ -97,7 +96,7 @@ public class OmsCartItemController {
     }
 
     @Operation(summary = "Clear Operation")
-    @RequestMapping(value = "/clear", method = RequestMethod.POST)
+    @PostMapping("/clear")
 
     public CommonResult clear() {
         int count = cartItemService.clear(memberService.getCurrentMember().getId());

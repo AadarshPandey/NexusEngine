@@ -20,13 +20,13 @@ import java.util.List;
 @RestController
 @Tag(name = "UmsMenuController", description = "Ums menu controller APIs")
 @RequestMapping("/menu")
+@lombok.RequiredArgsConstructor
 public class UmsMenuController {
 
-    @Autowired
-    private UmsMenuService menuService;
+    private final UmsMenuService menuService;
 
     @Operation(summary = "Create Operation")
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    @PostMapping("/create")
 
     public CommonResult create(@RequestBody UmsMenu umsMenu) {
         int count = menuService.create(umsMenu);
@@ -38,7 +38,7 @@ public class UmsMenuController {
     }
 
     @Operation(summary = "Update Operation")
-    @RequestMapping(value = "/update/{id}", method = RequestMethod.POST)
+    @PostMapping("/update/{id}")
 
     public CommonResult update(@PathVariable Long id,
                                @RequestBody UmsMenu umsMenu) {
@@ -51,7 +51,7 @@ public class UmsMenuController {
     }
 
     @Operation(summary = "Get item Operation")
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @GetMapping("/{id}")
 
     public CommonResult<UmsMenu> getItem(@PathVariable Long id) {
         UmsMenu umsMenu = menuService.getItem(id);
@@ -59,7 +59,7 @@ public class UmsMenuController {
     }
 
     @Operation(summary = "Delete Operation")
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
+    @PostMapping("/delete/{id}")
 
     public CommonResult delete(@PathVariable Long id) {
         int count = menuService.delete(id);
@@ -71,7 +71,7 @@ public class UmsMenuController {
     }
 
     @Operation(summary = "List Operation")
-    @RequestMapping(value = "/list/{parentId}", method = RequestMethod.GET)
+    @GetMapping("/list/{parentId}")
 
     public CommonResult<CommonPage<UmsMenu>> list(@PathVariable Long parentId,
                                                   @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
@@ -81,7 +81,7 @@ public class UmsMenuController {
     }
 
     @Operation(summary = "Tree list Operation")
-    @RequestMapping(value = "/treeList", method = RequestMethod.GET)
+    @GetMapping("/treeList")
 
     public CommonResult<List<UmsMenuNode>> treeList() {
         List<UmsMenuNode> list = menuService.treeList();
@@ -89,7 +89,7 @@ public class UmsMenuController {
     }
 
     @Operation(summary = "Update hidden Operation")
-    @RequestMapping(value = "/updateHidden/{id}", method = RequestMethod.POST)
+    @PostMapping("/updateHidden/{id}")
 
     public CommonResult updateHidden(@PathVariable Long id, @RequestParam("hidden") Integer hidden) {
         int count = menuService.updateHidden(id, hidden);

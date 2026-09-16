@@ -14,11 +14,10 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@lombok.RequiredArgsConstructor
 public class PmsBrandServiceImpl implements PmsBrandService {
-    @Autowired
-    private PmsBrandRepository brandRepository;
-    @Autowired
-    private PmsProductRepository productRepository;
+    private final PmsBrandRepository brandRepository;
+    private final PmsProductRepository productRepository;
 
     @Override
     public List<PmsBrand> listAllBrand() {

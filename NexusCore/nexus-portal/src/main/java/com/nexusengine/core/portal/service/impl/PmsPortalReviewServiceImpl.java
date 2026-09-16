@@ -20,13 +20,11 @@ import java.io.IOException;
 import java.util.*;
 
 @Service
+@lombok.RequiredArgsConstructor
 public class PmsPortalReviewServiceImpl implements PmsPortalReviewService {
-    @Autowired
-    private PmsReviewRepository reviewRepository;
-    @Autowired
-    private PmsReviewMediaRepository reviewMediaRepository;
-    @Autowired
-    private UmsMemberService memberService;
+    private final PmsReviewRepository reviewRepository;
+    private final PmsReviewMediaRepository reviewMediaRepository;
+    private final UmsMemberService memberService;
 
     @Override
     public CommonPage<PmsReview> list(Long productId, Integer pageNum, Integer pageSize) {

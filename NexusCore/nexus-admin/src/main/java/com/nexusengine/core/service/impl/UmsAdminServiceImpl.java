@@ -42,18 +42,14 @@ import java.util.List;
  * Admin Service Implementation
  */
 @Service
+@lombok.RequiredArgsConstructor
 public class UmsAdminServiceImpl implements UmsAdminService {
     private static final Logger LOGGER = LoggerFactory.getLogger(UmsAdminServiceImpl.class);
-    @Autowired
-    private JwtTokenUtil jwtTokenUtil;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private UmsAdminRepository adminRepository;
-    @Autowired
-    private UmsAdminRoleRelationRepository adminRoleRelationRepository;
-    @Autowired
-    private UmsAdminLoginLogRepository loginLogRepository;
+    private final JwtTokenUtil jwtTokenUtil;
+    private final PasswordEncoder passwordEncoder;
+    private final UmsAdminRepository adminRepository;
+    private final UmsAdminRoleRelationRepository adminRoleRelationRepository;
+    private final UmsAdminLoginLogRepository loginLogRepository;
 
     @Override
     public UmsAdmin getAdminByUsername(String username) {

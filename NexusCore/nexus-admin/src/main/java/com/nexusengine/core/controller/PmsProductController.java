@@ -22,13 +22,13 @@ import java.util.List;
 @RestController
 @Tag(name = "PmsProductController", description = "Pms product controller APIs")
 @RequestMapping("/product")
+@lombok.RequiredArgsConstructor
 public class PmsProductController {
     private static final org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(PmsProductController.class);
-    @Autowired
-    private PmsProductService productService;
+    private final PmsProductService productService;
 
     @Operation(summary = "Create Operation")
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    @PostMapping("/create")
 
     public CommonResult create(@RequestBody PmsProductParam productParam) {
         try {
@@ -48,7 +48,7 @@ public class PmsProductController {
     }
 
     @Operation(summary = "Get update info Operation")
-    @RequestMapping(value = "/updateInfo/{id}", method = RequestMethod.GET)
+    @GetMapping("/updateInfo/{id}")
 
     public CommonResult<PmsProductResult> getUpdateInfo(@PathVariable Long id) {
         PmsProductResult productResult = productService.getUpdateInfo(id);
@@ -56,7 +56,7 @@ public class PmsProductController {
     }
 
     @Operation(summary = "Update Operation")
-    @RequestMapping(value = "/update/{id}", method = RequestMethod.POST)
+    @PostMapping("/update/{id}")
 
     public CommonResult update(@PathVariable Long id, @RequestBody PmsProductParam productParam) {
         int count = productService.update(id, productParam);
@@ -68,7 +68,7 @@ public class PmsProductController {
     }
 
     @Operation(summary = "Get list Operation")
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @GetMapping("/list")
 
     public CommonResult<CommonPage<PmsProduct>> getList(PmsProductQueryParam productQueryParam,
                                                         @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
@@ -78,7 +78,7 @@ public class PmsProductController {
     }
 
     @Operation(summary = "Get list Operation")
-    @RequestMapping(value = "/simpleList", method = RequestMethod.GET)
+    @GetMapping("/simpleList")
 
     public CommonResult<List<PmsProduct>> getList(String keyword) {
         List<PmsProduct> productList = productService.list(keyword);
@@ -86,7 +86,7 @@ public class PmsProductController {
     }
 
     @Operation(summary = "Update verify status Operation")
-    @RequestMapping(value = "/update/verifyStatus", method = RequestMethod.POST)
+    @PostMapping("/update/verifyStatus")
 
     public CommonResult updateVerifyStatus(@RequestParam("ids") List<Long> ids,
                                            @RequestParam("verifyStatus") Integer verifyStatus,
@@ -100,7 +100,7 @@ public class PmsProductController {
     }
 
     @Operation(summary = "Update publish status Operation")
-    @RequestMapping(value = "/update/publishStatus", method = RequestMethod.POST)
+    @PostMapping("/update/publishStatus")
 
     public CommonResult updatePublishStatus(@RequestParam("ids") List<Long> ids,
                                             @RequestParam("publishStatus") Integer publishStatus) {
@@ -113,7 +113,7 @@ public class PmsProductController {
     }
 
     @Operation(summary = "Update recommend status Operation")
-    @RequestMapping(value = "/update/recommendStatus", method = RequestMethod.POST)
+    @PostMapping("/update/recommendStatus")
 
     public CommonResult updateRecommendStatus(@RequestParam("ids") List<Long> ids,
                                               @RequestParam("recommendStatus") Integer recommendStatus) {
@@ -126,7 +126,7 @@ public class PmsProductController {
     }
 
     @Operation(summary = "Update new status Operation")
-    @RequestMapping(value = "/update/newStatus", method = RequestMethod.POST)
+    @PostMapping("/update/newStatus")
 
     public CommonResult updateNewStatus(@RequestParam("ids") List<Long> ids,
                                         @RequestParam("newStatus") Integer newStatus) {
@@ -139,7 +139,7 @@ public class PmsProductController {
     }
 
     @Operation(summary = "Update delete status Operation")
-    @RequestMapping(value = "/update/deleteStatus", method = RequestMethod.POST)
+    @PostMapping("/update/deleteStatus")
 
     public CommonResult updateDeleteStatus(@RequestParam("ids") List<Long> ids,
                                            @RequestParam("deleteStatus") Integer deleteStatus) {

@@ -20,9 +20,9 @@ import java.util.*;
  * Promotion calculation Service implementation
  */
 @Service
+@lombok.RequiredArgsConstructor
 public class OmsPromotionServiceImpl implements OmsPromotionService {
-    @Autowired
-    private PortalProductDao portalProductDao;
+    private final PortalProductDao portalProductDao;
 
     @Override
     public List<CartPromotionItem> calcCartPromotion(List<OmsCartItem> cartItemList) {

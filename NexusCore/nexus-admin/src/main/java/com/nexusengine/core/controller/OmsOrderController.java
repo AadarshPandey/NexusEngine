@@ -20,12 +20,12 @@ import java.util.List;
 @RestController
 @Tag(name = "OmsOrderController", description = "Oms order controller APIs")
 @RequestMapping("/order")
+@lombok.RequiredArgsConstructor
 public class OmsOrderController {
-    @Autowired
-    private OmsOrderService orderService;
+    private final OmsOrderService orderService;
 
     @Operation(summary = "List Operation")
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @GetMapping("/list")
 
     public CommonResult<CommonPage<OmsOrder>> list(OmsOrderQueryParam queryParam,
                                                    @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
@@ -35,7 +35,7 @@ public class OmsOrderController {
     }
 
     @Operation(summary = "Delivery Operation")
-    @RequestMapping(value = "/update/delivery", method = RequestMethod.POST)
+    @PostMapping("/update/delivery")
 
     public CommonResult delivery(@RequestBody List<OmsOrderDeliveryParam> deliveryParamList) {
         int count = orderService.delivery(deliveryParamList);
@@ -46,7 +46,7 @@ public class OmsOrderController {
     }
 
     @Operation(summary = "Close Operation")
-    @RequestMapping(value = "/update/close", method = RequestMethod.POST)
+    @PostMapping("/update/close")
 
     public CommonResult close(@RequestParam("ids") List<Long> ids, @RequestParam String note) {
         int count = orderService.close(ids, note);
@@ -57,7 +57,7 @@ public class OmsOrderController {
     }
 
     @Operation(summary = "Delete Operation")
-    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    @PostMapping("/delete")
 
     public CommonResult delete(@RequestParam("ids") List<Long> ids) {
         int count = orderService.delete(ids);
@@ -68,7 +68,7 @@ public class OmsOrderController {
     }
 
     @Operation(summary = "Detail Operation")
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @GetMapping("/{id}")
 
     public CommonResult<OmsOrderDetail> detail(@PathVariable Long id) {
         OmsOrderDetail orderDetailResult = orderService.detail(id);
@@ -76,7 +76,7 @@ public class OmsOrderController {
     }
 
     @Operation(summary = "Update receiver info Operation")
-    @RequestMapping(value = "/update/receiverInfo", method = RequestMethod.POST)
+    @PostMapping("/update/receiverInfo")
 
     public CommonResult updateReceiverInfo(@RequestBody OmsReceiverInfoParam receiverInfoParam) {
         int count = orderService.updateReceiverInfo(receiverInfoParam);
@@ -87,7 +87,7 @@ public class OmsOrderController {
     }
 
     @Operation(summary = "Update receiver info Operation")
-    @RequestMapping(value = "/update/moneyInfo", method = RequestMethod.POST)
+    @PostMapping("/update/moneyInfo")
 
     public CommonResult updateReceiverInfo(@RequestBody OmsMoneyInfoParam moneyInfoParam) {
         int count = orderService.updateMoneyInfo(moneyInfoParam);
@@ -98,7 +98,7 @@ public class OmsOrderController {
     }
 
     @Operation(summary = "Update note Operation")
-    @RequestMapping(value = "/update/note", method = RequestMethod.POST)
+    @PostMapping("/update/note")
 
     public CommonResult updateNote(@RequestParam("id") Long id,
                                    @RequestParam("note") String note,
@@ -111,7 +111,7 @@ public class OmsOrderController {
     }
 
     @Operation(summary = "Update Order Status Operation")
-    @RequestMapping(value = "/update/status", method = RequestMethod.POST)
+    @PostMapping("/update/status")
 
     public CommonResult updateStatus(@RequestParam("ids") List<Long> ids,
                                      @RequestParam("status") Integer status,

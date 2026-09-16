@@ -2,7 +2,6 @@ package com.nexusengine.core.portal.service;
 
 import com.nexusengine.core.model.UmsMember;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Service interface for managing user members in the portal.
@@ -33,7 +32,6 @@ public interface UmsMemberService {
      * @param email the member's email address
      * @param authCode the verification code sent to the email
      */
-    @Transactional
     void register(String username, String password, String email, String authCode);
 
         /**
@@ -50,7 +48,6 @@ public interface UmsMemberService {
      * @param password the new password
      * @param authCode the verification code sent to the email
      */
-    @Transactional
     void updatePassword(String email, String password, String authCode);
 
         /**

@@ -20,12 +20,12 @@ import java.util.List;
 @RestController
 @Tag(name = "HomeController", description = "Home controller APIs")
 @RequestMapping("/portal/home")
+@lombok.RequiredArgsConstructor
 public class HomeController {
-    @Autowired
-    private HomeService homeService;
+    private final HomeService homeService;
 
     @Operation(summary = "Content Operation")
-    @RequestMapping(value = "/content", method = RequestMethod.GET)
+    @GetMapping("/content")
 
     public CommonResult<HomeContentResult> content() {
         HomeContentResult contentResult = homeService.content();
@@ -33,7 +33,7 @@ public class HomeController {
     }
 
     @Operation(summary = "Recommend product list Operation")
-    @RequestMapping(value = "/recommendProductList", method = RequestMethod.GET)
+    @GetMapping("/recommendProductList")
 
     public CommonResult<List<PmsProduct>> recommendProductList(@RequestParam(value = "pageSize", defaultValue = "4") Integer pageSize,
                                                                @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
@@ -42,7 +42,7 @@ public class HomeController {
     }
 
     @Operation(summary = "Get product cate list Operation")
-    @RequestMapping(value = "/productCateList/{parentId}", method = RequestMethod.GET)
+    @GetMapping("/productCateList/{parentId}")
 
     public CommonResult<List<PmsProductCategory>> getProductCateList(@PathVariable Long parentId) {
         List<PmsProductCategory> productCategoryList = homeService.getProductCateList(parentId);
@@ -51,7 +51,7 @@ public class HomeController {
 
     
     @Operation(summary = "Hot product list Operation")
-    @RequestMapping(value = "/hotProductList", method = RequestMethod.GET)
+    @GetMapping("/hotProductList")
 
     public CommonResult<List<PmsProduct>> hotProductList(@RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
                                                          @RequestParam(value = "pageSize", defaultValue = "6") Integer pageSize) {
@@ -60,7 +60,7 @@ public class HomeController {
     }
 
     @Operation(summary = "New product list Operation")
-    @RequestMapping(value = "/newProductList", method = RequestMethod.GET)
+    @GetMapping("/newProductList")
 
     public CommonResult<List<PmsProduct>> newProductList(@RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
                                                          @RequestParam(value = "pageSize", defaultValue = "6") Integer pageSize) {

@@ -14,13 +14,11 @@ import org.springframework.data.domain.PageRequest;
 import java.util.List;
 
 @Service
+@lombok.RequiredArgsConstructor
 public class SmsCouponServiceImpl implements SmsCouponService {
-    @Autowired
-    private SmsCouponRepository couponRepository;
-    @Autowired
-    private SmsCouponProductRelationRepository productRelationRepository;
-    @Autowired
-    private SmsCouponProductCategoryRelationRepository productCategoryRelationRepository;
+    private final SmsCouponRepository couponRepository;
+    private final SmsCouponProductRelationRepository productRelationRepository;
+    private final SmsCouponProductCategoryRelationRepository productCategoryRelationRepository;
 
     @Override
     public int create(SmsCouponParam couponParam) {

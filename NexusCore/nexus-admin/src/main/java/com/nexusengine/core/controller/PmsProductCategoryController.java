@@ -22,12 +22,12 @@ import java.util.List;
 @RestController
 @Tag(name = "PmsProductCategoryController", description = "Pms product category controller APIs")
 @RequestMapping("/productCategory")
+@lombok.RequiredArgsConstructor
 public class PmsProductCategoryController {
-    @Autowired
-    private PmsProductCategoryService productCategoryService;
+    private final PmsProductCategoryService productCategoryService;
 
     @Operation(summary = "Create Operation")
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    @PostMapping("/create")
 
     public CommonResult create(@Validated @RequestBody PmsProductCategoryParam productCategoryParam) {
         int count = productCategoryService.create(productCategoryParam);
@@ -39,7 +39,7 @@ public class PmsProductCategoryController {
     }
 
     @Operation(summary = "Update Operation")
-    @RequestMapping(value = "/update/{id}", method = RequestMethod.POST)
+    @PostMapping("/update/{id}")
 
     public CommonResult update(@PathVariable Long id,
                          @Validated
@@ -53,7 +53,7 @@ public class PmsProductCategoryController {
     }
 
     @Operation(summary = "Get list Operation")
-    @RequestMapping(value = "/list/{parentId}", method = RequestMethod.GET)
+    @GetMapping("/list/{parentId}")
 
     public CommonResult<CommonPage<PmsProductCategory>> getList(@PathVariable Long parentId,
                                                                 @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
@@ -63,7 +63,7 @@ public class PmsProductCategoryController {
     }
 
     @Operation(summary = "Get item Operation")
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @GetMapping("/{id}")
 
     public CommonResult<PmsProductCategory> getItem(@PathVariable Long id) {
         PmsProductCategory productCategory = productCategoryService.getItem(id);
@@ -71,7 +71,7 @@ public class PmsProductCategoryController {
     }
 
     @Operation(summary = "Delete Operation")
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
+    @PostMapping("/delete/{id}")
 
     public CommonResult delete(@PathVariable Long id) {
         int count = productCategoryService.delete(id);
@@ -83,7 +83,7 @@ public class PmsProductCategoryController {
     }
 
     @Operation(summary = "Update nav status Operation")
-    @RequestMapping(value = "/update/navStatus", method = RequestMethod.POST)
+    @PostMapping("/update/navStatus")
 
     public CommonResult updateNavStatus(@RequestParam("ids") List<Long> ids, @RequestParam("navStatus") Integer navStatus) {
         int count = productCategoryService.updateNavStatus(ids, navStatus);
@@ -95,7 +95,7 @@ public class PmsProductCategoryController {
     }
 
     @Operation(summary = "Update show status Operation")
-    @RequestMapping(value = "/update/showStatus", method = RequestMethod.POST)
+    @PostMapping("/update/showStatus")
 
     public CommonResult updateShowStatus(@RequestParam("ids") List<Long> ids, @RequestParam("showStatus") Integer showStatus) {
         int count = productCategoryService.updateShowStatus(ids, showStatus);
@@ -107,7 +107,7 @@ public class PmsProductCategoryController {
     }
 
     @Operation(summary = "List with children Operation")
-    @RequestMapping(value = "/list/withChildren", method = RequestMethod.GET)
+    @GetMapping("/list/withChildren")
 
     public CommonResult<List<PmsProductCategoryWithChildrenItem>> listWithChildren() {
         List<PmsProductCategoryWithChildrenItem> list = productCategoryService.listWithChildren();

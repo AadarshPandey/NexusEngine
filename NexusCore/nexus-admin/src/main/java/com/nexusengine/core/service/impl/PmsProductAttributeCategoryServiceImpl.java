@@ -11,9 +11,9 @@ import java.util.List;
 import java.util.ArrayList;
 
 @Service
+@lombok.RequiredArgsConstructor
 public class PmsProductAttributeCategoryServiceImpl implements PmsProductAttributeCategoryService {
-    @Autowired
-    private PmsProductAttributeCategoryRepository productAttributeCategoryRepository;
+    private final PmsProductAttributeCategoryRepository productAttributeCategoryRepository;
 
     @Override
     public int create(String name) {

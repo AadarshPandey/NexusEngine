@@ -24,6 +24,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Date;
@@ -34,18 +35,15 @@ import java.security.SecureRandom;
  * Member management Service implementation
  */
 @Service
+@Transactional
+@lombok.RequiredArgsConstructor
 public class UmsMemberServiceImpl implements UmsMemberService {
     private static final Logger LOGGER = LoggerFactory.getLogger(UmsMemberServiceImpl.class);
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private JwtTokenUtil jwtTokenUtil;
-    @Autowired
-    private UmsMemberRepository memberRepository;
-    @Autowired
-    private UmsMemberLevelRepository memberLevelRepository;
-    @Autowired
-    private UmsMemberCacheService memberCacheService;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtTokenUtil jwtTokenUtil;
+    private final UmsMemberRepository memberRepository;
+    private final UmsMemberLevelRepository memberLevelRepository;
+    private final UmsMemberCacheService memberCacheService;
     @Value("${redis.key.authCode}")
     private String REDIS_KEY_PREFIX_AUTH_CODE;
     @Value("${redis.expire.authCode}")
@@ -103,8 +101,7 @@ public class UmsMemberServiceImpl implements UmsMemberService {
         memberRepository.save(umsMember);
     }
 
-    @Autowired
-    private org.springframework.mail.javamail.JavaMailSender mailSender;
+    private final org.springframework.mail.javamail.JavaMailSender mailSender;
     @Value("${spring.mail.username}")
     private String fromEmail;
 

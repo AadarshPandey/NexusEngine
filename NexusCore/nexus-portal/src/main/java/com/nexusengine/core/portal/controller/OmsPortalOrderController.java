@@ -26,14 +26,13 @@ import java.util.Map;
 @Tag(name = "OmsPortalOrderController", description = "Oms portal order controller APIs")
 @RequestMapping("/portal/order")
 @lombok.extern.slf4j.Slf4j
+@lombok.RequiredArgsConstructor
 public class OmsPortalOrderController {
-    @Autowired
-    private OmsPortalOrderService portalOrderService;
-    @Autowired
-    private com.nexusengine.core.portal.service.UmsMemberService memberService;
+    private final OmsPortalOrderService portalOrderService;
+    private final com.nexusengine.core.portal.service.UmsMemberService memberService;
 
     @Operation(summary = "Generate confirm order Operation")
-    @RequestMapping(value = "/generateConfirmOrder", method = RequestMethod.POST)
+    @PostMapping("/generateConfirmOrder")
 
     public CommonResult<ConfirmOrderResult> generateConfirmOrder(@RequestBody List<Long> cartIds) {
         ConfirmOrderResult confirmOrderResult = portalOrderService.generateConfirmOrder(cartIds);
@@ -41,7 +40,7 @@ public class OmsPortalOrderController {
     }
 
     @Operation(summary = "Generate order Operation")
-    @RequestMapping(value = "/generateOrder", method = RequestMethod.POST)
+    @PostMapping("/generateOrder")
 
     public CommonResult generateOrder(@RequestBody OrderParam orderParam) {
         Map<String, Object> result = portalOrderService.generateOrder(orderParam);
@@ -52,7 +51,7 @@ public class OmsPortalOrderController {
     @Operation(summary = "API Operation")
     @Parameter(name = "status", description = "Description",
             in = ParameterIn.QUERY, schema = @Schema(type = "integer",defaultValue = "-1",allowableValues = {"-1","0","1","2","3","4"}))
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @GetMapping("/list")
 
     public CommonResult<CommonPage<OmsOrderDetail>> list(@RequestParam Integer status,
                                                    @RequestParam(required = false, defaultValue = "1") Integer pageNum,
@@ -62,7 +61,7 @@ public class OmsPortalOrderController {
     }
 
     @Operation(summary = "Detail Operation")
-    @RequestMapping(value = "/detail/{orderId}", method = RequestMethod.GET)
+    @GetMapping("/detail/{orderId}")
 
     public CommonResult<OmsOrderDetail> detail(@PathVariable Long orderId) {
         OmsOrderDetail orderDetail = portalOrderService.detail(orderId);
@@ -70,7 +69,7 @@ public class OmsPortalOrderController {
     }
 
     @Operation(summary = "Cancel user order Operation")
-    @RequestMapping(value = "/cancelUserOrder", method = RequestMethod.POST)
+    @PostMapping("/cancelUserOrder")
 
     public CommonResult cancelUserOrder(Long orderId) {
         portalOrderService.cancelOrder(orderId);
@@ -78,7 +77,7 @@ public class OmsPortalOrderController {
     }
 
     @Operation(summary = "Confirm receive order Operation")
-    @RequestMapping(value = "/confirmReceiveOrder", method = RequestMethod.POST)
+    @PostMapping("/confirmReceiveOrder")
 
     public CommonResult confirmReceiveOrder(Long orderId) {
         portalOrderService.confirmReceiveOrder(orderId);
@@ -86,17 +85,16 @@ public class OmsPortalOrderController {
     }
 
     @Operation(summary = "Delete order Operation")
-    @RequestMapping(value = "/deleteOrder", method = RequestMethod.POST)
+    @PostMapping("/deleteOrder")
 
     public CommonResult deleteOrder(Long orderId) {
         portalOrderService.deleteOrder(orderId);
         return CommonResult.success(null);
     }
-    @Autowired
-    private com.nexusengine.core.portal.service.RazorpayPaymentGatewayService razorpayPaymentGatewayService;
+    private final com.nexusengine.core.portal.service.RazorpayPaymentGatewayService razorpayPaymentGatewayService;
 
     @Operation(summary = "Create Razorpay Order")
-    @RequestMapping(value = "/createRazorpayOrder", method = RequestMethod.POST)
+    @PostMapping("/createRazorpayOrder")
 
     public CommonResult<Map<String, String>> createRazorpayOrder(@RequestParam Long orderId) {
         try {
@@ -116,11 +114,10 @@ public class OmsPortalOrderController {
         }
     }
 
-    @Autowired
-    private com.nexusengine.core.repository.OmsOrderRepository omsOrderRepository;
+    private final com.nexusengine.core.repository.OmsOrderRepository omsOrderRepository;
 
     @Operation(summary = "Verify Razorpay Payment")
-    @RequestMapping(value = "/verifyRazorpayPayment", method = RequestMethod.POST)
+    @PostMapping("/verifyRazorpayPayment")
 
     public CommonResult verifyRazorpayPayment(@RequestParam Long orderId, 
                                               @RequestParam String razorpayPaymentId,
@@ -167,7 +164,7 @@ public class OmsPortalOrderController {
     }
 
     @Operation(summary = "Razorpay Webhook Endpoint")
-    @RequestMapping(value = "/webhook", method = RequestMethod.POST)
+    @PostMapping("/webhook")
     public CommonResult handlePaymentWebhook(
             @RequestHeader(value = "X-Razorpay-Signature", required = false) String signature,
             @RequestBody String payload) {

@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.List;
@@ -19,12 +20,12 @@ import java.util.List;
 @RestController
 @Tag(name = "OmsCompanyAddressController", description = "Oms company address controller APIs")
 @RequestMapping("/companyAddress")
+@lombok.RequiredArgsConstructor
 public class OmsCompanyAddressController {
-    @Autowired
-    private OmsCompanyAddressService companyAddressService;
+    private final OmsCompanyAddressService companyAddressService;
 
     @Operation(summary = "List Operation")
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @GetMapping("/list")
 
     public CommonResult<List<OmsCompanyAddress>> list() {
         List<OmsCompanyAddress> companyAddressList = companyAddressService.list();

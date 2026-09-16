@@ -18,12 +18,12 @@ import java.util.List;
 @RestController
 @Tag(name = "UmsResourceCategoryController", description = "Ums resource category controller APIs")
 @RequestMapping("/resourceCategory")
+@lombok.RequiredArgsConstructor
 public class UmsResourceCategoryController {
-    @Autowired
-    private UmsResourceCategoryService resourceCategoryService;
+    private final UmsResourceCategoryService resourceCategoryService;
 
     @Operation(summary = "List all Operation")
-    @RequestMapping(value = "/listAll", method = RequestMethod.GET)
+    @GetMapping("/listAll")
 
     public CommonResult<List<UmsResourceCategory>> listAll() {
         List<UmsResourceCategory> resourceList = resourceCategoryService.listAll();
@@ -31,7 +31,7 @@ public class UmsResourceCategoryController {
     }
 
     @Operation(summary = "Create Operation")
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    @PostMapping("/create")
 
     public CommonResult create(@RequestBody UmsResourceCategory umsResourceCategory) {
         int count = resourceCategoryService.create(umsResourceCategory);
@@ -43,7 +43,7 @@ public class UmsResourceCategoryController {
     }
 
     @Operation(summary = "Update Operation")
-    @RequestMapping(value = "/update/{id}", method = RequestMethod.POST)
+    @PostMapping("/update/{id}")
 
     public CommonResult update(@PathVariable Long id,
                                @RequestBody UmsResourceCategory umsResourceCategory) {
@@ -56,7 +56,7 @@ public class UmsResourceCategoryController {
     }
 
     @Operation(summary = "Delete Operation")
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
+    @PostMapping("/delete/{id}")
 
     public CommonResult delete(@PathVariable Long id) {
         int count = resourceCategoryService.delete(id);

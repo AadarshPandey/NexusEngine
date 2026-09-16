@@ -9,6 +9,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,12 +21,12 @@ import jakarta.servlet.http.HttpServletRequest;
 @RestController
 @Tag(name = "S3Controller", description = "S3 Object Storage Management")
 @RequestMapping("/s3")
+@lombok.RequiredArgsConstructor
 public class S3Controller {
-    @Autowired
-    private S3Service s3Service;
+    private final S3Service s3Service;
 
     @Operation(summary = "Generate S3 presigned upload URL")
-    @RequestMapping(value = "/presign", method = RequestMethod.GET)
+    @GetMapping("/presign")
 
     public CommonResult<S3PolicyResult> presign() {
         S3PolicyResult result = s3Service.presign();
@@ -32,7 +34,7 @@ public class S3Controller {
     }
 
     @Operation(summary = "S3 upload callback")
-    @RequestMapping(value = "callback", method = RequestMethod.POST)
+    @PostMapping("callback")
 
     public CommonResult<S3CallbackResult> callback(HttpServletRequest request) {
         S3CallbackResult result = s3Service.callback(request);

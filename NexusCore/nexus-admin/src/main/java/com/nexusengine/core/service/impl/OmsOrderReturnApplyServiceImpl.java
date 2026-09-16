@@ -14,9 +14,9 @@ import java.util.Date;
 import java.util.List;
 
 @Service
+@lombok.RequiredArgsConstructor
 public class OmsOrderReturnApplyServiceImpl implements OmsOrderReturnApplyService {
-    @Autowired
-    private OmsOrderReturnApplyRepository returnApplyRepository;
+    private final OmsOrderReturnApplyRepository returnApplyRepository;
 
     @Override
     public List<OmsOrderReturnApply> list(OmsReturnApplyQueryParam queryParam, Integer pageSize, Integer pageNum) {

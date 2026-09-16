@@ -11,6 +11,7 @@ import com.nexusengine.core.portal.service.UmsMemberService;
 import com.nexusengine.core.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -23,24 +24,18 @@ import java.util.stream.Collectors;
  * Member coupon management Service implementation
  */
 @Service
+@Transactional
+@lombok.RequiredArgsConstructor
 public class UmsMemberCouponServiceImpl implements UmsMemberCouponService {
-    @Autowired
-    private UmsMemberService memberService;
-    @Autowired
-    private SmsCouponRepository couponRepository;
-    @Autowired
-    private SmsCouponHistoryRepository couponHistoryRepository;
-    @Autowired
-    private SmsCouponProductRelationRepository couponProductRelationRepository;
-    @Autowired
-    private SmsCouponProductCategoryRelationRepository couponProductCategoryRelationRepository;
-    @Autowired
-    private PmsProductRepository productRepository;
-    @Autowired
-    private PortalProductDao portalProductDao;
+    private final UmsMemberService memberService;
+    private final SmsCouponRepository couponRepository;
+    private final SmsCouponHistoryRepository couponHistoryRepository;
+    private final SmsCouponProductRelationRepository couponProductRelationRepository;
+    private final SmsCouponProductCategoryRelationRepository couponProductCategoryRelationRepository;
+    private final PmsProductRepository productRepository;
+    private final PortalProductDao portalProductDao;
 
-    @Autowired
-    private org.redisson.api.RedissonClient redissonClient;
+    private final org.redisson.api.RedissonClient redissonClient;
 
     @Override
     @org.springframework.transaction.annotation.Transactional

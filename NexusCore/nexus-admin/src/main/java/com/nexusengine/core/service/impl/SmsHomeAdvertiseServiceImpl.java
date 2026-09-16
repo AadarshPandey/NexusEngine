@@ -12,9 +12,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@lombok.RequiredArgsConstructor
 public class SmsHomeAdvertiseServiceImpl implements SmsHomeAdvertiseService {
-    @Autowired
-    private SmsHomeAdvertiseRepository advertiseRepository;
+    private final SmsHomeAdvertiseRepository advertiseRepository;
 
     @Override
     public int create(SmsHomeAdvertise advertise) {

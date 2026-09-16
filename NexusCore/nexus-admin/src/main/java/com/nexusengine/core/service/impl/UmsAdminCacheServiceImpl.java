@@ -20,13 +20,11 @@ import java.util.stream.Collectors;
  * Provides core functionality and operations for UmsAdminCacheServiceImpl.
  */
 @Service
+@lombok.RequiredArgsConstructor
 public class UmsAdminCacheServiceImpl implements UmsAdminCacheService {
-    @Autowired
-    private UmsAdminService adminService;
-    @Autowired
-    private RedisService redisService;
-    @Autowired
-    private UmsAdminRoleRelationRepository adminRoleRelationRepository;
+    private final UmsAdminService adminService;
+    private final RedisService redisService;
+    private final UmsAdminRoleRelationRepository adminRoleRelationRepository;
     @Value("${redis.database}")
     private String REDIS_DATABASE;
     @Value("${redis.expire.common}")

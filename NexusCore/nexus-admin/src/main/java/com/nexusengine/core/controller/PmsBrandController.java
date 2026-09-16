@@ -21,19 +21,19 @@ import java.util.List;
 @RestController
 @Tag(name = "PmsBrandController", description = "Pms brand controller APIs")
 @RequestMapping("/brand")
+@lombok.RequiredArgsConstructor
 public class PmsBrandController {
-    @Autowired
-    private PmsBrandService brandService;
+    private final PmsBrandService brandService;
 
     @Operation(summary =  "Get list Operation")
-    @RequestMapping(value = "/listAll", method = RequestMethod.GET)
+    @GetMapping("/listAll")
 
     public CommonResult<List<PmsBrand>> getList() {
         return CommonResult.success(brandService.listAllBrand());
     }
 
     @Operation(summary =  "Create Operation")
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    @PostMapping("/create")
 
     public CommonResult create(@Validated @RequestBody PmsBrandParam pmsBrand) {
         CommonResult commonResult;
@@ -47,7 +47,7 @@ public class PmsBrandController {
     }
 
     @Operation(summary =  "Update Operation")
-    @RequestMapping(value = "/update/{id}", method = RequestMethod.POST)
+    @PostMapping("/update/{id}")
 
     public CommonResult update(@PathVariable("id") Long id,
                                @Validated @RequestBody PmsBrandParam pmsBrandParam) {
@@ -62,7 +62,7 @@ public class PmsBrandController {
     }
 
     @Operation(summary =  "Delete Operation")
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
+    @GetMapping("/delete/{id}")
 
     public CommonResult delete(@PathVariable("id") Long id) {
         int count = brandService.deleteBrand(id);
@@ -74,7 +74,7 @@ public class PmsBrandController {
     }
 
     @Operation(summary =  "Get list Operation")
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @GetMapping("/list")
 
     public CommonResult<CommonPage<PmsBrand>> getList(@RequestParam(value = "keyword", required = false) String keyword,
                                                       @RequestParam(value = "showStatus",required = false) Integer showStatus,
@@ -85,14 +85,14 @@ public class PmsBrandController {
     }
 
     @Operation(summary =  "Get item Operation")
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @GetMapping("/{id}")
 
     public CommonResult<PmsBrand> getItem(@PathVariable("id") Long id) {
         return CommonResult.success(brandService.getBrand(id));
     }
 
     @Operation(summary =  "Delete batch Operation")
-    @RequestMapping(value = "/delete/batch", method = RequestMethod.POST)
+    @PostMapping("/delete/batch")
 
     public CommonResult deleteBatch(@RequestParam("ids") List<Long> ids) {
         int count = brandService.deleteBrand(ids);
@@ -104,7 +104,7 @@ public class PmsBrandController {
     }
 
     @Operation(summary =  "Update show status Operation")
-    @RequestMapping(value = "/update/showStatus", method = RequestMethod.POST)
+    @PostMapping("/update/showStatus")
 
     public CommonResult updateShowStatus(@RequestParam("ids") List<Long> ids,
                                    @RequestParam("showStatus") Integer showStatus) {
@@ -117,7 +117,7 @@ public class PmsBrandController {
     }
 
     @Operation(summary =  "Update factory status Operation")
-    @RequestMapping(value = "/update/factoryStatus", method = RequestMethod.POST)
+    @PostMapping("/update/factoryStatus")
 
     public CommonResult updateFactoryStatus(@RequestParam("ids") List<Long> ids,
                                       @RequestParam("factoryStatus") Integer factoryStatus) {

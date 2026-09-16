@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@lombok.RequiredArgsConstructor
 public class UmsMemberLevelServiceImpl implements UmsMemberLevelService {
-    @Autowired
-    private UmsMemberLevelRepository memberLevelRepository;
+    private final UmsMemberLevelRepository memberLevelRepository;
     
     @Override
     public List<UmsMemberLevel> list(Integer defaultStatus) {

@@ -27,24 +27,18 @@ import java.util.stream.Collectors;
  * Product management Service implementation
  */
 @Service
+@lombok.RequiredArgsConstructor
 public class PmsProductServiceImpl implements PmsProductService {
     private static final Logger LOGGER = LoggerFactory.getLogger(PmsProductServiceImpl.class);
-    @Autowired
-    private PmsProductRepository productRepository;
-    @Autowired
-    private PmsMemberPriceRepository memberPriceRepository;
-    @Autowired
-    private PmsProductLadderRepository productLadderRepository;
-    @Autowired
-    private PmsProductFullReductionRepository productFullReductionRepository;
-    @Autowired
-    private PmsSkuStockRepository skuStockRepository;
-    @Autowired
-    private PmsProductAttributeValueRepository productAttributeValueRepository;
+    private final PmsProductRepository productRepository;
+    private final PmsMemberPriceRepository memberPriceRepository;
+    private final PmsProductLadderRepository productLadderRepository;
+    private final PmsProductFullReductionRepository productFullReductionRepository;
+    private final PmsSkuStockRepository skuStockRepository;
+    private final PmsProductAttributeValueRepository productAttributeValueRepository;
     
     
-    @Autowired
-    private PmsProductVerifyRecordRepository productVerifyRecordRepository;
+    private final PmsProductVerifyRecordRepository productVerifyRecordRepository;
 
     @Override
     @org.springframework.transaction.annotation.Transactional(rollbackFor = Exception.class)
@@ -137,8 +131,7 @@ public class PmsProductServiceImpl implements PmsProductService {
         }
     }
 
-    @Autowired
-    private com.nexusengine.core.service.UmsAdminService adminService;
+    private final com.nexusengine.core.service.UmsAdminService adminService;
 
     @Override
     public List<PmsProduct> list(PmsProductQueryParam productQueryParam, Integer pageSize, Integer pageNum) {

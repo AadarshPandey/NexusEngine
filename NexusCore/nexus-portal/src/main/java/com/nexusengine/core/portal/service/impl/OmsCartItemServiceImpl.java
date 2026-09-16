@@ -12,6 +12,7 @@ import com.nexusengine.core.portal.service.UmsMemberService;
 import com.nexusengine.core.repository.OmsCartItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -23,15 +24,13 @@ import java.util.stream.Collectors;
  * Shopping cart management Service implementation
  */
 @Service
+@Transactional
+@lombok.RequiredArgsConstructor
 public class OmsCartItemServiceImpl implements OmsCartItemService {
-    @Autowired
-    private OmsCartItemRepository cartItemRepository;
-    @Autowired
-    private PortalProductDao portalProductDao;
-    @Autowired
-    private OmsPromotionService promotionService;
-    @Autowired
-    private UmsMemberService memberService;
+    private final OmsCartItemRepository cartItemRepository;
+    private final PortalProductDao portalProductDao;
+    private final OmsPromotionService promotionService;
+    private final UmsMemberService memberService;
 
     @Override
     public int add(OmsCartItem cartItem) {

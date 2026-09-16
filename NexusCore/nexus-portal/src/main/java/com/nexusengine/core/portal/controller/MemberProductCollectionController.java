@@ -18,12 +18,12 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @Tag(name = "MemberCollectionController",description = "Member product collection controller APIs")
 @RequestMapping("/portal/member/productCollection")
+@lombok.RequiredArgsConstructor
 public class MemberProductCollectionController {
-    @Autowired
-    private MemberCollectionService memberCollectionService;
+    private final MemberCollectionService memberCollectionService;
 
     @Operation(summary = "Add Operation")
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    @PostMapping("/add")
 
     public CommonResult add(@RequestBody MemberProductCollection productCollection) {
         int count = memberCollectionService.add(productCollection);
@@ -35,7 +35,7 @@ public class MemberProductCollectionController {
     }
 
     @Operation(summary = "Delete Operation")
-    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    @PostMapping("/delete")
 
     public CommonResult delete(Long productId) {
         int count = memberCollectionService.delete(productId);
@@ -47,7 +47,7 @@ public class MemberProductCollectionController {
     }
 
     @Operation(summary = "List Operation")
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @GetMapping("/list")
 
     public CommonResult<CommonPage<MemberProductCollection>> list(@RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
                                                                   @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize) {
@@ -56,7 +56,7 @@ public class MemberProductCollectionController {
     }
 
     @Operation(summary = "Detail Operation")
-    @RequestMapping(value = "/detail", method = RequestMethod.GET)
+    @GetMapping("/detail")
 
     public CommonResult<MemberProductCollection> detail(@RequestParam Long productId) {
         MemberProductCollection memberProductCollection = memberCollectionService.detail(productId);
@@ -64,7 +64,7 @@ public class MemberProductCollectionController {
     }
 
     @Operation(summary = "Clear Operation")
-    @RequestMapping(value = "/clear", method = RequestMethod.POST)
+    @PostMapping("/clear")
 
     public CommonResult clear() {
         memberCollectionService.clear();

@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @Tag(name = "AdminChatController", description = "AI Admin Assistant")
 @RequestMapping("/chat")
+@lombok.RequiredArgsConstructor
 public class AdminChatController {
 
-    @Autowired
     @org.springframework.beans.factory.annotation.Qualifier("adminChatServiceImpl")
     private NexusChatService chatService;
 

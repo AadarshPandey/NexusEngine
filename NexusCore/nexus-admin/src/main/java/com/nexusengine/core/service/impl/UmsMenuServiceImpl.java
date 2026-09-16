@@ -15,9 +15,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@lombok.RequiredArgsConstructor
 public class UmsMenuServiceImpl implements UmsMenuService {
-    @Autowired
-    private UmsMenuRepository menuRepository;
+    private final UmsMenuRepository menuRepository;
 
     @Override
     public int create(UmsMenu umsMenu) {

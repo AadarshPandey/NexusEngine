@@ -19,15 +19,12 @@ import java.util.List;
  * Role management Service Implementation
  */
 @Service
+@lombok.RequiredArgsConstructor
 public class UmsRoleServiceImpl implements UmsRoleService {
-    @Autowired
-    private UmsRoleRepository roleRepository;
-    @Autowired
-    private UmsRoleMenuRelationRepository roleMenuRelationRepository;
-    @Autowired
-    private UmsRoleResourceRelationRepository roleResourceRelationRepository;
-    @Autowired
-    private UmsAdminCacheService adminCacheService;
+    private final UmsRoleRepository roleRepository;
+    private final UmsRoleMenuRelationRepository roleMenuRelationRepository;
+    private final UmsRoleResourceRelationRepository roleResourceRelationRepository;
+    private final UmsAdminCacheService adminCacheService;
 
     @Override
     public int create(UmsRole role) {

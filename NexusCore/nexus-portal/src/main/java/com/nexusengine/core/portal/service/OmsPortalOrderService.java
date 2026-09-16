@@ -4,7 +4,6 @@ import com.nexusengine.core.common.api.CommonPage;
 import com.nexusengine.core.portal.domain.ConfirmOrderResult;
 import com.nexusengine.core.portal.domain.OmsOrderDetail;
 import com.nexusengine.core.portal.domain.OrderParam;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -28,7 +27,6 @@ public interface OmsPortalOrderService {
      * @param orderParam the order creation parameters
      * @return a map containing order generation results
      */
-    @Transactional
     Map<String, Object> generateOrder(OrderParam orderParam);
 
 /**
@@ -38,7 +36,6 @@ public interface OmsPortalOrderService {
      * @param payType the payment type used
      * @return the status of the operation
      */
-    @Transactional
     Integer paySuccess(Long orderId, Integer payType);
 
 /**
@@ -46,7 +43,6 @@ public interface OmsPortalOrderService {
      *
      * @return the number of canceled orders
      */
-    @Transactional
     Integer cancelTimeOutOrder();
 
 /**
@@ -54,7 +50,6 @@ public interface OmsPortalOrderService {
      *
      * @param orderId the unique identifier of the order to cancel
      */
-    @Transactional
     void cancelOrder(Long orderId);
 
 /**
@@ -102,7 +97,6 @@ public interface OmsPortalOrderService {
      * @param orderSn the unique serial number of the order
      * @param payType the payment type used
      */
-    @Transactional
     void paySuccessByOrderSn(String orderSn, Integer payType);
     void handlePaymentWebhook(String payload, String signature);
 }

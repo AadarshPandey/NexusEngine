@@ -19,13 +19,11 @@ import java.util.Date;
  * Member brand attention/follow Service implementation
  */
 @Service
+@lombok.RequiredArgsConstructor
 public class MemberAttentionServiceImpl implements MemberAttentionService {
-    @Autowired
-    private PmsBrandRepository brandRepository;
-    @Autowired
-    private MemberBrandAttentionRepository memberBrandAttentionRepository;
-    @Autowired
-    private UmsMemberService memberService;
+    private final PmsBrandRepository brandRepository;
+    private final MemberBrandAttentionRepository memberBrandAttentionRepository;
+    private final UmsMemberService memberService;
 
     @Override
     public int add(MemberBrandAttention memberBrandAttention) {

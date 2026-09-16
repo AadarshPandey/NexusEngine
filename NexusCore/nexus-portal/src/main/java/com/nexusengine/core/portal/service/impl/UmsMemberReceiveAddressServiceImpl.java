@@ -7,6 +7,7 @@ import com.nexusengine.core.portal.service.UmsMemberService;
 import com.nexusengine.core.repository.UmsMemberReceiveAddressRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -14,11 +15,11 @@ import java.util.List;
  * Member receive address Service implementation
  */
 @Service
+@Transactional
+@lombok.RequiredArgsConstructor
 public class UmsMemberReceiveAddressServiceImpl implements UmsMemberReceiveAddressService {
-    @Autowired
-    private UmsMemberService memberService;
-    @Autowired
-    private UmsMemberReceiveAddressRepository addressRepository;
+    private final UmsMemberService memberService;
+    private final UmsMemberReceiveAddressRepository addressRepository;
 
     @Override
     public int add(UmsMemberReceiveAddress address) {

@@ -14,11 +14,10 @@ import org.springframework.stereotype.Service;
  * Provides core functionality and operations for UmsMemberCacheServiceImpl.
  */
 @Service
+@lombok.RequiredArgsConstructor
 public class UmsMemberCacheServiceImpl implements UmsMemberCacheService {
-    @Autowired
-    private RedisService redisService;
-    @Autowired
-    private UmsMemberRepository memberRepository;
+    private final RedisService redisService;
+    private final UmsMemberRepository memberRepository;
     @Value("${redis.database}")
     private String REDIS_DATABASE;
     @Value("${redis.expire.common}")

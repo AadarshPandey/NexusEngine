@@ -24,15 +24,15 @@ import java.util.List;
 @RestController
 @Tag(name = "PmsPortalProductController", description = "Pms portal product controller APIs")
 @RequestMapping("/portal/product")
+@lombok.RequiredArgsConstructor
 public class PmsPortalProductController {
 
-    @Autowired
-    private PmsPortalProductService portalProductService;
+    private final PmsPortalProductService portalProductService;
 
     @Operation(summary = "API Operation")
     @Parameter(name = "sort", description = "Description",
             in= ParameterIn.QUERY,schema = @Schema(type = "integer",defaultValue = "0",allowableValues = {"0","1","2","3","4"}))
-    @RequestMapping(value = "/search", method = RequestMethod.GET)
+    @GetMapping("/search")
 
     public CommonResult<CommonPage<PmsProduct>> search(@RequestParam(required = false) String keyword,
                                                        @RequestParam(required = false) Long brandId,
@@ -45,7 +45,7 @@ public class PmsPortalProductController {
     }
 
     @Operation(summary = "Category tree list Operation")
-    @RequestMapping(value = "/categoryTreeList", method = RequestMethod.GET)
+    @GetMapping("/categoryTreeList")
 
     public CommonResult<List<PmsProductCategoryNode>> categoryTreeList() {
         List<PmsProductCategoryNode> list = portalProductService.categoryTreeList();
@@ -53,7 +53,7 @@ public class PmsPortalProductController {
     }
 
     @Operation(summary = "Detail Operation")
-    @RequestMapping(value = "/detail/{id}", method = RequestMethod.GET)
+    @GetMapping("/detail/{id}")
 
     public CommonResult<PmsPortalProductDetail> detail(@PathVariable Long id) {
         PmsPortalProductDetail productDetail = portalProductService.detail(id);

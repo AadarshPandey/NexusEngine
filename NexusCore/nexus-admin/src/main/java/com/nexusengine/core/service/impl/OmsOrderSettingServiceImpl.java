@@ -11,9 +11,9 @@ import org.springframework.stereotype.Service;
  * Provides core functionality and operations for OmsOrderSettingServiceImpl.
  */
 @Service
+@lombok.RequiredArgsConstructor
 public class OmsOrderSettingServiceImpl implements OmsOrderSettingService {
-    @Autowired
-    private OmsOrderSettingRepository orderSettingRepository;
+    private final OmsOrderSettingRepository orderSettingRepository;
 
     @Override
     public OmsOrderSetting getItem(Long id) {

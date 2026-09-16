@@ -14,13 +14,13 @@ import java.util.List;
 @RestController
 @Tag(name = "PmsProductRecommendationController", description = "AI Product Recommendation APIs")
 @RequestMapping("/portal/recommendation")
+@lombok.RequiredArgsConstructor
 public class PmsProductRecommendationController {
 
-    @Autowired
-    private PmsProductSemanticSearchService semanticSearchService;
+    private final PmsProductSemanticSearchService semanticSearchService;
 
     @Operation(summary = "Generate product embeddings (Admin/Cron trigger)")
-    @RequestMapping(value = "/generateEmbeddings", method = RequestMethod.POST)
+    @PostMapping("/generateEmbeddings")
 
     public CommonResult<Integer> generateEmbeddings() {
         int count = semanticSearchService.generateAllProductEmbeddings();
@@ -28,7 +28,7 @@ public class PmsProductRecommendationController {
     }
 
     @Operation(summary = "Get AI recommendations based on context")
-    @RequestMapping(value = "/products", method = RequestMethod.GET)
+    @GetMapping("/products")
 
     public CommonResult<List<PmsProduct>> semanticSearch(
             @RequestParam(required = false) Long memberId,

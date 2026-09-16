@@ -19,12 +19,12 @@ import java.util.List;
 @RestController
 @Tag(name = "SmsHomeAdvertiseController", description = "Sms home advertise controller APIs")
 @RequestMapping("/home/advertise")
+@lombok.RequiredArgsConstructor
 public class SmsHomeAdvertiseController {
-    @Autowired
-    private SmsHomeAdvertiseService advertiseService;
+    private final SmsHomeAdvertiseService advertiseService;
 
     @Operation(summary = "Create Operation")
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    @PostMapping("/create")
 
     public CommonResult create(@RequestBody SmsHomeAdvertise advertise) {
         int count = advertiseService.create(advertise);
@@ -34,7 +34,7 @@ public class SmsHomeAdvertiseController {
     }
 
     @Operation(summary = "Delete Operation")
-    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    @PostMapping("/delete")
 
     public CommonResult delete(@RequestParam("ids") List<Long> ids) {
         int count = advertiseService.delete(ids);
@@ -44,7 +44,7 @@ public class SmsHomeAdvertiseController {
     }
 
     @Operation(summary = "Update status Operation")
-    @RequestMapping(value = "/update/status/{id}", method = RequestMethod.POST)
+    @PostMapping("/update/status/{id}")
 
     public CommonResult updateStatus(@PathVariable Long id, Integer status) {
         int count = advertiseService.updateStatus(id, status);
@@ -54,7 +54,7 @@ public class SmsHomeAdvertiseController {
     }
 
     @Operation(summary = "Get item Operation")
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @GetMapping("/{id}")
 
     public CommonResult<SmsHomeAdvertise> getItem(@PathVariable Long id) {
         SmsHomeAdvertise advertise = advertiseService.getItem(id);
@@ -62,7 +62,7 @@ public class SmsHomeAdvertiseController {
     }
 
     @Operation(summary = "Update Operation")
-    @RequestMapping(value = "/update/{id}", method = RequestMethod.POST)
+    @PostMapping("/update/{id}")
 
     public CommonResult update(@PathVariable Long id, @RequestBody SmsHomeAdvertise advertise) {
         int count = advertiseService.update(id, advertise);
@@ -72,7 +72,7 @@ public class SmsHomeAdvertiseController {
     }
 
     @Operation(summary = "List Operation")
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @GetMapping("/list")
 
     public CommonResult<CommonPage<SmsHomeAdvertise>> list(@RequestParam(value = "name", required = false) String name,
                                                            @RequestParam(value = "type", required = false) Integer type,

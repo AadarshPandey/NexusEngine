@@ -19,12 +19,12 @@ import java.util.List;
 @RestController
 @Tag(name = "OmsOrderReturnReasonController", description = "Oms order return reason controller APIs")
 @RequestMapping("/returnReason")
+@lombok.RequiredArgsConstructor
 public class OmsOrderReturnReasonController {
-    @Autowired
-    private OmsOrderReturnReasonService orderReturnReasonService;
+    private final OmsOrderReturnReasonService orderReturnReasonService;
 
     @Operation(summary = "Create Operation")
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    @PostMapping("/create")
 
     public CommonResult create(@RequestBody OmsOrderReturnReason returnReason) {
         int count = orderReturnReasonService.create(returnReason);
@@ -35,7 +35,7 @@ public class OmsOrderReturnReasonController {
     }
 
     @Operation(summary = "Update Operation")
-    @RequestMapping(value = "/update/{id}", method = RequestMethod.POST)
+    @PostMapping("/update/{id}")
 
     public CommonResult update(@PathVariable Long id, @RequestBody OmsOrderReturnReason returnReason) {
         int count = orderReturnReasonService.update(id, returnReason);
@@ -46,7 +46,7 @@ public class OmsOrderReturnReasonController {
     }
 
     @Operation(summary = "Delete Operation")
-    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    @PostMapping("/delete")
 
     public CommonResult delete(@RequestParam("ids") List<Long> ids) {
         int count = orderReturnReasonService.delete(ids);
@@ -57,7 +57,7 @@ public class OmsOrderReturnReasonController {
     }
 
     @Operation(summary = "List Operation")
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @GetMapping("/list")
 
     public CommonResult<CommonPage<OmsOrderReturnReason>> list(@RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
                                                                @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
@@ -66,7 +66,7 @@ public class OmsOrderReturnReasonController {
     }
 
     @Operation(summary = "Get item Operation")
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @GetMapping("/{id}")
 
     public CommonResult<OmsOrderReturnReason> getItem(@PathVariable Long id) {
         OmsOrderReturnReason reason = orderReturnReasonService.getItem(id);
@@ -74,7 +74,7 @@ public class OmsOrderReturnReasonController {
     }
 
     @Operation(summary = "Update status Operation")
-    @RequestMapping(value = "/update/status", method = RequestMethod.POST)
+    @PostMapping("/update/status")
 
     public CommonResult updateStatus(@RequestParam(value = "status") Integer status,
                                      @RequestParam("ids") List<Long> ids) {

@@ -25,13 +25,13 @@ import java.util.List;
 @RestController
 @Tag(name = "PmsProductAttributeController", description = "Pms product attribute controller APIs")
 @RequestMapping("/productAttribute")
+@lombok.RequiredArgsConstructor
 public class PmsProductAttributeController {
-    @Autowired
-    private PmsProductAttributeService productAttributeService;
+    private final PmsProductAttributeService productAttributeService;
 
     @Operation(summary = "Get list Operation")
     @Parameters({@Parameter(name = "type", description = "0 for attribute, 1 for parameter", required = true,in = ParameterIn.QUERY, schema = @Schema(type = "integer"))})
-    @RequestMapping(value = "/list/{cid}", method = RequestMethod.GET)
+    @GetMapping("/list/{cid}")
 
     public CommonResult<CommonPage<PmsProductAttribute>> getList(@PathVariable Long cid,
                                                                  @RequestParam(value = "type") Integer type,
@@ -42,7 +42,7 @@ public class PmsProductAttributeController {
     }
 
     @Operation(summary = "Create Operation")
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    @PostMapping("/create")
 
     public CommonResult create(@RequestBody PmsProductAttributeParam productAttributeParam) {
         int count = productAttributeService.create(productAttributeParam);
@@ -54,7 +54,7 @@ public class PmsProductAttributeController {
     }
 
     @Operation(summary = "Update Operation")
-    @RequestMapping(value = "/update/{id}", method = RequestMethod.POST)
+    @PostMapping("/update/{id}")
 
     public CommonResult update(@PathVariable Long id, @RequestBody PmsProductAttributeParam productAttributeParam) {
         int count = productAttributeService.update(id, productAttributeParam);
@@ -66,7 +66,7 @@ public class PmsProductAttributeController {
     }
 
     @Operation(summary = "Get item Operation")
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @GetMapping("/{id}")
 
     public CommonResult<PmsProductAttribute> getItem(@PathVariable Long id) {
         PmsProductAttribute productAttribute = productAttributeService.getItem(id);
@@ -74,7 +74,7 @@ public class PmsProductAttributeController {
     }
 
     @Operation(summary = "Delete Operation")
-    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    @PostMapping("/delete")
 
     public CommonResult delete(@RequestParam("ids") List<Long> ids) {
         int count = productAttributeService.delete(ids);
@@ -86,7 +86,7 @@ public class PmsProductAttributeController {
     }
 
     @Operation(summary = "Get attr info Operation")
-    @RequestMapping(value = "/attrInfo/{productCategoryId}", method = RequestMethod.GET)
+    @GetMapping("/attrInfo/{productCategoryId}")
 
     public CommonResult<List<ProductAttrInfo>> getAttrInfo(@PathVariable Long productCategoryId) {
         List<ProductAttrInfo> productAttrInfoList = productAttributeService.getProductAttrInfo(productCategoryId);

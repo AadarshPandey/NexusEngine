@@ -14,9 +14,9 @@ import java.util.stream.Collectors;
  * SKU stock management Service implementation
  */
 @Service
+@lombok.RequiredArgsConstructor
 public class PmsSkuStockServiceImpl implements PmsSkuStockService {
-    @Autowired
-    private PmsSkuStockRepository skuStockRepository;
+    private final PmsSkuStockRepository skuStockRepository;
 
     @Override
     public List<PmsSkuStock> getList(Long pid, String keyword) {

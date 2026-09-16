@@ -28,14 +28,12 @@ import java.util.stream.Collectors;
  * Elasticsearch product search Service implementation
  */
 @Service
+@lombok.RequiredArgsConstructor
 public class EsProductServiceImpl implements EsProductService {
     private static final Logger LOGGER = LoggerFactory.getLogger(EsProductServiceImpl.class);
-    @Autowired
-    private EsProductRepository productRepository;
-    @Autowired
-    private EsProductDao esProductDao;
-    @Autowired
-    private ElasticsearchTemplate elasticsearchTemplate;
+    private final EsProductRepository productRepository;
+    private final EsProductDao esProductDao;
+    private final ElasticsearchTemplate elasticsearchTemplate;
 
     @Override
     public int importAll() {

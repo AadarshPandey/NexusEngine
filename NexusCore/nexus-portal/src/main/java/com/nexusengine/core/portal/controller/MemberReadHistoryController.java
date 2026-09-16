@@ -20,12 +20,12 @@ import java.util.List;
 @RestController
 @Tag(name = "MemberReadHistoryController", description = "Member read history controller APIs")
 @RequestMapping("/portal/member/readHistory")
+@lombok.RequiredArgsConstructor
 public class MemberReadHistoryController {
-    @Autowired
-    private MemberReadHistoryService memberReadHistoryService;
+    private final MemberReadHistoryService memberReadHistoryService;
 
     @Operation(summary = "Create Operation")
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    @PostMapping("/create")
 
     public CommonResult create(@RequestBody MemberReadHistory memberReadHistory) {
         int count = memberReadHistoryService.create(memberReadHistory);
@@ -37,7 +37,7 @@ public class MemberReadHistoryController {
     }
 
     @Operation(summary = "Delete Operation")
-    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    @PostMapping("/delete")
 
     public CommonResult delete(@RequestParam("ids") List<String> ids) {
         int count = memberReadHistoryService.delete(ids);
@@ -49,7 +49,7 @@ public class MemberReadHistoryController {
     }
 
     @Operation(summary = "Clear Operation")
-    @RequestMapping(value = "/clear", method = RequestMethod.POST)
+    @PostMapping("/clear")
 
     public CommonResult clear() {
         memberReadHistoryService.clear();
@@ -57,7 +57,7 @@ public class MemberReadHistoryController {
     }
 
     @Operation(summary = "List Operation")
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @GetMapping("/list")
 
     public CommonResult<CommonPage<MemberReadHistory>> list(@RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
                                                             @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize) {

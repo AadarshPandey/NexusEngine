@@ -11,9 +11,9 @@ import java.util.Date;
 import java.util.List;
 
 @Service
+@lombok.RequiredArgsConstructor
 public class UmsResourceCategoryServiceImpl implements UmsResourceCategoryService {
-    @Autowired
-    private UmsResourceCategoryRepository resourceCategoryRepository;
+    private final UmsResourceCategoryRepository resourceCategoryRepository;
 
     @Override
     public List<UmsResourceCategory> listAll() {

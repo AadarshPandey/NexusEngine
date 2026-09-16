@@ -7,19 +7,20 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Tag(name = "DashboardController", description = "Admin Dashboard Statistics Management")
 @RequestMapping("/dashboard")
+@lombok.RequiredArgsConstructor
 public class DashboardController {
 
-    @Autowired
-    private DashboardService dashboardService;
+    private final DashboardService dashboardService;
 
     @Operation(summary = "Get real-time dashboard statistics from database")
-    @RequestMapping(value = "/info", method = RequestMethod.GET)
+    @GetMapping("/info")
     public CommonResult<DashboardInfo> getDashboardInfo() {
         DashboardInfo info = dashboardService.getDashboardInfo();
         return CommonResult.success(info);

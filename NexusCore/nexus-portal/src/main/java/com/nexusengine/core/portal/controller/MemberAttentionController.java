@@ -18,11 +18,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @Tag(name = "MemberAttentionController",description = "Member attention controller APIs")
 @RequestMapping("/portal/member/attention")
+@lombok.RequiredArgsConstructor
 public class MemberAttentionController {
-    @Autowired
-    private MemberAttentionService memberAttentionService;
+    private final MemberAttentionService memberAttentionService;
     @Operation(summary = "Add Operation")
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    @PostMapping("/add")
 
     public CommonResult add(@RequestBody MemberBrandAttention memberBrandAttention) {
         int count = memberAttentionService.add(memberBrandAttention);
@@ -34,7 +34,7 @@ public class MemberAttentionController {
     }
 
     @Operation(summary = "Delete Operation")
-    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    @PostMapping("/delete")
 
     public CommonResult delete(Long brandId) {
         int count = memberAttentionService.delete(brandId);
@@ -46,7 +46,7 @@ public class MemberAttentionController {
     }
 
     @Operation(summary = "List Operation")
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @GetMapping("/list")
 
     public CommonResult<CommonPage<MemberBrandAttention>> list(@RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
                                                                @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize) {
@@ -55,7 +55,7 @@ public class MemberAttentionController {
     }
 
     @Operation(summary = "Detail Operation")
-    @RequestMapping(value = "/detail", method = RequestMethod.GET)
+    @GetMapping("/detail")
 
     public CommonResult<MemberBrandAttention> detail(@RequestParam Long brandId) {
         MemberBrandAttention memberBrandAttention = memberAttentionService.detail(brandId);
@@ -63,7 +63,7 @@ public class MemberAttentionController {
     }
 
     @Operation(summary = "Clear Operation")
-    @RequestMapping(value = "/clear", method = RequestMethod.POST)
+    @PostMapping("/clear")
 
     public CommonResult clear() {
         memberAttentionService.clear();

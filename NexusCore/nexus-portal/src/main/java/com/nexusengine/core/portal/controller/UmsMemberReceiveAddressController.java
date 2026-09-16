@@ -18,12 +18,12 @@ import java.util.List;
 @RestController
 @Tag(name = "UmsMemberReceiveAddressController", description = "Ums member receive address controller APIs")
 @RequestMapping("/portal/member/address")
+@lombok.RequiredArgsConstructor
 public class UmsMemberReceiveAddressController {
-    @Autowired
-    private UmsMemberReceiveAddressService memberReceiveAddressService;
+    private final UmsMemberReceiveAddressService memberReceiveAddressService;
 
     @Operation(summary = "Add Operation")
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    @PostMapping("/add")
 
     public CommonResult add(@RequestBody UmsMemberReceiveAddress address) {
         int count = memberReceiveAddressService.add(address);
@@ -34,7 +34,7 @@ public class UmsMemberReceiveAddressController {
     }
 
     @Operation(summary = "Delete Operation")
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
+    @PostMapping("/delete/{id}")
 
     public CommonResult delete(@PathVariable Long id) {
         int count = memberReceiveAddressService.delete(id);
@@ -45,7 +45,7 @@ public class UmsMemberReceiveAddressController {
     }
 
     @Operation(summary = "Update Operation")
-    @RequestMapping(value = "/update/{id}", method = RequestMethod.POST)
+    @PostMapping("/update/{id}")
 
     public CommonResult update(@PathVariable Long id, @RequestBody UmsMemberReceiveAddress address) {
         int count = memberReceiveAddressService.update(id, address);
@@ -56,7 +56,7 @@ public class UmsMemberReceiveAddressController {
     }
 
     @Operation(summary = "List Operation")
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @GetMapping("/list")
 
     public CommonResult<List<UmsMemberReceiveAddress>> list() {
         List<UmsMemberReceiveAddress> addressList = memberReceiveAddressService.list();
@@ -64,7 +64,7 @@ public class UmsMemberReceiveAddressController {
     }
 
     @Operation(summary = "Get item Operation")
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @GetMapping("/{id}")
 
     public CommonResult<UmsMemberReceiveAddress> getItem(@PathVariable Long id) {
         UmsMemberReceiveAddress address = memberReceiveAddressService.getItem(id);

@@ -13,11 +13,10 @@ import java.util.Date;
 import java.util.List;
 
 @Service
+@lombok.RequiredArgsConstructor
 public class UmsResourceServiceImpl implements UmsResourceService {
-    @Autowired
-    private UmsResourceRepository resourceRepository;
-    @Autowired
-    private UmsAdminCacheService adminCacheService;
+    private final UmsResourceRepository resourceRepository;
+    private final UmsAdminCacheService adminCacheService;
 
     @Override
     public int create(UmsResource umsResource) {

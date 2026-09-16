@@ -19,16 +19,14 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@lombok.RequiredArgsConstructor
 public class PmsProductSemanticSearchServiceImpl implements PmsProductSemanticSearchService {
 
-    @Autowired
-    private PmsProductRepository productRepository;
+    private final PmsProductRepository productRepository;
 
-    @Autowired
-    private PmsProductEmbeddingRepository productEmbeddingRepository;
+    private final PmsProductEmbeddingRepository productEmbeddingRepository;
 
-    @Autowired(required = false)
-    private EmbeddingModel embeddingModel;
+    private final EmbeddingModel embeddingModel;
 
     @Override
     public int generateAllProductEmbeddings() {

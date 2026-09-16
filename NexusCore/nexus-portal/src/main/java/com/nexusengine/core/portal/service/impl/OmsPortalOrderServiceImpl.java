@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
@@ -30,47 +31,32 @@ import java.util.stream.Collectors;
  * Portal order management Service implementation
  */
 @Service
+@Transactional
 @lombok.extern.slf4j.Slf4j
+@lombok.RequiredArgsConstructor
 public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
-    @Autowired
-    private OmsPaymentTransactionRepository paymentTransactionRepository;
-    @Autowired
-    private ObjectMapper objectMapper;
+    private final OmsPaymentTransactionRepository paymentTransactionRepository;
+    private final ObjectMapper objectMapper;
 
-    @Autowired
-    private UmsMemberService memberService;
-    @Autowired
-    private OmsCartItemService cartItemService;
-    @Autowired
-    private UmsMemberReceiveAddressService memberReceiveAddressService;
-    @Autowired
-    private UmsMemberCouponService memberCouponService;
-    @Autowired
-    private PmsSkuStockRepository skuStockRepository;
-    @Autowired
-    private SmsCouponHistoryRepository couponHistoryRepository;
-    @Autowired
-    private OmsOrderRepository orderRepository;
-    @Autowired
-    private OmsOrderItemRepository orderItemRepository;
-    @Autowired
-    private RedisService redisService;
+    private final UmsMemberService memberService;
+    private final OmsCartItemService cartItemService;
+    private final UmsMemberReceiveAddressService memberReceiveAddressService;
+    private final UmsMemberCouponService memberCouponService;
+    private final PmsSkuStockRepository skuStockRepository;
+    private final SmsCouponHistoryRepository couponHistoryRepository;
+    private final OmsOrderRepository orderRepository;
+    private final OmsOrderItemRepository orderItemRepository;
+    private final RedisService redisService;
     @Value("${redis.key.orderId}")
     private String REDIS_KEY_ORDER_ID;
     @Value("${redis.database}")
     private String REDIS_DATABASE;
-    @Autowired
-    private PortalOrderDao portalOrderDao;
-    @Autowired
-    private OmsOrderSettingRepository orderSettingRepository;
-    @Autowired
-    private PmsProductRepository productRepository;
-    @Autowired
-    private org.redisson.api.RedissonClient redissonClient;
-    @Autowired
-    private com.nexusengine.core.repository.OutboxEventRepository outboxEventRepository;
-    @Autowired
-    private com.nexusengine.core.repository.OmsOrderReturnApplyRepository returnApplyRepository;
+    private final PortalOrderDao portalOrderDao;
+    private final OmsOrderSettingRepository orderSettingRepository;
+    private final PmsProductRepository productRepository;
+    private final org.redisson.api.RedissonClient redissonClient;
+    private final com.nexusengine.core.repository.OutboxEventRepository outboxEventRepository;
+    private final com.nexusengine.core.repository.OmsOrderReturnApplyRepository returnApplyRepository;
 
     @Override
     public ConfirmOrderResult generateConfirmOrder(List<Long> cartIds) {
@@ -88,8 +74,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
         return result;
     }
 
-    @Autowired
-    private org.springframework.transaction.PlatformTransactionManager transactionManager;
+    private final org.springframework.transaction.PlatformTransactionManager transactionManager;
 
     @Override
     public Map<String, Object> generateOrder(OrderParam orderParam) {

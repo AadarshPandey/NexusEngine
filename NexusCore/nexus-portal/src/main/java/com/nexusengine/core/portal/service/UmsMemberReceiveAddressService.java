@@ -1,7 +1,6 @@
 package com.nexusengine.core.portal.service;
 
 import com.nexusengine.core.model.UmsMemberReceiveAddress;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -30,7 +29,6 @@ public interface UmsMemberReceiveAddressService {
      * @param address the address
      * @return the result of the operation
      */
-    @Transactional
     int update(Long id, UmsMemberReceiveAddress address);
 
         /**

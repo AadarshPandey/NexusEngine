@@ -11,9 +11,9 @@ import java.util.Date;
 import java.util.List;
 
 @Service
+@lombok.RequiredArgsConstructor
 public class OmsOrderReturnReasonServiceImpl implements OmsOrderReturnReasonService {
-    @Autowired
-    private OmsOrderReturnReasonRepository returnReasonRepository;
+    private final OmsOrderReturnReasonRepository returnReasonRepository;
 
     @Override
     public int create(OmsOrderReturnReason returnReason) {

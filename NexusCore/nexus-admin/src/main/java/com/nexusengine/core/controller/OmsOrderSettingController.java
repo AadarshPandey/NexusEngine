@@ -16,12 +16,12 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @Tag(name = "OmsOrderSettingController", description = "Oms order setting controller APIs")
 @RequestMapping("/orderSetting")
+@lombok.RequiredArgsConstructor
 public class OmsOrderSettingController {
-    @Autowired
-    private OmsOrderSettingService orderSettingService;
+    private final OmsOrderSettingService orderSettingService;
 
     @Operation(summary = "Get item Operation")
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @GetMapping("/{id}")
 
     public CommonResult<OmsOrderSetting> getItem(@PathVariable Long id) {
         OmsOrderSetting orderSetting = orderSettingService.getItem(id);
@@ -29,7 +29,7 @@ public class OmsOrderSettingController {
     }
 
     @Operation(summary = "Update Operation")
-    @RequestMapping(value = "/update/{id}", method = RequestMethod.POST)
+    @PostMapping("/update/{id}")
 
     public CommonResult update(@PathVariable Long id, @RequestBody OmsOrderSetting orderSetting) {
         int count = orderSettingService.update(id,orderSetting);

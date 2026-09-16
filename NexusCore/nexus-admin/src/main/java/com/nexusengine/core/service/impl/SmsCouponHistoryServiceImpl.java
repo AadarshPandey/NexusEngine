@@ -9,9 +9,9 @@ import org.springframework.data.domain.PageRequest;
 import java.util.List;
 
 @Service
+@lombok.RequiredArgsConstructor
 public class SmsCouponHistoryServiceImpl implements SmsCouponHistoryService {
-    @Autowired
-    private SmsCouponHistoryRepository historyRepository;
+    private final SmsCouponHistoryRepository historyRepository;
 
     @Override
     public List<SmsCouponHistory> list(Long couponId, Integer useStatus, String orderSn, Integer pageSize, Integer pageNum) {

@@ -4,7 +4,6 @@ import com.nexusengine.core.model.SmsCoupon;
 import com.nexusengine.core.model.SmsCouponHistory;
 import com.nexusengine.core.portal.domain.CartPromotionItem;
 import com.nexusengine.core.portal.domain.SmsCouponHistoryDetail;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -17,7 +16,6 @@ public interface UmsMemberCouponService {
      * Executes the operation.
      * @param couponId the couponId
      */
-    @Transactional
     void add(Long couponId);
 
         /**

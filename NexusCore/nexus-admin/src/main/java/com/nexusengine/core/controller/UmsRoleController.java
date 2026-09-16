@@ -19,12 +19,12 @@ import java.util.List;
 @RestController
 @Tag(name = "UmsRoleController", description = "Ums role controller APIs")
 @RequestMapping("/role")
+@lombok.RequiredArgsConstructor
 public class UmsRoleController {
-    @Autowired
-    private UmsRoleService roleService;
+    private final UmsRoleService roleService;
 
     @Operation(summary = "Create Operation")
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    @PostMapping("/create")
 
     public CommonResult create(@RequestBody UmsRole role) {
         int count = roleService.create(role);
@@ -35,7 +35,7 @@ public class UmsRoleController {
     }
 
     @Operation(summary = "Update Operation")
-    @RequestMapping(value = "/update/{id}", method = RequestMethod.POST)
+    @PostMapping("/update/{id}")
 
     public CommonResult update(@PathVariable Long id, @RequestBody UmsRole role) {
         int count = roleService.update(id, role);
@@ -46,7 +46,7 @@ public class UmsRoleController {
     }
 
     @Operation(summary = "Delete Operation")
-    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    @PostMapping("/delete")
 
     public CommonResult delete(@RequestParam("ids") List<Long> ids) {
         int count = roleService.delete(ids);
@@ -57,7 +57,7 @@ public class UmsRoleController {
     }
 
     @Operation(summary = "List all Operation")
-    @RequestMapping(value = "/listAll", method = RequestMethod.GET)
+    @GetMapping("/listAll")
 
     public CommonResult<List<UmsRole>> listAll() {
         List<UmsRole> roleList = roleService.list();
@@ -65,7 +65,7 @@ public class UmsRoleController {
     }
 
     @Operation(summary = "List Operation")
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @GetMapping("/list")
 
     public CommonResult<CommonPage<UmsRole>> list(@RequestParam(value = "keyword", required = false) String keyword,
                                                   @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
@@ -75,7 +75,7 @@ public class UmsRoleController {
     }
 
     @Operation(summary = "Update status Operation")
-    @RequestMapping(value = "/updateStatus/{id}", method = RequestMethod.POST)
+    @PostMapping("/updateStatus/{id}")
 
     public CommonResult updateStatus(@PathVariable Long id, @RequestParam(value = "status") Integer status) {
         UmsRole umsRole = new UmsRole();
@@ -88,7 +88,7 @@ public class UmsRoleController {
     }
 
     @Operation(summary = "List menu Operation")
-    @RequestMapping(value = "/listMenu/{roleId}", method = RequestMethod.GET)
+    @GetMapping("/listMenu/{roleId}")
 
     public CommonResult<List<UmsMenu>> listMenu(@PathVariable Long roleId) {
         List<UmsMenu> roleList = roleService.listMenu(roleId);
@@ -96,7 +96,7 @@ public class UmsRoleController {
     }
 
     @Operation(summary = "List resource Operation")
-    @RequestMapping(value = "/listResource/{roleId}", method = RequestMethod.GET)
+    @GetMapping("/listResource/{roleId}")
 
     public CommonResult<List<UmsResource>> listResource(@PathVariable Long roleId) {
         List<UmsResource> roleList = roleService.listResource(roleId);
@@ -104,7 +104,7 @@ public class UmsRoleController {
     }
 
     @Operation(summary = "Alloc menu Operation")
-    @RequestMapping(value = "/allocMenu", method = RequestMethod.POST)
+    @PostMapping("/allocMenu")
 
     public CommonResult allocMenu(@RequestParam Long roleId, @RequestParam List<Long> menuIds) {
         int count = roleService.allocMenu(roleId, menuIds);
@@ -112,7 +112,7 @@ public class UmsRoleController {
     }
 
     @Operation(summary = "Alloc resource Operation")
-    @RequestMapping(value = "/allocResource", method = RequestMethod.POST)
+    @PostMapping("/allocResource")
 
     public CommonResult allocResource(@RequestParam Long roleId, @RequestParam List<Long> resourceIds) {
         int count = roleService.allocResource(roleId, resourceIds);

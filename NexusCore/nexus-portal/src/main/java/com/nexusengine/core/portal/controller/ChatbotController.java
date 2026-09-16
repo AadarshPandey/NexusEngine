@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @Tag(name = "ChatbotController", description = "AI Customer Support Chatbot")
 @RequestMapping("/portal/chat")
+@lombok.RequiredArgsConstructor
 public class ChatbotController {
 
-    @Autowired
     @org.springframework.beans.factory.annotation.Qualifier("portalChatServiceImpl")
     private NexusChatService chatService;
 
