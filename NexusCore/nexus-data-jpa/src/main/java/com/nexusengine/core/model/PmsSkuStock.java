@@ -51,5 +51,6 @@ public class PmsSkuStock implements Serializable {
 
     @Schema(title = "Sp data")
     @Column(name = "sku_attributes", columnDefinition = "jsonb")
+    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.JSON)
     private String spData;
 }

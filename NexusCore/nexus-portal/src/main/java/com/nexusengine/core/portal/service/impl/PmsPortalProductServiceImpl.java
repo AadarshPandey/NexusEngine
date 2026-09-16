@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @lombok.RequiredArgsConstructor
+@org.springframework.transaction.annotation.Transactional(readOnly = true)
 public class PmsPortalProductServiceImpl implements PmsPortalProductService {
     private final PmsProductRepository productRepository;
     private final PmsProductCategoryRepository productCategoryRepository;

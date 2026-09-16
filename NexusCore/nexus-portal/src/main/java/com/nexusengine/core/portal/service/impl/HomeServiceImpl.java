@@ -16,6 +16,7 @@ import java.util.List;
  */
 @Service
 @lombok.RequiredArgsConstructor
+@org.springframework.transaction.annotation.Transactional(readOnly = true)
 public class HomeServiceImpl implements HomeService {
     private final SmsHomeAdvertiseRepository advertiseRepository;
     private final HomeDao homeDao;
@@ -23,6 +24,7 @@ public class HomeServiceImpl implements HomeService {
     private final PmsProductCategoryRepository productCategoryRepository;
     private final com.nexusengine.core.portal.service.PmsProductSemanticSearchService semanticSearchService;
 
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
     @Override
     public HomeContentResult content() {
         HomeContentResult result = new HomeContentResult();
