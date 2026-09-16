@@ -50,6 +50,6 @@ public class PmsSkuStock implements Serializable {
     private Integer lockStock;
 
     @Schema(title = "Sp data")
-    @Column(name = "sku_attributes")
+    @Column(name = "sku_attributes", columnDefinition = "jsonb")
     private String spData;
 }

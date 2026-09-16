@@ -26,7 +26,6 @@ public class HomeContentResult {
     private List<PmsProduct> newProductList;
     @Schema(title = "Hot product list")
     private List<PmsProduct> hotProductList;
-    @Schema(title = "Subject list")
     @Schema(title = "AI Recommended product list")
     private List<PmsProduct> aiRecommendProductList;
 }

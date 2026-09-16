@@ -1,18 +1,17 @@
 package com.nexusengine.core.portal.dao;
 
-import com.nexusengine.core.model.*;
+import com.nexusengine.core.model.PmsBrand;
+import com.nexusengine.core.model.PmsProduct;
 import com.nexusengine.core.portal.domain.FlashPromotionProduct;
-import com.nexusengine.core.repository.*;
-import org.springframework.beans.BeanUtils;
+import com.nexusengine.core.repository.PmsBrandRepository;
+import com.nexusengine.core.repository.PmsProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Home page data access - replaces legacy MyBatis HomeDao
@@ -23,7 +22,6 @@ public class HomeDao {
     private PmsProductRepository productRepository;
     @Autowired
     private PmsBrandRepository brandRepository;
-    @Autowired
 
     public List<PmsBrand> getRecommendBrandList(int offset, int limit) {
         // Return first N brands sorted by sort order
@@ -36,9 +34,6 @@ public class HomeDao {
 
     public List<PmsProduct> getHotProductList(int offset, int limit) {
         return productRepository.findAll(PageRequest.of(offset / Math.max(limit, 1), limit, Sort.by(Sort.Direction.DESC, "sale"))).getContent();
-    }
-
-        return subjectRepository.findAll(PageRequest.of(offset / Math.max(limit, 1), limit, Sort.by(Sort.Direction.DESC, "id"))).getContent();
     }
 
     public List<FlashPromotionProduct> getFlashProductList(Long flashPromotionId, Long sessionId) {

@@ -49,14 +49,7 @@ public class HomeController {
         return CommonResult.success(productCategoryList);
     }
 
-    @Operation(summary = "Get subject list Operation")
-    @RequestMapping(value = "/subjectList", method = RequestMethod.GET)
-
-                                                         @RequestParam(value = "pageSize", defaultValue = "4") Integer pageSize,
-                                                         @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
-        return CommonResult.success(subjectList);
-    }
-
+    
     @Operation(summary = "Hot product list Operation")
     @RequestMapping(value = "/hotProductList", method = RequestMethod.GET)
 
