@@ -519,7 +519,17 @@ const Profile: React.FC = () => {
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
             <TextField label="Nickname" fullWidth value={editProfileData.nickname} onChange={e => setEditProfileData({...editProfileData, nickname: e.target.value})} />
             <TextField label="Phone Number" fullWidth value={editProfileData.phone} onChange={e => setEditProfileData({...editProfileData, phone: e.target.value})} />
-            <TextField label="Avatar URL" fullWidth value={editProfileData.icon} onChange={e => setEditProfileData({...editProfileData, icon: e.target.value})} />
+            
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <Avatar src={editProfileData.icon} sx={{ width: 64, height: 64 }} />
+              <Button 
+                variant="outlined" 
+                onClick={() => setEditProfileData({...editProfileData, icon: `https://api.dicebear.com/7.x/avataaars/svg?seed=${Math.random().toString(36).substring(7)}`})}
+              >
+                Change Image
+              </Button>
+            </Box>
+
           </Box>
         </DialogContent>
         <DialogActions>

@@ -58,10 +58,6 @@ public class UmsMemberController {
         return CommonResult.success(tokenMap);
     }
 
-    @Operation(summary = "Info Operation")
-    @RequestMapping(value = "/info", method = RequestMethod.GET)
-
-    
     @Operation(summary = "Update Profile Operation")
     @RequestMapping(value = "/updateProfile", method = RequestMethod.POST)
     public CommonResult updateProfile(@org.springframework.web.bind.annotation.RequestBody UmsMember member) {
@@ -73,6 +69,8 @@ public class UmsMemberController {
         return CommonResult.success(current);
     }
 
+    @Operation(summary = "Info Operation")
+    @RequestMapping(value = "/info", method = RequestMethod.GET)
     public CommonResult info(Principal principal) {
         if(principal==null){
             return CommonResult.unauthorized(null);

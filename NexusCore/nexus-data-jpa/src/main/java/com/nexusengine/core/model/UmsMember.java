@@ -54,9 +54,7 @@ public class UmsMember implements Serializable {
     @Schema(title = "Birthday")
     private Date birthday;
 
-    @Schema(title = "City")
 
-    @Schema(title = "Job")
 
     @Column(name = "personalized_signature")
     @Schema(title = "Personalized signature")

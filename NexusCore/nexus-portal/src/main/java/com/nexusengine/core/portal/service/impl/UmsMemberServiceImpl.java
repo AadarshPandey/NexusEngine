@@ -155,8 +155,6 @@ public class UmsMemberServiceImpl implements UmsMemberService {
     }
 
     @Override
-    
-    @Override
     public void updateMember(UmsMember member) {
         memberRepository.save(member);
         memberCacheService.setMember(member);
