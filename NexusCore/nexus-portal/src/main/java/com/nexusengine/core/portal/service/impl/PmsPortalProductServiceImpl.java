@@ -34,6 +34,16 @@ public class PmsPortalProductServiceImpl implements PmsPortalProductService {
     private final PmsProductFullReductionRepository productFullReductionRepository;
     private final PortalProductDao portalProductDao;
 
+    private void initializeMediaList(List<PmsProduct> products) {
+        if (products != null) {
+            products.forEach(p -> {
+                if (p.getMediaList() != null) {
+                    p.getMediaList().size();
+                }
+            });
+        }
+    }
+
     @Override
     public List<PmsProduct> search(String keyword, Long brandId, Long productCategoryId, Integer pageNum, Integer pageSize, Integer sort) {
         Sort sortOrder;
@@ -45,7 +55,7 @@ public class PmsPortalProductServiceImpl implements PmsPortalProductService {
             default: sortOrder = Sort.by(Sort.Direction.DESC, "id"); break;
         }
         // Use Specification for dynamic queries
-        return productRepository.findAll((root, query, cb) -> {
+        List<PmsProduct> list = productRepository.findAll((root, query, cb) -> {
             var predicates = new java.util.ArrayList<jakarta.persistence.criteria.Predicate>();
             predicates.add(cb.equal(root.get("deleteStatus"), 0));
             predicates.add(cb.equal(root.get("publishStatus"), 1));
@@ -65,6 +75,8 @@ public class PmsPortalProductServiceImpl implements PmsPortalProductService {
             }
             return cb.and(predicates.toArray(new jakarta.persistence.criteria.Predicate[0]));
         }, PageRequest.of(pageNum - 1, pageSize, sortOrder)).getContent();
+        initializeMediaList(list);
+        return list;
     }
 
     @Override
@@ -80,6 +92,9 @@ public class PmsPortalProductServiceImpl implements PmsPortalProductService {
     public PmsPortalProductDetail detail(Long id) {
         PmsPortalProductDetail result = new PmsPortalProductDetail();
         PmsProduct product = productRepository.findById(id).orElse(null);
+        if (product != null && product.getMediaList() != null) {
+            product.getMediaList().size();
+        }
         result.setProduct(product);
         if (product == null) return result;
         // Brand info

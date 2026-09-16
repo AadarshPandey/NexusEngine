@@ -7,7 +7,7 @@ spring:
     baseline-on-migrate: true
     baseline-version: 1
   datasource:
-    url: jdbc:postgresql://localhost:5433/nexuscore
+    url: jdbc:postgresql://localhost:5433/nexuscore?stringtype=unspecified
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
@@ -21,7 +21,6 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
-        enable_lazy_load_no_trans: true
   data:
     mongodb:
       uri: mongodb://localhost:27017/nexuscore

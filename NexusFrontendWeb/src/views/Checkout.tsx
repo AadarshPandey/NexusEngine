@@ -96,6 +96,7 @@ const Checkout: React.FC = () => {
         currency: 'INR',
         name: 'Nexus Engine',
         description: `Payment for Order #${order.orderSn}`,
+        image: 'https://cdn.razorpay.com/logos/FF7H1D9qU0R55R_medium.png',
         order_id: razorpayOrderId,
         handler: async function (response: any) {
           try {

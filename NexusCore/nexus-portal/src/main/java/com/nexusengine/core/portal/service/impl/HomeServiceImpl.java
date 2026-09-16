@@ -24,6 +24,16 @@ public class HomeServiceImpl implements HomeService {
     private final PmsProductCategoryRepository productCategoryRepository;
     private final com.nexusengine.core.portal.service.PmsProductSemanticSearchService semanticSearchService;
 
+    private void initializeMediaList(List<PmsProduct> products) {
+        if (products != null) {
+            products.forEach(p -> {
+                if (p.getMediaList() != null) {
+                    p.getMediaList().size();
+                }
+            });
+        }
+    }
+
     @org.springframework.transaction.annotation.Transactional(readOnly = true)
     @Override
     public HomeContentResult content() {
@@ -33,11 +43,15 @@ public class HomeServiceImpl implements HomeService {
         result.setNewProductList(homeDao.getNewProductList(0, 4));
         result.setHotProductList(homeDao.getHotProductList(0, 4));
         
+        initializeMediaList(result.getNewProductList());
+        initializeMediaList(result.getHotProductList());
+        
         // Return an empty FlashPromotion object to prevent frontend crashes
         result.setHomeFlashPromotion(new HomeFlashPromotion());
         
         try {
             result.setAiRecommendProductList(semanticSearchService.semanticSearch(null, "latest trending electronics smartphones laptops"));
+            initializeMediaList(result.getAiRecommendProductList());
         } catch (Exception e) {
             result.setAiRecommendProductList(new java.util.ArrayList<>());
         }
@@ -46,7 +60,9 @@ public class HomeServiceImpl implements HomeService {
 
     @Override
     public List<PmsProduct> recommendProductList(Integer pageSize, Integer pageNum) {
-        return productRepository.findAll(PageRequest.of(pageNum, pageSize)).getContent();
+        List<PmsProduct> list = productRepository.findAll(PageRequest.of(pageNum, pageSize)).getContent();
+        initializeMediaList(list);
+        return list;
     }
 
     @Override
@@ -57,13 +73,17 @@ public class HomeServiceImpl implements HomeService {
     @Override
     public List<PmsProduct> hotProductList(Integer pageNum, Integer pageSize) {
         int offset = pageSize * (pageNum - 1);
-        return homeDao.getHotProductList(offset, pageSize);
+        List<PmsProduct> list = homeDao.getHotProductList(offset, pageSize);
+        initializeMediaList(list);
+        return list;
     }
 
     @Override
     public List<PmsProduct> newProductList(Integer pageNum, Integer pageSize) {
         int offset = pageSize * (pageNum - 1);
-        return homeDao.getNewProductList(offset, pageSize);
+        List<PmsProduct> list = homeDao.getNewProductList(offset, pageSize);
+        initializeMediaList(list);
+        return list;
     }
 
     private List<SmsHomeAdvertise> getHomeAdvertiseList() {
