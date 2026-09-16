@@ -49,7 +49,7 @@ public class PmsSkuStock implements Serializable {
     @Schema(title = "Lock stock")
     private Integer lockStock;
 
-    @Column(name = "sp_data")
     @Schema(title = "Sp data")
+    @Column(name = "sku_attributes")
     private String spData;
 }

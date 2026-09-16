@@ -46,7 +46,7 @@ public class MemberCollectionServiceImpl implements MemberCollectionService {
             if (product != null && product.getDeleteStatus() != 1) {
                 productCollection.setProductName(product.getName());
                 productCollection.setProductSubTitle(product.getSubTitle());
-                productCollection.setProductPrice(product.getPrice() != null ? product.getPrice().toString() : "0");
+                productCollection.setProductPrice("0"); // FAANG: Price moved strictly to SKU layer
                 productCollection.setProductPic(product.getPic());
             } else {
                 return 0;

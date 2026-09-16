@@ -45,7 +45,7 @@ public class MemberReadHistoryServiceImpl implements MemberReadHistoryService {
         if (product != null && product.getDeleteStatus() != 1) {
             memberReadHistory.setProductName(product.getName());
             memberReadHistory.setProductSubTitle(product.getSubTitle());
-            memberReadHistory.setProductPrice(product.getPrice() != null ? product.getPrice().toString() : "0");
+            memberReadHistory.setProductPrice("0"); // FAANG: Price moved strictly to SKU layer
             memberReadHistory.setProductPic(product.getPic());
         }
         memberReadHistoryRepository.save(memberReadHistory);

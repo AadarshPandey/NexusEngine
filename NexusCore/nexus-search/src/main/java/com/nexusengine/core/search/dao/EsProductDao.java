@@ -49,11 +49,11 @@ public class EsProductDao {
             esProduct.setName(product.getName());
             esProduct.setSubTitle(product.getSubTitle());
             esProduct.setKeywords(product.getKeywords());
-            esProduct.setPrice(product.getPrice());
+            esProduct.setPrice(new java.math.BigDecimal(0)); // FAANG Refactor: Delegated to SKU
             esProduct.setSale(product.getSale());
             esProduct.setNewStatus(product.getNewStatus());
             esProduct.setRecommandStatus(product.getRecommandStatus());
-            esProduct.setStock(product.getStock());
+            esProduct.setStock(0); // FAANG Refactor: Delegated to SKU
             esProduct.setPromotionType(product.getPromotionType());
             esProduct.setSort(product.getSort());
             // Load attribute values

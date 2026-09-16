@@ -19,6 +19,7 @@ export interface PmsProduct {
   subTitle: string;
   description: string;
   stock: number;
+  mediaList?: { mediaUrl: string; sortOrder: number }[];
 }
 
 export interface CmsSubject {

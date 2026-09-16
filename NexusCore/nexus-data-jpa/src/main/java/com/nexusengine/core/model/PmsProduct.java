@@ -3,6 +3,9 @@ package com.nexusengine.core.model;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import java.io.Serializable;
+import java.util.List;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.JoinColumn;
 import java.math.BigDecimal;
 import java.util.Date;
 import lombok.Getter;
@@ -19,6 +22,10 @@ public class PmsProduct implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Transient
+    private BigDecimal price;
+    @Transient
+    private Integer stock;
 
     @Column(name = "brand_id")
     private Long brandId;
@@ -66,7 +73,6 @@ public class PmsProduct implements Serializable {
     @Schema(title = "Sale")
     private Integer sale;
 
-    private BigDecimal price;
 
     @Column(name = "promotion_price")
     @Schema(title = "Promotion price")
@@ -92,8 +98,6 @@ public class PmsProduct implements Serializable {
     @Schema(title = "Original price")
     private BigDecimal originalPrice;
 
-    @Schema(title = "Stock")
-    private Integer stock;
 
     @Column(name = "low_stock")
     @Schema(title = "Low stock")
@@ -116,10 +120,10 @@ public class PmsProduct implements Serializable {
     private String keywords;
 
     private String note;
+    @OneToMany(fetch = jakarta.persistence.FetchType.EAGER)
+    @JoinColumn(name = "product_id")
+    private List<PmsProductMedia> mediaList;
 
-    @Column(name = "album_pics")
-    @Schema(title = "Album pics")
-    private String albumPics;
 
     @Column(name = "detail_title")
     private String detailTitle;
