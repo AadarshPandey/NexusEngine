@@ -2,7 +2,6 @@ package com.nexusengine.core.portal.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 import com.nexusengine.core.common.api.CommonResult;
-import com.nexusengine.core.model.CmsSubject;
 import com.nexusengine.core.model.PmsProduct;
 import com.nexusengine.core.model.PmsProductCategory;
 import com.nexusengine.core.portal.domain.HomeContentResult;
@@ -53,10 +52,8 @@ public class HomeController {
     @Operation(summary = "Get subject list Operation")
     @RequestMapping(value = "/subjectList", method = RequestMethod.GET)
 
-    public CommonResult<List<CmsSubject>> getSubjectList(@RequestParam(required = false) Long cateId,
                                                          @RequestParam(value = "pageSize", defaultValue = "4") Integer pageSize,
                                                          @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
-        List<CmsSubject> subjectList = homeService.getSubjectList(cateId,pageSize,pageNum);
         return CommonResult.success(subjectList);
     }
 

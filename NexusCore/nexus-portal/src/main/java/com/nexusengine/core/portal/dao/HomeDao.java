@@ -24,7 +24,6 @@ public class HomeDao {
     @Autowired
     private PmsBrandRepository brandRepository;
     @Autowired
-    private CmsSubjectRepository subjectRepository;
 
     public List<PmsBrand> getRecommendBrandList(int offset, int limit) {
         // Return first N brands sorted by sort order
@@ -39,7 +38,6 @@ public class HomeDao {
         return productRepository.findAll(PageRequest.of(offset / Math.max(limit, 1), limit, Sort.by(Sort.Direction.DESC, "sale"))).getContent();
     }
 
-    public List<CmsSubject> getRecommendSubjectList(int offset, int limit) {
         return subjectRepository.findAll(PageRequest.of(offset / Math.max(limit, 1), limit, Sort.by(Sort.Direction.DESC, "id"))).getContent();
     }
 

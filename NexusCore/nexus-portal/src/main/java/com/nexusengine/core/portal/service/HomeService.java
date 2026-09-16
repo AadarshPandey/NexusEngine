@@ -1,6 +1,5 @@
 package com.nexusengine.core.portal.service;
 
-import com.nexusengine.core.model.CmsSubject;
 import com.nexusengine.core.model.PmsProduct;
 import com.nexusengine.core.model.PmsProductCategory;
 import com.nexusengine.core.portal.domain.HomeContentResult;
@@ -41,7 +40,6 @@ public interface HomeService {
      * @param pageNum the pageNum
      * @return the result of the operation
      */
-    List<CmsSubject> getSubjectList(Long cateId, Integer pageSize, Integer pageNum);
 
         /**
      * Executes the operation.

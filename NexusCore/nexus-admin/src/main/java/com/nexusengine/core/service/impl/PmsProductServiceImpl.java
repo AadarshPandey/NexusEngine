@@ -41,10 +41,8 @@ public class PmsProductServiceImpl implements PmsProductService {
     private PmsSkuStockRepository skuStockRepository;
     @Autowired
     private PmsProductAttributeValueRepository productAttributeValueRepository;
-    @Autowired
-    private CmsSubjectProductRelationRepository subjectProductRelationRepository;
-    @Autowired
-    private CmsPreferenceAreaProductRelationRepository preferenceAreaProductRelationRepository;
+    
+    
     @Autowired
     private PmsProductVerifyRecordRepository productVerifyRecordRepository;
 
@@ -62,8 +60,8 @@ public class PmsProductServiceImpl implements PmsProductService {
         handleSkuStockCode(productParam.getSkuStockList(), productId);
         saveSkuStockList(productParam.getSkuStockList(), productId);
         saveProductAttributeValueList(productParam.getProductAttributeValueList(), productId);
-        saveSubjectProductRelationList(productParam.getSubjectProductRelationList(), productId);
-        savePreferenceAreaProductRelationList(productParam.getPreferenceAreaProductRelationList(), productId);
+        
+        
         return 1;
     }
 
@@ -107,10 +105,8 @@ public class PmsProductServiceImpl implements PmsProductService {
         handleUpdateSkuStockList(id, productParam);
         productAttributeValueRepository.deleteByProductId(id);
         saveProductAttributeValueList(productParam.getProductAttributeValueList(), id);
-        subjectProductRelationRepository.deleteByProductId(id);
-        saveSubjectProductRelationList(productParam.getSubjectProductRelationList(), id);
-        preferenceAreaProductRelationRepository.deleteByProductId(id);
-        savePreferenceAreaProductRelationList(productParam.getPreferenceAreaProductRelationList(), id);
+                
+                
         return 1;
     }
 
@@ -291,21 +287,4 @@ public class PmsProductServiceImpl implements PmsProductService {
         productAttributeValueRepository.saveAll(dataList);
     }
 
-    private void saveSubjectProductRelationList(List<CmsSubjectProductRelation> dataList, Long productId) {
-        if (CollectionUtils.isEmpty(dataList)) return;
-        for (CmsSubjectProductRelation item : dataList) {
-            item.setId(null);
-            item.setProductId(productId);
-        }
-        subjectProductRelationRepository.saveAll(dataList);
     }
-
-    private void savePreferenceAreaProductRelationList(List<CmsPreferenceAreaProductRelation> dataList, Long productId) {
-        if (CollectionUtils.isEmpty(dataList)) return;
-        for (CmsPreferenceAreaProductRelation item : dataList) {
-            item.setId(null);
-            item.setProductId(productId);
-        }
-        preferenceAreaProductRelationRepository.saveAll(dataList);
-    }
-}

@@ -1,6 +1,5 @@
 package com.nexusengine.core.portal.domain;
 
-import com.nexusengine.core.model.CmsSubject;
 import com.nexusengine.core.model.PmsBrand;
 import com.nexusengine.core.model.PmsProduct;
 import com.nexusengine.core.model.SmsHomeAdvertise;
@@ -28,7 +27,6 @@ public class HomeContentResult {
     @Schema(title = "Hot product list")
     private List<PmsProduct> hotProductList;
     @Schema(title = "Subject list")
-    private List<CmsSubject> subjectList;
     @Schema(title = "AI Recommended product list")
     private List<PmsProduct> aiRecommendProductList;
 }

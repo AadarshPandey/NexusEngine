@@ -32,5 +32,5 @@ Once the Java bytecode is compiled without *any* references to the bloat tables,
 3. **[ ] Rename Banner:** Execute `ALTER TABLE sms_home_advertise RENAME TO sys_banner;`
 
 ## Phase 5: Build & Deploy
-1. **[ ] Compile:** Run `mvn clean install` across all 9 modules to ensure 0 compilation errors.
-2. **[ ] Boot Test:** Start the application to prove it boots cleanly with only the ~20 core tables.
+1. **[x] Compile:** Run `mvn clean install` across all 9 modules to ensure 0 compilation errors.
+2. **[x] Boot Test:** Start the application to prove it boots cleanly with only the ~20 core tables.

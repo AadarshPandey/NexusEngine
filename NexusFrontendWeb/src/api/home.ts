@@ -22,17 +22,6 @@ export interface PmsProduct {
   mediaList?: { mediaUrl: string; sortOrder: number }[];
 }
 
-export interface CmsSubject {
-  id: number;
-  categoryId: number;
-  title: string;
-  pic: string;
-  productCount: number;
-  recommendStatus: number;
-  collectCount: number;
-  readCount: number;
-  commentCount: number;
-}
 
 export interface PmsProductCategory {
   id: number;
@@ -54,7 +43,6 @@ export interface HomeContentResult {
   homeFlashPromotion: unknown;
   newProductList: PmsProduct[];
   hotProductList: PmsProduct[];
-  subjectList: CmsSubject[];
 }
 
 export const fetchHomeContent = () => {
