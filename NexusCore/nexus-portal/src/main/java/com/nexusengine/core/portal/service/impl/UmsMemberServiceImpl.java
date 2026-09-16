@@ -155,6 +155,14 @@ public class UmsMemberServiceImpl implements UmsMemberService {
     }
 
     @Override
+    
+    @Override
+    public void updateMember(UmsMember member) {
+        memberRepository.save(member);
+        memberCacheService.setMember(member);
+    }
+
+    @Override
     public UmsMember getCurrentMember() {
         SecurityContext ctx = SecurityContextHolder.getContext();
         Authentication auth = ctx.getAuthentication();

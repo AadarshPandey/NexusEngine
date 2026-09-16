@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import type { RootState } from '../store';
 import { fetchOrderList, submitReturnApply } from '../api/order';
 import type { OmsOrderDetail } from '../api/order';
-import { fetchMemberInfo, fetchAddressList, addAddress } from '../api/member';
+import { fetchMemberInfo, fetchAddressList, addAddress, updateProfile } from '../api/member';
 import type { UmsMember, UmsMemberReceiveAddress } from '../api/member';
 import { useNavigate } from 'react-router';
 
@@ -39,6 +39,29 @@ const Profile: React.FC = () => {
 
   // Refund dialog states
   const [openRefundDialog, setOpenRefundDialog] = useState(false);
+  const [openEditProfile, setOpenEditProfile] = useState(false);
+  const [editProfileData, setEditProfileData] = useState({ nickname: '', phone: '', icon: '' });
+
+  const handleEditProfileOpen = () => {
+    setEditProfileData({
+      nickname: memberInfo?.nickname || '',
+      phone: memberInfo?.phone || '',
+      icon: memberInfo?.icon || ''
+    });
+    setOpenEditProfile(true);
+  };
+
+  const handleEditProfileSubmit = async () => {
+    try {
+      await updateProfile(editProfileData);
+      setOpenEditProfile(false);
+      loadData();
+    } catch (e) {
+      console.error(e);
+      alert('Failed to update profile');
+    }
+  };
+
   const [refundOrder, setRefundOrder] = useState<OmsOrderDetail | null>(null);
   const [selectedRefundItems, setSelectedRefundItems] = useState<(import('../api/order').OmsOrderItem & { returnQuantity: number })[]>([]);
   const [refundReason, setRefundReason] = useState('');
@@ -184,7 +207,12 @@ const Profile: React.FC = () => {
           </Box>
           
           <TabPanel value={tabValue} index={0}>
-            <Typography variant="h6" gutterBottom>Personal Information</Typography>
+            
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+              <Typography variant="h6">Personal Information</Typography>
+              <Button size="small" variant="outlined" onClick={handleEditProfileOpen}>Edit Profile</Button>
+            </Box>
+
             <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
               <Typography color="text.secondary">Username:</Typography>
               <Typography>{memberInfo?.username}</Typography>
@@ -192,11 +220,9 @@ const Profile: React.FC = () => {
               <Typography color="text.secondary">Phone Number:</Typography>
               <Typography>{memberInfo?.phone || 'Not set'}</Typography>
               
-              <Typography color="text.secondary">Job:</Typography>
-              <Typography>{memberInfo?.job || 'Not set'}</Typography>
+              
 
-              <Typography color="text.secondary">City:</Typography>
-              <Typography>{memberInfo?.city || 'Not set'}</Typography>
+              
             </Box>
           </TabPanel>
           
@@ -485,7 +511,24 @@ const Profile: React.FC = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Edit Profile Dialog */}
+      <Dialog open={openEditProfile} onClose={() => setOpenEditProfile(false)} maxWidth="sm" fullWidth>
+        <DialogTitle>Edit Profile</DialogTitle>
+        <DialogContent>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
+            <TextField label="Nickname" fullWidth value={editProfileData.nickname} onChange={e => setEditProfileData({...editProfileData, nickname: e.target.value})} />
+            <TextField label="Phone Number" fullWidth value={editProfileData.phone} onChange={e => setEditProfileData({...editProfileData, phone: e.target.value})} />
+            <TextField label="Avatar URL" fullWidth value={editProfileData.icon} onChange={e => setEditProfileData({...editProfileData, icon: e.target.value})} />
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenEditProfile(false)}>Cancel</Button>
+          <Button variant="contained" onClick={handleEditProfileSubmit}>Save Changes</Button>
+        </DialogActions>
+      </Dialog>
     </Box>
+
   );
 };
 

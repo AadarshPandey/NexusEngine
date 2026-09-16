@@ -59,6 +59,7 @@ public interface UmsMemberService {
      * @return the current UmsMember
      */
     UmsMember getCurrentMember();
+    void updateMember(UmsMember member);
 
         /**
      * Updates the integration (points) for a specific member.

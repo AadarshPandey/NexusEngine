@@ -66,7 +66,7 @@ const ReturnApplyDetail: React.FC = () => {
             <Typography color="text.secondary">Customer: <Typography component="span" color="text.primary">{detail.memberUsername}</Typography></Typography>
           </Grid>
           <Grid size={{xs: 12, sm: 6}}>
-            <Typography color="text.secondary">Status: 
+            <Typography component="div" color="text.secondary">Status: 
               {detail.status === 0 ? <Chip label="Pending" color="warning" size="small" sx={{ ml: 1 }} /> : 
                detail.status === 1 ? <Chip label="Returning" color="info" size="small" sx={{ ml: 1 }} /> : 
                detail.status === 2 ? <Chip label="Completed" color="success" size="small" sx={{ ml: 1 }} /> : 

@@ -61,6 +61,18 @@ public class UmsMemberController {
     @Operation(summary = "Info Operation")
     @RequestMapping(value = "/info", method = RequestMethod.GET)
 
+    
+    @Operation(summary = "Update Profile Operation")
+    @RequestMapping(value = "/updateProfile", method = RequestMethod.POST)
+    public CommonResult updateProfile(@org.springframework.web.bind.annotation.RequestBody UmsMember member) {
+        UmsMember current = memberService.getCurrentMember();
+        if (member.getNickname() != null) current.setNickname(member.getNickname());
+        if (member.getPhone() != null) current.setPhone(member.getPhone());
+        if (member.getIcon() != null) current.setIcon(member.getIcon());
+        memberService.updateMember(current);
+        return CommonResult.success(current);
+    }
+
     public CommonResult info(Principal principal) {
         if(principal==null){
             return CommonResult.unauthorized(null);

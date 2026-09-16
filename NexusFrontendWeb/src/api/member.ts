@@ -46,3 +46,7 @@ export const fetchAddressList = () => {
 export const addAddress = (address: Partial<UmsMemberReceiveAddress>) => {
   return request.post<unknown, { data: unknown }>('/member/address/add', address);
 };
+
+export const updateProfile = (data: Partial<UmsMember>) => {
+  return request.post<unknown, { data: UmsMember }>('/sso/updateProfile', data);
+};
