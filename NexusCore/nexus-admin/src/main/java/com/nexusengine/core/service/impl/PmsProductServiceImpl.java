@@ -194,7 +194,7 @@ public class PmsProductServiceImpl implements PmsProductService {
     public int updateRecommendStatus(List<Long> ids, Integer recommendStatus) {
         checkVendorAuthorization(ids);
         List<PmsProduct> products = productRepository.findAllById(ids);
-        for (PmsProduct p : products) { p.setRecommandStatus(recommendStatus); productRepository.save(p); }
+        for (PmsProduct p : products) { p.setRecommendStatus(recommendStatus); productRepository.save(p); }
         return products.size();
     }
 

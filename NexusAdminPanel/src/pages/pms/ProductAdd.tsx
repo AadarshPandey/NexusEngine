@@ -17,7 +17,7 @@ const ProductAdd: React.FC = () => {
     brandId: 1, // Hardcoded for simplified version
     publishStatus: 1,
     newStatus: 1,
-    recommandStatus: 1,
+    recommendStatus: 1,
     verifyStatus: 1
   });
 

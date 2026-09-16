@@ -54,9 +54,9 @@ public class PmsProduct implements Serializable {
     @Schema(title = "New status")
     private Integer newStatus;
 
-    @Column(name = "recommand_status")
-    @Schema(title = "Recommand status")
-    private Integer recommandStatus;
+    @Column(name = "recommend_status")
+    @Schema(title = "Recommend status")
+    private Integer recommendStatus;
 
     @Column(name = "verify_status")
     @Schema(title = "Verify status")

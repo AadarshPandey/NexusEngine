@@ -14,7 +14,7 @@ const mockProduct: PmsProduct = {
   deleteStatus: 0,
   publishStatus: 1,
   newStatus: 1,
-  recommandStatus: 1,
+  recommendStatus: 1,
   verifyStatus: 1,
   sort: 100,
   sale: 50,

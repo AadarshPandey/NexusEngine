@@ -52,7 +52,7 @@ public class EsProductDao {
             esProduct.setPrice(new java.math.BigDecimal(0)); // FAANG Refactor: Delegated to SKU
             esProduct.setSale(product.getSale());
             esProduct.setNewStatus(product.getNewStatus());
-            esProduct.setRecommandStatus(product.getRecommandStatus());
+            esProduct.setRecommendStatus(product.getRecommendStatus());
             esProduct.setStock(0); // FAANG Refactor: Delegated to SKU
             esProduct.setPromotionType(product.getPromotionType());
             esProduct.setSort(product.getSort());

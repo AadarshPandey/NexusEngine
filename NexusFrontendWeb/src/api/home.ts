@@ -10,7 +10,7 @@ export interface PmsProduct {
   deleteStatus: number;
   publishStatus: number;
   newStatus: number;
-  recommandStatus: number;
+  recommendStatus: number;
   verifyStatus: number;
   sort: number;
   sale: number;

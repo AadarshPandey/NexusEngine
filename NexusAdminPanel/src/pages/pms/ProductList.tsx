@@ -199,7 +199,7 @@ const ProductList: React.FC = () => {
                     </Box>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                       <Typography variant="caption" sx={{ width: 80 }}>recommend:</Typography>
-                      <Switch size="small" checked={row.recommandStatus === 1} onChange={(e) => handleStatusChange(row.id, 'recommend', e.target.checked)} />
+                      <Switch size="small" checked={row.recommendStatus === 1} onChange={(e) => handleStatusChange(row.id, 'recommend', e.target.checked)} />
                     </Box>
                   </TableCell>
                   <TableCell align="center">
