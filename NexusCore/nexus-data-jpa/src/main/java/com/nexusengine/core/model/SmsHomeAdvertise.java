@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "sms_home_advertise")
+@Table(name = "sys_banner")
 public class SmsHomeAdvertise implements Serializable {
 
     private static final long serialVersionUID = 1L;

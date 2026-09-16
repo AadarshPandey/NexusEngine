@@ -34,3 +34,19 @@ Once the Java bytecode is compiled without *any* references to the bloat tables,
 ## Phase 5: Build & Deploy
 1. **[x] Compile:** Run `mvn clean install` across all 9 modules to ensure 0 compilation errors.
 2. **[x] Boot Test:** Start the application to prove it boots cleanly with only the ~20 core tables.
+
+## Phase 6: The Deep Clean (Addressing UMS/PMS Bloat)
+*Identified during a rigorous FAANG architectural review: table count is not a metric of quality. We must ruthlessly eliminate unused gamification features, redundant RBAC systems, and literal typos left by the original template author.*
+
+### 1. PMS Typo & Duplication Purge
+- **Drop Tables:** `pms_product_vertify_record`, `pms_feight_template`, `pms_comment_replay`.
+- **Drop Legacy Media:** `pms_album`, `pms_album_pic` (superseded by `pms_product_media` in Phase 1).
+- **Java Deletion:** Delete their corresponding JPA models, DAOs, and Controllers.
+
+### 2. UMS Gamification & Loyalty Purge
+- **Drop Tables:** `ums_growth_change_history`, `ums_integration_change_history`, `ums_integration_consume_setting`, `ums_member_rule_setting`, `ums_member_task`, `ums_member_tag`, `ums_member_member_tag_relation`, `ums_member_statistics_info`.
+- **Java Deletion:** Delete the Gamification controllers/services.
+
+### 3. Redundant RBAC Purge
+- **Drop Tables:** `ums_permission`, `ums_admin_permission_relation`, `ums_role_permission_relation`. (The system relies on `ums_menu` and `ums_resource` for dynamic routing and API security; the separate `ums_permission` module is legacy duplication).
+- **Java Deletion:** Delete `UmsPermission*` classes.

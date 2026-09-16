@@ -4,6 +4,7 @@ import com.nexusengine.core.dto.DashboardInfo;
 import com.nexusengine.core.service.DashboardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import java.math.BigDecimal;
@@ -15,6 +16,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class DashboardServiceImpl implements DashboardService {
 
     @PersistenceContext
@@ -65,7 +67,7 @@ public class DashboardServiceImpl implements DashboardService {
         tasks.setAwaitingConfirmation((Long) entityManager.createQuery("SELECT COUNT(o) FROM OmsOrder o WHERE o.status = 2").getSingleResult());
         tasks.setPendingReturns((Long) entityManager.createQuery("SELECT COUNT(o) FROM OmsOrderReturnApply o WHERE o.status = 0").getSingleResult());
         tasks.setPendingRefunds((Long) entityManager.createQuery("SELECT COUNT(o) FROM OmsOrderReturnApply o WHERE o.status = 1").getSingleResult());
-        tasks.setOutOfStockItems((Long) entityManager.createQuery("SELECT COUNT(p) FROM PmsProduct p WHERE p.stock <= 0").getSingleResult());
+        tasks.setOutOfStockItems((Long) entityManager.createQuery("SELECT COUNT(p) FROM PmsProduct p WHERE NOT EXISTS (SELECT 1 FROM PmsSkuStock s WHERE s.productId = p.id AND (s.stock - s.lockStock) > 0)").getSingleResult());
         tasks.setExpiringAds(0L); // Mock for now
         info.setPendingTasks(tasks);
 
@@ -73,7 +75,7 @@ public class DashboardServiceImpl implements DashboardService {
         DashboardInfo.ProductOverview pOverview = new DashboardInfo.ProductOverview();
         pOverview.setListed((Long) entityManager.createQuery("SELECT COUNT(p) FROM PmsProduct p WHERE p.publishStatus = 1").getSingleResult());
         pOverview.setUnlisted((Long) entityManager.createQuery("SELECT COUNT(p) FROM PmsProduct p WHERE p.publishStatus = 0").getSingleResult());
-        pOverview.setLowStock((Long) entityManager.createQuery("SELECT COUNT(p) FROM PmsProduct p WHERE p.stock < p.lowStock").getSingleResult());
+        pOverview.setLowStock((Long) entityManager.createQuery("SELECT COUNT(p) FROM PmsProduct p WHERE EXISTS (SELECT 1 FROM PmsSkuStock s WHERE s.productId = p.id AND (s.stock - s.lockStock) < s.lowStock)").getSingleResult());
         pOverview.setTotal(info.getTotalProducts());
         info.setProductOverview(pOverview);
 

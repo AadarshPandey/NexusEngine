@@ -22,11 +22,6 @@ public class PmsProduct implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Transient
-    private BigDecimal price;
-    @Transient
-    private Integer stock;
-
     @Column(name = "brand_id")
     private Long brandId;
 
@@ -74,10 +69,6 @@ public class PmsProduct implements Serializable {
     private Integer sale;
 
 
-    @Column(name = "promotion_price")
-    @Schema(title = "Promotion price")
-    private BigDecimal promotionPrice;
-
     @Column(name = "gift_growth")
     @Schema(title = "Gift growth")
     private Integer giftGrowth;
@@ -93,15 +84,6 @@ public class PmsProduct implements Serializable {
     @Column(name = "sub_title")
     @Schema(title = "Sub title")
     private String subTitle;
-
-    @Column(name = "original_price")
-    @Schema(title = "Original price")
-    private BigDecimal originalPrice;
-
-
-    @Column(name = "low_stock")
-    @Schema(title = "Low stock")
-    private Integer lowStock;
 
     @Schema(title = "Unit")
     private String unit;

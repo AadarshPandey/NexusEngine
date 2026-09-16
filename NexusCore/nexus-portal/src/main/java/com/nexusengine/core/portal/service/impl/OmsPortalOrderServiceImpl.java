@@ -1,6 +1,8 @@
 package com.nexusengine.core.portal.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
 import cn.hutool.core.collection.CollUtil;
 import com.nexusengine.core.common.api.CommonPage;
 import com.nexusengine.core.common.exception.Asserts;
@@ -28,7 +30,13 @@ import java.util.stream.Collectors;
  * Portal order management Service implementation
  */
 @Service
+@lombok.extern.slf4j.Slf4j
 public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
+    @Autowired
+    private OmsPaymentTransactionRepository paymentTransactionRepository;
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @Autowired
     private UmsMemberService memberService;
     @Autowired
@@ -37,8 +45,6 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
     private UmsMemberReceiveAddressService memberReceiveAddressService;
     @Autowired
     private UmsMemberCouponService memberCouponService;
-    @Autowired
-    private UmsIntegrationConsumeSettingRepository integrationConsumeSettingRepository;
     @Autowired
     private PmsSkuStockRepository skuStockRepository;
     @Autowired
@@ -77,8 +83,6 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
         List<SmsCouponHistoryDetail> couponHistoryDetailList = memberCouponService.listCart(cartPromotionItemList, 1);
         result.setCouponHistoryDetailList(couponHistoryDetailList);
         result.setMemberIntegration(currentMember.getRewardPoints());
-        UmsIntegrationConsumeSetting integrationConsumeSetting = integrationConsumeSettingRepository.findById(1L).orElse(null);
-        result.setIntegrationConsumeSetting(integrationConsumeSetting);
         ConfirmOrderResult.CalcAmount calcAmount = calcCartAmount(cartPromotionItemList);
         result.setCalcAmount(calcAmount);
         return result;
@@ -135,10 +139,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
             orderItemList.add(orderItem);
         }
             for (CartPromotionItem item : cartPromotionItemList) {
-                PmsProduct product = productRepository.findById(item.getProductId()).orElse(null);
-                if (product == null || product.getStock() == null || product.getStock() < item.getQuantity()) {
-                    Asserts.fail("Insufficient stock");
-                }
+                
                 if (item.getProductSkuId() != null) {
                     PmsSkuStock skuStock = skuStockRepository.findById(item.getProductSkuId()).orElse(null);
                     if (skuStock == null || (skuStock.getStock() - (skuStock.getLockStock() == null ? 0 : skuStock.getLockStock())) < item.getQuantity()) {
@@ -563,16 +564,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
     }
 
     private BigDecimal getUseIntegrationAmount(Integer useIntegration, BigDecimal totalAmount, UmsMember currentMember, boolean hasCoupon) {
-        BigDecimal zeroAmount = new BigDecimal(0);
-        if (useIntegration.compareTo(currentMember.getRewardPoints()) > 0) return zeroAmount;
-        UmsIntegrationConsumeSetting setting = integrationConsumeSettingRepository.findById(1L).orElse(null);
-        if (setting == null) return zeroAmount;
-        if (hasCoupon && setting.getCouponStatus().equals(0)) return zeroAmount;
-        if (useIntegration.compareTo(setting.getUseUnit()) < 0) return zeroAmount;
-        BigDecimal integrationAmount = new BigDecimal(useIntegration).divide(new BigDecimal(setting.getUseUnit()), 2, RoundingMode.HALF_EVEN);
-        BigDecimal maxPercent = new BigDecimal(setting.getMaxPercentPerOrder()).divide(new BigDecimal(100), 2, RoundingMode.HALF_EVEN);
-        if (integrationAmount.compareTo(totalAmount.multiply(maxPercent)) > 0) return zeroAmount;
-        return integrationAmount;
+        return new BigDecimal(0);
     }
 
     private void handleCouponAmount(List<OmsOrderItem> orderItemList, SmsCouponHistoryDetail couponHistoryDetail) {
@@ -637,11 +629,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
                     skuStockRepository.save(skuStock);
                 }
             }
-            PmsProduct product = productRepository.findById(item.getProductId()).orElse(null);
-            if (product != null) {
-                product.setStock(Math.max(0, (product.getStock() == null ? 0 : product.getStock()) - item.getQuantity()));
-                productRepository.save(product);
-            }
+            
         }
     }
 
@@ -668,4 +656,66 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
         calcAmount.setPayAmount(totalAmount.subtract(promotionAmount));
         return calcAmount;
     }
+
+    @Override
+    @org.springframework.transaction.annotation.Transactional
+    public void handlePaymentWebhook(String payload, String signature) {
+        try {
+            JsonNode root = objectMapper.readTree(payload);
+            String event = root.path("event").asText();
+            
+            // Only handle payment.captured for now
+            if (!"payment.captured".equals(event)) {
+                return;
+            }
+            
+            JsonNode paymentEntity = root.path("payload").path("payment").path("entity");
+            String transactionId = paymentEntity.path("id").asText();
+            String orderIdStr = paymentEntity.path("notes").path("order_id").asText();
+            
+            if (transactionId == null || transactionId.isEmpty()) return;
+            
+            // Idempotency check: Does this transaction already exist?
+            if (paymentTransactionRepository.findByTransactionId(transactionId).isPresent()) {
+                log.info("Idempotent Webhook: Transaction {} already processed. Ignoring.", transactionId);
+                return;
+            }
+            
+            Long orderId = null;
+            try {
+                orderId = Long.parseLong(orderIdStr);
+            } catch (Exception e) {
+                log.warn("Could not parse order_id from webhook payload: {}", orderIdStr);
+            }
+            
+            // 1. Record the transaction immediately to prevent concurrent duplicate processing
+            OmsPaymentTransaction tx = new OmsPaymentTransaction();
+            tx.setTransactionId(transactionId);
+            tx.setOrderId(orderId != null ? orderId : -1L);
+            tx.setTransactionType("PAYMENT");
+            tx.setAmount(new java.math.BigDecimal(paymentEntity.path("amount").asInt()).divide(new java.math.BigDecimal("100")));
+            tx.setStatus("SUCCESS");
+            tx.setWebhookPayload(payload);
+            tx.setCreateTime(new java.util.Date());
+            paymentTransactionRepository.save(tx);
+            
+            // 2. Update the Order status
+            if (orderId != null) {
+                com.nexusengine.core.model.OmsOrder dbOrder = orderRepository.findById(orderId).orElse(null);
+                if (dbOrder != null && dbOrder.getStatus() == 0) { // 0 is unpaid
+                    dbOrder.setPaymentId(transactionId);
+                    dbOrder.setStatus(1); // 1 is pending shipment
+                    dbOrder.setPaymentTime(new java.util.Date());
+                    orderRepository.save(dbOrder);
+                    
+                    // The cancelOrder event should be removed from DLQ or ignored since status != 0
+                }
+            }
+            
+        } catch (Exception e) {
+            log.error("Error processing webhook payload", e);
+            throw new RuntimeException("Webhook processing error", e);
+        }
+    }
+
 }

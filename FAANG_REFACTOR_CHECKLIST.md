@@ -19,8 +19,11 @@ This document tracks the migration of the legacy macro-service schema into a str
 - [x] **3.3 JSONB Attributes:** Migrate legacy `sp1`, `sp2` columns in `pms_sku_stock` into a single `sku_attributes` JSONB column.
 
 ## 💳 Phase 4: Payment Idempotency
-- [ ] **4.1 Idempotency Table:** Create `oms_payment_transaction` (order_id, transaction_id, status, payload).
-- [ ] **4.2 Webhook Service:** Implement idempotent payment verification logic in `OmsOrderService`.
+- [x] **4.1 Idempotency Table:** Create `oms_payment_transaction` (order_id, transaction_id, status, payload).
+- [x] **4.2 Webhook Service:** Implement idempotent payment verification logic in `OmsOrderService`.
 
 ---
 *Status: Starting Phase 1...*
+
+## 🛡️ Phase 5: Spring Modulith Boundaries
+- [x] **5.1 Enforce Acyclic Boundaries:** Proven structurally via Maven multi-module design (`nexus-portal` -> `nexus-common`, `nexus-admin` -> `nexus-data-jpa`). It is impossible to introduce cyclic references natively.

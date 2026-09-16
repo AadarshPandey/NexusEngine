@@ -165,4 +165,22 @@ public class OmsPortalOrderController {
             return CommonResult.failed("Payment verification failed");
         }
     }
+
+    @Operation(summary = "Razorpay Webhook Endpoint")
+    @RequestMapping(value = "/webhook", method = RequestMethod.POST)
+    public CommonResult handlePaymentWebhook(
+            @RequestHeader(value = "X-Razorpay-Signature", required = false) String signature,
+            @RequestBody String payload) {
+        try {
+            log.info("Received Razorpay Webhook: {}", payload);
+            portalOrderService.handlePaymentWebhook(payload, signature);
+            return CommonResult.success("Webhook processed successfully");
+        } catch (Exception e) {
+            log.error("Webhook processing failed", e);
+            // Return 200 even on failure so Razorpay doesn't blindly retry badly formed requests, 
+            // or 500 if we want retries. We will return failed but HTTP 200.
+            return CommonResult.failed(e.getMessage());
+        }
+    }
+
 }

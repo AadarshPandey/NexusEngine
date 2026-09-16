@@ -104,4 +104,5 @@ public interface OmsPortalOrderService {
      */
     @Transactional
     void paySuccessByOrderSn(String orderSn, Integer payType);
+    void handlePaymentWebhook(String payload, String signature);
 }

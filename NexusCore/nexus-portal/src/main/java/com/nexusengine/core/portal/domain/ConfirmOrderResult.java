@@ -1,6 +1,5 @@
 package com.nexusengine.core.portal.domain;
 
-import com.nexusengine.core.model.UmsIntegrationConsumeSetting;
 import com.nexusengine.core.model.UmsMemberReceiveAddress;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
@@ -22,8 +21,6 @@ public class ConfirmOrderResult {
     private List<UmsMemberReceiveAddress> memberReceiveAddressList;
     @Schema(title = "Coupon history detail list")
     private List<SmsCouponHistoryDetail> couponHistoryDetailList;
-    @Schema(title = "Integration consume setting")
-    private UmsIntegrationConsumeSetting integrationConsumeSetting;
     @Schema(title = "Member integration")
     private Integer memberIntegration;
     @Schema(title = "Calc amount")

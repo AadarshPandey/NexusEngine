@@ -97,11 +97,7 @@ public class PortalOrderDao {
                     skuStockRepository.save(skuStock);
                 }
             }
-            PmsProduct product = productRepository.findById(item.getProductId()).orElse(null);
-            if (product != null) {
-                product.setStock((product.getStock() == null ? 0 : product.getStock()) + item.getProductQuantity());
-                productRepository.save(product);
-            }
+            
         }
     }
 }
