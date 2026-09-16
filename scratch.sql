@@ -1,5 +1,0 @@
-UPDATE pms_feight_template SET name = 'Standard Shipping', charge_type = 0, first_weight = 1.0, first_fee = 5.00, continue_weight = 1.0, continme_fee = 2.00, dest = 'All US States' WHERE id IN (1, 100, 200, 205);
-UPDATE pms_feight_template SET name = 'Express Shipping (By Weight)', charge_type = 0, first_weight = 1.0, first_fee = 15.00, continue_weight = 1.0, continme_fee = 5.00, dest = 'Continental US' WHERE id IN (2, 101, 201, 206);
-UPDATE pms_feight_template SET name = 'Flat Rate per Item', charge_type = 1, first_weight = 1.0, first_fee = 10.00, continue_weight = 1.0, continme_fee = 10.00, dest = 'New York, NJ, PA' WHERE id IN (3, 102, 202, 207);
-UPDATE pms_feight_template SET name = 'Heavy Goods Shipping (Volume)', charge_type = 2, first_weight = 1.0, first_fee = 50.00, continue_weight = 1.0, continme_fee = 25.00, dest = 'California, Nevada' WHERE id IN (4, 103, 203, 208);
-UPDATE pms_feight_template SET name = 'International Standard', charge_type = 0, first_weight = 1.0, first_fee = 30.00, continue_weight = 1.0, continme_fee = 15.00, dest = 'Canada, UK, Australia' WHERE id IN (5, 104, 204, 209);
