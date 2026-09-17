@@ -66,9 +66,6 @@ public class PmsProduct implements Serializable {
     private Integer sale;
 
 
-    @Column(name = "gift_growth")
-    @Schema(title = "Gift growth")
-    private Integer giftGrowth;
 
     @Column(name = "gift_point")
     @Schema(title = "Gift point")

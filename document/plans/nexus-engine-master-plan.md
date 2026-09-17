@@ -80,7 +80,40 @@ This plan covers **4 major workstreams** to make NexusEngine a FAANG-interview-r
 
 ---
 
-## Phase 2: Seed Full E-Commerce Catalog (Flyway V2)
+## Phase 2: Loyalty & Membership Cleanup (Task 1)
+
+> [!IMPORTANT]
+> We are aggressively simplifying the membership and loyalty system to demonstrate pragmatic engineering: keeping what works (transactional points as currency) and removing dead-weight complexity (unused tiers, experience points, and custom member pricing tables).
+
+### Task 2.1: Remove `UmsMemberLevel`
+- [ ] Drop table `ums_member_level`
+- [ ] Remove entity, repository, service, and controller for `UmsMemberLevel`
+- [ ] Drop `member_level_id` from `ums_member`
+- [ ] Update Admin UI to remove Member Level references
+
+### Task 2.2: Remove `PmsMemberPrice`
+- [ ] Drop table `pms_member_price`
+- [ ] Remove `PmsMemberPrice` entity and repository
+- [ ] Remove from `PmsProductParam`, `PmsProductResult`, and `PmsProductServiceImpl`
+
+### Task 2.3: Clean Up Experience & Growth Points
+- [ ] Drop `experience_points` from `ums_member` and `oms_order`
+- [ ] Drop `gift_growth` from `oms_order_item` and `pms_product`
+- [ ] Remove related logic from entities, services, and frontend types
+
+### Task 2.4: Rename Reward Points to just "Points"
+- [ ] Update `ums_member`: `reward_points` -> `points`, `lifetime_reward_points` -> `lifetime_points`
+- [ ] Update `oms_order`: `reward_points` -> `earned_points`, `use_integration` -> `used_points`, `integration_amount` -> `points_discount_amount`
+- [ ] Update `oms_order_item`: `gift_integration` -> `earned_points`, `integration_amount` -> `points_discount_amount`
+- [ ] Align all frontend and backend code to simply use "points"
+
+### Task 2.5: Apply Database Changes
+- [ ] Create Flyway `V2__loyalty_cleanup.sql` to execute these schema drops and renames.
+- [ ] Update `V1__baseline.sql` to reflect these changes so new setups are clean.
+
+---
+
+## Phase 3: Seed Full E-Commerce Catalog (Flyway V3)
 
 > [!IMPORTANT]
 > With the Flyway reset, the next migration is now **V2** (not V26). All future migrations start from V2.
@@ -210,9 +243,9 @@ Automotive (L0)
 
 ---
 
-## Phase 3: MinIO Media Architecture
+## Phase 4: MinIO Media Architecture
 
-### Task 3.1: Create MinIO Bucket Structure
+### Task 6.1: Create MinIO Bucket Structure
 - [ ] Use `mc` CLI or S3 API to create the following key structure using `image1.jpeg` as placeholder
 
 ```
@@ -227,7 +260,7 @@ nexus-media/public/marketing/banners/{banner-slug}.webp
 nexus-media/public/users/avatars/default/avatar.webp
 ```
 
-### Task 3.2: Set Bucket Policy
+### Task 6.2: Set Bucket Policy
 - [ ] Set public read policy on `nexus-media/public/*`
 ```json
 {
@@ -243,7 +276,7 @@ nexus-media/public/users/avatars/default/avatar.webp
 }
 ```
 
-### Task 3.3: Update DB URLs to Match New Structure
+### Task 4.3: Update DB URLs to Match New Structure
 - [ ] All product `pic` fields → `http://localhost:9000/nexus-media/public/catalog/products/{id}-{slug}/main.webp`
 - [ ] All brand `logo` fields → `http://localhost:9000/nexus-media/public/catalog/brands/{id}-{slug}/logo.webp`
 - [ ] All brand `big_pic` fields → `http://localhost:9000/nexus-media/public/catalog/brands/{id}-{slug}/banner.webp`
@@ -254,14 +287,14 @@ nexus-media/public/users/avatars/default/avatar.webp
 
 ---
 
-## Phase 4: Admin Roles & Membership System
+## Phase 5: Admin Roles System
 
-### Task 4.1: Super Admin Enhancement
+### Task 6.1: Super Admin Enhancement
 - [ ] Ensure `admin` (ID=1) user has `vendorId = NULL` (unrestricted, platform-level)
 - [ ] The admin panel already checks `username === 'admin'` for superuser bypass
 - [ ] Set `admin` status = 1 (enabled)
 
-### Task 4.2: Brand Admin Accounts
+### Task 6.2: Brand Admin Accounts
 - [ ] Create admin accounts per major brand with `vendorId` set
 - [ ] Each brand admin can only see/manage their brand's products
 - [ ] Already supported via `PmsProductServiceImpl.findByVendorId()`
@@ -272,27 +305,16 @@ samsung_admin (vendorId = 2, role = Product Manager)
 nike_admin (vendorId = 3, role = Product Manager)
 ```
 
-### Task 4.3: Membership Levels
-- [ ] Populate `ums_member_level` with tiered membership system:
-
-| Level | Name | Growth Points | Free Shipping | VIP Pricing | Birthday Perk |
-|---|---|---|---|---|---|
-| 1 | Bronze (Default) | 0 | No | No | No |
-| 2 | Silver | 1000 | ₹499+ | 3% off | No |
-| 3 | Gold | 5000 | ₹299+ | 5% off | Yes |
-| 4 | Platinum | 15000 | Free | 8% off | Yes |
-| 5 | Diamond | 50000 | Free | 12% off | Yes |
-
-### Task 4.4: UMS Role-Based Access Control
+### Task 5.3: UMS Role-Based Access Control
 - [ ] Ensure existing roles (Super Admin, Product Manager, Order Manager, etc.) have proper menu/resource assignments
 - [ ] Create `ums_role_menu_relation` entries for each role
 - [ ] Create `ums_role_resource_relation` entries for API access control
 
 ---
 
-## Phase 5: Testing & Verification
+## Phase 6: Testing & Verification
 
-### Task 5.1: API Endpoint Verification
+### Task 6.1: API Endpoint Verification
 - [ ] `GET /portal/home/content` → 200 with products, brands, banners
 - [ ] `GET /portal/home/recommendProductList` → 200 with paginated products
 - [ ] `GET /portal/product/detail/{id}` → 200 with full product detail + SKUs
@@ -302,7 +324,7 @@ nike_admin (vendorId = 3, role = Product Manager)
 - [ ] `GET /brand/list` (admin) → 200 with all brands
 - [ ] `GET /productCategory/list/withChildren` (admin) → 200 with category hierarchy
 
-### Task 5.2: Frontend Verification
+### Task 6.2: Frontend Verification
 - [ ] Customer frontend (port 5173) loads homepage with products, banners
 - [ ] Product detail page shows variant picker, gallery, reviews
 - [ ] Admin panel (port 5174) shows product list with images
@@ -315,10 +337,11 @@ nike_admin (vendorId = 3, role = Product Manager)
 
 ```mermaid
 flowchart TD
-    A["✅ Phase 1: Fix 500 Errors<br/>Entity fixes + V1 baseline migration<br/>COMPLETE"] --> B["Phase 2: Seed Catalog<br/>V2 migration with brands/categories/products/SKUs"]
-    B --> C["Phase 3: MinIO Media<br/>Create object keys + upload placeholder images"]
-    C --> D["Phase 4: Admin & Membership<br/>Roles, brand admins, membership levels"]
-    D --> E["Phase 5: Test & Verify<br/>All endpoints + both frontends"]
+    A["✅ Phase 1: Fix 500 Errors<br/>COMPLETE"] --> B["Phase 2: Loyalty Cleanup<br/>Simplify points & remove tiers"]
+    B --> C["Phase 3: Seed Catalog<br/>V3 migration with brands/products"]
+    C --> D["Phase 4: MinIO Media<br/>Create object keys + uploads"]
+    D --> E["Phase 5: Admin Roles<br/>Roles, brand admins"]
+    E --> F["Phase 6: Test & Verify<br/>All endpoints + both frontends"]
 
     style A fill:#22c55e,color:#fff
 ```
@@ -333,14 +356,15 @@ flowchart TD
 | File | Purpose | Status |
 |---|---|---|
 | `V1__baseline.sql` | Consolidated schema (48 tables, indexes) | ✅ Created |
-| `V2__seed_full_catalog.sql` | Full catalog seed (brands, categories, products, SKUs, attributes, media, banners) | ⬜ Pending |
-| `V3__membership_and_admin.sql` | Membership tiers, brand admin accounts, role assignments | ⬜ Pending |
+| `V2__loyalty_cleanup.sql` | Schema cleanup for member levels, prices, and points | ⬜ Pending |
+| `V3__seed_full_catalog.sql` | Full catalog seed (brands, categories, products, SKUs, attributes, media, banners) | ⬜ Pending |
+| `V4__admin_roles.sql` | Brand admin accounts, role assignments | ⬜ Pending |
 
 ---
 
 ## 📊 Current Database State
 
-| Table | Current Rows | Target Rows |
+| Table | Current Rows | Target Rows (After Cleanup) |
 |---|---|---|
 | `pms_brand` | 3 (Apple, Sony, Nike) | ~50 |
 | `pms_product_category` | 5 (Electronics, Smartphones, Headphones, Clothing, Sneakers) | ~43 |
@@ -351,10 +375,10 @@ flowchart TD
 | `pms_product_attribute_value` | ? | ~300 |
 | `pms_product_media` | ? | ~450 |
 | `sys_banner` | 2 | ~8 |
-| `ums_member_level` | 1 (Gold) | 5 (Bronze→Diamond) |
+| `ums_member_level` | 1 (Gold) | 0 (Table to be dropped) |
 | `ums_admin` | 11 | ~15 (+ brand admins) |
 
 ---
 
 > [!TIP]
-> **Next step**: Phase 2 — Seed the full e-commerce catalog via `V2__seed_full_catalog.sql`. This will populate ~50 brands, ~150 products, and ~400 SKUs.
+> **Next step**: Phase 2 — Seed the full e-commerce catalog via `V3__seed_full_catalog.sql`. This will populate ~50 brands, ~150 products, and ~400 SKUs.

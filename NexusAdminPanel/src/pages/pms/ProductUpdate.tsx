@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Paper, TextField, Button, Grid, CircularProgress } from '@mui/material';
+import { Box, Typography, Paper, TextField, Button, Grid, CircularProgress, FormControl, InputLabel, Select, MenuItem, ListSubheader } from '@mui/material';
 import { productUpdateByIdAPI, getPruductUpdateInfoAPI } from '@/apis/product';
+import { getBrandListAPI } from '@/apis/brand';
+import { getProductCategoryListWithChildrenAPI } from '@/apis/productCate';
 import { useNavigate, useSearchParams } from 'react-router';
 
 const ProductUpdate: React.FC = () => {
@@ -8,6 +10,9 @@ const ProductUpdate: React.FC = () => {
   const [searchParams] = useSearchParams();
   const id = searchParams.get('id');
 
+  const [brands, setBrands] = useState<import('@/types/brand').PmsBrand[]>([]);
+  const [categories, setCategories] = useState<import('@/types/productCate').PmsProductCategory[]>([]);
+  
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
     name: '',
@@ -17,8 +22,8 @@ const ProductUpdate: React.FC = () => {
     originalPrice: '',
     stock: '',
     pic: '',
-    productCategoryId: 2,
-    brandId: 1,
+    productCategoryId: '',
+    brandId: '',
     publishStatus: 1,
     newStatus: 1,
     recommendStatus: 1,
@@ -27,25 +32,34 @@ const ProductUpdate: React.FC = () => {
 
   useEffect(() => {
     if (id) {
-      fetchProductInfo(Number(id));
+      fetchDependenciesAndProduct(Number(id));
     } else {
       alert('Product ID is missing');
       navigate('/pms/product');
     }
   }, [id]);
 
-  const fetchProductInfo = async (productId: number) => {
+  const fetchDependenciesAndProduct = async (productId: number) => {
     try {
       setLoading(true);
-      const res = await getPruductUpdateInfoAPI(productId);
-      if (res.data) {
+      const [brandRes, cateRes, prodRes] = await Promise.all([
+        getBrandListAPI({ pageNum: 1, pageSize: 100 }),
+        getProductCategoryListWithChildrenAPI(),
+        getPruductUpdateInfoAPI(productId)
+      ]);
+      setBrands(brandRes.data?.list || []);
+      setCategories(cateRes.data || []);
+      
+      if (prodRes.data) {
         setFormData({
           ...formData,
-          ...res.data,
+          ...prodRes.data,
           // ensure price/stock are strings for the inputs if they come back as numbers
-          price: res.data.price?.toString() || '',
-          originalPrice: res.data.originalPrice?.toString() || '',
-          stock: res.data.stock?.toString() || ''
+          price: prodRes.data.price?.toString() || '',
+          originalPrice: prodRes.data.originalPrice?.toString() || '',
+          stock: prodRes.data.stock?.toString() || '',
+          productCategoryId: prodRes.data.productCategoryId?.toString() || '',
+          brandId: prodRes.data.brandId?.toString() || ''
         });
       }
     } catch (error) {
@@ -94,6 +108,33 @@ const ProductUpdate: React.FC = () => {
             <Grid size={{ xs: 12 }}>
               <TextField fullWidth label="Subtitle" value={formData.subTitle || ''} onChange={e => setFormData({...formData, subTitle: e.target.value})} />
             </Grid>
+            
+            <Grid size={{ xs: 12, md: 6 }}>
+              <FormControl fullWidth required>
+                <InputLabel>Product Category</InputLabel>
+                <Select label="Product Category" value={formData.productCategoryId} onChange={e => setFormData({...formData, productCategoryId: e.target.value as string})}>
+                  {categories.map((parent: any) => [
+                    <ListSubheader key={`header-${parent.id}`}>{parent.name}</ListSubheader>,
+                    ...(parent.children || []).map((child: any) => (
+                      <MenuItem key={child.id} value={child.id.toString()} sx={{ pl: 4 }}>
+                        {child.name}
+                      </MenuItem>
+                    ))
+                  ])}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid size={{ xs: 12, md: 6 }}>
+              <FormControl fullWidth required>
+                <InputLabel>Brand</InputLabel>
+                <Select label="Brand" value={formData.brandId} onChange={e => setFormData({...formData, brandId: e.target.value as string})}>
+                  {brands.map((b: any) => (
+                    <MenuItem key={b.id} value={b.id.toString()}>{b.name}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+
             <Grid size={{ xs: 12, md: 6 }}>
               <TextField fullWidth label="Price (₹)" type="text" required value={formData.price || ''} onChange={e => setFormData({...formData, price: e.target.value})} />
             </Grid>

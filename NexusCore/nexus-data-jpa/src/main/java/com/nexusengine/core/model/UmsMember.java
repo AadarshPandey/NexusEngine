@@ -19,9 +19,6 @@ public class UmsMember implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "member_level_id")
-    private Long memberLevelId;
-
     @Schema(title = "Username")
     private String username;
 
@@ -63,18 +60,13 @@ public class UmsMember implements Serializable {
     @Column(name = "source_type")
     @Schema(title = "Source type")
     private Integer sourceType;
-
-    @Schema(title = "Integration")
-    private Integer rewardPoints;
-
-    @Schema(title = "Growth")
-    private Integer experiencePoints;
+    private Integer points;
 
     @Column(name = "bonus_draws_remaining")
     @Schema(title = "Luckey count")
     private Integer bonusDrawsRemaining;
 
-    @Column(name = "lifetime_reward_points")
+    @Column(name = "lifetime_points")
     @Schema(title = "History integration")
-    private Integer lifetimeRewardPoints;
+    private Integer lifetimePoints;
 }

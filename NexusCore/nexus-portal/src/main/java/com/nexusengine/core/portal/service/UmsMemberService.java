@@ -64,7 +64,7 @@ public interface UmsMemberService {
      * @param id the unique identifier of the member
      * @param integration the integration points to set or add
      */
-    void updateIntegration(Long id,Integer integration);
+    void updatePoints(Long id,Integer integration);
 
 
         /**

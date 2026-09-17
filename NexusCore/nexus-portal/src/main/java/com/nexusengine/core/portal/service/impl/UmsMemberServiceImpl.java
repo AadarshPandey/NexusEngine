@@ -3,11 +3,9 @@ package com.nexusengine.core.portal.service.impl;
 import cn.hutool.core.util.StrUtil;
 import com.nexusengine.core.common.exception.Asserts;
 import com.nexusengine.core.model.UmsMember;
-import com.nexusengine.core.model.UmsMemberLevel;
 import com.nexusengine.core.portal.domain.MemberDetails;
 import com.nexusengine.core.portal.service.UmsMemberCacheService;
 import com.nexusengine.core.portal.service.UmsMemberService;
-import com.nexusengine.core.repository.UmsMemberLevelRepository;
 import com.nexusengine.core.repository.UmsMemberRepository;
 import com.nexusengine.core.security.util.JwtTokenUtil;
 import org.slf4j.Logger;
@@ -42,7 +40,6 @@ public class UmsMemberServiceImpl implements UmsMemberService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenUtil jwtTokenUtil;
     private final UmsMemberRepository memberRepository;
-    private final UmsMemberLevelRepository memberLevelRepository;
     private final UmsMemberCacheService memberCacheService;
     @Value("${redis.key.authCode}")
     private String REDIS_KEY_PREFIX_AUTH_CODE;
@@ -94,14 +91,10 @@ public class UmsMemberServiceImpl implements UmsMemberService {
         umsMember.setPassword(passwordEncoder.encode(password));
         umsMember.setCreateTime(new Date());
         umsMember.setStatus(1);
-        List<UmsMemberLevel> memberLevelList = memberLevelRepository.findByDefaultStatus(1);
-        if (!CollectionUtils.isEmpty(memberLevelList)) {
-            umsMember.setMemberLevelId(memberLevelList.get(0).getId());
-        }
         memberRepository.save(umsMember);
     }
 
-        @Value("${spring.mail.username}")
+        @Value("${spring.mail.username:noreply@nexusengine.com}")
     private String fromEmail;
 
     @Override
@@ -156,10 +149,10 @@ public class UmsMemberServiceImpl implements UmsMemberService {
     }
 
     @Override
-    public void updateIntegration(Long id, Integer integration) {
+    public void updatePoints(Long id, Integer integration) {
         UmsMember member = memberRepository.findById(id).orElse(null);
         if (member != null) {
-            member.setRewardPoints(integration);
+            member.setPoints(integration);
             memberRepository.save(member);
             memberCacheService.delMember(id);
         }

@@ -18,8 +18,7 @@ public class PmsProductParam extends PmsProduct{
     private List<PmsProductLadder> productLadderList;
     @Schema(title = "Product full reduction list")
     private List<PmsProductFullReduction> productFullReductionList;
-    @Schema(title = "Member price list")
-    private List<PmsMemberPrice> memberPriceList;
+
     @Schema(title = "Sku stock list")
     private List<PmsSkuStock> skuStockList;
     @Schema(title = "Product attribute value list")

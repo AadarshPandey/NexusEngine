@@ -55,9 +55,9 @@ public class OmsOrder implements Serializable {
     @Schema(title = "Promotion amount")
     private BigDecimal promotionAmount;
 
-    @Column(name = "integration_amount")
+    @Column(name = "points_discount_amount")
     @Schema(title = "Integration amount")
-    private BigDecimal integrationAmount;
+    private BigDecimal pointsDiscountAmount;
 
     @Column(name = "coupon_amount")
     @Schema(title = "Coupon amount")
@@ -95,10 +95,7 @@ public class OmsOrder implements Serializable {
     private Integer autoConfirmDay;
 
     @Schema(title = "Integration")
-    private Integer rewardPoints;
-
-    @Schema(title = "Growth")
-    private Integer experiencePoints;
+    private Integer earnedPoints;
 
     @Column(name = "promotion_info")
     @Schema(title = "Promotion info")
@@ -163,9 +160,9 @@ public class OmsOrder implements Serializable {
     @Schema(title = "Delete status")
     private Integer deleteStatus;
 
-    @Column(name = "use_integration")
+    @Column(name = "used_points")
     @Schema(title = "Use integration")
-    private Integer useIntegration;
+    private Integer usedPoints;
 
     @Column(name = "payment_id")
     @Schema(title = "Payment ID")

@@ -32,7 +32,6 @@ import java.util.stream.Collectors;
 public class PmsProductServiceImpl implements PmsProductService {
     private static final Logger LOGGER = LoggerFactory.getLogger(PmsProductServiceImpl.class);
     private final PmsProductRepository productRepository;
-    private final PmsMemberPriceRepository memberPriceRepository;
     private final PmsProductLadderRepository productLadderRepository;
     private final PmsProductFullReductionRepository productFullReductionRepository;
     private final PmsSkuStockRepository skuStockRepository;
@@ -49,7 +48,6 @@ public class PmsProductServiceImpl implements PmsProductService {
         product.setId(null);
         productRepository.save(product);
         Long productId = product.getId();
-        saveMemberPriceList(productParam.getMemberPriceList(), productId);
         saveProductLadderList(productParam.getProductLadderList(), productId);
         saveProductFullReductionList(productParam.getProductFullReductionList(), productId);
         handleSkuStockCode(productParam.getSkuStockList(), productId);
@@ -91,8 +89,6 @@ public class PmsProductServiceImpl implements PmsProductService {
         BeanUtils.copyProperties(productParam, product);
         product.setId(id);
         productRepository.save(product);
-        memberPriceRepository.deleteByProductId(id);
-        saveMemberPriceList(productParam.getMemberPriceList(), id);
         productLadderRepository.deleteByProductId(id);
         saveProductLadderList(productParam.getProductLadderList(), id);
         productFullReductionRepository.deleteByProductId(id);
@@ -135,15 +131,37 @@ public class PmsProductServiceImpl implements PmsProductService {
     private final com.nexusengine.core.service.UmsAdminService adminService;
 
     @Override
-    public org.springframework.data.domain.Page<PmsProduct> list(PmsProductQueryParam productQueryParam, Integer pageSize, Integer pageNum) {
+    public org.springframework.data.domain.Page<PmsProduct> list(PmsProductQueryParam queryParam, Integer pageSize, Integer pageNum) {
         String username = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getName();
         UmsAdmin admin = adminService.getAdminByUsername(username);
         Long vendorId = admin != null ? admin.getVendorId() : null;
         org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(pageNum - 1 > 0 ? pageNum - 1 : 0, pageSize, Sort.by(Sort.Direction.ASC, "id"));
-        if (vendorId != null) {
-            return productRepository.findByVendorId(vendorId, pageable);
-        }
-        return productRepository.findAll(pageable);
+        
+        return productRepository.findAll((root, query, cb) -> {
+            var predicates = new java.util.ArrayList<jakarta.persistence.criteria.Predicate>();
+            if (vendorId != null) {
+                predicates.add(cb.equal(root.get("vendorId"), vendorId));
+            }
+            if (queryParam.getPublishStatus() != null) {
+                predicates.add(cb.equal(root.get("publishStatus"), queryParam.getPublishStatus()));
+            }
+            if (queryParam.getVerifyStatus() != null) {
+                predicates.add(cb.equal(root.get("verifyStatus"), queryParam.getVerifyStatus()));
+            }
+            if (StrUtil.isNotEmpty(queryParam.getKeyword())) {
+                predicates.add(cb.like(cb.lower(root.get("name")), "%" + queryParam.getKeyword().toLowerCase() + "%"));
+            }
+            if (StrUtil.isNotEmpty(queryParam.getProductSn())) {
+                predicates.add(cb.equal(root.get("productSn"), queryParam.getProductSn()));
+            }
+            if (queryParam.getBrandId() != null) {
+                predicates.add(cb.equal(root.get("brandId"), queryParam.getBrandId()));
+            }
+            if (queryParam.getProductCategoryId() != null) {
+                predicates.add(cb.equal(root.get("productCategoryId"), queryParam.getProductCategoryId()));
+            }
+            return cb.and(predicates.toArray(new jakarta.persistence.criteria.Predicate[0]));
+        }, pageable);
     }
 
     private void checkVendorAuthorization(List<Long> ids) {
@@ -236,14 +254,6 @@ public class PmsProductServiceImpl implements PmsProductService {
         }
     }
 
-    private void saveMemberPriceList(List<PmsMemberPrice> dataList, Long productId) {
-        if (CollectionUtils.isEmpty(dataList)) return;
-        for (PmsMemberPrice item : dataList) {
-            item.setId(null);
-            item.setProductId(productId);
-        }
-        memberPriceRepository.saveAll(dataList);
-    }
 
     private void saveProductLadderList(List<PmsProductLadder> dataList, Long productId) {
         if (CollectionUtils.isEmpty(dataList)) return;
@@ -281,4 +291,4 @@ public class PmsProductServiceImpl implements PmsProductService {
         productAttributeValueRepository.saveAll(dataList);
     }
 
-    }
+}

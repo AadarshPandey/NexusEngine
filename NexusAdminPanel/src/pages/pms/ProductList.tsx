@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Switch, TextField, MenuItem, Select, FormControl, InputLabel, Grid, IconButton, Divider, Breadcrumbs, Link, TablePagination } from '@mui/material';
+import { Box, Typography, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Switch, TextField, MenuItem, Select, FormControl, InputLabel, ListSubheader, Grid, IconButton, Divider, Breadcrumbs, Link, TablePagination } from '@mui/material';
 import { useNavigate } from 'react-router';
 import { getProductListAPI, productUpdateDeleteStatusAPI, productUpdatePublishStatusAPI, productUpdateNewStatusAPI, productUpdateRecommendStatusAPI } from '@/apis/product';
 import { getBrandListAPI } from '@/apis/brand';
@@ -25,25 +25,28 @@ const ProductList: React.FC = () => {
 
   useEffect(() => {
     fetchInitialData();
+  }, []);
+
+  useEffect(() => {
+    fetchProducts(searchParams);
   }, [searchParams.pageNum, searchParams.pageSize]);
 
   const fetchInitialData = async () => {
     try {
       const [brandRes, cateRes] = await Promise.all([
-        getBrandListAPI({ pageNum: 1, pageSize: 10 }),
+        getBrandListAPI({ pageNum: 1, pageSize: 100 }),
         getProductCategoryListWithChildrenAPI()
       ]);
       setBrands(brandRes.data?.list || []);
       setCategories(cateRes.data || []);
-      fetchProducts();
     } catch (e) {
       console.error(e);
     }
   };
 
-  const fetchProducts = async () => {
+  const fetchProducts = async (params = searchParams) => {
     try {
-      const res = await getProductListAPI(searchParams as unknown as import('@/types/product').ProductQueryParam);
+      const res = await getProductListAPI(params as unknown as import('@/types/product').ProductQueryParam);
       setProducts(res.data?.list || []);
       setTotal(res.data?.total || 0);
     } catch (error) {
@@ -51,10 +54,16 @@ const ProductList: React.FC = () => {
     }
   };
 
-  const handleSearch = () => fetchProducts();
+  const handleSearch = () => {
+    const newParams = { ...searchParams, pageNum: 1 };
+    setSearchParams(newParams);
+    fetchProducts(newParams);
+  };
+
   const handleReset = () => {
-    setSearchParams({ ...searchParams, keyword: '', productSn: '', productCategoryId: '', brandId: '', publishStatus: '', verifyStatus: '' });
-    setTimeout(fetchProducts, 0);
+    const resetParams = { ...searchParams, keyword: '', productSn: '', productCategoryId: '', brandId: '', publishStatus: '', verifyStatus: '', pageNum: 1 };
+    setSearchParams(resetParams);
+    fetchProducts(resetParams);
   };
 
   const handleStatusChange = async (id: number, type: 'publish' | 'new' | 'recommend', checked: boolean) => {
@@ -111,9 +120,14 @@ const ProductList: React.FC = () => {
               <InputLabel>Product Category</InputLabel>
               <Select label="Product Category" value={searchParams.productCategoryId} onChange={(e) => setSearchParams({ ...searchParams, productCategoryId: e.target.value as string })}>
                 <MenuItem value="">Please select</MenuItem>
-                {categories.map((c: import('@/types/productCate').PmsProductCategory) => (
-                  <MenuItem key={c.id} value={c.id}>{c.name}</MenuItem>
-                ))}
+                {categories.map((parent: any) => [
+                  <ListSubheader key={`header-${parent.id}`}>{parent.name}</ListSubheader>,
+                  ...(parent.children || []).map((child: any) => (
+                    <MenuItem key={child.id} value={child.id} sx={{ pl: 4 }}>
+                      {child.name}
+                    </MenuItem>
+                  ))
+                ])}
               </Select>
             </FormControl>
           </Grid>

@@ -11,7 +11,6 @@ import com.nexusengine.core.portal.controller.*;
 import com.nexusengine.core.model.UmsMember;
 import com.nexusengine.core.portal.service.impl.*;
 import com.nexusengine.core.portal.controller.*;
-import com.nexusengine.core.model.UmsMemberLevel;
 import com.nexusengine.core.portal.service.impl.*;
 import com.nexusengine.core.portal.controller.*;
 import com.nexusengine.core.portal.domain.MemberDetails;
@@ -20,7 +19,6 @@ import com.nexusengine.core.portal.controller.*;
 import com.nexusengine.core.portal.service.UmsMemberCacheService;
 import com.nexusengine.core.portal.service.impl.*;
 import com.nexusengine.core.portal.controller.*;
-import com.nexusengine.core.repository.UmsMemberLevelRepository;
 import com.nexusengine.core.portal.service.impl.*;
 import com.nexusengine.core.portal.controller.*;
 import com.nexusengine.core.repository.UmsMemberRepository;
@@ -83,8 +81,6 @@ public class UmsMemberServiceImplTest {
     @Mock
     private JwtTokenUtil jwtTokenUtil;
     @Mock
-    private UmsMemberLevelRepository memberLevelRepository;
-    @Mock
     private com.nexusengine.core.repository.UmsMemberRepository memberRepository;
     @Mock
     private UmsMemberCacheService memberCacheService;
@@ -94,7 +90,6 @@ public class UmsMemberServiceImplTest {
     private UmsMemberServiceImpl memberService;
 
     private UmsMember testMember;
-    private UmsMemberLevel defaultLevel;
 
     @BeforeEach
     void setUp() {
@@ -104,9 +99,7 @@ public class UmsMemberServiceImplTest {
         testMember.setPassword("encodedPassword");
         testMember.setPhone("1234567890");
 
-        defaultLevel = new UmsMemberLevel();
-        defaultLevel.setId(4L);
-        defaultLevel.setDefaultStatus(1);
+        // Removed defaultLevel since it's deleted
         
         org.springframework.test.util.ReflectionTestUtils.setField(memberService, "AUTH_CODE_EXPIRE_SECONDS", 120L);
     }
@@ -138,7 +131,6 @@ public class UmsMemberServiceImplTest {
         when(memberCacheService.getAuthCode("test@test.com")).thenReturn("123456");
         when(memberRepository.findByUsernameOrEmail("newuser", "test@test.com")).thenReturn(Collections.emptyList());
         when(passwordEncoder.encode("password")).thenReturn("encoded");
-        when(memberLevelRepository.findByDefaultStatus(1)).thenReturn(Collections.singletonList(defaultLevel));
 
         assertDoesNotThrow(() -> memberService.register("newuser", "password", "test@test.com", "123456"));
         verify(memberRepository).save(any(UmsMember.class));

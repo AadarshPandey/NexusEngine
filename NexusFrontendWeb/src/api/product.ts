@@ -69,7 +69,6 @@ export interface SmsCoupon {
   receiveCount: number;
   enableTime: string;
   code: string;
-  memberLevel: number;
 }
 
 export interface PmsPortalProductDetail {

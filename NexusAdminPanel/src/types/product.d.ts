@@ -92,9 +92,7 @@ export type PmsMemberPrice = {
   /** ID */
   id?: number
   productId?: number
-  memberLevelId?: number
   memberPrice?: number
-  memberLevelName?: string
 }
 
 export type CmsSubjectProductRelation = {

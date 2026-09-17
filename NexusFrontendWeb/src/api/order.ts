@@ -22,7 +22,7 @@ export interface OmsOrderItem {
   promotionName: string;
   promotionAmount: number;
   couponAmount: number;
-  integrationAmount: number;
+  pointsDiscountAmount: number;
   realAmount: number;
   giftIntegration: number;
   giftGrowth: number;
@@ -94,8 +94,6 @@ export interface OmsOrderDetail {
   deliveryCompany: string;
   deliverySn: string;
   autoConfirmDay: number;
-  integration: number;
-  growth: number;
   promotionInfo: string;
   billType: number;
   billHeader: string;

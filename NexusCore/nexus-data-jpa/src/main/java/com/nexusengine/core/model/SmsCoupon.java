@@ -73,8 +73,4 @@ public class SmsCoupon implements Serializable {
 
     @Schema(title = "Code")
     private String code;
-
-    @Column(name = "member_level")
-    @Schema(title = "Member level")
-    private Integer memberLevel;
 }

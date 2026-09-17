@@ -112,19 +112,6 @@ services:
     networks:
       - nexus-network
 
-  mongodb:
-    image: mongo:7.0
-    container_name: mongodb
-    restart: always
-    environment:
-      MONGO_INITDB_DATABASE: nexuscore
-    ports:
-      - "127.0.0.1:27017:27017"
-    volumes:
-      - mongodb-data:/data/db
-    networks:
-      - nexus-network
-
   rabbitmq:
     image: rabbitmq:4.1-management
     container_name: rabbitmq

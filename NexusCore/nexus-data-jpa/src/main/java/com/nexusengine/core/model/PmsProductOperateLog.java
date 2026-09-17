@@ -37,10 +37,10 @@ public class PmsProductOperateLog implements Serializable {
 
     @Column(name = "gift_point_old")
     @Schema(title = "Gift point old")
-    private Integer giftPointOld;
+    private Integer giftPointsOld;
 
     @Column(name = "gift_point_new")
-    private Integer giftPointNew;
+    private Integer giftPointsNew;
 
     @Column(name = "use_point_limit_old")
     private Integer usePointLimitOld;

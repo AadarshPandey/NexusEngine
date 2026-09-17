@@ -22,7 +22,7 @@ public class ConfirmOrderResult {
     @Schema(title = "Coupon history detail list")
     private List<SmsCouponHistoryDetail> couponHistoryDetailList;
     @Schema(title = "Member integration")
-    private Integer memberIntegration;
+    private Integer memberPoints;
     @Schema(title = "Calc amount")
     private CalcAmount calcAmount;
 

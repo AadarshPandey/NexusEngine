@@ -68,7 +68,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
         result.setMemberReceiveAddressList(memberReceiveAddressList);
         List<SmsCouponHistoryDetail> couponHistoryDetailList = memberCouponService.listCart(cartPromotionItemList, 1);
         result.setCouponHistoryDetailList(couponHistoryDetailList);
-        result.setMemberIntegration(currentMember.getRewardPoints());
+        result.setMemberPoints(currentMember.getPoints());
         ConfirmOrderResult.CalcAmount calcAmount = calcCartAmount(cartPromotionItemList);
         result.setCalcAmount(calcAmount);
         return result;
@@ -119,8 +119,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
             orderItem.setProductCategoryId(cartPromotionItem.getProductCategoryId());
             orderItem.setPromotionAmount(cartPromotionItem.getReduceAmount());
             orderItem.setPromotionName(cartPromotionItem.getPromotionMessage());
-            orderItem.setGiftIntegration(cartPromotionItem.getRewardPoints());
-            orderItem.setGiftGrowth(cartPromotionItem.getExperiencePoints());
+            orderItem.setEarnedPoints(cartPromotionItem.getEarnedPoints());
             orderItemList.add(orderItem);
         }
             for (CartPromotionItem item : cartPromotionItemList) {
@@ -143,19 +142,19 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
             }
             handleCouponAmount(orderItemList, couponHistoryDetail);
         }
-        if (orderParam.getUseIntegration() == null || orderParam.getUseIntegration().equals(0)) {
+        if (orderParam.getUsePoints() == null || orderParam.getUsePoints().equals(0)) {
             for (OmsOrderItem orderItem : orderItemList) {
-                orderItem.setIntegrationAmount(new BigDecimal(0));
+                orderItem.setPointsDiscountAmount(new BigDecimal(0));
             }
         } else {
             BigDecimal totalAmount = calcTotalAmount(orderItemList);
-            BigDecimal integrationAmount = getUseIntegrationAmount(orderParam.getUseIntegration(), totalAmount, currentMember, orderParam.getCouponId() != null);
-            if (integrationAmount.compareTo(new BigDecimal(0)) == 0) {
-                Asserts.fail("Integration points not applicable");
+            BigDecimal pointsAmount = getUsePointsAmount(orderParam.getUsePoints(), totalAmount, currentMember, orderParam.getCouponId() != null);
+            if (pointsAmount.compareTo(new BigDecimal(0)) == 0) {
+                Asserts.fail("Points points not applicable");
             } else {
                 for (OmsOrderItem orderItem : orderItemList) {
-                    BigDecimal perAmount = orderItem.getProductPrice().divide(totalAmount, 3, RoundingMode.HALF_EVEN).multiply(integrationAmount);
-                    orderItem.setIntegrationAmount(perAmount);
+                    BigDecimal perAmount = orderItem.getProductPrice().divide(totalAmount, 3, RoundingMode.HALF_EVEN).multiply(pointsAmount);
+                    orderItem.setPointsDiscountAmount(perAmount);
                 }
             }
         }
@@ -173,12 +172,12 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
             order.setCouponId(orderParam.getCouponId());
             order.setCouponAmount(calcCouponAmount(orderItemList));
         }
-        if (orderParam.getUseIntegration() == null) {
-            order.setRewardPoints(0);
-            order.setIntegrationAmount(new BigDecimal(0));
+        if (orderParam.getUsePoints() == null) {
+            order.setEarnedPoints(0);
+            order.setPointsDiscountAmount(new BigDecimal(0));
         } else {
-            order.setRewardPoints(orderParam.getUseIntegration());
-            order.setIntegrationAmount(calcIntegrationAmount(orderItemList));
+            order.setEarnedPoints(orderParam.getUsePoints());
+            order.setPointsDiscountAmount(calcPointsAmount(orderItemList));
         }
         order.setPayAmount(calcPayAmount(order));
         order.setMemberId(currentMember.getId());
@@ -207,8 +206,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
         order.setReceiverDetailAddress(address.getDetailAddress());
         order.setConfirmStatus(0);
         order.setDeleteStatus(0);
-        order.setRewardPoints(calcGifIntegration(orderItemList));
-        order.setExperiencePoints(calcGiftGrowth(orderItemList));
+        order.setEarnedPoints(calcEarnedPoints(orderItemList));
         order.setOrderSn(generateOrderSn(order));
         OmsOrderSetting orderSetting = orderSettingRepository.findById(1L).orElse(null);
         if (orderSetting != null) {
@@ -223,12 +221,12 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
         if (orderParam.getCouponId() != null) {
             updateCouponStatus(orderParam.getCouponId(), currentMember.getId(), 1);
         }
-        if (orderParam.getUseIntegration() != null) {
-            order.setUseIntegration(orderParam.getUseIntegration());
-            if (currentMember.getRewardPoints() == null) {
-                currentMember.setRewardPoints(0);
+        if (orderParam.getUsePoints() != null) {
+            order.setUsedPoints(orderParam.getUsePoints());
+            if (currentMember.getPoints() == null) {
+                currentMember.setPoints(0);
             }
-            memberService.updateIntegration(currentMember.getId(), currentMember.getRewardPoints() - orderParam.getUseIntegration());
+            memberService.updatePoints(currentMember.getId(), currentMember.getPoints() - orderParam.getUsePoints());
         }
         deleteCartItemList(cartPromotionItemList, currentMember);
         sendDelayMessageCancelOrder(order.getId());
@@ -302,9 +300,9 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
                 for (OmsOrderDetail timeOutOrder : timeOutOrders) {
                     portalOrderDao.releaseSkuStockLock(timeOutOrder.getOrderItemList());
                     updateCouponStatus(timeOutOrder.getCouponId(), timeOutOrder.getMemberId(), 0);
-                    if (timeOutOrder.getUseIntegration() != null) {
+                    if (timeOutOrder.getUsedPoints() != null) {
                         UmsMember member = memberService.getById(timeOutOrder.getMemberId());
-                        memberService.updateIntegration(timeOutOrder.getMemberId(), member.getRewardPoints() + timeOutOrder.getUseIntegration());
+                        memberService.updatePoints(timeOutOrder.getMemberId(), member.getPoints() + timeOutOrder.getUsedPoints());
                     }
                 }
                 return timeOutOrders.size();
@@ -338,9 +336,9 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
             portalOrderDao.releaseSkuStockLock(orderItemList);
         }
         updateCouponStatus(cancelOrder.getCouponId(), cancelOrder.getMemberId(), 0);
-        if (cancelOrder.getUseIntegration() != null) {
+        if (cancelOrder.getUsedPoints() != null) {
             UmsMember member = memberService.getById(cancelOrder.getMemberId());
-            memberService.updateIntegration(cancelOrder.getMemberId(), member.getRewardPoints() + cancelOrder.getUseIntegration());
+            memberService.updatePoints(cancelOrder.getMemberId(), member.getPoints() + cancelOrder.getUsedPoints());
         }
     }
 
@@ -470,21 +468,11 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
         cartItemService.delete(currentMember.getId(), ids);
     }
 
-    private Integer calcGiftGrowth(List<OmsOrderItem> orderItemList) {
+    private Integer calcEarnedPoints(List<OmsOrderItem> orderItemList) {
         int sum = 0;
         for (OmsOrderItem orderItem : orderItemList) {
-            if (orderItem.getGiftGrowth() != null) {
-                sum += orderItem.getGiftGrowth() * orderItem.getProductQuantity();
-            }
-        }
-        return sum;
-    }
-
-    private Integer calcGifIntegration(List<OmsOrderItem> orderItemList) {
-        int sum = 0;
-        for (OmsOrderItem orderItem : orderItemList) {
-            if (orderItem.getGiftIntegration() != null) {
-                sum += orderItem.getGiftIntegration() * orderItem.getProductQuantity();
+            if (orderItem.getEarnedPoints() != null) {
+                sum += orderItem.getEarnedPoints() * orderItem.getProductQuantity();
             }
         }
         return sum;
@@ -508,7 +496,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
             BigDecimal realAmount = orderItem.getProductPrice()
                     .subtract(orderItem.getPromotionAmount())
                     .subtract(orderItem.getCouponAmount())
-                    .subtract(orderItem.getIntegrationAmount());
+                    .subtract(orderItem.getPointsDiscountAmount());
             orderItem.setRealAmount(realAmount);
         }
     }
@@ -524,13 +512,13 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
 
     private BigDecimal calcPayAmount(OmsOrder order) {
         return order.getTotalAmount().add(order.getFreightAmount())
-                .subtract(order.getPromotionAmount()).subtract(order.getCouponAmount()).subtract(order.getIntegrationAmount());
+                .subtract(order.getPromotionAmount()).subtract(order.getCouponAmount()).subtract(order.getPointsDiscountAmount());
     }
 
-    private BigDecimal calcIntegrationAmount(List<OmsOrderItem> orderItemList) {
+    private BigDecimal calcPointsAmount(List<OmsOrderItem> orderItemList) {
         BigDecimal amount = new BigDecimal(0);
         for (OmsOrderItem item : orderItemList) {
-            if (item.getIntegrationAmount() != null) amount = amount.add(item.getIntegrationAmount().multiply(new BigDecimal(item.getProductQuantity())));
+            if (item.getPointsDiscountAmount() != null) amount = amount.add(item.getPointsDiscountAmount().multiply(new BigDecimal(item.getProductQuantity())));
         }
         return amount;
     }
@@ -551,7 +539,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
         return amount;
     }
 
-    private BigDecimal getUseIntegrationAmount(Integer useIntegration, BigDecimal totalAmount, UmsMember currentMember, boolean hasCoupon) {
+    private BigDecimal getUsePointsAmount(Integer usePoints, BigDecimal totalAmount, UmsMember currentMember, boolean hasCoupon) {
         return new BigDecimal(0);
     }
 

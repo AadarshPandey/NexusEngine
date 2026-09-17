@@ -55,8 +55,7 @@ CREATE TABLE IF NOT EXISTS pms_product (
     verify_status INTEGER,
     sort INTEGER,
     sale INTEGER,
-    gift_growth INTEGER,
-    gift_point INTEGER,
+    gift_points INTEGER,
     use_point_limit INTEGER,
     sub_title VARCHAR(255),
     unit VARCHAR(255),
@@ -145,8 +144,8 @@ CREATE TABLE IF NOT EXISTS pms_product_operate_log (
     price_new NUMERIC(19,2),
     sale_price_old NUMERIC(19,2),
     sale_price_new NUMERIC(19,2),
-    gift_point_old INTEGER,
-    gift_point_new INTEGER,
+    gift_points_old INTEGER,
+    gift_points_new INTEGER,
     use_point_limit_old INTEGER,
     use_point_limit_new INTEGER,
     operate_man VARCHAR(255),
@@ -204,13 +203,6 @@ CREATE TABLE IF NOT EXISTS pms_comment_reply (
     type INTEGER
 );
 
-CREATE TABLE IF NOT EXISTS pms_member_price (
-    id BIGSERIAL PRIMARY KEY,
-    product_id BIGINT,
-    member_level_id BIGINT,
-    member_price NUMERIC(19,2),
-    member_level_name VARCHAR(255)
-);
 
 CREATE TABLE IF NOT EXISTS pms_review (
     id BIGSERIAL PRIMARY KEY,
@@ -282,7 +274,7 @@ CREATE TABLE IF NOT EXISTS oms_order (
     pay_amount NUMERIC(19,2),
     freight_amount NUMERIC(19,2),
     promotion_amount NUMERIC(19,2),
-    integration_amount NUMERIC(19,2),
+    points_discount_amount NUMERIC(19,2),
     coupon_amount NUMERIC(19,2),
     discount_amount NUMERIC(19,2),
     pay_type INTEGER,
@@ -292,8 +284,7 @@ CREATE TABLE IF NOT EXISTS oms_order (
     delivery_company VARCHAR(255),
     delivery_sn VARCHAR(255),
     auto_confirm_day INTEGER,
-    reward_points INTEGER,
-    experience_points INTEGER,
+    earned_points INTEGER,
     promotion_info VARCHAR(255),
     bill_type INTEGER,
     bill_header VARCHAR(255),
@@ -310,7 +301,7 @@ CREATE TABLE IF NOT EXISTS oms_order (
     note VARCHAR(255),
     confirm_status INTEGER,
     delete_status INTEGER,
-    use_integration INTEGER,
+    used_points INTEGER,
     payment_id VARCHAR(255),
     payment_time TIMESTAMP,
     delivery_time TIMESTAMP,
@@ -337,10 +328,9 @@ CREATE TABLE IF NOT EXISTS oms_order_item (
     promotion_name VARCHAR(255),
     promotion_amount NUMERIC(19,2),
     coupon_amount NUMERIC(19,2),
-    integration_amount NUMERIC(19,2),
+    points_discount_amount NUMERIC(19,2),
     real_amount NUMERIC(19,2),
-    gift_integration INTEGER,
-    gift_growth INTEGER,
+    earned_points INTEGER,
     product_attr VARCHAR(255)
 );
 
@@ -447,7 +437,6 @@ CREATE TABLE IF NOT EXISTS ums_admin_role_relation (
 
 CREATE TABLE IF NOT EXISTS ums_member (
     id BIGSERIAL PRIMARY KEY,
-    member_level_id BIGINT,
     username VARCHAR(255),
     password VARCHAR(255),
     nickname VARCHAR(255),
@@ -460,27 +449,11 @@ CREATE TABLE IF NOT EXISTS ums_member (
     birthday TIMESTAMP,
     personalized_signature VARCHAR(255),
     source_type INTEGER,
-    reward_points INTEGER,
-    experience_points INTEGER,
+    points INTEGER,
     bonus_draws_remaining INTEGER,
-    lifetime_reward_points INTEGER
+    lifetime_points INTEGER
 );
 
-CREATE TABLE IF NOT EXISTS ums_member_level (
-    id BIGSERIAL PRIMARY KEY,
-    name VARCHAR(255),
-    growth_point INTEGER,
-    default_status INTEGER,
-    free_shipping_threshold NUMERIC(19,2),
-    review_reward_xp INTEGER,
-    has_free_shipping_perk INTEGER,
-    can_earn_login_rewards INTEGER,
-    has_review_privilege INTEGER,
-    has_promotion_privilege INTEGER,
-    has_vip_pricing INTEGER,
-    has_birthday_privilege INTEGER,
-    note VARCHAR(255)
-);
 
 CREATE TABLE IF NOT EXISTS ums_member_login_log (
     id BIGSERIAL PRIMARY KEY,
@@ -582,8 +555,7 @@ CREATE TABLE IF NOT EXISTS sms_coupon (
     use_count INTEGER,
     receive_count INTEGER,
     enable_time TIMESTAMP,
-    code VARCHAR(255),
-    member_level INTEGER
+    code VARCHAR(255)
 );
 
 CREATE TABLE IF NOT EXISTS sms_coupon_history (

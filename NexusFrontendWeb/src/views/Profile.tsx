@@ -202,9 +202,8 @@ const Profile: React.FC = () => {
             sx={{ width: 100, height: 100, mx: 'auto', mb: 2 }} 
           />
           <Typography variant="h5" gutterBottom>{memberInfo?.nickname || authUser?.username}</Typography>
-          <Typography variant="body2" color="text.secondary">Member Level: {memberInfo?.memberLevelId || 1}</Typography>
           <Divider sx={{ my: 2 }} />
-          <Typography variant="body2">Points: {memberInfo?.integration || 0}</Typography>
+          <Typography variant="body2">Points: {memberInfo?.points || 0}</Typography>
         </Paper>
       </Box>
 
