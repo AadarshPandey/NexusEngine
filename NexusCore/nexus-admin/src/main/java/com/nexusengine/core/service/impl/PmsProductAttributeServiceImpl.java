@@ -19,6 +19,7 @@ import java.util.ArrayList;
 @lombok.RequiredArgsConstructor
 public class PmsProductAttributeServiceImpl implements PmsProductAttributeService {
     private final PmsProductAttributeRepository productAttributeRepository;
+    private final com.nexusengine.core.repository.PmsProductCategoryAttributeRelationRepository relationRepository;
     private final PmsProductAttributeCategoryRepository productAttributeCategoryRepository;
 
     @Override
@@ -81,6 +82,21 @@ public class PmsProductAttributeServiceImpl implements PmsProductAttributeServic
 
     @Override
     public List<ProductAttrInfo> getProductAttrInfo(Long productCategoryId) {
-        return new ArrayList<>(); // Bypass DTO query compilation error
+        
+        List<com.nexusengine.core.model.PmsProductCategoryAttributeRelation> relations = relationRepository.findAll();
+        List<ProductAttrInfo> result = new ArrayList<>();
+        
+        for (com.nexusengine.core.model.PmsProductCategoryAttributeRelation rel : relations) {
+            if (rel.getProductCategoryId() != null && rel.getProductCategoryId().equals(productCategoryId)) {
+                com.nexusengine.core.model.PmsProductAttribute attr = productAttributeRepository.findById(rel.getProductAttributeId()).orElse(null);
+                if (attr != null) {
+                    ProductAttrInfo info = new ProductAttrInfo();
+                    info.setAttributeId(attr.getId());
+                    info.setAttributeCategoryId(attr.getProductAttributeCategoryId());
+                    result.add(info);
+                }
+            }
+        }
+        return result;
     }
 }

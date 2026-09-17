@@ -14,6 +14,7 @@ import java.util.ArrayList;
 @lombok.RequiredArgsConstructor
 public class PmsProductAttributeCategoryServiceImpl implements PmsProductAttributeCategoryService {
     private final PmsProductAttributeCategoryRepository productAttributeCategoryRepository;
+    private final com.nexusengine.core.repository.PmsProductAttributeRepository productAttributeRepository;
 
     @Override
     public int create(String name) {
@@ -50,6 +51,20 @@ public class PmsProductAttributeCategoryServiceImpl implements PmsProductAttribu
 
     @Override
     public List<PmsProductAttributeCategoryItem> getListWithAttr() {
-        return new ArrayList<>(); // Legacy DTO mapping bypassed for compilation
+        
+        List<PmsProductAttributeCategory> allCategories = productAttributeCategoryRepository.findAll();
+        List<PmsProductAttributeCategoryItem> result = new ArrayList<>();
+        
+        for (PmsProductAttributeCategory category : allCategories) {
+            PmsProductAttributeCategoryItem item = new PmsProductAttributeCategoryItem();
+            org.springframework.beans.BeanUtils.copyProperties(category, item);
+            
+            // fetch attributes
+            List<com.nexusengine.core.model.PmsProductAttribute> attrs = productAttributeRepository.findByProductAttributeCategoryId(category.getId());
+            item.setProductAttributeList(attrs);
+            
+            result.add(item);
+        }
+        return result;
     }
 }

@@ -60,7 +60,7 @@ const Checkout: React.FC = () => {
         cartIds: items.map(i => i.id)
       });
       
-      const order = orderRes.data.order;
+      const order = ((orderRes as any).data).order;
       
       // 2. Import Razorpay APIs
       const { createRazorpayOrder, verifyRazorpayPayment } = await import('../api/order');

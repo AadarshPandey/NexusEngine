@@ -53,7 +53,7 @@ const BannerCarousel: React.FC<BannerCarouselProps> = ({ banners }) => {
             mt: 'auto',
             mb: 4
           }}>
-            <Typography variant="h4" color="white" fontWeight="bold">
+            <Typography variant="h4" color="white" sx={{ fontWeight: "bold" }}>
               {banner.name || banner.title || 'Special Promotion'}
             </Typography>
             <Typography variant="subtitle1" color="white">

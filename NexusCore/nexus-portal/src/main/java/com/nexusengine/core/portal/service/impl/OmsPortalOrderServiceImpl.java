@@ -397,7 +397,10 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
         resultPage.setTotal(commonOrderPage.getTotal());
         resultPage.setTotalPage(commonOrderPage.getTotalPage());
         List<OmsOrder> orderList = orderPage.getContent();
-        if (CollUtil.isEmpty(orderList)) return resultPage;
+        if (CollUtil.isEmpty(orderList)) {
+            resultPage.setList(new ArrayList<>());
+            return resultPage;
+        }
         List<Long> orderIds = orderList.stream().map(OmsOrder::getId).collect(Collectors.toList());
         List<OmsOrderItem> allOrderItems = orderItemRepository.findByOrderIdIn(orderIds);
         List<OmsOrderReturnApply> allApplies = returnApplyRepository.findByOrderIdIn(orderIds);

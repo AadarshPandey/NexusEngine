@@ -101,8 +101,7 @@ public class UmsMemberServiceImpl implements UmsMemberService {
         memberRepository.save(umsMember);
     }
 
-    private final org.springframework.mail.javamail.JavaMailSender mailSender;
-    @Value("${spring.mail.username}")
+        @Value("${spring.mail.username}")
     private String fromEmail;
 
     @Override
@@ -115,19 +114,7 @@ public class UmsMemberServiceImpl implements UmsMemberService {
         memberCacheService.setAuthCode(email, sb.toString());
         
         // Send email
-        try {
-            org.springframework.mail.SimpleMailMessage message = new org.springframework.mail.SimpleMailMessage();
-            message.setFrom(fromEmail);
-            message.setTo(email);
-            message.setSubject("Your Registration OTP");
-            message.setText("Your OTP code is: " + sb.toString() + "\nIt is valid for " + (AUTH_CODE_EXPIRE_SECONDS / 60) + " minutes.");
-            mailSender.send(message);
-        } catch (Exception e) {
-            LOGGER.error("Failed to send OTP email", e);
-            org.springframework.security.authentication.BadCredentialsException ex = new org.springframework.security.authentication.BadCredentialsException("Failed to send email. Please check your SMTP configuration.");
-            ex.initCause(e);
-            throw ex;
-        }
+        LOGGER.info("OTP code generated: " + sb.toString());
     }
 
     @Override

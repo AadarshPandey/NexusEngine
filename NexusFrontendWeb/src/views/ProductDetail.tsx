@@ -192,7 +192,7 @@ const ProductDetail: React.FC = () => {
             {attributesToRender.map(attr => (
               <Box key={attr.id} sx={{ mb: 3 }}>
                 <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 'bold' }}>{attr.name}</Typography>
-                <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+                <Stack direction="row" spacing={1} sx={{ flexWrap: "wrap" }} useFlexGap>
                   {attr.values.map(val => (
                     <Chip
                       key={val}

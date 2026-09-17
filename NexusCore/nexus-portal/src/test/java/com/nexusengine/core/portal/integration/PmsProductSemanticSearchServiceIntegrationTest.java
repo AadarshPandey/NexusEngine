@@ -59,7 +59,6 @@ import com.nexusengine.core.portal.controller.*;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import com.nexusengine.core.portal.service.impl.*;
 import com.nexusengine.core.portal.controller.*;
-import org.springframework.data.mongodb.core.MongoTemplate;
 
 import com.nexusengine.core.portal.service.impl.*;
 import com.nexusengine.core.portal.controller.*;
@@ -77,9 +76,7 @@ public class PmsProductSemanticSearchServiceIntegrationTest {
     @org.springframework.boot.autoconfigure.SpringBootApplication(
         scanBasePackages = "com.nexusengine.core",
         exclude = {
-            org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration.class,
-            org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration.class,
-            org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration.class,
+                                    org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration.class,
             org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration.class,
             org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration.class
         }
@@ -103,23 +100,9 @@ public class PmsProductSemanticSearchServiceIntegrationTest {
     
     @MockBean
     private RabbitTemplate rabbitTemplate;
-    @MockBean
-    private MongoTemplate mongoTemplate;
-    @MockBean
-    private org.springframework.data.mongodb.core.convert.MongoConverter mongoConverter;
-    @MockBean
-    private org.springframework.data.mongodb.MongoDatabaseFactory mongoDatabaseFactory;
-    @MockBean
-    private org.springframework.data.mongodb.gridfs.GridFsTemplate gridFsTemplate;
-    @MockBean
+                    @MockBean
     private com.nexusengine.core.common.service.RedisService redisService;
-    @MockBean
-    private com.nexusengine.core.portal.repository.MemberBrandAttentionRepository memberBrandAttentionRepository;
-    @MockBean
-    private com.nexusengine.core.portal.repository.MemberReadHistoryRepository memberReadHistoryRepository;
-    @MockBean
-    private com.nexusengine.core.portal.repository.MemberProductCollectionRepository memberProductCollectionRepository;
-    
+                
     @Container
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(DockerImageName.parse("pgvector/pgvector:pg17").asCompatibleSubstituteFor("postgres"))
             .withDatabaseName("nexuscore")

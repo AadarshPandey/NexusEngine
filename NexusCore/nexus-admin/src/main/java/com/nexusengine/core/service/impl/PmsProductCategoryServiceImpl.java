@@ -65,9 +65,7 @@ public class PmsProductCategoryServiceImpl implements PmsProductCategoryService 
     @Override
     public org.springframework.data.domain.Page<PmsProductCategory> getList(Long parentId, Integer pageSize, Integer pageNum) {
         org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(pageNum > 0 ? pageNum - 1 : 0, pageSize, Sort.by(Sort.Direction.ASC, "id"));
-        if (parentId == 0L) {
-            return productCategoryRepository.findByParentIdIsNullOrderBySortDesc(pageable);
-        }
+        
         return productCategoryRepository.findByParentIdOrderBySortDesc(parentId, pageable);
     }
 
@@ -104,7 +102,26 @@ public class PmsProductCategoryServiceImpl implements PmsProductCategoryService 
 
     @Override
     public List<PmsProductCategoryWithChildrenItem> listWithChildren() {
-        return new ArrayList<>(); // Bypass DAO compilation error
+        
+        List<PmsProductCategory> allCategories = productCategoryRepository.findAll();
+        List<PmsProductCategoryWithChildrenItem> result = new ArrayList<>();
+        
+        for (PmsProductCategory category : allCategories) {
+            if (category.getParentId() == 0) {
+                PmsProductCategoryWithChildrenItem item = new PmsProductCategoryWithChildrenItem();
+                org.springframework.beans.BeanUtils.copyProperties(category, item);
+                
+                List<PmsProductCategory> children = new ArrayList<>();
+                for (PmsProductCategory child : allCategories) {
+                    if (child.getParentId() != null && child.getParentId().equals(category.getId())) {
+                        children.add(child);
+                    }
+                }
+                item.setChildren(children);
+                result.add(item);
+            }
+        }
+        return result;
     }
 
     private void setCategoryLevel(PmsProductCategory productCategory) {

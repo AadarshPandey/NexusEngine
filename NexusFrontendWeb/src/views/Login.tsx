@@ -57,7 +57,6 @@ const Login: React.FC = () => {
           </Button>
           <Box sx={{ textAlign: 'center' }}>
             <Typography variant="body2">
-              Don't have an account? <Link to="/register" style={{ textDecoration: 'none' }}>Sign Up here</Link>
             </Typography>
           </Box>
         </form>

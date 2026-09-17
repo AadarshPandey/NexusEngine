@@ -33,6 +33,7 @@ const Profile: React.FC = () => {
   const [orders, setOrders] = useState<OmsOrderDetail[]>([]);
   const [addresses, setAddresses] = useState<UmsMemberReceiveAddress[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [openAddAddress, setOpenAddAddress] = useState(false);
   const [newAddress, setNewAddress] = useState<Partial<UmsMemberReceiveAddress> & { coordinates?: string }>({
     name: '', phoneNumber: '', province: '', city: '', region: '', detailAddress: '', postCode: '', coordinates: ''
@@ -78,6 +79,7 @@ const Profile: React.FC = () => {
   const loadDashboardData = async () => {
     try {
       setLoading(true);
+      setError(null);
       const [memberRes, orderRes, addressRes] = await Promise.all([
         fetchMemberInfo(),
         fetchOrderList(-1, 1, 100),
@@ -88,6 +90,7 @@ const Profile: React.FC = () => {
       setAddresses(addressRes.data || []);
     } catch (error) {
       console.error('Failed to load dashboard data', error);
+      setError(error instanceof Error ? error.message : 'Failed to load dashboard data');
     } finally {
       setLoading(false);
     }
@@ -178,6 +181,15 @@ const Profile: React.FC = () => {
 
   if (loading) {
     return <Box sx={{ display: 'flex', justifyContent: 'center', mt: 10 }}><CircularProgress /></Box>;
+  }
+
+  if (error) {
+    return (
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 10, gap: 2 }}>
+        <Typography color="error">{error}</Typography>
+        <Button variant="contained" onClick={loadDashboardData}>Retry</Button>
+      </Box>
+    );
   }
 
   return (

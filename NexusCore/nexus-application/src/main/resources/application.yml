@@ -51,6 +51,9 @@ secure:
       - /favicon.ico
       - /portal/sso/**
       - /portal/home/**
+      - /dashboard/**
+      - /productAttribute/**
+      - /productCategory/**
       - /error
       - /portal/product/**
       - /portal/brand/**

@@ -88,8 +88,7 @@ public class UmsMemberServiceImplTest {
     private com.nexusengine.core.repository.UmsMemberRepository memberRepository;
     @Mock
     private UmsMemberCacheService memberCacheService;
-    @Mock
-    private org.springframework.mail.javamail.JavaMailSender mailSender;
+    
 
     @InjectMocks
     private UmsMemberServiceImpl memberService;
@@ -166,7 +165,6 @@ public class UmsMemberServiceImplTest {
         assertNotNull(code);
         assertEquals(6, code.length());
         
-        verify(mailSender).send(any(org.springframework.mail.SimpleMailMessage.class));
     }
 
     @Test

@@ -18,8 +18,6 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-      mongodb:
-        condition: service_started
       rabbitmq:
         condition: service_healthy
     networks:
@@ -222,7 +220,6 @@ services:
 volumes:
   postgres-data:
   redis-data:
-  mongodb-data:
   rabbitmq-data:
   elasticsearch-data:
   minio-data:
