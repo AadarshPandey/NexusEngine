@@ -36,7 +36,7 @@ public interface PmsProductCategoryService {
      * @param pageNum the pageNum
      * @return the result of the operation
      */
-    List<PmsProductCategory> getList(Long parentId, Integer pageSize, Integer pageNum);
+    org.springframework.data.domain.Page<PmsProductCategory> getList(Long parentId, Integer pageSize, Integer pageNum);
 
         /**
      * Executes the operation.

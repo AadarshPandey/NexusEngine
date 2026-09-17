@@ -60,7 +60,7 @@ public class UmsResourceServiceImpl implements UmsResourceService {
                 predicates.add(cb.like(root.get("url"), "%" + urlKeyword + "%"));
             }
             return cb.and(predicates.toArray(new jakarta.persistence.criteria.Predicate[0]));
-        }, PageRequest.of(page, pageSize));
+        }, PageRequest.of(page > 0 ? page - 1 : 0, pageSize));
     }
 
     @Override

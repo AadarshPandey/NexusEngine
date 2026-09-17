@@ -67,7 +67,10 @@ public class HomeServiceImpl implements HomeService {
 
     @Override
     public List<PmsProductCategory> getProductCateList(Long parentId) {
-        return productCategoryRepository.findByParentIdOrderBySortDesc(parentId);
+        if (parentId != null && parentId == 0L) {
+            return productCategoryRepository.findByParentIdIsNullOrderBySortDesc(org.springframework.data.domain.PageRequest.of(0, 100)).getContent();
+        }
+        return productCategoryRepository.findByParentIdOrderBySortDesc(parentId, org.springframework.data.domain.PageRequest.of(0, 100)).getContent();
     }
 
     @Override

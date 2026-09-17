@@ -20,8 +20,8 @@ public class PmsBrandServiceImpl implements PmsBrandService {
     private final PmsProductRepository productRepository;
 
     @Override
-    public List<PmsBrand> listAllBrand() {
-        return brandRepository.findAll(PageRequest.of(0, 1000)).getContent();
+    public org.springframework.data.domain.Page<PmsBrand> listAllBrand() {
+        return brandRepository.findAll(PageRequest.of(0, 1000));
     }
 
     @Override
@@ -60,8 +60,8 @@ public class PmsBrandServiceImpl implements PmsBrandService {
     }
 
     @Override
-    public List<PmsBrand> listBrand(String keyword, Integer showStatus, int pageNum, int pageSize) {
-        return brandRepository.findAll(PageRequest.of(pageNum, pageSize, Sort.by(Sort.Direction.DESC, "sort"))).getContent();
+    public org.springframework.data.domain.Page<PmsBrand> listBrand(String keyword, Integer showStatus, int pageNum, int pageSize) {
+        return brandRepository.findAll(PageRequest.of(pageNum > 0 ? pageNum - 1 : 0, pageSize, Sort.by(Sort.Direction.DESC, "sort")));
     }
 
     @Override

@@ -15,7 +15,7 @@ public interface PmsBrandService {
      * Executes the operation.
      * @return the result of the operation
      */
-    List<PmsBrand> listAllBrand();
+    org.springframework.data.domain.Page<PmsBrand> listAllBrand();
 
         /**
      * Executes the operation.
@@ -55,7 +55,7 @@ public interface PmsBrandService {
      * @param pageSize the pageSize
      * @return the result of the operation
      */
-    List<PmsBrand> listBrand(String keyword, Integer showStatus, int pageNum, int pageSize);
+    org.springframework.data.domain.Page<PmsBrand> listBrand(String keyword, Integer showStatus, int pageNum, int pageSize);
 
         /**
      * Executes the operation.

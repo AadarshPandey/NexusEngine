@@ -28,8 +28,8 @@ public class PmsBrandController {
     @Operation(summary =  "Get list Operation")
     @GetMapping("/listAll")
 
-    public CommonResult<List<PmsBrand>> getList() {
-        return CommonResult.success(brandService.listAllBrand());
+    public CommonResult<CommonPage<PmsBrand>> getList() {
+        return CommonResult.success(CommonPage.restPage(brandService.listAllBrand()));
     }
 
     @Operation(summary =  "Create Operation")
@@ -80,7 +80,7 @@ public class PmsBrandController {
                                                       @RequestParam(value = "showStatus",required = false) Integer showStatus,
                                                       @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
                                                       @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize) {
-        List<PmsBrand> brandList = brandService.listBrand(keyword,showStatus,pageNum, pageSize);
+        org.springframework.data.domain.Page<PmsBrand> brandList = brandService.listBrand(keyword,showStatus,pageNum, pageSize);
         return CommonResult.success(CommonPage.restPage(brandList));
     }
 

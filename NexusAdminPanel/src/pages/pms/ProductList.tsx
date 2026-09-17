@@ -17,7 +17,7 @@ const ProductList: React.FC = () => {
     publishStatus: '',
     verifyStatus: '',
     pageNum: 1,
-    pageSize: 100
+    pageSize: 10
   });
   
   const navigate = useNavigate();
@@ -29,7 +29,7 @@ const ProductList: React.FC = () => {
   const fetchInitialData = async () => {
     try {
       const [brandRes, cateRes] = await Promise.all([
-        getBrandListAPI({ pageNum: 1, pageSize: 100 }),
+        getBrandListAPI({ pageNum: 1, pageSize: 10 }),
         getProductCategoryListWithChildrenAPI()
       ]);
       setBrands(brandRes.data?.list || []);

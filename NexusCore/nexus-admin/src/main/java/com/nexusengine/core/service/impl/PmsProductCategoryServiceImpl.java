@@ -63,8 +63,12 @@ public class PmsProductCategoryServiceImpl implements PmsProductCategoryService 
     }
 
     @Override
-    public List<PmsProductCategory> getList(Long parentId, Integer pageSize, Integer pageNum) {
-        return productCategoryRepository.findByParentIdOrderBySortDesc(parentId);
+    public org.springframework.data.domain.Page<PmsProductCategory> getList(Long parentId, Integer pageSize, Integer pageNum) {
+        org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(pageNum > 0 ? pageNum - 1 : 0, pageSize);
+        if (parentId == 0L) {
+            return productCategoryRepository.findByParentIdIsNullOrderBySortDesc(pageable);
+        }
+        return productCategoryRepository.findByParentIdOrderBySortDesc(parentId, pageable);
     }
 
     @Override

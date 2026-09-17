@@ -46,7 +46,7 @@ public interface PmsProductService {
      * @param pageNum the pageNum
      * @return the result of the operation
      */
-    List<PmsProduct> list(PmsProductQueryParam productQueryParam, Integer pageSize, Integer pageNum);
+    org.springframework.data.domain.Page<PmsProduct> list(PmsProductQueryParam productQueryParam, Integer pageSize, Integer pageNum);
 
         /**
      * Executes the operation.

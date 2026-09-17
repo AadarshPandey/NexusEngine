@@ -58,7 +58,7 @@ public class PmsProductCategoryController {
     public CommonResult<CommonPage<PmsProductCategory>> getList(@PathVariable Long parentId,
                                                                 @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
                                                                 @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
-        List<PmsProductCategory> productCategoryList = productCategoryService.getList(parentId, pageSize, pageNum);
+        org.springframework.data.domain.Page<PmsProductCategory> productCategoryList = productCategoryService.getList(parentId, pageSize, pageNum);
         return CommonResult.success(CommonPage.restPage(productCategoryList));
     }
 

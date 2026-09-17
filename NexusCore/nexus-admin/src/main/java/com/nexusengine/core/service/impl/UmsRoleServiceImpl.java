@@ -58,7 +58,7 @@ public class UmsRoleServiceImpl implements UmsRoleService {
     @Override
     public Page<UmsRole> list(String keyword, Integer pageSize, Integer pageNum) {
         int page = pageNum > 0 ? pageNum - 1 : 0;
-        return roleRepository.findAll(PageRequest.of(page, pageSize));
+        return roleRepository.findAll(PageRequest.of(page > 0 ? page - 1 : 0, pageSize));
     }
 
     @Override

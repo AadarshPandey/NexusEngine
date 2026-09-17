@@ -45,7 +45,7 @@ public interface PmsProductAttributeCategoryService {
      * @param pageNum the pageNum
      * @return the result of the operation
      */
-    List<PmsProductAttributeCategory> getList(Integer pageSize, Integer pageNum);
+    org.springframework.data.domain.Page<PmsProductAttributeCategory> getList(Integer pageSize, Integer pageNum);
 
         /**
      * Executes the operation.

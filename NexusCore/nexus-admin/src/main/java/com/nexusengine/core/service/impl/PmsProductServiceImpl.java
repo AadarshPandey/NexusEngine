@@ -134,15 +134,15 @@ public class PmsProductServiceImpl implements PmsProductService {
     private final com.nexusengine.core.service.UmsAdminService adminService;
 
     @Override
-    public List<PmsProduct> list(PmsProductQueryParam productQueryParam, Integer pageSize, Integer pageNum) {
+    public org.springframework.data.domain.Page<PmsProduct> list(PmsProductQueryParam productQueryParam, Integer pageSize, Integer pageNum) {
         String username = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getName();
         UmsAdmin admin = adminService.getAdminByUsername(username);
         Long vendorId = admin != null ? admin.getVendorId() : null;
         org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(pageNum - 1 > 0 ? pageNum - 1 : 0, pageSize);
         if (vendorId != null) {
-            return productRepository.findByVendorId(vendorId, pageable).getContent();
+            return productRepository.findByVendorId(vendorId, pageable);
         }
-        return productRepository.findAll(pageable).getContent();
+        return productRepository.findAll(pageable);
     }
 
     private void checkVendorAuthorization(List<Long> ids) {

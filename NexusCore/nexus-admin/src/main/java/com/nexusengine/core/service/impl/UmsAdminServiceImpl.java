@@ -130,7 +130,7 @@ public class UmsAdminServiceImpl implements UmsAdminService {
 
     @Override
     public List<UmsAdmin> list(String keyword, Integer pageSize, Integer pageNum) {
-        return adminRepository.findAll(PageRequest.of(pageNum, pageSize)).getContent();
+        return adminRepository.findAll(PageRequest.of(pageNum > 0 ? pageNum - 1 : 0, pageSize)).getContent();
     }
 
     @Override

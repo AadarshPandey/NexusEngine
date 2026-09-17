@@ -44,8 +44,8 @@ public class PmsProductAttributeCategoryServiceImpl implements PmsProductAttribu
     }
 
     @Override
-    public List<PmsProductAttributeCategory> getList(Integer pageSize, Integer pageNum) {
-        return productAttributeCategoryRepository.findAll(PageRequest.of(pageNum, pageSize)).getContent();
+    public org.springframework.data.domain.Page<PmsProductAttributeCategory> getList(Integer pageSize, Integer pageNum) {
+        return productAttributeCategoryRepository.findAll(PageRequest.of(pageNum > 0 ? pageNum - 1 : 0, pageSize));
     }
 
     @Override

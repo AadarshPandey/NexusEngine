@@ -15,7 +15,7 @@ const ProductCategoryList: React.FC = () => {
 
   const fetchCategories = async () => {
     try {
-      const res = await getProductCategoryListAPI(parentId, { pageNum: 1, pageSize: 100 });
+      const res = await getProductCategoryListAPI(parentId, { pageNum: 1, pageSize: 10 });
       setCategories(res.data.list);
     } catch (e) {
       console.error(e);
