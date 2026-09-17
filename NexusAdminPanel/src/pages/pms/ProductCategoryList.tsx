@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Switch, Paper, Button, Box, IconButton, Chip } from '@mui/material';
+import { Card, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Switch, Paper, Button, Box, IconButton, Chip, TablePagination } from '@mui/material';
 import { getProductCategoryListAPI, productCategoryUpdateShowStatusAPI, productCategoryUpdateNavStatusAPI, productCategoryDeleteByIdAPI } from '@/apis/productCate';
 import type { PmsProductCategory } from '@/types/productCate';
 import { useNavigate } from 'react-router';
@@ -7,16 +7,20 @@ import { useNavigate } from 'react-router';
 const ProductCategoryList: React.FC = () => {
   const [categories, setCategories] = useState<PmsProductCategory[]>([]);
   const [parentId, setParentId] = useState<number>(0);
+  const [pageNum, setPageNum] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [total, setTotal] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchCategories();
-  }, [parentId]);
+  }, [parentId, pageNum, pageSize]);
 
   const fetchCategories = async () => {
     try {
-      const res = await getProductCategoryListAPI(parentId, { pageNum: 1, pageSize: 10 });
+      const res = await getProductCategoryListAPI(parentId, { pageNum, pageSize });
       setCategories(res.data.list);
+      setTotal(res.data.total);
     } catch (e) {
       console.error(e);
     }
@@ -126,6 +130,14 @@ const ProductCategoryList: React.FC = () => {
           </TableBody>
         </Table>
       </TableContainer>
+      <TablePagination
+        component="div"
+        count={total}
+        page={pageNum - 1}
+        onPageChange={(_, p) => setPageNum(p + 1)}
+        rowsPerPage={pageSize}
+        onRowsPerPageChange={(e) => { setPageSize(parseInt(e.target.value, 10)); setPageNum(1); }}
+      />
     </Card>
   );
 };

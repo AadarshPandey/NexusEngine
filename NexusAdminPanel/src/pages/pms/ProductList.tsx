@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Switch, TextField, MenuItem, Select, FormControl, InputLabel, Grid, IconButton, Divider, Breadcrumbs, Link } from '@mui/material';
+import { Box, Typography, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Switch, TextField, MenuItem, Select, FormControl, InputLabel, Grid, IconButton, Divider, Breadcrumbs, Link, TablePagination } from '@mui/material';
 import { useNavigate } from 'react-router';
 import { getProductListAPI, productUpdateDeleteStatusAPI, productUpdatePublishStatusAPI, productUpdateNewStatusAPI, productUpdateRecommendStatusAPI } from '@/apis/product';
 import { getBrandListAPI } from '@/apis/brand';
@@ -9,6 +9,7 @@ const ProductList: React.FC = () => {
   const [products, setProducts] = useState<import('@/types/product').PmsProduct[]>([]);
   const [brands, setBrands] = useState<import('@/types/brand').PmsBrand[]>([]);
   const [categories, setCategories] = useState<import('@/types/productCate').PmsProductCategory[]>([]);
+  const [total, setTotal] = useState(0);
   const [searchParams, setSearchParams] = useState({
     keyword: '',
     productSn: '',
@@ -24,7 +25,7 @@ const ProductList: React.FC = () => {
 
   useEffect(() => {
     fetchInitialData();
-  }, []);
+  }, [searchParams.pageNum, searchParams.pageSize]);
 
   const fetchInitialData = async () => {
     try {
@@ -42,8 +43,9 @@ const ProductList: React.FC = () => {
 
   const fetchProducts = async () => {
     try {
-      const res = await getProductListAPI(searchParams as unknown as import('@/types/product').PmsProductQueryParam);
+      const res = await getProductListAPI(searchParams as unknown as import('@/types/product').ProductQueryParam);
       setProducts(res.data?.list || []);
+      setTotal(res.data?.total || 0);
     } catch (error) {
       console.error('Failed to fetch products', error);
     }
@@ -191,15 +193,15 @@ const ProductList: React.FC = () => {
                   <TableCell>
                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
                       <Typography variant="caption" sx={{ width: 80 }}>On shelves:</Typography>
-                      <Switch size="small" checked={row.publishStatus === 1} onChange={(e) => handleStatusChange(row.id, 'publish', e.target.checked)} />
+                      <Switch size="small" checked={row.publishStatus === 1} onChange={(e) => handleStatusChange(row.id!, 'publish', e.target.checked)} />
                     </Box>
                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
                       <Typography variant="caption" sx={{ width: 80 }}>New:</Typography>
-                      <Switch size="small" checked={row.newStatus === 1} onChange={(e) => handleStatusChange(row.id, 'new', e.target.checked)} />
+                      <Switch size="small" checked={row.newStatus === 1} onChange={(e) => handleStatusChange(row.id!, 'new', e.target.checked)} />
                     </Box>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                       <Typography variant="caption" sx={{ width: 80 }}>recommend:</Typography>
-                      <Switch size="small" checked={row.recommendStatus === 1} onChange={(e) => handleStatusChange(row.id, 'recommend', e.target.checked)} />
+                      <Switch size="small" checked={row.recommendStatus === 1} onChange={(e) => handleStatusChange(row.id!, 'recommend', e.target.checked)} />
                     </Box>
                   </TableCell>
                   <TableCell align="center">
@@ -219,7 +221,7 @@ const ProductList: React.FC = () => {
                       </Box>
                       <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
                         <Button size="small" variant="text" color="info" onClick={() => alert(`View log for product ${row.id}`)}>log</Button>
-                        <Button size="small" variant="text" color="error" onClick={() => handleDelete(row.id)}>delete</Button>
+                        <Button size="small" variant="text" color="error" onClick={() => handleDelete(row.id!)}>delete</Button>
                       </Box>
                     </Box>
                   </TableCell>
@@ -228,6 +230,14 @@ const ProductList: React.FC = () => {
             </TableBody>
           </Table>
         </TableContainer>
+        <TablePagination
+          component="div"
+          count={total}
+          page={searchParams.pageNum - 1}
+          onPageChange={(_, p) => setSearchParams({ ...searchParams, pageNum: p + 1 })}
+          rowsPerPage={searchParams.pageSize}
+          onRowsPerPageChange={(e) => setSearchParams({ ...searchParams, pageSize: parseInt(e.target.value, 10), pageNum: 1 })}
+        />
       </Paper>
     </Box>
   );

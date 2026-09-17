@@ -1,4 +1,5 @@
 package com.nexusengine.core.service.impl;
+import org.springframework.data.domain.Sort;
 
 import com.nexusengine.core.dto.PmsProductCategoryParam;
 import com.nexusengine.core.dto.PmsProductCategoryWithChildrenItem;
@@ -11,7 +12,6 @@ import cn.hutool.core.collection.CollUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,7 +64,7 @@ public class PmsProductCategoryServiceImpl implements PmsProductCategoryService 
 
     @Override
     public org.springframework.data.domain.Page<PmsProductCategory> getList(Long parentId, Integer pageSize, Integer pageNum) {
-        org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(pageNum > 0 ? pageNum - 1 : 0, pageSize);
+        org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(pageNum > 0 ? pageNum - 1 : 0, pageSize, Sort.by(Sort.Direction.ASC, "id"));
         if (parentId == 0L) {
             return productCategoryRepository.findByParentIdIsNullOrderBySortDesc(pageable);
         }

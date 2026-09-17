@@ -108,8 +108,8 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, icon, color, trend, t
             boxShadow: `0 4px 14px ${alpha(color, 0.35)}`,
           }}
         >
-          {React.cloneElement(icon as React.ReactElement<unknown>, {
-            sx: { color: '#fff', fontSize: 24 },
+          {React.cloneElement(icon as any, {
+            style: { color: '#fff', fontSize: 24 } as any,
           })}
         </Box>
       </Box>
@@ -138,8 +138,8 @@ const PendingItem: React.FC<PendingItemProps> = ({ label, count, icon }) => (
     }}
   >
     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-      {React.cloneElement(icon as React.ReactElement<unknown>, {
-        sx: { fontSize: 18, color: 'text.secondary' },
+      {React.cloneElement(icon as any, {
+        style: { fontSize: 18, color: 'var(--text-secondary)' } as any,
       })}
       <Typography sx={{ fontSize: '0.8125rem', color: 'text.primary' }}>{label}</Typography>
     </Box>

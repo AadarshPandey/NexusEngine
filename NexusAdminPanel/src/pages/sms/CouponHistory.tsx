@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Chip, Paper } from '@mui/material';
 import { getCouponHistoryListAPI } from '@/apis/coupon';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 
 const CouponHistory: React.FC = () => {
   const { id } = useParams();
@@ -17,7 +17,7 @@ const CouponHistory: React.FC = () => {
   const fetchHistory = async (couponId: number) => {
     try {
       setLoading(true);
-      const res = await getCouponHistoryListAPI({ couponId, pageNum: 1, pageSize: 50 } as unknown as import('@/types/coupon').SmsCouponHistoryQueryParam);
+      const res = await getCouponHistoryListAPI({ couponId, pageNum: 1, pageSize: 50 } as unknown as import('@/types/coupon').CouponHistoryQueryParam);
       setHistory(res.data?.list || []);
     } catch (e) {
       console.error(e);
@@ -57,8 +57,8 @@ const CouponHistory: React.FC = () => {
                 <TableCell>{item.couponCode}</TableCell>
                 <TableCell>{item.memberNickname}</TableCell>
                 <TableCell>{item.getType === 1 ? 'Active Claim' : 'System Award'}</TableCell>
-                <TableCell>{new Date(item.createTime).toLocaleString()}</TableCell>
-                <TableCell>{getUseStatusChip(item.useStatus)}</TableCell>
+                <TableCell>{new Date(item.createTime!).toLocaleString()}</TableCell>
+                <TableCell>{getUseStatusChip(item.useStatus!)}</TableCell>
                 <TableCell>{item.orderSn || 'N/A'}</TableCell>
                 <TableCell>{item.useTime ? new Date(item.useTime).toLocaleString() : 'N/A'}</TableCell>
               </TableRow>

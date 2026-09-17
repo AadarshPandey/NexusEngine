@@ -61,7 +61,7 @@ public class PmsBrandServiceImpl implements PmsBrandService {
 
     @Override
     public org.springframework.data.domain.Page<PmsBrand> listBrand(String keyword, Integer showStatus, int pageNum, int pageSize) {
-        return brandRepository.findAll(PageRequest.of(pageNum > 0 ? pageNum - 1 : 0, pageSize, Sort.by(Sort.Direction.DESC, "sort")));
+        return brandRepository.findAll(PageRequest.of(pageNum > 0 ? pageNum - 1 : 0, pageSize, Sort.by(Sort.Direction.ASC, "id")));
     }
 
     @Override

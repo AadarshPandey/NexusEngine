@@ -1,4 +1,5 @@
 package com.nexusengine.core.service.impl;
+import org.springframework.data.domain.Sort;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
@@ -138,7 +139,7 @@ public class PmsProductServiceImpl implements PmsProductService {
         String username = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getName();
         UmsAdmin admin = adminService.getAdminByUsername(username);
         Long vendorId = admin != null ? admin.getVendorId() : null;
-        org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(pageNum - 1 > 0 ? pageNum - 1 : 0, pageSize);
+        org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(pageNum - 1 > 0 ? pageNum - 1 : 0, pageSize, Sort.by(Sort.Direction.ASC, "id"));
         if (vendorId != null) {
             return productRepository.findByVendorId(vendorId, pageable);
         }
