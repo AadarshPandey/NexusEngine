@@ -151,7 +151,7 @@ def generate():
         b_id = brand_map[p["brand"]]
         ac_id = attr_cat_map[p["attr_cat"]]
         slug = p["name"].lower().replace(" ", "-").replace("+", "plus")
-        pic = f"{MINIO_BASE}/products/{prod_id}-{slug}/main.webp"
+        pic = f"{MINIO_BASE}/products/{prod_id}/main.webp"
         sn = f"{p['brand'][:3].upper()}-{p['name'][:5].upper()}-{prod_id}"
         
         sql.append(f"INSERT INTO pms_product (id, brand_id, product_category_id, product_attribute_category_id, name, pic, product_sn, delete_status, publish_status, new_status, recommend_status, verify_status, sort, sale, sub_title, description, brand_name, product_category_name) VALUES ({prod_id}, {b_id}, {c_info['id']}, {ac_id}, {esc(p['name'])}, {esc(pic)}, {esc(sn)}, 0, 1, 1, 1, 1, 100, {random.randint(10, 1000)}, {esc('Premium ' + p['name'])}, {esc('High quality ' + p['name'] + ' by ' + p['brand'])}, {esc(p['brand'])}, {esc(p['cat'])});")
@@ -159,7 +159,7 @@ def generate():
         sql.append(f"INSERT INTO pms_product_media (id, product_id, media_type, media_url, sort_order) VALUES ({media_id}, {prod_id}, 'IMAGE', {esc(pic)}, 0);")
         media_id += 1
         for i in range(1, 4):
-            gal_pic = f"{MINIO_BASE}/products/{prod_id}-{slug}/gallery/0{i}.webp"
+            gal_pic = f"{MINIO_BASE}/products/{prod_id}/gallery/0{i}.webp"
             sql.append(f"INSERT INTO pms_product_media (id, product_id, media_type, media_url, sort_order) VALUES ({media_id}, {prod_id}, 'IMAGE', {esc(gal_pic)}, {i});")
             media_id += 1
 
