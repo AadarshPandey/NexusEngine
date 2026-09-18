@@ -1,0 +1,41 @@
+-- Update ums_resource_category
+UPDATE ums_resource_category SET name = 'Product module' WHERE id = 1;
+UPDATE ums_resource_category SET name = 'Order module' WHERE id = 2;
+UPDATE ums_resource_category SET name = 'Marketing module' WHERE id = 3;
+UPDATE ums_resource_category SET name = 'Permission module' WHERE id = 4;
+UPDATE ums_resource_category SET name = 'Content module' WHERE id = 5;
+UPDATE ums_resource_category SET name = 'Other modules' WHERE id = 7;
+
+-- Update ums_resource
+UPDATE ums_resource SET name = 'All Product Management' WHERE id = 1;
+UPDATE ums_resource SET name = 'All Order Management' WHERE id = 2;
+UPDATE ums_resource SET name = 'All Brand Management' WHERE id = 3;
+UPDATE ums_resource SET name = 'Product Category Management' WHERE id = 4;
+UPDATE ums_resource SET name = 'Product Management' WHERE id = 5;
+UPDATE ums_resource SET name = 'Product inventory management' WHERE id = 6;
+UPDATE ums_resource SET name = 'Order Management' WHERE id = 8;
+UPDATE ums_resource SET name = 'Order return request management' WHERE id = 9;
+UPDATE ums_resource SET name = 'Return Reason Management' WHERE id = 10;
+UPDATE ums_resource SET name = 'Order settings management' WHERE id = 11;
+UPDATE ums_resource SET name = 'Shipping Address Management' WHERE id = 12;
+UPDATE ums_resource SET name = 'Coupon Management' WHERE id = 13;
+UPDATE ums_resource SET name = 'Coupon redemption record management' WHERE id = 14;
+UPDATE ums_resource SET name = 'Limited-time purchase event management' WHERE id = 15;
+UPDATE ums_resource SET name = 'Limited-time purchase product relationship management' WHERE id = 16;
+UPDATE ums_resource SET name = 'Limited-time purchase session management' WHERE id = 17;
+UPDATE ums_resource SET name = 'Homepage Carousel Ad Management' WHERE id = 18;
+UPDATE ums_resource SET name = 'Homepage Brand Management' WHERE id = 19;
+UPDATE ums_resource SET name = 'Homepage New Product Management' WHERE id = 20;
+UPDATE ums_resource SET name = 'Homepage Popularity Recommendation Management' WHERE id = 21;
+UPDATE ums_resource SET name = 'Homepage Featured Topic Management' WHERE id = 22;
+UPDATE ums_resource SET name = 'Product Selection Management' WHERE id = 23;
+UPDATE ums_resource SET name = 'Product Topic Management' WHERE id = 24;
+UPDATE ums_resource SET name = 'Backend User Management' WHERE id = 25;
+UPDATE ums_resource SET name = 'Backend User Role Management' WHERE id = 26;
+UPDATE ums_resource SET name = 'Backend menu management' WHERE id = 27;
+UPDATE ums_resource SET name = 'Backend resource category management' WHERE id = 28;
+UPDATE ums_resource SET name = 'Backend resource management' WHERE id = 29;
+UPDATE ums_resource SET name = 'Membership Level Management' WHERE id = 30;
+UPDATE ums_resource SET name = 'Get login user information' WHERE id = 31;
+UPDATE ums_resource SET name = 'User logout' WHERE id = 32;
+UPDATE ums_resource SET name = 'Dashboard Info' WHERE id = 33;

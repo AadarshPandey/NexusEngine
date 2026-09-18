@@ -80,18 +80,25 @@ const AdminList: React.FC = () => {
   const [selectedRoles, setSelectedRoles] = useState<number[]>([]);
   const [activeAdminId, setActiveAdminId] = useState<number | null>(null);
 
-  const fetchList = useCallback(async () => {
+  const fetchList = useCallback(async (
+    overridePageNum?: number,
+    overrideKeyword?: string
+  ) => {
     setLoading(true);
+    
+    const finalPageNum = overridePageNum !== undefined ? overridePageNum : pageNum;
+    const finalKeyword = overrideKeyword !== undefined ? overrideKeyword : keyword;
+
     try {
       const res = await getAdminListAPI({ 
-        keyword: keyword || undefined, 
-        pageNum: pageNum + 1, 
+        keyword: finalKeyword || undefined, 
+        pageNum: finalPageNum + 1, 
         pageSize 
       });
       setList(res.data.list);
       setTotal(res.data.total);
     } catch (error) {
-      console.error('Failed to fetch admin list:', error);
+      console.error(error);
     } finally {
       setLoading(false);
     }
@@ -107,7 +114,13 @@ const AdminList: React.FC = () => {
 
   const handleSearch = () => {
     setPageNum(0);
-    fetchList();
+    fetchList(0);
+  };
+
+  const handleClearSearch = () => {
+    setKeyword('');
+    setPageNum(0);
+    fetchList(0, '');
   };
 
   const handleDelete = async (id: number) => {

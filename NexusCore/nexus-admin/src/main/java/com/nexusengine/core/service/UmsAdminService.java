@@ -64,7 +64,7 @@ public interface UmsAdminService {
      * @param pageNum the current page number
      * @return a list of administrators matching the criteria
      */
-    List<UmsAdmin> list(String keyword, Integer pageSize, Integer pageNum);
+    org.springframework.data.domain.Page<UmsAdmin> list(String keyword, Integer pageSize, Integer pageNum);
 
 /**
      * Updates the profile information of an existing administrator.
