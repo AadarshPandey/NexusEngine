@@ -1,4 +1,6 @@
 package com.nexusengine.core.service;
+import com.nexusengine.core.model.PmsProductOperateLog;
+import com.nexusengine.core.model.PmsProductVerifyRecord;
 
 import com.nexusengine.core.dto.PmsProductParam;
 import com.nexusengine.core.dto.PmsProductQueryParam;
@@ -57,6 +59,8 @@ public interface PmsProductService {
      */
     @Transactional
     int updateVerifyStatus(List<Long> ids, Integer verifyStatus, String detail);
+    List<PmsProductOperateLog> getOperateLog(Long id);
+    List<PmsProductVerifyRecord> getVerifyRecord(Long id);
 
         /**
      * Executes the operation.

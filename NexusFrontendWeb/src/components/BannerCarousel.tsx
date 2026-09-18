@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router';
 import { Box, IconButton, Typography } from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
@@ -9,6 +10,7 @@ interface BannerCarouselProps {
 
 const BannerCarousel: React.FC<BannerCarouselProps> = ({ banners }) => {
   const [activeIndex, setActiveIndex] = useState(0);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!banners || banners.length === 0) return;
@@ -28,6 +30,7 @@ const BannerCarousel: React.FC<BannerCarouselProps> = ({ banners }) => {
       {banners.map((banner, index) => (
         <Box
           key={banner.id || index}
+          onClick={() => banner.url && navigate(banner.url)}
           sx={{
             position: 'absolute',
             top: 0,
@@ -43,6 +46,7 @@ const BannerCarousel: React.FC<BannerCarouselProps> = ({ banners }) => {
             backgroundImage: `url(${banner.pic})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
+            cursor: 'pointer',
           }}
         >
           <Box sx={{ 

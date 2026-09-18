@@ -62,7 +62,7 @@ public class UmsMenuServiceImpl implements UmsMenuService {
     @Override
     public org.springframework.data.domain.Page<UmsMenu> list(Long parentId, Integer pageSize, Integer pageNum) {
         int page = pageNum > 0 ? pageNum - 1 : 0;
-        return menuRepository.findByParentId(parentId, PageRequest.of(page > 0 ? page - 1 : 0, pageSize, Sort.by(Sort.Direction.DESC, "sort")));
+        return menuRepository.findByParentId(parentId, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "sort")));
     }
 
     @Override

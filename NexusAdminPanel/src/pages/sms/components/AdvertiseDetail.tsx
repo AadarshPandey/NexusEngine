@@ -89,16 +89,6 @@ const AdvertiseDetail: React.FC<Props> = ({ isEdit = false }) => {
               required
             />
             
-            <FormControl fullWidth>
-              <Typography variant="caption" color="text.secondary" gutterBottom>Type</Typography>
-              <Select
-                value={formData.type ?? 0}
-                onChange={e => setFormData({ ...formData, type: Number(e.target.value) })}
-              >
-                <MenuItem value={0}>PC Banner</MenuItem>
-                <MenuItem value={1}>App Banner</MenuItem>
-              </Select>
-            </FormControl>
 
             <TextField
               label="Image URL"

@@ -165,19 +165,6 @@ const AdvertiseList: React.FC = () => {
                 ),
               }}
             />
-            <FormControl size="small" sx={{ width: 180 }}>
-              <InputLabel>Advertising location</InputLabel>
-              <Select
-                value={type}
-                label="Advertising location"
-                onChange={(e) => setType(e.target.value as number | '')}
-                displayEmpty
-              >
-                <MenuItem value="">All Types</MenuItem>
-                <MenuItem value={0}>PC Banner</MenuItem>
-                <MenuItem value={1}>App Banner</MenuItem>
-              </Select>
-            </FormControl>
             <TextField
               size="small"
               type="date"
@@ -260,9 +247,6 @@ const AdvertiseList: React.FC = () => {
                     <TableCell>{row.id}</TableCell>
                     <TableCell sx={{ fontWeight: 500 }}>
                       {row.name}
-                      <Typography variant="caption" display="block" color="text.secondary">
-                        {row.type === 1 ? 'App Banner' : 'PC Banner'}
-                      </Typography>
                     </TableCell>
                     <TableCell>
                       <Box

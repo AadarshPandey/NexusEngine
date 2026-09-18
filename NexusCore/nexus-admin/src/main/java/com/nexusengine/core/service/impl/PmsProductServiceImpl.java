@@ -39,6 +39,7 @@ public class PmsProductServiceImpl implements PmsProductService {
     
     
     private final PmsProductVerifyRecordRepository productVerifyRecordRepository;
+    private final com.nexusengine.core.repository.PmsProductOperateLogRepository productOperateLogRepository;
 
     @Override
     @org.springframework.transaction.annotation.Transactional(rollbackFor = Exception.class)
@@ -51,7 +52,16 @@ public class PmsProductServiceImpl implements PmsProductService {
         saveProductLadderList(productParam.getProductLadderList(), productId);
         saveProductFullReductionList(productParam.getProductFullReductionList(), productId);
         handleSkuStockCode(productParam.getSkuStockList(), productId);
-        saveSkuStockList(productParam.getSkuStockList(), productId);
+        if (CollUtil.isEmpty(productParam.getSkuStockList())) {
+            PmsSkuStock defaultSku = new PmsSkuStock();
+            defaultSku.setProductId(productId);
+            defaultSku.setSkuCode(java.util.UUID.randomUUID().toString().replace("-","").substring(0,20));
+            defaultSku.setPrice(productParam.getPrice());
+            defaultSku.setStock(productParam.getStock() != null ? productParam.getStock() : 0);
+            skuStockRepository.save(defaultSku);
+        } else {
+            saveSkuStockList(productParam.getSkuStockList(), productId);
+        }
         saveProductAttributeValueList(productParam.getProductAttributeValueList(), productId);
         
         
@@ -104,7 +114,21 @@ public class PmsProductServiceImpl implements PmsProductService {
     private void handleUpdateSkuStockList(Long id, PmsProductParam productParam) {
         List<PmsSkuStock> currSkuList = productParam.getSkuStockList();
         if (CollUtil.isEmpty(currSkuList)) {
-            skuStockRepository.deleteByProductId(id);
+            List<PmsSkuStock> existing = skuStockRepository.findByProductId(id);
+            if (existing.isEmpty()) {
+                PmsSkuStock defaultSku = new PmsSkuStock();
+                defaultSku.setProductId(id);
+                defaultSku.setSkuCode(java.util.UUID.randomUUID().toString().replace("-","").substring(0,20));
+                defaultSku.setPrice(productParam.getPrice());
+                defaultSku.setStock(productParam.getStock() != null ? productParam.getStock() : 0);
+                skuStockRepository.save(defaultSku);
+            } else {
+                for (PmsSkuStock sku : existing) {
+                    if (productParam.getPrice() != null) sku.setPrice(productParam.getPrice());
+                    if (productParam.getStock() != null) sku.setStock(productParam.getStock());
+                }
+                skuStockRepository.saveAll(existing);
+            }
             return;
         }
         List<PmsSkuStock> oriStuList = skuStockRepository.findByProductId(id);
@@ -180,7 +204,7 @@ public class PmsProductServiceImpl implements PmsProductService {
     }
 
     @Override
-    public int updateVerifyStatus(List<Long> ids, Integer verifyStatus, String detail) {
+        public int updateVerifyStatus(List<Long> ids, Integer verifyStatus, String detail) {
         checkVendorAuthorization(ids);
         List<PmsProduct> products = productRepository.findAllById(ids);
         for (PmsProduct product : products) {
@@ -194,7 +218,11 @@ public class PmsProductServiceImpl implements PmsProductService {
             record.setCreateTime(new Date());
             record.setDetail(detail);
             record.setStatus(verifyStatus);
-            record.setReviewerName("admin");
+            String username = "admin";
+            try {
+                username = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getName();
+            } catch(Exception e) {}
+            record.setReviewerName(username);
             records.add(record);
         }
         productVerifyRecordRepository.saveAll(records);
@@ -289,6 +317,17 @@ public class PmsProductServiceImpl implements PmsProductService {
             item.setProductId(productId);
         }
         productAttributeValueRepository.saveAll(dataList);
+    }
+
+
+    @Override
+    public java.util.List<com.nexusengine.core.model.PmsProductOperateLog> getOperateLog(Long id) {
+        return productOperateLogRepository.findByProductId(id);
+    }
+
+    @Override
+    public java.util.List<com.nexusengine.core.model.PmsProductVerifyRecord> getVerifyRecord(Long id) {
+        return productVerifyRecordRepository.findByProductId(id);
     }
 
 }

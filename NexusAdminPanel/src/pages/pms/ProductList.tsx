@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Switch, TextField, MenuItem, Select, FormControl, InputLabel, ListSubheader, Grid, IconButton, Divider, Breadcrumbs, Link, TablePagination } from '@mui/material';
+import { Box, Typography, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Switch, TextField, MenuItem, Select, FormControl, InputLabel, ListSubheader, Grid, IconButton, Divider, Breadcrumbs, Link, TablePagination, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import { useNavigate } from 'react-router';
 import { getProductListAPI, productUpdateDeleteStatusAPI, productUpdatePublishStatusAPI, productUpdateNewStatusAPI, productUpdateRecommendStatusAPI } from '@/apis/product';
+import http from '@/utils/http';
 import { getBrandListAPI } from '@/apis/brand';
 import { getProductCategoryListWithChildrenAPI } from '@/apis/productCate';
 
@@ -22,6 +23,77 @@ const ProductList: React.FC = () => {
   });
   
   const navigate = useNavigate();
+  
+  const [verifyModalOpen, setVerifyModalOpen] = useState(false);
+  const [logModalOpen, setLogModalOpen] = useState(false);
+  const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
+  const [verifyStatus, setVerifyStatus] = useState<number>(1);
+  const [verifyDetail, setVerifyDetail] = useState('');
+  const [operateLogs, setOperateLogs] = useState<any[]>([]);
+  const [verifyRecords, setVerifyRecords] = useState<any[]>([]);
+  const [skuModalOpen, setSkuModalOpen] = useState(false);
+  const [skuList, setSkuList] = useState<any[]>([]);
+  const [editingSkuList, setEditingSkuList] = useState<any[]>([]);
+  const [isEditingSku, setIsEditingSku] = useState(false);
+
+  const saveSkuChanges = async () => {
+    if (!selectedProductId) return;
+    try {
+      await http.post('/sku/update/' + selectedProductId, editingSkuList);
+      alert('SKUs updated successfully!');
+      setIsEditingSku(false);
+      openSkuModal(selectedProductId); // refresh
+    } catch (e) {
+      alert('Failed to update SKUs');
+    }
+  };
+  
+  const openSkuModal = async (id: number) => {
+    setSelectedProductId(id);
+    try {
+      const res = await http.get('/sku/' + id);
+      setSkuList(res.data || []);
+      setEditingSkuList(JSON.parse(JSON.stringify(res.data || [])));
+      setIsEditingSku(false);
+      setSkuModalOpen(true);
+    } catch (e) {
+      alert('Failed to fetch SKUs');
+    }
+  };
+
+  const openVerifyModal = (id: number) => {
+    setSelectedProductId(id);
+    setVerifyStatus(1);
+    setVerifyDetail('');
+    setVerifyModalOpen(true);
+  };
+
+  const submitVerify = async () => {
+    if (!selectedProductId) return;
+    try {
+      await http.post('/product/update/verifyStatus', null, {
+        params: { ids: selectedProductId.toString(), verifyStatus, detail: verifyDetail }
+      });
+      alert('Verification updated successfully!');
+      setVerifyModalOpen(false);
+      fetchProducts(searchParams);
+    } catch (e) {
+      alert('Failed to update verification');
+    }
+  };
+
+  const openLogModal = async (id: number) => {
+    setSelectedProductId(id);
+    try {
+      const resOperate = await http.get('/product/operateLog/' + id);
+      setOperateLogs(resOperate.data || []);
+      const resVerify = await http.get('/product/verifyRecord/' + id);
+      setVerifyRecords(resVerify.data || []);
+      setLogModalOpen(true);
+    } catch (e) {
+      alert('Failed to fetch logs');
+    }
+  };
 
   useEffect(() => {
     fetchInitialData();
@@ -230,11 +302,12 @@ const ProductList: React.FC = () => {
                   <TableCell align="center">
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                       <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
-                        <Button size="small" variant="text" onClick={() => alert(`Check product ${row.id}`)}>Check</Button>
+                        <Button size="small" variant="text" onClick={() => openVerifyModal(row.id!)}>Check</Button>
                         <Button size="small" variant="text" color="primary" onClick={() => navigate(`/pms/updateProduct?id=${row.id}`)}>edit</Button>
                       </Box>
                       <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
-                        <Button size="small" variant="text" color="info" onClick={() => alert(`View log for product ${row.id}`)}>log</Button>
+                        <Button size="small" variant="text" color="success" onClick={() => openSkuModal(row.id!)}>SKUs</Button>
+                        <Button size="small" variant="text" color="info" onClick={() => openLogModal(row.id!)}>log</Button>
                         <Button size="small" variant="text" color="error" onClick={() => handleDelete(row.id!)}>delete</Button>
                       </Box>
                     </Box>
@@ -253,6 +326,171 @@ const ProductList: React.FC = () => {
           onRowsPerPageChange={(e) => setSearchParams({ ...searchParams, pageSize: parseInt(e.target.value, 10), pageNum: 1 })}
         />
       </Paper>
+
+      {/* Verify Modal */}
+      <Dialog open={verifyModalOpen} onClose={() => setVerifyModalOpen(false)} maxWidth="sm" fullWidth>
+        <DialogTitle>Check / Verify Product</DialogTitle>
+        <DialogContent dividers>
+          <FormControl fullWidth sx={{ mb: 2, mt: 1 }}>
+            <InputLabel>Status</InputLabel>
+            <Select value={verifyStatus} onChange={e => setVerifyStatus(e.target.value as number)} label="Status">
+              <MenuItem value={1}>Approve</MenuItem>
+              <MenuItem value={2}>Reject</MenuItem>
+            </Select>
+          </FormControl>
+          <TextField fullWidth label="Details (Optional)" multiline rows={3} value={verifyDetail} onChange={e => setVerifyDetail(e.target.value)} />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setVerifyModalOpen(false)}>Cancel</Button>
+          <Button onClick={submitVerify} variant="contained" color="primary">Submit</Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* SKU Modal */}
+      <Dialog open={skuModalOpen} onClose={() => setSkuModalOpen(false)} maxWidth="md" fullWidth>
+        <DialogTitle>Product SKUs</DialogTitle>
+        <DialogContent dividers>
+          {skuList.length === 0 ? (
+            <Typography color="text.secondary">No SKUs found for this product.</Typography>
+          ) : (
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell>SKU Code</TableCell>
+                  <TableCell>Attributes</TableCell>
+                  <TableCell>Price</TableCell>
+                  <TableCell>Stock</TableCell>
+                  <TableCell>Low Stock Warning</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {(isEditingSku ? editingSkuList : skuList).map((sku:any, idx:number) => {
+                  let attrs = '';
+                  try {
+                    if (sku.spData) {
+                      const spData = JSON.parse(sku.spData);
+                      attrs = spData.map((d:any) => `${d.key}: ${d.value}`).join(', ');
+                    }
+                  } catch(e) {}
+                  return (
+                    <TableRow key={idx}>
+                      <TableCell>{sku.skuCode || '-'}</TableCell>
+                      <TableCell>{attrs || '-'}</TableCell>
+                      <TableCell>
+                        {isEditingSku ? (
+                          <TextField size="small" type="number" value={sku.price} onChange={e => {
+                            const newList = [...editingSkuList];
+                            newList[idx].price = e.target.value;
+                            setEditingSkuList(newList);
+                          }} />
+                        ) : (
+                          sku.price !== undefined ? `${sku.price}` : '-'
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {isEditingSku ? (
+                          <TextField size="small" type="number" value={sku.stock} onChange={e => {
+                            const newList = [...editingSkuList];
+                            newList[idx].stock = e.target.value;
+                            setEditingSkuList(newList);
+                          }} />
+                        ) : (
+                          sku.stock !== undefined ? sku.stock : '-'
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {isEditingSku ? (
+                          <TextField size="small" type="number" value={sku.lowStock} onChange={e => {
+                            const newList = [...editingSkuList];
+                            newList[idx].lowStock = e.target.value;
+                            setEditingSkuList(newList);
+                          }} />
+                        ) : (
+                          sku.lowStock !== undefined ? sku.lowStock : '-'
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          )}
+        </DialogContent>
+        <DialogActions>
+          {isEditingSku ? (
+            <>
+              <Button onClick={() => setIsEditingSku(false)}>Cancel</Button>
+              <Button onClick={saveSkuChanges} variant="contained" color="primary">Save Changes</Button>
+            </>
+          ) : (
+            <>
+              <Button onClick={() => setSkuModalOpen(false)}>Close</Button>
+              <Button onClick={() => setIsEditingSku(true)} variant="contained" color="primary">Edit SKUs</Button>
+            </>
+          )}
+        </DialogActions>
+      </Dialog>
+
+      {/* Log Modal */}
+      <Dialog open={logModalOpen} onClose={() => setLogModalOpen(false)} maxWidth="md" fullWidth>
+        <DialogTitle>Audit Logs</DialogTitle>
+        <DialogContent dividers>
+          <Typography variant="h6" sx={{ mb: 1 }}>SKU Price Changes</Typography>
+          {operateLogs.length === 0 ? (
+            <Typography color="text.secondary" sx={{ mb: 3 }}>No price changes found.</Typography>
+          ) : (
+            <Table size="small" sx={{ mb: 3 }}>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Operator</TableCell>
+                  <TableCell>Time</TableCell>
+                  <TableCell>Old Price</TableCell>
+                  <TableCell>New Price</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {operateLogs.map((log:any, idx:number) => (
+                  <TableRow key={idx}>
+                    <TableCell>{log.operateMan || 'System'}</TableCell>
+                    <TableCell>{log.createTime ? new Date(log.createTime).toLocaleString() : '-'}</TableCell>
+                    <TableCell>{log.priceOld || '-'}</TableCell>
+                    <TableCell>{log.priceNew || '-'}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
+
+          <Typography variant="h6" sx={{ mb: 1 }}>Verification History</Typography>
+          {verifyRecords.length === 0 ? (
+            <Typography color="text.secondary">No verification history found.</Typography>
+          ) : (
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell>Reviewer</TableCell>
+                  <TableCell>Time</TableCell>
+                  <TableCell>Status</TableCell>
+                  <TableCell>Details</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {verifyRecords.map((rec:any, idx:number) => (
+                  <TableRow key={idx}>
+                    <TableCell>{rec.reviewerName || 'System'}</TableCell>
+                    <TableCell>{rec.createTime ? new Date(rec.createTime).toLocaleString() : '-'}</TableCell>
+                    <TableCell>{rec.status === 1 ? 'Approved' : 'Rejected'}</TableCell>
+                    <TableCell>{rec.detail || '-'}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setLogModalOpen(false)}>Close</Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
