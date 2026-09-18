@@ -14,8 +14,7 @@ CREATE TABLE IF NOT EXISTS pms_brand (
     product_count INTEGER,
     product_comment_count INTEGER,
     logo VARCHAR(255),
-    big_pic VARCHAR(255),
-    brand_story VARCHAR(255)
+    big_pic VARCHAR(255)
 );
 
 CREATE TABLE IF NOT EXISTS pms_product_category (

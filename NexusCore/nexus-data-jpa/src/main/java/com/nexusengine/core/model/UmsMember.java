@@ -51,14 +51,12 @@ public class UmsMember implements Serializable {
 
 
 
-    @Schema(title = "Personalized signature")
 
     @Column(name = "source_type")
     @Schema(title = "Source type")
     private Integer sourceType;
     private Integer points;
 
-    @Schema(title = "Luckey count")
 
     @Column(name = "lifetime_points")
     @Schema(title = "History integration")
