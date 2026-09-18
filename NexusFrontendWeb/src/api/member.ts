@@ -10,13 +10,10 @@ export interface UmsMember {
   createTime: string;
   icon: string;
   gender: number;
-  birthday: string;
   city: string;
   job: string;
-  personalizedSignature: string;
   sourceType: number;
   points: number;
-  bonusDrawsRemaining: number;
   lifetimePoints: number;
 }
 
