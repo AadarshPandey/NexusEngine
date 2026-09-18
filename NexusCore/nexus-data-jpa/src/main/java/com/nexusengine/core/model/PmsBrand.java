@@ -48,7 +48,4 @@ public class PmsBrand implements Serializable {
     @Schema(title = "Big pic")
     private String bigPic;
 
-    @Column(name = "brand_story")
-    @Schema(title = "Brand story")
-    private String brandStory;
 }

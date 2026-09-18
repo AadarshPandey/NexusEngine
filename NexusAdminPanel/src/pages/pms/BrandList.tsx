@@ -46,6 +46,8 @@ const BrandList: React.FC = () => {
   const [keyword, setKeyword] = useState('');
   const [pageNum, setPageNum] = useState(0);
   const [pageSize, setPageSize] = useState(10);
+  const [editingSortId, setEditingSortId] = useState<number | null>(null);
+  const [editSortValue, setEditSortValue] = useState('');
   const [selected, setSelected] = useState<number[]>([]);
   const [operateType, setOperateType] = useState('');
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' as 'success' | 'error' });
@@ -66,6 +68,18 @@ const BrandList: React.FC = () => {
   useEffect(() => {
     fetchList();
   }, [fetchList]);
+
+  
+  const handleSortSave = async (id: number) => {
+    try {
+      await http.post(`/brand/update/${id}`, { sort: parseInt(editSortValue, 10) });
+      fetchData();
+      setSnackbar({ open: true, message: 'Sort order updated successfully', severity: 'success' });
+      setEditingSortId(null);
+    } catch (error) {
+      setSnackbar({ open: true, message: 'Failed to update sort order', severity: 'error' });
+    }
+  };
 
   const handleSearch = () => {
     setPageNum(0);
@@ -240,7 +254,33 @@ const BrandList: React.FC = () => {
                     <TableCell>{row.id}</TableCell>
                     <TableCell sx={{ fontWeight: 500 }}>{row.name}</TableCell>
                     <TableCell>{row.firstLetter}</TableCell>
-                    <TableCell align="center">{row.sort}</TableCell>
+                    <TableCell align="center">
+                      {editingSortId === row.id ? (
+                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <TextField
+                            size="small"
+                            type="number"
+                            value={editSortValue}
+                            onChange={(e) => setEditSortValue(e.target.value)}
+                            sx={{ width: 60 }}
+                            autoFocus
+                            onBlur={() => handleSortSave(row.id!)}
+                            onKeyDown={(e) => e.key === 'Enter' && handleSortSave(row.id!)}
+                          />
+                        </Box>
+                      ) : (
+                        <Box
+                          onClick={() => {
+                            setEditingSortId(row.id!);
+                            setEditSortValue(row.sort?.toString() || '0');
+                          }}
+                          sx={{ cursor: 'pointer', borderBottom: '1px dashed #ccc', display: 'inline-block', px: 1, '&:hover': { color: 'primary.main', borderBottomColor: 'primary.main' } }}
+                          title="Click to edit sort order"
+                        >
+                          {row.sort}
+                        </Box>
+                      )}
+                    </TableCell>
                     <TableCell align="center">
                       <Switch
                         checked={row.factoryStatus === 1}

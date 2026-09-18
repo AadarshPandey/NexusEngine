@@ -67,13 +67,7 @@ public class PmsProduct implements Serializable {
 
 
 
-    @Column(name = "gift_point")
-    @Schema(title = "Gift point")
-    private Integer giftPoint;
 
-    @Column(name = "use_point_limit")
-    @Schema(title = "Use point limit")
-    private Integer usePointLimit;
 
     @Column(name = "sub_title")
     @Schema(title = "Sub title")
@@ -85,9 +79,6 @@ public class PmsProduct implements Serializable {
     @Schema(title = "Weight")
     private BigDecimal weight;
 
-    @Column(name = "preview_status")
-    @Schema(title = "Preview status")
-    private Integer previewStatus;
 
     @Column(name = "service_ids")
     @Schema(title = "Service ids")
@@ -101,8 +92,6 @@ public class PmsProduct implements Serializable {
     private List<PmsProductMedia> mediaList;
 
 
-    @Column(name = "detail_title")
-    private String detailTitle;
 
     @Column(name = "promotion_start_time")
     @Schema(title = "Promotion start time")
@@ -131,16 +120,11 @@ public class PmsProduct implements Serializable {
     @Schema(title = "Description")
     private String description;
 
-    @Column(name = "detail_desc")
-    private String detailDesc;
 
     @Column(name = "detail_html")
     @Schema(title = "Detail html")
     private String detailHtml;
 
-    @Column(name = "detail_mobile_html")
-    @Schema(title = "Detail mobile html")
-    private String detailMobileHtml;
 
     @Column(name = "vendor_id")
     @Schema(title = "Vendor ID")

@@ -55,16 +55,12 @@ CREATE TABLE IF NOT EXISTS pms_product (
     verify_status INTEGER,
     sort INTEGER,
     sale INTEGER,
-    gift_points INTEGER,
-    use_point_limit INTEGER,
     sub_title VARCHAR(255),
     unit VARCHAR(255),
     weight NUMERIC(19,2),
-    preview_status INTEGER,
     service_ids VARCHAR(255),
     keywords VARCHAR(255),
     note VARCHAR(255),
-    detail_title VARCHAR(255),
     promotion_start_time TIMESTAMP,
     promotion_end_time TIMESTAMP,
     promotion_per_limit INTEGER,
@@ -72,9 +68,7 @@ CREATE TABLE IF NOT EXISTS pms_product (
     brand_name VARCHAR(255),
     product_category_name VARCHAR(255),
     description VARCHAR(255),
-    detail_desc VARCHAR(255),
     detail_html VARCHAR(255),
-    detail_mobile_html VARCHAR(255),
     vendor_id BIGINT
 );
 
@@ -144,10 +138,6 @@ CREATE TABLE IF NOT EXISTS pms_product_operate_log (
     price_new NUMERIC(19,2),
     sale_price_old NUMERIC(19,2),
     sale_price_new NUMERIC(19,2),
-    gift_points_old INTEGER,
-    gift_points_new INTEGER,
-    use_point_limit_old INTEGER,
-    use_point_limit_new INTEGER,
     operate_man VARCHAR(255),
     create_time TIMESTAMP
 );

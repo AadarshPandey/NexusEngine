@@ -34,6 +34,4 @@ public class PmsBrandParam {
     private String logo;
     @Schema(title =  "Big pic")
     private String bigPic;
-    @Schema(title =  "Brand story")
-    private String brandStory;
 }

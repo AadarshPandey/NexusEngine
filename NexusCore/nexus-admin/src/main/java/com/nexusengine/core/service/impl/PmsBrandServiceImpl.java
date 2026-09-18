@@ -80,6 +80,13 @@ public class PmsBrandServiceImpl implements PmsBrandService {
     }
 
     @Override
+    public int updateSort(Long id, Integer sort) {
+        PmsBrand brand = brandRepository.findById(id).orElse(null);
+        if (brand != null) { brand.setSort(sort); brandRepository.save(brand); return 1; }
+        return 0;
+    }
+
+    @Override
     public int updateShowStatus(List<Long> ids, Integer showStatus) {
         List<PmsBrand> brands = brandRepository.findAllById(ids);
         for (PmsBrand brand : brands) {
