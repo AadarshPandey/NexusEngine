@@ -228,13 +228,6 @@ const Profile: React.FC = () => {
             <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
               <Typography color="text.secondary">Username:</Typography>
               <Typography>{memberInfo?.username}</Typography>
-              
-              <Typography color="text.secondary">Phone Number:</Typography>
-              <Typography>{memberInfo?.phone || 'Not set'}</Typography>
-              
-              
-
-              
             </Box>
           </TabPanel>
           
@@ -394,9 +387,8 @@ const Profile: React.FC = () => {
                   <Paper key={address.id} variant="outlined" sx={{ p: 2 }}>
                     <Typography sx={{ fontWeight: 'bold' }}>{address.name} ({address.phoneNumber})</Typography>
                     <Typography color="text.secondary">
-                      {address.province}, {address.city}, {address.region} - {address.postCode}
+                      {[address.detailAddress, address.region, address.city, address.province].filter(Boolean).join(', ')} - PIN: {address.postCode}
                     </Typography>
-                    <Typography color="text.secondary">{address.detailAddress}</Typography>
                   </Paper>
                 ))}
               </Box>
@@ -412,10 +404,7 @@ const Profile: React.FC = () => {
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
             <TextField label="Name" fullWidth value={newAddress.name} onChange={e => setNewAddress({...newAddress, name: e.target.value})} />
             <TextField label="Phone Number" fullWidth value={newAddress.phoneNumber} onChange={e => setNewAddress({...newAddress, phoneNumber: e.target.value})} />
-            <TextField label="State" fullWidth value={newAddress.province} onChange={e => setNewAddress({...newAddress, province: e.target.value})} />
-            <TextField label="City" fullWidth value={newAddress.city} onChange={e => setNewAddress({...newAddress, city: e.target.value})} />
-            <TextField label="Street" fullWidth value={newAddress.region} onChange={e => setNewAddress({...newAddress, region: e.target.value})} />
-            <TextField label="Detailed Address" fullWidth value={newAddress.detailAddress} onChange={e => setNewAddress({...newAddress, detailAddress: e.target.value})} />
+            <TextField label="Full Address" fullWidth multiline rows={3} value={newAddress.detailAddress} onChange={e => setNewAddress({...newAddress, detailAddress: e.target.value})} />
             <TextField label="PIN Code" fullWidth value={newAddress.postCode} onChange={e => setNewAddress({...newAddress, postCode: e.target.value})} />
             <TextField label="Geographic Coordinates (Lat, Long)" fullWidth value={newAddress.coordinates} onChange={e => setNewAddress({...newAddress, coordinates: e.target.value})} />
           </Box>
@@ -530,7 +519,6 @@ const Profile: React.FC = () => {
         <DialogContent>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
             <TextField label="Nickname" fullWidth value={editProfileData.nickname} onChange={e => setEditProfileData({...editProfileData, nickname: e.target.value})} />
-            <TextField label="Phone Number" fullWidth value={editProfileData.phone} onChange={e => setEditProfileData({...editProfileData, phone: e.target.value})} />
             
             
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>

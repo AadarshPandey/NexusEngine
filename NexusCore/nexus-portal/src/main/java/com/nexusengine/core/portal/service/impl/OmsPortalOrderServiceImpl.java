@@ -163,14 +163,21 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
         OmsOrder order = new OmsOrder();
         order.setDiscountAmount(new BigDecimal(0));
         order.setTotalAmount(calcTotalAmount(orderItemList));
-        order.setFreightAmount(new BigDecimal(0));
+        BigDecimal originalFreight = calculateFreight(order.getTotalAmount());
+        order.setFreightAmount(originalFreight);
         order.setPromotionAmount(calcPromotionAmount(orderItemList));
         order.setPromotionInfo(getOrderPromotionInfo(orderItemList));
         if (orderParam.getCouponId() == null) {
             order.setCouponAmount(new BigDecimal(0));
         } else {
+            SmsCoupon coupon = getUseCoupon(cartPromotionItemList, orderParam.getCouponId()).getCoupon();
             order.setCouponId(orderParam.getCouponId());
-            order.setCouponAmount(calcCouponAmount(orderItemList));
+            if (coupon.getType() != null && coupon.getType() == 2) {
+                order.setFreightAmount(BigDecimal.ZERO);
+                order.setCouponAmount(originalFreight); // Show the savings
+            } else {
+                order.setCouponAmount(calcCouponAmount(orderItemList));
+            }
         }
         if (orderParam.getUsePoints() == null) {
             order.setEarnedPoints(0);
@@ -545,20 +552,29 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
 
     private void handleCouponAmount(List<OmsOrderItem> orderItemList, SmsCouponHistoryDetail couponHistoryDetail) {
         SmsCoupon coupon = couponHistoryDetail.getCoupon();
+        List<OmsOrderItem> eligibleItems;
         if (coupon.getUseType().equals(0)) {
-            calcPerCouponAmount(orderItemList, coupon);
+            eligibleItems = orderItemList;
         } else if (coupon.getUseType().equals(1)) {
-            calcPerCouponAmount(getCouponOrderItemByRelation(couponHistoryDetail, orderItemList, 0), coupon);
+            eligibleItems = getCouponOrderItemByRelation(couponHistoryDetail, orderItemList, 0);
         } else if (coupon.getUseType().equals(2)) {
-            calcPerCouponAmount(getCouponOrderItemByRelation(couponHistoryDetail, orderItemList, 1), coupon);
+            eligibleItems = getCouponOrderItemByRelation(couponHistoryDetail, orderItemList, 1);
+        } else {
+            eligibleItems = new ArrayList<>();
         }
-    }
 
-    private void calcPerCouponAmount(List<OmsOrderItem> orderItemList, SmsCoupon coupon) {
-        BigDecimal totalAmount = calcTotalAmount(orderItemList);
-        for (OmsOrderItem orderItem : orderItemList) {
-            BigDecimal couponAmount = orderItem.getProductPrice().divide(totalAmount, 3, RoundingMode.HALF_EVEN).multiply(coupon.getAmount());
-            orderItem.setCouponAmount(couponAmount);
+        com.nexusengine.core.portal.strategy.CouponDiscountStrategy strategy = 
+            com.nexusengine.core.portal.strategy.CouponStrategyFactory.getStrategy(coupon.getType());
+        
+        BigDecimal totalDiscount = strategy.calculateDiscount(eligibleItems, coupon);
+        
+        if (totalDiscount.compareTo(BigDecimal.ZERO) > 0) {
+            BigDecimal totalAmount = calcTotalAmount(eligibleItems);
+            for (OmsOrderItem orderItem : eligibleItems) {
+                BigDecimal ratio = orderItem.getProductPrice().multiply(new BigDecimal(orderItem.getProductQuantity())).divide(totalAmount, 6, RoundingMode.HALF_EVEN);
+                BigDecimal itemDiscount = totalDiscount.multiply(ratio).setScale(2, RoundingMode.HALF_EVEN);
+                orderItem.setCouponAmount(itemDiscount);
+            }
         }
     }
 
@@ -618,9 +634,28 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
         return true;
     }
 
+    /**
+     * Calculates freight amount based on total order value.
+     * Tiered pricing:
+     *   - Orders under ₹5,000:        ₹149 freight
+     *   - Orders ₹5,000 – ₹19,999:    ₹99 freight
+     *   - Orders ₹20,000 – ₹49,999:   ₹49 freight
+     *   - Orders ₹50,000+:            ₹199 freight (heavy / bulky items)
+     */
+    private BigDecimal calculateFreight(BigDecimal totalAmount) {
+        if (totalAmount.compareTo(new BigDecimal("50000")) >= 0) {
+            return new BigDecimal("199");
+        } else if (totalAmount.compareTo(new BigDecimal("20000")) >= 0) {
+            return new BigDecimal("49");
+        } else if (totalAmount.compareTo(new BigDecimal("5000")) >= 0) {
+            return new BigDecimal("99");
+        } else {
+            return new BigDecimal("149");
+        }
+    }
+
     private ConfirmOrderResult.CalcAmount calcCartAmount(List<CartPromotionItem> cartPromotionItemList) {
         ConfirmOrderResult.CalcAmount calcAmount = new ConfirmOrderResult.CalcAmount();
-        calcAmount.setFreightAmount(new BigDecimal(0));
         BigDecimal totalAmount = new BigDecimal("0");
         BigDecimal promotionAmount = new BigDecimal("0");
         for (CartPromotionItem item : cartPromotionItemList) {
@@ -629,7 +664,9 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
         }
         calcAmount.setTotalAmount(totalAmount);
         calcAmount.setPromotionAmount(promotionAmount);
-        calcAmount.setPayAmount(totalAmount.subtract(promotionAmount));
+        BigDecimal freightAmount = calculateFreight(totalAmount);
+        calcAmount.setFreightAmount(freightAmount);
+        calcAmount.setPayAmount(totalAmount.subtract(promotionAmount).add(freightAmount));
         return calcAmount;
     }
 

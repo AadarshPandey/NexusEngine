@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Box, TextField, Button, Typography, Paper, Alert } from '@mui/material';
 import { useDispatch } from 'react-redux';
-import { useNavigate, Link } from 'react-router';
+import { useNavigate } from 'react-router';
 import { login } from '../store/slices/authSlice';
 import request from '../utils/request';
 

@@ -71,8 +71,19 @@ public class SmsCouponServiceImpl implements SmsCouponService {
     }
 
     @Override
-    public List<SmsCoupon> list(String name, Integer type, Integer pageSize, Integer pageNum) {
-        return couponRepository.findAll(PageRequest.of(0, 1000)).getContent();
+    public org.springframework.data.domain.Page<SmsCoupon> list(String name, Integer type, Integer pageSize, Integer pageNum) {
+        org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(pageNum - 1, pageSize);
+        org.springframework.data.jpa.domain.Specification<SmsCoupon> spec = (root, query, cb) -> {
+            java.util.List<jakarta.persistence.criteria.Predicate> predicates = new java.util.ArrayList<>();
+            if (cn.hutool.core.util.StrUtil.isNotEmpty(name)) {
+                predicates.add(cb.like(root.get("name"), "%" + name + "%"));
+            }
+            if (type != null) {
+                predicates.add(cb.equal(root.get("type"), type));
+            }
+            return cb.and(predicates.toArray(new jakarta.persistence.criteria.Predicate[0]));
+        };
+        return couponRepository.findAll(spec, pageable);
     }
 
     @Override

@@ -70,12 +70,11 @@ public class UmsMemberCouponServiceImpl implements UmsMemberCouponService {
                 couponHistory.setUseStatus(0);
                 couponHistoryRepository.save(couponHistory);
                 
-                // Note: In production, coupon stock decrement should be an atomic UPDATE statement.
-                // Doing it here with a lock is safe for this user's claim limit, but a global coupon lock might be needed for overall count.
-                // We'll update count atomically via a native approach or rely on JPA versioning. For now, the user lock prevents limit bypass.
-                coupon.setCount(coupon.getCount() - 1);
-                coupon.setReceiveCount(coupon.getReceiveCount() == null ? 1 : coupon.getReceiveCount() + 1);
-                couponRepository.save(coupon);
+                // Atomic stock decrement
+                int countUpdated = couponRepository.decrementCouponStock(couponId);
+                if (countUpdated == 0) {
+                    Asserts.fail("Coupon is out of stock");
+                }
             } else {
                 Asserts.fail("Processing request, please wait");
             }
