@@ -5,6 +5,7 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { useSelector, useDispatch } from 'react-redux';
 import type { RootState } from '../store';
 import { logout } from '../store/slices/authSlice';
+import ChatWidget from '../components/ChatWidget';
 
 const Layout: React.FC = () => {
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
@@ -54,6 +55,8 @@ const Layout: React.FC = () => {
           </Typography>
         </Container>
       </Box>
+
+      <ChatWidget />
     </Box>
   );
 };
