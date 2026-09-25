@@ -856,6 +856,20 @@ CREATE TABLE ai_chat_conversation (
 CREATE INDEX idx_chat_session ON ai_chat_conversation(session_id);
 CREATE INDEX idx_chat_member ON ai_chat_conversation(member_id);
 COMMENT ON TABLE ai_chat_conversation IS 'Persisted AI chat history for analytics and context';
+
+#### Implementation Strategy (Planned by Gemini 3.1 Pro)
+
+**1. Architecture & Model**
+- **Provider:** Google Gemini via `spring-ai-google-genai-spring-boot-starter`.
+- **Cost Control:** Cap `maxTokens` (100-150) in `GeminiChatOptions`, use a concise System Prompt, and limit context window to the last 2-4 messages.
+
+**2. Database & Context (RAG)**
+- **Conversation Persistence:** Store chats in `ai_chat_conversation`.
+- **RAG Implementation:** Configure Spring AI `PgVectorStore` to connect to the existing `pms_product_embedding` pgvector table. Retrieve top 2 matches to append to Gemini prompts for grounded, token-efficient answers.
+
+**3. Frontend Chatbot UI**
+- **Placement:** A sticky Floating Action Button (FAB) in the bottom-right corner of the Customer Portal.
+- **API Integration:** Connect UI to a new REST endpoint (`POST /api/chat/ask`), rendering previous history on load.
 ```
 
 #### Code Changes Needed
