@@ -1,84 +1,34 @@
 package com.nexusengine.core.portal.unit;
 
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
-import com.nexusengine.core.common.api.CommonPage;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import com.nexusengine.core.common.exception.ApiException;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import com.nexusengine.core.common.service.RedisService;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import com.nexusengine.core.model.*;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
-import com.nexusengine.core.repository.OmsOrderSettingRepository;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import com.nexusengine.core.portal.component.CancelOrderSender;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import com.nexusengine.core.portal.dao.PortalOrderDao;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import com.nexusengine.core.portal.domain.CartPromotionItem;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import com.nexusengine.core.portal.domain.OrderParam;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import com.nexusengine.core.portal.service.OmsCartItemService;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import com.nexusengine.core.portal.service.UmsMemberReceiveAddressService;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import com.nexusengine.core.portal.service.UmsMemberService;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
+import com.nexusengine.core.portal.service.impl.OmsPortalOrderServiceImpl;
 import com.nexusengine.core.repository.OmsOrderItemRepository;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import com.nexusengine.core.repository.OmsOrderRepository;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
+import com.nexusengine.core.repository.OmsOrderSettingRepository;
 import com.nexusengine.core.repository.PmsSkuStockRepository;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import org.junit.jupiter.api.BeforeEach;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import org.junit.jupiter.api.Test;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import org.junit.jupiter.api.extension.ExtendWith;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import org.mockito.InjectMocks;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import org.mockito.Mock;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import java.math.BigDecimal;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
-import java.util.*;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Optional;
 
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import static org.junit.jupiter.api.Assertions.*;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import static org.mockito.ArgumentMatchers.any;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -158,13 +108,13 @@ public class OmsPortalOrderServiceImplTest {
         OmsOrderSetting omsOrderSetting = new OmsOrderSetting();
         omsOrderSetting.setNormalOrderOvertime(120);
         when(orderSettingRepository.findById(1L)).thenReturn(Optional.of(omsOrderSetting));
-        
+
         when(orderRepository.save(any(OmsOrder.class))).thenAnswer(invocation -> {
             OmsOrder order = invocation.getArgument(0);
             order.setId(100L);
             return order;
         });
-        
+
         PmsProduct mockProduct = new PmsProduct();
         mockProduct.setId(1L);
         mockProduct.setStock(10);
@@ -175,17 +125,18 @@ public class OmsPortalOrderServiceImplTest {
         when(redissonClient.getMultiLock(any(org.redisson.api.RLock[].class))).thenReturn(mockLock);
         try {
             when(mockLock.tryLock(anyLong(), anyLong(), any())).thenReturn(true);
-        } catch (InterruptedException e) {}
+        } catch (InterruptedException e) {
+        }
 
         Map<String, Object> result = orderService.generateOrder(orderParam);
 
         assertNotNull(result);
         assertTrue(result.containsKey("order"));
-        
+
         OmsOrder savedOrder = (OmsOrder) result.get("order");
         assertEquals(100L, savedOrder.getId());
         assertEquals(new BigDecimal("200.00"), savedOrder.getTotalAmount()); // 2 * 100
-        
+
         verify(skuStockRepository).save(any(PmsSkuStock.class)); // Verifies lockStock
         verify(orderItemRepository).saveAll(anyList());
         verify(outboxEventRepository).save(any(com.nexusengine.core.model.OutboxEvent.class));
@@ -212,8 +163,9 @@ public class OmsPortalOrderServiceImplTest {
         when(redissonClient.getMultiLock(any(org.redisson.api.RLock[].class))).thenReturn(mockLock);
         try {
             when(mockLock.tryLock(anyLong(), anyLong(), any())).thenReturn(true);
-        } catch (InterruptedException e) {}
-        
+        } catch (InterruptedException e) {
+        }
+
         PmsProduct mockProduct = new PmsProduct();
         mockProduct.setId(1L);
         mockProduct.setStock(1);
@@ -242,5 +194,64 @@ public class OmsPortalOrderServiceImplTest {
         assertEquals(4, order.getStatus()); // Cancelled status
         verify(orderRepository).save(order);
         verify(portalOrderDao).releaseSkuStockLock(anyList());
+    }
+
+    @Test
+    void handlePaymentWebhook_ValidPayload_UpdatesOrderToPaid() throws Exception {
+        String payload = "{\"event\":\"payment.captured\",\"payload\":{\"payment\":{\"entity\":{\"id\":\"pay_123\",\"amount\":10000,\"notes\":{\"order_id\":\"100\"}}}}}";
+        String signature = "fake_sig";
+
+        com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+        org.springframework.test.util.ReflectionTestUtils.setField(orderService, "objectMapper", mapper);
+        org.springframework.test.util.ReflectionTestUtils.setField(orderService, "paymentTransactionRepository", mock(com.nexusengine.core.repository.OmsPaymentTransactionRepository.class));
+        
+        com.nexusengine.core.repository.OmsPaymentTransactionRepository txRepo = 
+            (com.nexusengine.core.repository.OmsPaymentTransactionRepository) org.springframework.test.util.ReflectionTestUtils.getField(orderService, "paymentTransactionRepository");
+        
+        when(txRepo.findByTransactionId("pay_123")).thenReturn(Optional.empty());
+
+        OmsOrder mockOrder = new OmsOrder();
+        mockOrder.setId(100L);
+        mockOrder.setStatus(0);
+        when(orderRepository.findById(100L)).thenReturn(Optional.of(mockOrder));
+
+        orderService.handlePaymentWebhook(payload, signature);
+
+        verify(txRepo).save(any(OmsPaymentTransaction.class));
+        verify(orderRepository).save(mockOrder);
+        assertEquals(1, mockOrder.getStatus());
+        assertEquals("pay_123", mockOrder.getPaymentId());
+    }
+
+    @Test
+    void handlePaymentWebhook_DuplicateTransaction_IsIdempotent() throws Exception {
+        String payload = "{\"event\":\"payment.captured\",\"payload\":{\"payment\":{\"entity\":{\"id\":\"pay_123\",\"amount\":10000,\"notes\":{\"order_id\":\"100\"}}}}}";
+        
+        com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+        org.springframework.test.util.ReflectionTestUtils.setField(orderService, "objectMapper", mapper);
+        org.springframework.test.util.ReflectionTestUtils.setField(orderService, "paymentTransactionRepository", mock(com.nexusengine.core.repository.OmsPaymentTransactionRepository.class));
+        
+        com.nexusengine.core.repository.OmsPaymentTransactionRepository txRepo = 
+            (com.nexusengine.core.repository.OmsPaymentTransactionRepository) org.springframework.test.util.ReflectionTestUtils.getField(orderService, "paymentTransactionRepository");
+        
+        when(txRepo.findByTransactionId("pay_123")).thenReturn(Optional.of(new OmsPaymentTransaction()));
+
+        orderService.handlePaymentWebhook(payload, "sig");
+
+        verify(txRepo, never()).save(any());
+        verify(orderRepository, never()).findById(anyLong());
+    }
+
+    @Test
+    void calculateFreight_TieredPricing_ReturnsCorrectAmount() throws Exception {
+        java.lang.reflect.Method method = OmsPortalOrderServiceImpl.class.getDeclaredMethod("calculateFreight", BigDecimal.class);
+        method.setAccessible(true);
+        
+        assertEquals(new BigDecimal("149"), method.invoke(orderService, new BigDecimal("4999")));
+        assertEquals(new BigDecimal("99"), method.invoke(orderService, new BigDecimal("5000")));
+        assertEquals(new BigDecimal("99"), method.invoke(orderService, new BigDecimal("19999")));
+        assertEquals(new BigDecimal("49"), method.invoke(orderService, new BigDecimal("20000")));
+        assertEquals(new BigDecimal("49"), method.invoke(orderService, new BigDecimal("49999")));
+        assertEquals(new BigDecimal("199"), method.invoke(orderService, new BigDecimal("50000")));
     }
 }
