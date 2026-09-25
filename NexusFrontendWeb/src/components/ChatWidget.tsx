@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   Fab, Paper, Box, Typography, TextField, IconButton, 
-  List, ListItem, CircularProgress 
+  List, ListItem, CircularProgress
 } from '@mui/material';
 import ChatIcon from '@mui/icons-material/Chat';
 import CloseIcon from '@mui/icons-material/Close';
@@ -109,46 +109,51 @@ const ChatWidget: React.FC = () => {
             flexDirection: 'column',
             zIndex: 1000,
             borderRadius: 2,
-            overflow: 'hidden'
+            overflow: 'hidden',
+            bgcolor: 'background.paper'
           }}
         >
           {/* Header */}
-          <Box sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', p: 2, display: 'flex', alignItems: 'center' }}>
+          <Box sx={{ bgcolor: 'primary.main', color: 'background.default', p: 2, display: 'flex', alignItems: 'center' }}>
             <ChatIcon sx={{ mr: 1 }} />
-            <Typography variant="h6">Nexus AI Assistant</Typography>
+            <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Nexus AI</Typography>
           </Box>
 
           {/* Chat Messages Area */}
-          <Box sx={{ flex: 1, overflowY: 'auto', p: 2, bgcolor: '#f8f9fa' }}>
+          <Box sx={{ flex: 1, overflowY: 'auto', p: 2, bgcolor: 'background.default' }}>
             <List>
-              {messages.map((msg, index) => (
-                <ListItem 
-                  key={index} 
-                  sx={{ 
-                    display: 'flex', 
-                    justifyContent: msg.role === 'USER' ? 'flex-end' : 'flex-start',
-                    mb: 1
-                  }}
-                >
-                  <Box 
+              {messages.map((msg, index) => {
+                const isUser = msg.role === 'USER';
+                return (
+                  <ListItem 
+                    key={index} 
                     sx={{ 
-                      maxWidth: '80%',
-                      p: 1.5,
-                      borderRadius: 2,
-                      bgcolor: msg.role === 'USER' ? 'primary.main' : 'white',
-                      color: msg.role === 'USER' ? 'white' : 'text.primary',
-                      boxShadow: 1
+                      display: 'flex', 
+                      justifyContent: isUser ? 'flex-end' : 'flex-start',
+                      mb: 1,
+                      px: 0
                     }}
                   >
-                    <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap' }}>
-                      {msg.content}
-                    </Typography>
-                  </Box>
-                </ListItem>
-              ))}
+                    <Box 
+                      sx={{ 
+                        maxWidth: '85%',
+                        p: 1.5,
+                        borderRadius: 2,
+                        bgcolor: isUser ? 'primary.main' : 'background.paper',
+                        color: isUser ? '#000' : 'text.primary',
+                        boxShadow: 1
+                      }}
+                    >
+                      <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+                        {msg.content}
+                      </Typography>
+                    </Box>
+                  </ListItem>
+                );
+              })}
               {isLoading && (
-                <ListItem sx={{ display: 'flex', justifyContent: 'flex-start' }}>
-                  <Box sx={{ p: 1.5, borderRadius: 2, bgcolor: 'white', boxShadow: 1 }}>
+                <ListItem sx={{ display: 'flex', justifyContent: 'flex-start', px: 0 }}>
+                  <Box sx={{ p: 1.5, borderRadius: 2, bgcolor: 'background.paper', boxShadow: 1 }}>
                     <CircularProgress size={20} />
                   </Box>
                 </ListItem>
@@ -169,8 +174,9 @@ const ChatWidget: React.FC = () => {
                 if (e.key === 'Enter') handleSend();
               }}
               disabled={isLoading}
+              sx={{ '& .MuiOutlinedInput-root': { borderRadius: 5 } }}
             />
-            <IconButton color="primary" onClick={handleSend} disabled={isLoading || !input.trim()}>
+            <IconButton color="primary" onClick={handleSend} disabled={isLoading || !input.trim()} sx={{ ml: 1 }}>
               <SendIcon />
             </IconButton>
           </Box>
