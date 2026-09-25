@@ -141,6 +141,8 @@ const ChatWidget: React.FC = () => {
                         borderRadius: 2,
                         bgcolor: isUser ? 'primary.main' : 'background.paper',
                         color: isUser ? '#000' : 'text.primary',
+                        border: '1px solid',
+                        borderColor: isUser ? 'primary.dark' : 'secondary.main',
                         boxShadow: 1
                       }}
                     >
@@ -153,7 +155,7 @@ const ChatWidget: React.FC = () => {
               })}
               {isLoading && (
                 <ListItem sx={{ display: 'flex', justifyContent: 'flex-start', px: 0 }}>
-                  <Box sx={{ p: 1.5, borderRadius: 2, bgcolor: 'background.paper', boxShadow: 1 }}>
+                  <Box sx={{ p: 1.5, borderRadius: 2, bgcolor: 'background.paper', border: '1px solid', borderColor: 'secondary.main', boxShadow: 1 }}>
                     <CircularProgress size={20} />
                   </Box>
                 </ListItem>
