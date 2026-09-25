@@ -4,6 +4,7 @@ import com.nexusengine.core.model.*;
 import com.nexusengine.core.portal.dao.HomeDao;
 import com.nexusengine.core.portal.domain.HomeContentResult;
 import com.nexusengine.core.portal.domain.HomeFlashPromotion;
+import com.nexusengine.core.portal.domain.FlashPromotionProduct;
 import com.nexusengine.core.portal.service.HomeService;
 import com.nexusengine.core.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,9 @@ public class HomeServiceImpl implements HomeService {
     private final PmsProductRepository productRepository;
     private final PmsProductCategoryRepository productCategoryRepository;
     private final com.nexusengine.core.portal.service.PmsProductSemanticSearchService semanticSearchService;
+    private final SmsFlashPromotionRepository flashPromotionRepository;
+    private final SmsFlashPromotionSessionRepository flashPromotionSessionRepository;
+    private final SmsFlashPromotionProductRelationRepository flashPromotionProductRelationRepository;
 
     private void initializeMediaList(List<PmsProduct> products) {
         if (products != null) {
@@ -46,8 +50,48 @@ public class HomeServiceImpl implements HomeService {
         initializeMediaList(result.getNewProductList());
         initializeMediaList(result.getHotProductList());
         
-        // Return an empty FlashPromotion object to prevent frontend crashes
-        result.setHomeFlashPromotion(new HomeFlashPromotion());
+        // Fix 4: Wire HomeFlashPromotion to query active session
+        HomeFlashPromotion homeFlashPromotion = new HomeFlashPromotion();
+        try {
+            java.util.Date now = new java.util.Date();
+            java.time.LocalTime currentTime = java.time.LocalTime.now();
+            
+            // Find active promotion event today
+            List<SmsFlashPromotion> promotions = flashPromotionRepository.findByStatusAndStartDateLessThanEqualAndEndDateGreaterThanEqual(1, now, now);
+            if (!promotions.isEmpty()) {
+                SmsFlashPromotion promotion = promotions.get(0);
+                
+                // Find active session right now
+                java.util.Optional<SmsFlashPromotionSession> currentSessionOpt = flashPromotionSessionRepository.findFirstByStatusAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(1, currentTime, currentTime);
+                
+                if (currentSessionOpt.isPresent()) {
+                    SmsFlashPromotionSession currentSession = currentSessionOpt.get();
+                    
+                    // Set times based on today + session time
+                    java.time.LocalDate today = java.time.LocalDate.now();
+                    homeFlashPromotion.setStartTime(java.util.Date.from(java.time.LocalDateTime.of(today, currentSession.getStartTime()).atZone(java.time.ZoneId.systemDefault()).toInstant()));
+                    homeFlashPromotion.setEndTime(java.util.Date.from(java.time.LocalDateTime.of(today, currentSession.getEndTime()).atZone(java.time.ZoneId.systemDefault()).toInstant()));
+                    
+                    // Fetch products
+                    List<SmsFlashPromotionProductRelation> relations = flashPromotionProductRelationRepository.findByFlashPromotionIdAndFlashPromotionSessionId(promotion.getId(), currentSession.getId());
+                    List<FlashPromotionProduct> flashProductList = new java.util.ArrayList<>();
+                    for (SmsFlashPromotionProductRelation relation : relations) {
+                        productRepository.findById(relation.getProductId()).ifPresent(p -> {
+                            FlashPromotionProduct flashProduct = new FlashPromotionProduct();
+                            org.springframework.beans.BeanUtils.copyProperties(p, flashProduct);
+                            flashProduct.setFlashPromotionPrice(relation.getFlashPromotionPrice());
+                            flashProduct.setFlashPromotionCount(relation.getFlashPromotionCount());
+                            flashProduct.setFlashPromotionLimit(relation.getFlashPromotionLimit());
+                            flashProductList.add(flashProduct);
+                        });
+                    }
+                    homeFlashPromotion.setProductList(flashProductList);
+                }
+            }
+        } catch (Exception e) {
+            // fallback
+        }
+        result.setHomeFlashPromotion(homeFlashPromotion);
         
         try {
             result.setAiRecommendProductList(semanticSearchService.semanticSearch(null, "latest trending electronics smartphones laptops"));
