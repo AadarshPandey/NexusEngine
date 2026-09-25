@@ -18,7 +18,7 @@ public class OrderParam {
     @Schema(title = "Coupon id")
     private Long couponId;
     @Schema(title = "Use integration")
-    private Integer useIntegration;
+    private Integer usePoints;
     @Schema(title = "Pay type")
     private Integer payType;
     @Schema(title = "Cart ids")

@@ -88,7 +88,7 @@ public class PmsProductController {
     @Operation(summary = "Update verify status Operation")
     @PostMapping("/update/verifyStatus")
 
-    public CommonResult updateVerifyStatus(@RequestParam("ids") List<Long> ids,
+        public CommonResult updateVerifyStatus(@RequestParam("ids") List<Long> ids,
                                            @RequestParam("verifyStatus") Integer verifyStatus,
                                            @RequestParam("detail") String detail) {
         int count = productService.updateVerifyStatus(ids, verifyStatus, detail);
@@ -150,4 +150,17 @@ public class PmsProductController {
             return CommonResult.failed();
         }
     }
+
+    @Operation(summary = "Get operate logs")
+    @GetMapping("/operateLog/{id}")
+    public CommonResult<List<com.nexusengine.core.model.PmsProductOperateLog>> getOperateLog(@PathVariable Long id) {
+        return CommonResult.success(productService.getOperateLog(id));
+    }
+
+    @Operation(summary = "Get verify records")
+    @GetMapping("/verifyRecord/{id}")
+    public CommonResult<List<com.nexusengine.core.model.PmsProductVerifyRecord>> getVerifyRecord(@PathVariable Long id) {
+        return CommonResult.success(productService.getVerifyRecord(id));
+    }
+
 }

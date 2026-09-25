@@ -1,69 +1,32 @@
 package com.nexusengine.core.portal.unit;
 
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import com.nexusengine.core.common.exception.ApiException;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
-import com.nexusengine.core.model.*;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
+import com.nexusengine.core.model.SmsCoupon;
+import com.nexusengine.core.model.SmsCouponHistory;
+import com.nexusengine.core.model.UmsMember;
 import com.nexusengine.core.portal.dao.PortalProductDao;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import com.nexusengine.core.portal.domain.CartPromotionItem;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import com.nexusengine.core.portal.domain.SmsCouponHistoryDetail;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import com.nexusengine.core.portal.service.UmsMemberService;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
-import com.nexusengine.core.repository.*;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
+import com.nexusengine.core.portal.service.impl.UmsMemberCouponServiceImpl;
+import com.nexusengine.core.repository.PmsProductRepository;
+import com.nexusengine.core.repository.SmsCouponHistoryRepository;
+import com.nexusengine.core.repository.SmsCouponRepository;
 import org.junit.jupiter.api.BeforeEach;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import org.junit.jupiter.api.Test;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import org.junit.jupiter.api.extension.ExtendWith;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import org.mockito.InjectMocks;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import org.mockito.Mock;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import java.math.BigDecimal;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import java.util.Collections;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import java.util.Date;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import java.util.List;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import java.util.Optional;
 
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import static org.junit.jupiter.api.Assertions.*;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import static org.mockito.ArgumentMatchers.any;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -106,7 +69,7 @@ public class UmsMemberCouponServiceImplTest {
         when(couponHistoryRepository.countByCouponIdAndMemberId(10L, 1L)).thenReturn(0L);
 
         assertDoesNotThrow(() -> couponService.add(10L));
-        
+
         assertEquals(99, testCoupon.getCount());
         verify(couponHistoryRepository).save(any(SmsCouponHistory.class));
         verify(couponRepository).save(testCoupon);
@@ -135,7 +98,7 @@ public class UmsMemberCouponServiceImplTest {
     @Test
     void listHistory_ReturnsHistory() {
         when(memberService.getCurrentMember()).thenReturn(testMember);
-        
+
         SmsCouponHistory history = new SmsCouponHistory();
         history.setId(100L);
         when(couponHistoryRepository.findByMemberIdAndUseStatus(1L, 0))
@@ -173,12 +136,12 @@ public class UmsMemberCouponServiceImplTest {
     @Test
     void list_ReturnsCoupons() {
         when(memberService.getCurrentMember()).thenReturn(testMember);
-        
+
         SmsCouponHistory history = new SmsCouponHistory();
         history.setCouponId(10L);
         when(couponHistoryRepository.findByMemberIdAndUseStatus(1L, 0))
                 .thenReturn(Collections.singletonList(history));
-                
+
         when(couponRepository.findAllById(Collections.singletonList(10L)))
                 .thenReturn(Collections.singletonList(testCoupon));
 

@@ -1,78 +1,25 @@
 package com.nexusengine.core.portal.unit;
 
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
-import cn.hutool.core.collection.CollUtil;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import com.nexusengine.core.common.exception.ApiException;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import com.nexusengine.core.model.UmsMember;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
-import com.nexusengine.core.model.UmsMemberLevel;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
-import com.nexusengine.core.portal.domain.MemberDetails;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import com.nexusengine.core.portal.service.UmsMemberCacheService;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
-import com.nexusengine.core.repository.UmsMemberLevelRepository;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
-import com.nexusengine.core.repository.UmsMemberRepository;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
+import com.nexusengine.core.portal.service.impl.UmsMemberServiceImpl;
 import com.nexusengine.core.security.util.JwtTokenUtil;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import org.junit.jupiter.api.BeforeEach;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import org.junit.jupiter.api.Test;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import org.junit.jupiter.api.extension.ExtendWith;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import org.mockito.InjectMocks;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import org.mockito.Mock;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import org.mockito.junit.jupiter.MockitoExtension;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import org.springframework.security.core.userdetails.UserDetails;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import java.util.Collections;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
-import java.util.Optional;
 
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import static org.junit.jupiter.api.Assertions.*;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import static org.mockito.ArgumentMatchers.any;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import static org.mockito.ArgumentMatchers.anyString;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -83,19 +30,15 @@ public class UmsMemberServiceImplTest {
     @Mock
     private JwtTokenUtil jwtTokenUtil;
     @Mock
-    private UmsMemberLevelRepository memberLevelRepository;
-    @Mock
     private com.nexusengine.core.repository.UmsMemberRepository memberRepository;
     @Mock
     private UmsMemberCacheService memberCacheService;
-    @Mock
-    private org.springframework.mail.javamail.JavaMailSender mailSender;
+
 
     @InjectMocks
     private UmsMemberServiceImpl memberService;
 
     private UmsMember testMember;
-    private UmsMemberLevel defaultLevel;
 
     @BeforeEach
     void setUp() {
@@ -105,10 +48,8 @@ public class UmsMemberServiceImplTest {
         testMember.setPassword("encodedPassword");
         testMember.setPhone("1234567890");
 
-        defaultLevel = new UmsMemberLevel();
-        defaultLevel.setId(4L);
-        defaultLevel.setDefaultStatus(1);
-        
+        // Removed defaultLevel since it's deleted
+
         org.springframework.test.util.ReflectionTestUtils.setField(memberService, "AUTH_CODE_EXPIRE_SECONDS", 120L);
     }
 
@@ -139,7 +80,6 @@ public class UmsMemberServiceImplTest {
         when(memberCacheService.getAuthCode("test@test.com")).thenReturn("123456");
         when(memberRepository.findByUsernameOrEmail("newuser", "test@test.com")).thenReturn(Collections.emptyList());
         when(passwordEncoder.encode("password")).thenReturn("encoded");
-        when(memberLevelRepository.findByDefaultStatus(1)).thenReturn(Collections.singletonList(defaultLevel));
 
         assertDoesNotThrow(() -> memberService.register("newuser", "password", "test@test.com", "123456"));
         verify(memberRepository).save(any(UmsMember.class));
@@ -149,8 +89,8 @@ public class UmsMemberServiceImplTest {
     void register_InvalidAuthCode_ThrowsException() {
         when(memberCacheService.getAuthCode("test@test.com")).thenReturn("654321");
 
-        assertThrows(ApiException.class, () -> 
-            memberService.register("newuser", "password", "test@test.com", "123456")
+        assertThrows(ApiException.class, () ->
+                memberService.register("newuser", "password", "test@test.com", "123456")
         );
         verify(memberRepository, never()).save(any());
     }
@@ -158,15 +98,14 @@ public class UmsMemberServiceImplTest {
     @Test
     void generateAuthCode_ReturnsCodeAndCaches() {
         memberService.generateAuthCode("1234567890");
-        
+
         org.mockito.ArgumentCaptor<String> captor = org.mockito.ArgumentCaptor.forClass(String.class);
         verify(memberCacheService).setAuthCode(eq("1234567890"), captor.capture());
-        
+
         String code = captor.getValue();
         assertNotNull(code);
         assertEquals(6, code.length());
-        
-        verify(mailSender).send(any(org.springframework.mail.SimpleMailMessage.class));
+
     }
 
     @Test
@@ -184,8 +123,8 @@ public class UmsMemberServiceImplTest {
         when(memberCacheService.getMember("unknown")).thenReturn(null);
         when(memberRepository.findByUsername("unknown")).thenReturn(null);
 
-        assertThrows(UsernameNotFoundException.class, () -> 
-            memberService.loadUserByUsername("unknown")
+        assertThrows(UsernameNotFoundException.class, () ->
+                memberService.loadUserByUsername("unknown")
         );
     }
 

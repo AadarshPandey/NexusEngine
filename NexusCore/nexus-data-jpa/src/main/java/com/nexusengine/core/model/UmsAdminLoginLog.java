@@ -27,9 +27,5 @@ public class UmsAdminLoginLog implements Serializable {
 
     private String ip;
 
-    private String address;
 
-    @Column(name = "user_agent")
-    @Schema(title = "User agent")
-    private String userAgent;
 }

@@ -57,8 +57,14 @@ public class UmsRoleServiceImpl implements UmsRoleService {
 
     @Override
     public Page<UmsRole> list(String keyword, Integer pageSize, Integer pageNum) {
-        int page = pageNum > 0 ? pageNum - 1 : 0;
-        return roleRepository.findAll(PageRequest.of(page > 0 ? page - 1 : 0, pageSize));
+        org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(pageNum > 0 ? pageNum - 1 : 0, pageSize, org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.ASC, "id"));
+        if (cn.hutool.core.util.StrUtil.isNotEmpty(keyword)) {
+            return roleRepository.findAll((org.springframework.data.jpa.domain.Specification<UmsRole>) (root, query, cb) -> {
+                String pattern = "%" + keyword + "%";
+                return cb.like(root.get("name"), pattern);
+            }, pageable);
+        }
+        return roleRepository.findAll(pageable);
     }
 
     @Override

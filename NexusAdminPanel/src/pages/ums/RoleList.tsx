@@ -300,7 +300,7 @@ const RoleList: React.FC = () => {
                           size="small"
                           onClick={() => navigate(`/ums/allocMenu?roleId=${row.id}`)}
                           sx={{ color: '#10B981' }}
-                          title="Allocate Menus"
+                          title="Assign UI Menus to Role"
                         >
                           <MenuOpen sx={{ fontSize: 18 }} />
                         </IconButton>
@@ -308,7 +308,7 @@ const RoleList: React.FC = () => {
                           size="small"
                           onClick={() => navigate(`/ums/allocResource?roleId=${row.id}`)}
                           sx={{ color: '#F59E0B' }}
-                          title="Allocate Resources"
+                          title="Assign API Resources to Role"
                         >
                           <Security sx={{ fontSize: 18 }} />
                         </IconButton>

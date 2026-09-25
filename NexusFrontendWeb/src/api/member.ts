@@ -2,7 +2,6 @@ import request from '../utils/request';
 
 export interface UmsMember {
   id: number;
-  memberLevelId: number;
   username: string;
   password?: string;
   nickname: string;
@@ -11,15 +10,11 @@ export interface UmsMember {
   createTime: string;
   icon: string;
   gender: number;
-  birthday: string;
   city: string;
   job: string;
-  personalizedSignature: string;
   sourceType: number;
-  integration: number;
-  growth: number;
-  bonusDrawsRemaining: number;
-  lifetimeRewardPoints: number;
+  points: number;
+  lifetimePoints: number;
 }
 
 export interface UmsMemberReceiveAddress {

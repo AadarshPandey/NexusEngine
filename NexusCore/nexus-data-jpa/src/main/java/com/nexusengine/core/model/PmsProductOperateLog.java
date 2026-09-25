@@ -35,18 +35,9 @@ public class PmsProductOperateLog implements Serializable {
     @Column(name = "sale_price_new")
     private BigDecimal salePriceNew;
 
-    @Column(name = "gift_point_old")
-    @Schema(title = "Gift point old")
-    private Integer giftPointOld;
 
-    @Column(name = "gift_point_new")
-    private Integer giftPointNew;
 
-    @Column(name = "use_point_limit_old")
-    private Integer usePointLimitOld;
 
-    @Column(name = "use_point_limit_new")
-    private Integer usePointLimitNew;
 
     @Column(name = "operate_man")
     @Schema(title = "Operate man")

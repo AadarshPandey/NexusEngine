@@ -13,7 +13,7 @@ describe('Cart Slice', () => {
 
   it('should handle clearCart', () => {
     const previousState = {
-      items: [{ id: 1, quantity: 2 } as unknown as import('../../api/cart').OmsCartItem],
+      items: [{ id: 1, quantity: 2 } as unknown as import('../api/cart').OmsCartItem],
       loading: false,
       error: null,
       totalQuantity: 2,

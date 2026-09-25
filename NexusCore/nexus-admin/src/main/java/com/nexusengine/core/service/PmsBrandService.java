@@ -71,6 +71,7 @@ public interface PmsBrandService {
      * @return the result of the operation
      */
     int updateShowStatus(List<Long> ids, Integer showStatus);
+    int updateSort(Long id, Integer sort);
 
         /**
      * Executes the operation.

@@ -22,7 +22,7 @@ export interface OmsOrderItem {
   promotionName: string;
   promotionAmount: number;
   couponAmount: number;
-  integrationAmount: number;
+  pointsDiscountAmount: number;
   realAmount: number;
   giftIntegration: number;
   giftGrowth: number;
@@ -59,9 +59,55 @@ export interface OmsOrderReturnApply {
   receiveNote: string;
 }
 
+export interface SmsCoupon {
+  id: number;
+  type: number;
+  name: string;
+  amount: number;
+  minPoint: number;
+  useType: number;
+  endTime: string;
+  enableTime: string;
+  maxDiscountAmount?: number;
+}
+
+export interface SmsCouponProductRelation {
+  id: number;
+  couponId: number;
+  productId: number;
+  productName: string;
+  productSn: string;
+}
+
+export interface SmsCouponProductCategoryRelation {
+  id: number;
+  couponId: number;
+  productCategoryId: number;
+  productCategoryName: string;
+  parentCategoryName: string;
+}
+
+export interface SmsCouponHistoryDetail {
+  id: number;
+  couponId: number;
+  memberId: number;
+  couponCode: string;
+  memberNickname: string;
+  getType: number;
+  createTime: string;
+  useStatus: number;
+  useTime: string;
+  orderId: number;
+  orderSn: string;
+  coupon: SmsCoupon;
+  productRelationList?: SmsCouponProductRelation[];
+  categoryRelationList?: SmsCouponProductCategoryRelation[];
+}
+
 export interface ConfirmOrderResult {
   cartPromotionItemList: OmsCartItem[];
   memberReceiveAddressList: UmsMemberReceiveAddress[];
+  couponHistoryDetailList: SmsCouponHistoryDetail[];
   calcAmount: {
     totalAmount: number;
     freightAmount: number;
@@ -94,8 +140,6 @@ export interface OmsOrderDetail {
   deliveryCompany: string;
   deliverySn: string;
   autoConfirmDay: number;
-  integration: number;
-  growth: number;
   promotionInfo: string;
   billType: number;
   billHeader: string;

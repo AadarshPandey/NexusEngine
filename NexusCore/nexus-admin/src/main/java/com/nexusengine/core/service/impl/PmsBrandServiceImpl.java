@@ -61,12 +61,29 @@ public class PmsBrandServiceImpl implements PmsBrandService {
 
     @Override
     public org.springframework.data.domain.Page<PmsBrand> listBrand(String keyword, Integer showStatus, int pageNum, int pageSize) {
-        return brandRepository.findAll(PageRequest.of(pageNum > 0 ? pageNum - 1 : 0, pageSize, Sort.by(Sort.Direction.ASC, "id")));
+        org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(pageNum > 0 ? pageNum - 1 : 0, pageSize, Sort.by(Sort.Direction.ASC, "id"));
+        return brandRepository.findAll((root, query, cb) -> {
+            var predicates = new java.util.ArrayList<jakarta.persistence.criteria.Predicate>();
+            if (cn.hutool.core.util.StrUtil.isNotEmpty(keyword)) {
+                predicates.add(cb.like(cb.lower(root.get("name")), "%" + keyword.toLowerCase() + "%"));
+            }
+            if (showStatus != null) {
+                predicates.add(cb.equal(root.get("showStatus"), showStatus));
+            }
+            return cb.and(predicates.toArray(new jakarta.persistence.criteria.Predicate[0]));
+        }, pageable);
     }
 
     @Override
     public PmsBrand getBrand(Long id) {
         return brandRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public int updateSort(Long id, Integer sort) {
+        PmsBrand brand = brandRepository.findById(id).orElse(null);
+        if (brand != null) { brand.setSort(sort); brandRepository.save(brand); return 1; }
+        return 0;
     }
 
     @Override

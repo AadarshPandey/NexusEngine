@@ -11,7 +11,7 @@ export type OmsOrder = {
   payAmount: number
   freightAmount: number
   promotionAmount?: number
-  integrationAmount?: number
+  pointsDiscountAmount?: number
   couponAmount?: number
   discountAmount: number
   payType: number
@@ -21,8 +21,6 @@ export type OmsOrder = {
   deliveryCompany?: string
   deliverySn?: string
   autoConfirmDay?: number
-  integration?: number
-  growth?: number
   promotionInfo: string
   billType?: number
   billHeader?: string
@@ -64,7 +62,7 @@ export type OmsOrderItem = {
   promotionName: string
   promotionAmount: number
   couponAmount: number
-  integrationAmount: number
+  pointsDiscountAmount: number
   realAmount: number
   giftIntegration: number
   giftGrowth: number

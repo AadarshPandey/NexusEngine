@@ -64,8 +64,8 @@ public class SmsCouponController {
             @RequestParam(value = "type",required = false) Integer type,
             @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
             @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
-        List<SmsCoupon> couponList = couponService.list(name,type,pageSize,pageNum);
-        return CommonResult.success(CommonPage.restPage(couponList));
+        org.springframework.data.domain.Page<SmsCoupon> couponPage = couponService.list(name,type,pageSize,pageNum);
+        return CommonResult.success(CommonPage.restPage(couponPage));
     }
 
     @Operation(summary = "Get item Operation")

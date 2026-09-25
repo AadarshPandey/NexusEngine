@@ -87,16 +87,16 @@ public class PortalProductDao {
                     if (coupon.getUseType() == null) return false;
                     if (coupon.getUseType() == 0) return true; // Universal coupon
                     if (coupon.getUseType() == 1) {
-                        // Product-specific coupon
-                        List<SmsCouponProductRelation> relations =
-                                couponProductRelationRepository.findByCouponId(coupon.getId());
-                        return relations.stream().anyMatch(r -> r.getProductId().equals(productId));
-                    }
-                    if (coupon.getUseType() == 2) {
                         // Category-specific coupon
                         List<SmsCouponProductCategoryRelation> relations =
                                 couponProductCategoryRelationRepository.findByCouponId(coupon.getId());
                         return relations.stream().anyMatch(r -> r.getProductCategoryId().equals(productCategoryId));
+                    }
+                    if (coupon.getUseType() == 2) {
+                        // Product-specific coupon
+                        List<SmsCouponProductRelation> relations =
+                                couponProductRelationRepository.findByCouponId(coupon.getId());
+                        return relations.stream().anyMatch(r -> r.getProductId().equals(productId));
                     }
                     return false;
                 })

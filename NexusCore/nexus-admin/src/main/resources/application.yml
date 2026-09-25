@@ -51,6 +51,9 @@ secure:
       - /favicon.ico
       - /admin/login
       - /admin/info
+      - /dashboard/**
+      - /productAttribute/**
+      - /productCategory/**
 
 springdoc:
   swagger-ui:

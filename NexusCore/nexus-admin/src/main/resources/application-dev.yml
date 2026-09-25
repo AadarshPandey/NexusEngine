@@ -55,4 +55,5 @@ logging:
 
 logstash:
   host: localhost
-  enableInnerLog: false
+  enableInnerLog: false    org.hibernate.SQL: debug
+    org.hibernate.type.descriptor.sql.BasicBinder: trace

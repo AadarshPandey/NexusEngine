@@ -18,6 +18,53 @@ const Checkout: React.FC = () => {
   const [error, setError] = useState('');
   const [placingOrder, setPlacingOrder] = useState(false);
   const [selectedAddressId, setSelectedAddressId] = useState<number | ''>('');
+  const [selectedCouponId, setSelectedCouponId] = useState<number | ''>('');
+
+  const calculateDiscount = () => {
+    if (!selectedCouponId || !confirmData) return 0;
+    const detail = confirmData.couponHistoryDetailList?.find(d => d.coupon.id === selectedCouponId);
+    if (!detail) return 0;
+    const coupon = detail.coupon;
+    
+    let applicableAmount = 0;
+    if (coupon.useType === 0) {
+      // All products
+      applicableAmount = confirmData.calcAmount.totalAmount || 0;
+    } else if (coupon.useType === 1) {
+      // Specific categories
+      const allowedCategories = detail.categoryRelationList?.map(c => c.productCategoryId) || [];
+      applicableAmount = confirmData.cartPromotionItemList
+        .filter(item => allowedCategories.includes(item.productCategoryId))
+        .reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    } else if (coupon.useType === 2) {
+      // Specific products
+      const allowedProducts = detail.productRelationList?.map(p => p.productId) || [];
+      applicableAmount = confirmData.cartPromotionItemList
+        .filter(item => allowedProducts.includes(item.productId))
+        .reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    }
+
+    // Minimum point/amount not met for the applicable items
+    if (applicableAmount < coupon.minPoint) {
+      return 0; 
+    }
+
+    if (coupon.type === 0) {
+      return Math.min(coupon.amount, applicableAmount);
+    } else if (coupon.type === 1) {
+      let discount = applicableAmount * (coupon.amount / 100);
+      if (coupon.maxDiscountAmount && discount > coupon.maxDiscountAmount) {
+        discount = coupon.maxDiscountAmount;
+      }
+      return discount;
+    } else if (coupon.type === 2) {
+      return confirmData.calcAmount.freightAmount || 0;
+    }
+    return 0;
+  };
+
+  const discountAmount = calculateDiscount();
+  const finalPayAmount = Math.max((confirmData?.calcAmount.payAmount || 0) - discountAmount, 0);
 
   useEffect(() => {
     if (!isAuthenticated || items.length === 0) {
@@ -57,10 +104,11 @@ const Checkout: React.FC = () => {
       const orderRes = await generateOrder({
         memberReceiveAddressId: selectedAddressId as number,
         payType: 2, // 2 = Razorpay
-        cartIds: items.map(i => i.id)
+        cartIds: items.map(i => i.id),
+        couponId: selectedCouponId ? (selectedCouponId as number) : undefined
       });
       
-      const order = orderRes.data.order;
+      const order = ((orderRes as any).data).order;
       
       // 2. Import Razorpay APIs
       const { createRazorpayOrder, verifyRazorpayPayment } = await import('../api/order');
@@ -164,7 +212,7 @@ const Checkout: React.FC = () => {
             >
               {confirmData.memberReceiveAddressList.map((addr: import('../api/member').UmsMemberReceiveAddress) => (
                 <MenuItem key={addr.id} value={addr.id}>
-                  {addr.name} - {addr.phoneNumber} ({addr.province}, {addr.city}, {addr.region}, {addr.detailAddress} - PIN: {addr.postCode})
+                  {addr.name} - {addr.phoneNumber} ({[addr.detailAddress, addr.region, addr.city, addr.province].filter(Boolean).join(', ')} - PIN: {addr.postCode})
                 </MenuItem>
               ))}
             </Select>
@@ -173,6 +221,34 @@ const Checkout: React.FC = () => {
           <Alert severity="warning" sx={{ mt: 2 }}>
             You have no shipping addresses. Please add one in your Profile before checking out.
           </Alert>
+        )}
+      </Paper>
+
+      <Paper sx={{ p: 4, mb: 4 }}>
+        <Typography variant="h6" gutterBottom>Coupons</Typography>
+        {confirmData?.couponHistoryDetailList && confirmData.couponHistoryDetailList.length > 0 ? (
+          <FormControl fullWidth sx={{ mt: 2 }}>
+            <InputLabel>Select a Coupon</InputLabel>
+            <Select
+              value={selectedCouponId}
+              label="Select a Coupon"
+              onChange={(e) => setSelectedCouponId(e.target.value as number)}
+            >
+              <MenuItem value=""><em>None</em></MenuItem>
+              {confirmData.couponHistoryDetailList.map((detail) => (
+                <MenuItem key={detail.coupon.id} value={detail.coupon.id}>
+                  {detail.coupon.name} 
+                  {detail.coupon.type === 0 && ` (₹${detail.coupon.amount} off)`}
+                  {detail.coupon.type === 1 && ` (${detail.coupon.amount}% off)`}
+                  {detail.coupon.type === 2 && ` (Free Shipping)`}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        ) : (
+          <Typography color="text.secondary" sx={{ mt: 2 }}>
+            No coupons available for this order.
+          </Typography>
         )}
       </Paper>
 
@@ -194,9 +270,15 @@ const Checkout: React.FC = () => {
           <Typography color="text.secondary">Freight:</Typography>
           <Typography>₹{confirmData?.calcAmount.freightAmount?.toFixed(2)}</Typography>
         </Box>
+        {discountAmount > 0 && (
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 4, mb: 1 }}>
+            <Typography color="text.secondary">Coupon Discount:</Typography>
+            <Typography color="error">-₹{discountAmount.toFixed(2)}</Typography>
+          </Box>
+        )}
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 4, mb: 3 }}>
           <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Payable Amount:</Typography>
-          <Typography variant="h6" color="primary" sx={{ fontWeight: 'bold' }}>₹{confirmData?.calcAmount.payAmount?.toFixed(2)}</Typography>
+          <Typography variant="h6" color="primary" sx={{ fontWeight: 'bold' }}>₹{finalPayAmount.toFixed(2)}</Typography>
         </Box>
 
         <Button 

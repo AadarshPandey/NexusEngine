@@ -25,8 +25,6 @@ export const ReviewSection: React.FC<{ productId: number }> = ({ productId }) =>
   const [newReviewText, setNewReviewText] = useState('');
   const [rating, setRating] = useState<number | null>(5);
   const [mediaList, setMediaList] = useState<MediaParam[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [uploading, setUploading] = useState(false);
   
   useEffect(() => {
     loadReviews();
@@ -34,13 +32,11 @@ export const ReviewSection: React.FC<{ productId: number }> = ({ productId }) =>
 
   const loadReviews = async () => {
     try {
-      setLoading(true);
       const res = await request.get<unknown, { data: { list: Review[] } }>(`/review/product/${productId}`);
       setReviews(res.data.list || []);
     } catch (error) {
       console.error('Failed to load reviews', error);
     } finally {
-      setLoading(false);
     }
   };
 
@@ -51,7 +47,6 @@ export const ReviewSection: React.FC<{ productId: number }> = ({ productId }) =>
       formData.append('file', file);
       
       try {
-        setUploading(true);
         const res = await request.post<unknown, { data: { url: string } }>('/review/upload', formData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
@@ -59,7 +54,6 @@ export const ReviewSection: React.FC<{ productId: number }> = ({ productId }) =>
       } catch (err) {
         alert('Upload failed');
       } finally {
-        setUploading(false);
       }
     }
   };

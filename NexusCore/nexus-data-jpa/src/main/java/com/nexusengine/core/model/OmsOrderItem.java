@@ -74,19 +74,16 @@ public class OmsOrderItem implements Serializable {
     @Schema(title = "Coupon amount")
     private BigDecimal couponAmount;
 
-    @Column(name = "integration_amount")
+    @Column(name = "points_discount_amount")
     @Schema(title = "Integration amount")
-    private BigDecimal integrationAmount;
+    private BigDecimal pointsDiscountAmount;
 
     @Column(name = "real_amount")
     @Schema(title = "Real amount")
     private BigDecimal realAmount;
 
-    @Column(name = "gift_integration")
-    private Integer giftIntegration;
-
-    @Column(name = "gift_growth")
-    private Integer giftGrowth;
+    @Column(name = "earned_points")
+    private Integer earnedPoints;
 
     @Column(name = "product_attr")
     @Schema(title = "Product attr")

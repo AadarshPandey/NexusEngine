@@ -28,7 +28,6 @@ spring:
       host: redis
       database: 0
       port: 6379
-      password:
       timeout: 300ms
   rabbitmq:
     host: rabbitmq

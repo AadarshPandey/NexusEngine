@@ -1,72 +1,29 @@
 package com.nexusengine.core.portal.unit;
 
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import com.nexusengine.core.model.*;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import com.nexusengine.core.portal.dao.PortalProductDao;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import com.nexusengine.core.portal.domain.PmsPortalProductDetail;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import com.nexusengine.core.portal.domain.PmsProductCategoryNode;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
+import com.nexusengine.core.portal.service.impl.PmsPortalProductServiceImpl;
 import com.nexusengine.core.repository.*;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import org.junit.jupiter.api.BeforeEach;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import org.junit.jupiter.api.Test;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import org.junit.jupiter.api.extension.ExtendWith;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import org.mockito.InjectMocks;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import org.mockito.Mock;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import org.mockito.junit.jupiter.MockitoExtension;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import org.springframework.data.domain.Page;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import org.springframework.data.domain.PageImpl;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import org.springframework.data.domain.PageRequest;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import org.springframework.data.jpa.domain.Specification;
 
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import java.util.Arrays;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import java.util.Collections;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import java.util.List;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import java.util.Optional;
 
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import static org.junit.jupiter.api.Assertions.*;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import static org.mockito.ArgumentMatchers.any;
-import com.nexusengine.core.portal.service.impl.*;
-import com.nexusengine.core.portal.controller.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -122,7 +79,7 @@ public class PmsPortalProductServiceImplTest {
     @Test
     void search_ReturnsProductList() {
         Page<PmsProduct> page = new PageImpl<>(Collections.singletonList(testProduct));
-        
+
         when(productRepository.findAll(any(Specification.class), any(PageRequest.class)))
                 .thenReturn(page);
 
@@ -147,7 +104,7 @@ public class PmsPortalProductServiceImplTest {
     @Test
     void detail_ProductExists_ReturnsFullDetail() {
         when(productRepository.findById(1L)).thenReturn(Optional.of(testProduct));
-        
+
         PmsBrand brand = new PmsBrand();
         brand.setId(1L);
         when(brandRepository.findById(1L)).thenReturn(Optional.of(brand));

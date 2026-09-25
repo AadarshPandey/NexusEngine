@@ -1,0 +1,33 @@
+spring:
+  profiles:
+    active: test
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+  flyway:
+    enabled: false
+  ai:
+    openai:
+      api-key: test-key
+
+jwt:
+  secret: test-jwt-secret-key-that-is-at-least-32-characters-long-for-hs512
+  expiration: 3600
+  tokenHead: 'Bearer '
+
+redis:
+  key:
+    authCode: 'ums:authCode'
+    orderId: 'oms:orderId'
+    member: 'ums:member'
+    admin: 'ums:admin'
+    resourceList: 'ums:resourceList'
+  expire:
+    authCode: 90
+    common: 86400
+  database: nexuscore
+
+management:
+  tracing:
+    enabled: false

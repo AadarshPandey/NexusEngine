@@ -58,14 +58,25 @@ const ResourceList: React.FC = () => {
     }
   };
 
-  const fetchList = useCallback(async () => {
+  const fetchList = useCallback(async (
+    overridePageNum?: number,
+    overrideSearchName?: string,
+    overrideSearchUrl?: string,
+    overrideCategoryId?: number | ''
+  ) => {
     setLoading(true);
+    
+    const finalPageNum = overridePageNum !== undefined ? overridePageNum : pageNum;
+    const finalName = overrideSearchName !== undefined ? overrideSearchName : searchName;
+    const finalUrl = overrideSearchUrl !== undefined ? overrideSearchUrl : searchUrl;
+    const finalCat = overrideCategoryId !== undefined ? overrideCategoryId : searchCategoryId;
+
     try {
       const res = await getResourceListAPI({ 
-        nameKeyword: searchName || undefined,
-        urlKeyword: searchUrl || undefined,
-        categoryId: searchCategoryId === '' ? undefined : searchCategoryId,
-        pageNum: pageNum > 0 ? pageNum : 0, 
+        nameKeyword: finalName || undefined,
+        urlKeyword: finalUrl || undefined,
+        categoryId: finalCat === '' ? undefined : finalCat,
+        pageNum: finalPageNum + 1, 
         pageSize 
       });
       setList(res.data.list);
@@ -87,7 +98,7 @@ const ResourceList: React.FC = () => {
 
   const handleSearch = () => {
     setPageNum(0);
-    fetchList();
+    fetchList(0);
   };
 
   const handleClearSearch = () => {
@@ -95,6 +106,7 @@ const ResourceList: React.FC = () => {
     setSearchUrl('');
     setSearchCategoryId('');
     setPageNum(0);
+    fetchList(0, '', '', '');
   };
 
   const handleDelete = async (id: number) => {

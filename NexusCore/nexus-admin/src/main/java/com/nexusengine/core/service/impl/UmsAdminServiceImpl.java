@@ -28,6 +28,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -129,8 +130,18 @@ public class UmsAdminServiceImpl implements UmsAdminService {
     }
 
     @Override
-    public List<UmsAdmin> list(String keyword, Integer pageSize, Integer pageNum) {
-        return adminRepository.findAll(PageRequest.of(pageNum > 0 ? pageNum - 1 : 0, pageSize)).getContent();
+    public org.springframework.data.domain.Page<UmsAdmin> list(String keyword, Integer pageSize, Integer pageNum) {
+        Pageable pageable = PageRequest.of(pageNum > 0 ? pageNum - 1 : 0, pageSize, org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.ASC, "id"));
+        if (cn.hutool.core.util.StrUtil.isNotEmpty(keyword)) {
+            return adminRepository.findAll((Specification<UmsAdmin>) (root, query, cb) -> {
+                String pattern = "%" + keyword + "%";
+                return cb.or(
+                        cb.like(root.get("username"), pattern),
+                        cb.like(root.get("nickName"), pattern)
+                );
+            }, pageable);
+        }
+        return adminRepository.findAll(pageable);
     }
 
     @Override

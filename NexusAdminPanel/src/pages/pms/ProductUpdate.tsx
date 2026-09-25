@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Paper, TextField, Button, Grid, CircularProgress } from '@mui/material';
+import { Box, Typography, Paper, TextField, Button, Grid, CircularProgress, FormControl, InputLabel, Select, MenuItem, ListSubheader } from '@mui/material';
 import { productUpdateByIdAPI, getPruductUpdateInfoAPI } from '@/apis/product';
+import { getBrandListAPI } from '@/apis/brand';
+import { getProductCategoryListWithChildrenAPI } from '@/apis/productCate';
 import { useNavigate, useSearchParams } from 'react-router';
 
 const ProductUpdate: React.FC = () => {
@@ -8,6 +10,9 @@ const ProductUpdate: React.FC = () => {
   const [searchParams] = useSearchParams();
   const id = searchParams.get('id');
 
+  const [brands, setBrands] = useState<import('@/types/brand').PmsBrand[]>([]);
+  const [categories, setCategories] = useState<import('@/types/productCate').PmsProductCategory[]>([]);
+  
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
     name: '',
@@ -17,35 +22,51 @@ const ProductUpdate: React.FC = () => {
     originalPrice: '',
     stock: '',
     pic: '',
-    productCategoryId: 2,
-    brandId: 1,
+    productCategoryId: '',
+    brandId: '',
     publishStatus: 1,
     newStatus: 1,
     recommendStatus: 1,
-    verifyStatus: 1
+    verifyStatus: 1,
+    skuStockList: [{ skuCode: '', price: '', stock: '' }]
   });
 
   useEffect(() => {
     if (id) {
-      fetchProductInfo(Number(id));
+      fetchDependenciesAndProduct(Number(id));
     } else {
       alert('Product ID is missing');
       navigate('/pms/product');
     }
   }, [id]);
 
-  const fetchProductInfo = async (productId: number) => {
+  const fetchDependenciesAndProduct = async (productId: number) => {
     try {
       setLoading(true);
-      const res = await getPruductUpdateInfoAPI(productId);
-      if (res.data) {
+      const [brandRes, cateRes, prodRes] = await Promise.all([
+        getBrandListAPI({ pageNum: 1, pageSize: 100 }),
+        getProductCategoryListWithChildrenAPI(),
+        getPruductUpdateInfoAPI(productId)
+      ]);
+      setBrands(brandRes.data?.list || []);
+      setCategories(cateRes.data || []);
+      
+      if (prodRes.data) {
         setFormData({
           ...formData,
-          ...res.data,
+          ...prodRes.data,
           // ensure price/stock are strings for the inputs if they come back as numbers
-          price: res.data.price?.toString() || '',
-          originalPrice: res.data.originalPrice?.toString() || '',
-          stock: res.data.stock?.toString() || ''
+          price: prodRes.data.price?.toString() || '',
+          originalPrice: prodRes.data.originalPrice?.toString() || '',
+          stock: prodRes.data.stock?.toString() || '',
+          productCategoryId: prodRes.data.productCategoryId?.toString() || '',
+          brandId: prodRes.data.brandId?.toString() || '',
+          skuStockList: prodRes.data.skuStockList?.length ? prodRes.data.skuStockList.map((sku:any) => ({
+            id: sku.id,
+            skuCode: sku.skuCode || '',
+            price: sku.price?.toString() || '',
+            stock: sku.stock?.toString() || ''
+          })) : [{ skuCode: '', price: '', stock: '' }]
         });
       }
     } catch (error) {
@@ -55,17 +76,57 @@ const ProductUpdate: React.FC = () => {
     }
   };
 
+  const handleAddSku = () => {
+    setFormData({
+      ...formData,
+      skuStockList: [...formData.skuStockList, { skuCode: '', price: '', stock: '' }]
+    });
+  };
+
+  const handleRemoveSku = (index: number) => {
+    const newList = [...formData.skuStockList];
+    newList.splice(index, 1);
+    setFormData({ ...formData, skuStockList: newList });
+  };
+
+  const handleSkuChange = (index: number, field: string, value: string) => {
+    const newList = [...formData.skuStockList];
+    newList[index] = { ...newList[index], [field]: value };
+    setFormData({ ...formData, skuStockList: newList });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!id) return;
+    
+    if (formData.skuStockList.length === 0) {
+      alert("At least one SKU is required!");
+      return;
+    }
+    for (let i = 0; i < formData.skuStockList.length; i++) {
+      const sku = formData.skuStockList[i];
+      if (!sku.skuCode || !sku.price || !sku.stock) {
+        alert("Please fill in all SKU fields (Code, Price, Stock) for all SKUs.");
+        return;
+      }
+    }
+
     try {
       const cleanNumber = (val: string | number) => Number(String(val).replace(/,/g, ''));
       
+      const formattedSkus = formData.skuStockList.map((sku:any) => ({
+        id: sku.id,
+        skuCode: sku.skuCode,
+        price: cleanNumber(sku.price),
+        stock: cleanNumber(sku.stock)
+      }));
+
       await productUpdateByIdAPI(Number(id), {
         ...formData,
         price: cleanNumber(formData.price),
         originalPrice: cleanNumber(formData.originalPrice),
-        stock: cleanNumber(formData.stock)
+        stock: cleanNumber(formData.stock),
+        skuStockList: formattedSkus
       } as unknown as import('@/types/product').PmsProductParam);
       alert('Product updated successfully!');
       navigate('/pms/product');
@@ -94,6 +155,33 @@ const ProductUpdate: React.FC = () => {
             <Grid size={{ xs: 12 }}>
               <TextField fullWidth label="Subtitle" value={formData.subTitle || ''} onChange={e => setFormData({...formData, subTitle: e.target.value})} />
             </Grid>
+            
+            <Grid size={{ xs: 12, md: 6 }}>
+              <FormControl fullWidth required>
+                <InputLabel>Product Category</InputLabel>
+                <Select label="Product Category" value={formData.productCategoryId} onChange={e => setFormData({...formData, productCategoryId: e.target.value as string})}>
+                  {categories.map((parent: any) => [
+                    <ListSubheader key={`header-${parent.id}`}>{parent.name}</ListSubheader>,
+                    ...(parent.children || []).map((child: any) => (
+                      <MenuItem key={child.id} value={child.id.toString()} sx={{ pl: 4 }}>
+                        {child.name}
+                      </MenuItem>
+                    ))
+                  ])}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid size={{ xs: 12, md: 6 }}>
+              <FormControl fullWidth required>
+                <InputLabel>Brand</InputLabel>
+                <Select label="Brand" value={formData.brandId} onChange={e => setFormData({...formData, brandId: e.target.value as string})}>
+                  {brands.map((b: any) => (
+                    <MenuItem key={b.id} value={b.id.toString()}>{b.name}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+
             <Grid size={{ xs: 12, md: 6 }}>
               <TextField fullWidth label="Price (₹)" type="text" required value={formData.price || ''} onChange={e => setFormData({...formData, price: e.target.value})} />
             </Grid>
@@ -108,6 +196,30 @@ const ProductUpdate: React.FC = () => {
             </Grid>
             <Grid size={{ xs: 12 }}>
               <TextField fullWidth label="Description" multiline rows={4} value={formData.description || ''} onChange={e => setFormData({...formData, description: e.target.value})} />
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+              <Box sx={{ mt: 2, mb: 2 }}>
+                <Typography variant="h6" sx={{ mb: 2 }}>Product SKUs (Variants)</Typography>
+                {formData.skuStockList.map((sku:any, index:number) => (
+                  <Paper key={index} variant="outlined" sx={{ p: 2, mb: 2 }}>
+                    <Grid container spacing={2} alignItems="center">
+                      <Grid size={{ xs: 12, md: 3 }}>
+                        <TextField fullWidth label="SKU Code" required size="small" value={sku.skuCode} onChange={e => handleSkuChange(index, 'skuCode', e.target.value)} />
+                      </Grid>
+                      <Grid size={{ xs: 12, md: 3 }}>
+                        <TextField fullWidth label="Price (₹)" required size="small" value={sku.price} onChange={e => handleSkuChange(index, 'price', e.target.value)} />
+                      </Grid>
+                      <Grid size={{ xs: 12, md: 3 }}>
+                        <TextField fullWidth label="Stock" required size="small" value={sku.stock} onChange={e => handleSkuChange(index, 'stock', e.target.value)} />
+                      </Grid>
+                      <Grid size={{ xs: 12, md: 3 }}>
+                        <Button color="error" variant="outlined" disabled={formData.skuStockList.length === 1} onClick={() => handleRemoveSku(index)}>Remove</Button>
+                      </Grid>
+                    </Grid>
+                  </Paper>
+                ))}
+                <Button variant="contained" color="secondary" onClick={handleAddSku}>+ Add SKU</Button>
+              </Box>
             </Grid>
             <Grid size={{ xs: 12 }}>
               <Box sx={{ display: 'flex', gap: 2 }}>

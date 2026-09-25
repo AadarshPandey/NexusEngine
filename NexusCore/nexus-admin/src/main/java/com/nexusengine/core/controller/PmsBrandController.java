@@ -104,6 +104,12 @@ public class PmsBrandController {
     }
 
     @Operation(summary =  "Update show status Operation")
+    @PostMapping("/update/sort/{id}")
+    public com.nexusengine.core.common.api.CommonResult updateSort(@PathVariable("id") Long id, @org.springframework.web.bind.annotation.RequestParam("sort") Integer sort) {
+        brandService.updateSort(id, sort);
+        return com.nexusengine.core.common.api.CommonResult.success(1);
+    }
+
     @PostMapping("/update/showStatus")
 
     public CommonResult updateShowStatus(@RequestParam("ids") List<Long> ids,

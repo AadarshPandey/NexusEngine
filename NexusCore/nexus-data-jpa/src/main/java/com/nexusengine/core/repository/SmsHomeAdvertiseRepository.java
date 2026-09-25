@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface SmsHomeAdvertiseRepository extends JpaRepository<SmsHomeAdvertise, Long>, JpaSpecificationExecutor<SmsHomeAdvertise> {
     List<SmsHomeAdvertise> findByTypeAndStatusOrderBySortDesc(Integer type, Integer status);
+    java.util.List<com.nexusengine.core.model.SmsHomeAdvertise> findByStatusOrderBySortDesc(Integer status);
 }

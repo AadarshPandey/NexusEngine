@@ -90,6 +90,6 @@ public class HomeServiceImpl implements HomeService {
     }
 
     private List<SmsHomeAdvertise> getHomeAdvertiseList() {
-        return advertiseRepository.findByTypeAndStatusOrderBySortDesc(1, 1);
+        return advertiseRepository.findByStatusOrderBySortDesc(1);
     }
 }

@@ -22,20 +22,16 @@ export type PmsProduct = {
   price?: number
   promotionPrice?: number
   giftGrowth?: number
-  giftPoint?: number
-  usePointLimit?: number
   subTitle?: string
   originalPrice?: number
   stock?: number
   lowStock?: number
   unit?: string
   weight?: number
-  previewStatus?: number
   serviceIds?: string
   keywords?: string
   note?: string
   albumPics?: string
-  detailTitle?: string
   promotionStartTime?: string
   promotionEndTime?: string
   promotionPerLimit?: number
@@ -43,9 +39,7 @@ export type PmsProduct = {
   brandName?: string
   productCategoryName?: string
   description?: string
-  detailDesc?: string
   detailHtml?: string
-  detailMobileHtml?: string
 }
 
 export type ProductQueryParam = PageParam & {
@@ -92,9 +86,7 @@ export type PmsMemberPrice = {
   /** ID */
   id?: number
   productId?: number
-  memberLevelId?: number
   memberPrice?: number
-  memberLevelName?: string
 }
 
 export type CmsSubjectProductRelation = {

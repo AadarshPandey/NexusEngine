@@ -74,7 +74,7 @@ public class SmsCoupon implements Serializable {
     @Schema(title = "Code")
     private String code;
 
-    @Column(name = "member_level")
-    @Schema(title = "Member level")
-    private Integer memberLevel;
+    @Column(name = "max_discount_amount")
+    @Schema(title = "Max discount amount")
+    private BigDecimal maxDiscountAmount;
 }

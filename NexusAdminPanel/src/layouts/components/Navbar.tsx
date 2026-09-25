@@ -31,10 +31,22 @@ interface NavbarProps {
   onMobileMenuToggle: () => void;
 }
 
-// Find route title from route config
-const findRouteTitle = (pathname: string, routes: RouteConfig[]): string[] => {
+const findRouteTitle = (pathname: string, search: string, routes: RouteConfig[]): string[] => {
   const titles: string[] = [];
   const segments = pathname.split('/').filter(Boolean);
+  const typeParam = new URLSearchParams(search).get('type');
+
+  const parentMap: Record<string, string> = {
+    'addProduct': 'Product List',
+    'updateProduct': 'Product List',
+    'addProductCate': 'Product Categories',
+    'updateProductCate': 'Product Categories',
+    'productAttrList': 'Product type',
+    'addProductAttr': 'Product type',
+    'updateProductAttr': 'Product type',
+    'addBrand': 'Brand management',
+    'updateBrand': 'Brand management',
+  };
 
   for (const route of routes) {
     const routeBase = route.path.replace(/^\//, '');
@@ -43,7 +55,14 @@ const findRouteTitle = (pathname: string, routes: RouteConfig[]): string[] => {
       if (route.children && segments.length > 1) {
         for (const child of route.children) {
           if (child.path === segments[1]) {
-            if (child.meta?.title) titles.push(child.meta.title);
+            if (parentMap[child.path]) {
+              titles.push(parentMap[child.path]);
+            }
+            let childTitle = child.meta?.title || '';
+            if (child.path === 'productAttrList') {
+              childTitle = typeParam === '0' ? 'Manage Attributes' : typeParam === '1' ? 'Manage Parameters' : childTitle;
+            }
+            if (childTitle) titles.push(childTitle);
             break;
           }
         }
@@ -90,7 +109,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMobileMenuToggle }) => {
   };
 
   const allRoutes = [...constantRouterMap, ...asyncRouterMap];
-  const breadcrumbTitles = findRouteTitle(location.pathname, allRoutes);
+  const breadcrumbTitles = findRouteTitle(location.pathname, location.search, allRoutes);
 
   return (
     <AppBar
