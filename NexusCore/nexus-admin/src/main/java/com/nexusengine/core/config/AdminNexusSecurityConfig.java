@@ -7,7 +7,7 @@ import com.nexusengine.core.service.UmsResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.access.ConfigAttribute;
+
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
@@ -21,10 +21,13 @@ import java.util.concurrent.ConcurrentHashMap;
 @Configuration
 public class AdminNexusSecurityConfig {
 
-    @Autowired
-    private UmsAdminService adminService;
-    @Autowired
-    private UmsResourceService resourceService;
+    private final UmsAdminService adminService;
+    private final UmsResourceService resourceService;
+
+    public AdminNexusSecurityConfig(UmsAdminService adminService, UmsResourceService resourceService) {
+        this.adminService = adminService;
+        this.resourceService = resourceService;
+    }
 
     @Bean
     public UserDetailsService adminUserDetailsService() {
@@ -35,11 +38,11 @@ public class AdminNexusSecurityConfig {
     public DynamicSecurityService dynamicSecurityService() {
         return new DynamicSecurityService() {
             @Override
-            public Map<String, ConfigAttribute> loadDataSource() {
-                Map<String, ConfigAttribute> map = new ConcurrentHashMap<>();
+            public Map<String, String> loadDataSource() {
+                Map<String, String> map = new ConcurrentHashMap<>();
                 List<UmsResource> resourceList = resourceService.listAll();
                 for (UmsResource resource : resourceList) {
-                    map.put(resource.getUrl(), new org.springframework.security.access.SecurityConfig(resource.getId() + ":" + resource.getName()));
+                    map.put(resource.getUrl(), resource.getId() + ":" + resource.getName());
                 }
                 return map;
             }

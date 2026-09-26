@@ -10,7 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,7 +21,7 @@ public class UmsMenuServiceImpl implements UmsMenuService {
 
     @Override
     public int create(UmsMenu umsMenu) {
-        umsMenu.setCreateTime(new Date());
+        umsMenu.setCreateTime(java.time.LocalDateTime.now());
         updateLevel(umsMenu);
         menuRepository.save(umsMenu);
         return 1;

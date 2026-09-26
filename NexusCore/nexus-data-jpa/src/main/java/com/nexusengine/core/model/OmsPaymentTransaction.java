@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -38,5 +38,5 @@ public class OmsPaymentTransaction implements Serializable {
     private String webhookPayload;
 
     @Column(name = "create_time")
-    private Date createTime;
+    private LocalDateTime createTime;
 }

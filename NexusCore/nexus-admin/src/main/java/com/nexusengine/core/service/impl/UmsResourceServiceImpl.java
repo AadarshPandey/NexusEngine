@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -20,7 +20,7 @@ public class UmsResourceServiceImpl implements UmsResourceService {
 
     @Override
     public int create(UmsResource umsResource) {
-        umsResource.setCreateTime(new Date());
+        umsResource.setCreateTime(java.time.LocalDateTime.now());
         resourceRepository.save(umsResource);
         return 1;
     }

@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -22,7 +22,7 @@ public class UmsResourceCategoryServiceImpl implements UmsResourceCategoryServic
 
     @Override
     public int create(UmsResourceCategory umsResourceCategory) {
-        umsResourceCategory.setCreateTime(new Date());
+        umsResourceCategory.setCreateTime(java.time.LocalDateTime.now());
         resourceCategoryRepository.save(umsResourceCategory);
         return 1;
     }

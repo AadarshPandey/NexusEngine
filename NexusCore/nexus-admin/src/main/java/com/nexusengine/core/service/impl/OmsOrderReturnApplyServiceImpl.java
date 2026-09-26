@@ -10,7 +10,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.PageRequest;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -38,17 +38,17 @@ public class OmsOrderReturnApplyServiceImpl implements OmsOrderReturnApplyServic
             returnApply.setStatus(1);
             returnApply.setReturnAmount(statusParam.getReturnAmount());
             returnApply.setCompanyAddressId(statusParam.getCompanyAddressId());
-            returnApply.setHandleTime(new Date());
+            returnApply.setHandleTime(java.time.LocalDateTime.now());
             returnApply.setHandleMan(statusParam.getHandleMan());
             returnApply.setHandleNote(statusParam.getHandleNote());
         } else if (status.equals(2)) {
             returnApply.setStatus(2);
-            returnApply.setReceiveTime(new Date());
+            returnApply.setReceiveTime(java.time.LocalDateTime.now());
             returnApply.setReceiveMan(statusParam.getReceiveMan());
             returnApply.setReceiveNote(statusParam.getReceiveNote());
         } else if (status.equals(3)) {
             returnApply.setStatus(3);
-            returnApply.setHandleTime(new Date());
+            returnApply.setHandleTime(java.time.LocalDateTime.now());
             returnApply.setHandleMan(statusParam.getHandleMan());
             returnApply.setHandleNote(statusParam.getHandleNote());
         } else {

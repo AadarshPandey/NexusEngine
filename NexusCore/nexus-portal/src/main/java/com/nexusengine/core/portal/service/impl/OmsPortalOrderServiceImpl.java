@@ -23,7 +23,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -188,7 +188,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
         }
         order.setPayAmount(calcPayAmount(order));
         order.setMemberId(currentMember.getId());
-        order.setCreateTime(new Date());
+        order.setCreateTime(java.time.LocalDateTime.now());
         order.setMemberUsername(currentMember.getUsername());
         order.setPayType(orderParam.getPayType());
         order.setSourceType(1);
@@ -269,7 +269,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
                 if (order == null || order.getStatus() != 0) return 0; // Only pay if unpaid
                 
                 order.setStatus(1);
-                order.setPaymentTime(new Date());
+                order.setPaymentTime(java.time.LocalDateTime.now());
                 order.setPayType(payType);
                 orderRepository.save(order);
                 orderRepository.flush(); // ensure commit
@@ -363,7 +363,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
         event.setType("CancelOrder");
         event.setPayload(String.valueOf(delayTimes));
         event.setStatus("PENDING");
-        event.setCreatedAt(new Date());
+        event.setCreatedAt(java.time.LocalDateTime.now());
         
         outboxEventRepository.save(event);
     }
@@ -380,7 +380,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
         }
         order.setStatus(3);
         order.setConfirmStatus(1);
-        order.setReceiveTime(new Date());
+        order.setReceiveTime(java.time.LocalDateTime.now());
         orderRepository.save(order);
     }
 
@@ -455,7 +455,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
 
     private String generateOrderSn(OmsOrder order) {
         StringBuilder sb = new StringBuilder();
-        String date = new SimpleDateFormat("yyyyMMdd").format(new Date());
+        String date = java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd"));
         String key = REDIS_DATABASE + ":" + REDIS_KEY_ORDER_ID + date;
         Long increment = redisService.incr(key, 1);
         sb.append(date);
@@ -492,7 +492,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
                 .filter(h -> h.getCouponId().equals(couponId)).collect(Collectors.toList());
         if (!CollectionUtils.isEmpty(filtered)) {
             SmsCouponHistory couponHistory = filtered.get(0);
-            couponHistory.setUseTime(new Date());
+            couponHistory.setUseTime(java.time.LocalDateTime.now());
             couponHistory.setUseStatus(useStatus);
             couponHistoryRepository.save(couponHistory);
         }
@@ -709,7 +709,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
             tx.setAmount(new java.math.BigDecimal(paymentEntity.path("amount").asInt()).divide(new java.math.BigDecimal("100")));
             tx.setStatus("SUCCESS");
             tx.setWebhookPayload(payload);
-            tx.setCreateTime(new java.util.Date());
+            tx.setCreateTime(java.time.LocalDateTime.now());
             paymentTransactionRepository.save(tx);
             
             // 2. Update the Order status
@@ -718,7 +718,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
                 if (dbOrder != null && dbOrder.getStatus() == 0) { // 0 is unpaid
                     dbOrder.setPaymentId(transactionId);
                     dbOrder.setStatus(1); // 1 is pending shipment
-                    dbOrder.setPaymentTime(new java.util.Date());
+                    dbOrder.setPaymentTime(java.time.LocalDateTime.now());
                     orderRepository.save(dbOrder);
                     
                     // The cancelOrder event should be removed from DLQ or ignored since status != 0

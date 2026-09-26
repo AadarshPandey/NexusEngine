@@ -15,7 +15,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -43,9 +43,9 @@ public class PortalOrderDao {
     }
 
     public List<OmsOrderDetail> getTimeOutOrders(Integer minutes) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MINUTE, -minutes);
-        Date deadline = calendar.getTime();
+        java.time.LocalDateTime deadline = java.time.LocalDateTime.now().minusMinutes(minutes);
+        
+        
         List<OmsOrder> orders = orderRepository.findByStatusAndDeleteStatusAndCreateTimeBefore(0, 0, deadline);
         List<OmsOrderDetail> result = new ArrayList<>();
         for (OmsOrder order : orders) {

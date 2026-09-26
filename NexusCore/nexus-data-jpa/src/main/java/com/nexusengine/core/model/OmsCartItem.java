@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -57,11 +57,11 @@ public class OmsCartItem implements Serializable {
 
     @Column(name = "create_date")
     @Schema(title = "Create date")
-    private Date createDate;
+    private LocalDateTime createDate;
 
     @Column(name = "modify_date")
     @Schema(title = "Modify date")
-    private Date modifyDate;
+    private LocalDateTime modifyDate;
 
     @Column(name = "delete_status")
     @Schema(title = "Delete status")

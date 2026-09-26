@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -29,7 +29,7 @@ public class JpaChatMemory implements ChatMemory {
             conv.setSessionId(conversationId);
             conv.setRole(msg.getMessageType().getValue());
             conv.setContent(msg.getText());
-            conv.setCreateTime(new Date());
+            conv.setCreateTime(java.time.LocalDateTime.now());
             conversationRepository.save(conv);
         }
     }

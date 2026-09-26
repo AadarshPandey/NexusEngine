@@ -13,11 +13,13 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 @Configuration
 public class UnifiedSecurityConfig {
 
-    @Autowired
-    private UmsAdminService adminService;
+    private final UmsAdminService adminService;
+    private final UmsMemberService memberService;
 
-    @Autowired
-    private UmsMemberService memberService;
+    public UnifiedSecurityConfig(UmsAdminService adminService, UmsMemberService memberService) {
+        this.adminService = adminService;
+        this.memberService = memberService;
+    }
 
     @Bean
     @Primary

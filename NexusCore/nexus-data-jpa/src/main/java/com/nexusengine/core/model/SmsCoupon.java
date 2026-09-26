@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -43,10 +43,10 @@ public class SmsCoupon implements Serializable {
     private BigDecimal minPoint;
 
     @Column(name = "start_time")
-    private Date startTime;
+    private LocalDateTime startTime;
 
     @Column(name = "end_time")
-    private Date endTime;
+    private LocalDateTime endTime;
 
     @Column(name = "use_type")
     @Schema(title = "Use type")
@@ -69,7 +69,7 @@ public class SmsCoupon implements Serializable {
 
     @Column(name = "enable_time")
     @Schema(title = "Enable time")
-    private Date enableTime;
+    private LocalDateTime enableTime;
 
     @Schema(title = "Code")
     private String code;

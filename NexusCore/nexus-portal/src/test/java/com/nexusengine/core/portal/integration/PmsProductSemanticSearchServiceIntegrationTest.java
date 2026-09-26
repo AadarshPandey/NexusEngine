@@ -108,7 +108,7 @@ public class PmsProductSemanticSearchServiceIntegrationTest {
             }
     )
     @org.springframework.data.jpa.repository.config.EnableJpaRepositories(basePackages = {"com.nexusengine.core.repository"})
-    @org.springframework.boot.autoconfigure.domain.EntityScan(basePackages = {"com.nexusengine.core.model", "com.nexusengine.core.portal.domain"})
+    @org.springframework.boot.persistence.autoconfigure.EntityScan(basePackages = {"com.nexusengine.core.model", "com.nexusengine.core.portal.domain"})
     static class TestApplication {
     }
 }

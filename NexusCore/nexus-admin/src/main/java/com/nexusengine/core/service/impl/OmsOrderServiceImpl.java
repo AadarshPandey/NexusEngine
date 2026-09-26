@@ -11,7 +11,7 @@ import com.nexusengine.core.service.OmsOrderService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,7 +43,7 @@ public class OmsOrderServiceImpl implements OmsOrderService {
             if (order != null) {
                 order.setDeliverySn(param.getDeliverySn());
                 order.setDeliveryCompany(param.getDeliveryCompany());
-                order.setDeliveryTime(new Date());
+                order.setDeliveryTime(java.time.LocalDateTime.now());
                 order.setStatus(2);
                 orderRepository.save(order);
                 count++;
@@ -52,7 +52,7 @@ public class OmsOrderServiceImpl implements OmsOrderService {
         List<OmsOrderOperateHistory> historyList = deliveryParamList.stream().map(p -> {
             OmsOrderOperateHistory h = new OmsOrderOperateHistory();
             h.setOrderId(p.getOrderId());
-            h.setCreateTime(new Date());
+            h.setCreateTime(java.time.LocalDateTime.now());
             h.setOperateMan("Admin");
             h.setOrderStatus(2);
             h.setNote("Delivery completed");
@@ -72,7 +72,7 @@ public class OmsOrderServiceImpl implements OmsOrderService {
         List<OmsOrderOperateHistory> historyList = ids.stream().map(id -> {
             OmsOrderOperateHistory h = new OmsOrderOperateHistory();
             h.setOrderId(id);
-            h.setCreateTime(new Date());
+            h.setCreateTime(java.time.LocalDateTime.now());
             h.setOperateMan("Admin");
             h.setOrderStatus(4);
             h.setNote("Order closed: " + note);
@@ -114,11 +114,11 @@ public class OmsOrderServiceImpl implements OmsOrderService {
         order.setReceiverProvince(receiverInfoParam.getReceiverProvince());
         order.setReceiverCity(receiverInfoParam.getReceiverCity());
         order.setReceiverRegion(receiverInfoParam.getReceiverRegion());
-        order.setModifyTime(new Date());
+        order.setModifyTime(java.time.LocalDateTime.now());
         orderRepository.save(order);
         OmsOrderOperateHistory h = new OmsOrderOperateHistory();
         h.setOrderId(receiverInfoParam.getOrderId());
-        h.setCreateTime(new Date());
+        h.setCreateTime(java.time.LocalDateTime.now());
         h.setOperateMan("Admin");
         h.setOrderStatus(receiverInfoParam.getStatus());
         h.setNote("Modified receiver info");
@@ -132,11 +132,11 @@ public class OmsOrderServiceImpl implements OmsOrderService {
         if (order == null) return 0;
         order.setFreightAmount(moneyInfoParam.getFreightAmount());
         order.setDiscountAmount(moneyInfoParam.getDiscountAmount());
-        order.setModifyTime(new Date());
+        order.setModifyTime(java.time.LocalDateTime.now());
         orderRepository.save(order);
         OmsOrderOperateHistory h = new OmsOrderOperateHistory();
         h.setOrderId(moneyInfoParam.getOrderId());
-        h.setCreateTime(new Date());
+        h.setCreateTime(java.time.LocalDateTime.now());
         h.setOperateMan("Admin");
         h.setOrderStatus(moneyInfoParam.getStatus());
         h.setNote("Modified fee info");
@@ -149,11 +149,11 @@ public class OmsOrderServiceImpl implements OmsOrderService {
         OmsOrder order = orderRepository.findById(id).orElse(null);
         if (order == null) return 0;
         order.setNote(note);
-        order.setModifyTime(new Date());
+        order.setModifyTime(java.time.LocalDateTime.now());
         orderRepository.save(order);
         OmsOrderOperateHistory h = new OmsOrderOperateHistory();
         h.setOrderId(id);
-        h.setCreateTime(new Date());
+        h.setCreateTime(java.time.LocalDateTime.now());
         h.setOperateMan("Admin");
         h.setOrderStatus(status);
         h.setNote("Modified note: " + note);
@@ -166,13 +166,13 @@ public class OmsOrderServiceImpl implements OmsOrderService {
         List<OmsOrder> orders = orderRepository.findAllById(ids);
         for (OmsOrder order : orders) {
             order.setStatus(status);
-            order.setModifyTime(new Date());
+            order.setModifyTime(java.time.LocalDateTime.now());
             orderRepository.save(order);
         }
         List<OmsOrderOperateHistory> historyList = ids.stream().map(id -> {
             OmsOrderOperateHistory h = new OmsOrderOperateHistory();
             h.setOrderId(id);
-            h.setCreateTime(new Date());
+            h.setCreateTime(java.time.LocalDateTime.now());
             h.setOperateMan("Admin");
             h.setOrderStatus(status);
             h.setNote(note != null ? note : "Status updated by Admin");

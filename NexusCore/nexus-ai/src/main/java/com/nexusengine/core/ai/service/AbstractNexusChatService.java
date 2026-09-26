@@ -61,7 +61,7 @@ public abstract class AbstractNexusChatService implements NexusChatService {
             ChatClient sessionClient = sessionClients.computeIfAbsent(sessionId, id -> {
                 ChatClient.Builder builder = chatClientBuilder.defaultSystem(getSystemPrompt());
                 if (chatMemory != null) {
-                    builder.defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).conversationId(sessionId).build());
+                    builder.defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build());
                 }
                 return builder.build();
             });
@@ -79,6 +79,7 @@ public abstract class AbstractNexusChatService implements NexusChatService {
             
             return sessionClient.prompt()
                     .user(finalQuestion)
+                    .advisors(a -> a.param("chat_memory_conversation_id", sessionId))
                     .call()
                     .content();
         } catch (Exception e) {

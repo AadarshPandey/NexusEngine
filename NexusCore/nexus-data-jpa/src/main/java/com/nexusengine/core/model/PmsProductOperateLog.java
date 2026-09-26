@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -44,5 +44,5 @@ public class PmsProductOperateLog implements Serializable {
     private String operateMan;
 
     @Column(name = "create_time")
-    private Date createTime;
+    private LocalDateTime createTime;
 }

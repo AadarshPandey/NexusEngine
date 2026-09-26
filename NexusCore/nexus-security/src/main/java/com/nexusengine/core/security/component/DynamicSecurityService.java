@@ -1,6 +1,5 @@
 package com.nexusengine.core.security.component;
 
-import org.springframework.security.access.ConfigAttribute;
 
 import java.util.Map;
 
@@ -13,5 +12,5 @@ public interface DynamicSecurityService {
      * Executes the operation.
      * @return the result of the operation
      */
-    Map<String, ConfigAttribute> loadDataSource();
+    Map<String, String> loadDataSource();
 }

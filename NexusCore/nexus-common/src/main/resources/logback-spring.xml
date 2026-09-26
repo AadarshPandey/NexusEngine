@@ -63,13 +63,7 @@
     </appender>
 
     <!-- Configuration XML -->
-    <condition class="ch.qos.logback.core.boolex.PropertyEqualityCondition">
-        <key>ENABLE_LOG_STASH</key>
-        <value>true</value>
-    </condition>
-
-    <if>
-        <then>
+    
             <!-- Configuration XML -->
             <appender name="LOG_STASH_DEBUG" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
                 <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
@@ -80,7 +74,7 @@
                 <encoder charset="UTF-8" class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
                     <providers>
                         <timestamp>
-                            <timeZone>Asia/Shanghai</timeZone>
+                            
                         </timestamp>
                         <!-- Configuration XML -->
                         <pattern>
@@ -113,7 +107,7 @@
                 <encoder charset="UTF-8" class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
                     <providers>
                         <timestamp>
-                            <timeZone>Asia/Shanghai</timeZone>
+                            
                         </timestamp>
                         <!-- Configuration XML -->
                         <pattern>
@@ -141,7 +135,7 @@
                 <encoder charset="UTF-8" class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
                     <providers>
                         <timestamp>
-                            <timeZone>Asia/Shanghai</timeZone>
+                            
                         </timestamp>
                         <!-- Configuration XML -->
                         <pattern>
@@ -169,7 +163,7 @@
                 <encoder charset="UTF-8" class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
                     <providers>
                         <timestamp>
-                            <timeZone>Asia/Shanghai</timeZone>
+                            
                         </timestamp>
                         <!-- Configuration XML -->
                         <pattern>
@@ -197,12 +191,10 @@
             <logger name="com.nexusengine.core" level="DEBUG">
                 <appender-ref ref="LOG_STASH_BUSINESS"/>
             </logger>
-        </then>
-    </if>
+        
 
     <!-- Configuration XML -->
     <logger name="org.slf4j" level="INFO"/>
-    <logger name="springfox" level="INFO"/>
     <logger name="io.swagger" level="INFO"/>
     <logger name="org.springframework" level="INFO"/>
     <logger name="org.hibernate.validator" level="INFO"/>

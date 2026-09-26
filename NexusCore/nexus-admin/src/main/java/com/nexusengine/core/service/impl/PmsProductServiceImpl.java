@@ -18,9 +18,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.util.CollectionUtils;
 
 import java.lang.reflect.Method;
-import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -73,9 +73,9 @@ public class PmsProductServiceImpl implements PmsProductService {
         for (int i = 0; i < skuStockList.size(); i++) {
             PmsSkuStock skuStock = skuStockList.get(i);
             if (StrUtil.isEmpty(skuStock.getSkuCode())) {
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+                DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyyMMdd");
                 StringBuilder sb = new StringBuilder();
-                sb.append(sdf.format(new Date()));
+                sb.append(java.time.LocalDateTime.now().format(sdf));
                 sb.append(String.format("%04d", productId));
                 sb.append(String.format("%03d", i + 1));
                 skuStock.setSkuCode(sb.toString());
@@ -215,7 +215,7 @@ public class PmsProductServiceImpl implements PmsProductService {
         for (Long id : ids) {
             PmsProductVerifyRecord record = new PmsProductVerifyRecord();
             record.setProductId(id);
-            record.setCreateTime(new Date());
+            record.setCreateTime(java.time.LocalDateTime.now());
             record.setDetail(detail);
             record.setStatus(verifyStatus);
             String username = "admin";

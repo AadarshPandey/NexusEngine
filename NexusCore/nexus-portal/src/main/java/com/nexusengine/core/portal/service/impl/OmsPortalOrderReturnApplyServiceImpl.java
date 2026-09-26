@@ -10,7 +10,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * Order return apply Service implementation
@@ -39,7 +39,7 @@ public class OmsPortalOrderReturnApplyServiceImpl implements OmsPortalOrderRetur
 
         OmsOrderReturnApply realApply = new OmsOrderReturnApply();
         BeanUtils.copyProperties(returnApply, realApply);
-        realApply.setCreateTime(new Date());
+        realApply.setCreateTime(java.time.LocalDateTime.now());
         realApply.setStatus(0);
         returnApplyRepository.save(realApply);
         return 1;

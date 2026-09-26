@@ -36,7 +36,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -74,7 +74,7 @@ public class UmsAdminServiceImpl implements UmsAdminService {
         }
         UmsAdmin umsAdmin = new UmsAdmin();
         BeanUtils.copyProperties(umsAdminParam, umsAdmin);
-        umsAdmin.setCreateTime(new Date());
+        umsAdmin.setCreateTime(java.time.LocalDateTime.now());
         umsAdmin.setStatus(1);
         UmsAdmin existing = adminRepository.findByUsername(umsAdmin.getUsername());
         if (existing != null) {
@@ -112,7 +112,7 @@ public class UmsAdminServiceImpl implements UmsAdminService {
         if(admin==null) return;
         UmsAdminLoginLog loginLog = new UmsAdminLoginLog();
         loginLog.setAdminId(admin.getId());
-        loginLog.setCreateTime(new Date());
+        loginLog.setCreateTime(java.time.LocalDateTime.now());
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
         loginLog.setIp(RequestUtil.getRequestIp(request));

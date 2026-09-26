@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -15,13 +15,13 @@ import java.util.List;
 @Setter
 public class HomeFlashPromotion {
     @Schema(title = "Start time")
-    private Date startTime;
+    private LocalDateTime startTime;
     @Schema(title = "End time")
-    private Date endTime;
+    private LocalDateTime endTime;
     @Schema(title = "Next start time")
-    private Date nextStartTime;
+    private LocalDateTime nextStartTime;
     @Schema(title = "Next end time")
-    private Date nextEndTime;
+    private LocalDateTime nextEndTime;
     @Schema(title = "Product list")
     private List<FlashPromotionProduct> productList;
 }

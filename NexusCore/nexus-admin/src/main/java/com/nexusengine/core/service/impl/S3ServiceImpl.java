@@ -13,9 +13,9 @@ import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignReques
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import jakarta.servlet.http.HttpServletRequest;
-import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.time.Duration;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
@@ -41,8 +41,8 @@ public class S3ServiceImpl implements S3Service {
     public S3PolicyResult presign() {
         S3PolicyResult result = new S3PolicyResult();
         // Generate unique object key
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-        String objectKey = dirPrefix + sdf.format(new Date()) + "/" + UUID.randomUUID() + ".jpg";
+        DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyyMMdd");
+        String objectKey = dirPrefix + java.time.LocalDateTime.now().format(sdf) + "/" + UUID.randomUUID() + ".jpg";
 
         PutObjectRequest objectRequest = PutObjectRequest.builder()
                 .bucket(bucketName)

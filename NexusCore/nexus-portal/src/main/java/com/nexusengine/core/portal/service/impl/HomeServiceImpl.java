@@ -53,7 +53,7 @@ public class HomeServiceImpl implements HomeService {
         // Fix 4: Wire HomeFlashPromotion to query active session
         HomeFlashPromotion homeFlashPromotion = new HomeFlashPromotion();
         try {
-            java.util.Date now = new java.util.Date();
+            java.time.LocalDateTime now = java.time.LocalDateTime.now();
             java.time.LocalTime currentTime = java.time.LocalTime.now();
             
             // Find active promotion event today
@@ -69,8 +69,8 @@ public class HomeServiceImpl implements HomeService {
                     
                     // Set times based on today + session time
                     java.time.LocalDate today = java.time.LocalDate.now();
-                    homeFlashPromotion.setStartTime(java.util.Date.from(java.time.LocalDateTime.of(today, currentSession.getStartTime()).atZone(java.time.ZoneId.systemDefault()).toInstant()));
-                    homeFlashPromotion.setEndTime(java.util.Date.from(java.time.LocalDateTime.of(today, currentSession.getEndTime()).atZone(java.time.ZoneId.systemDefault()).toInstant()));
+                    homeFlashPromotion.setStartTime(java.time.LocalDateTime.of(today, currentSession.getStartTime()));
+                    homeFlashPromotion.setEndTime(java.time.LocalDateTime.of(today, currentSession.getEndTime()));
                     
                     // Fetch products
                     List<SmsFlashPromotionProductRelation> relations = flashPromotionProductRelationRepository.findByFlashPromotionIdAndFlashPromotionSessionId(promotion.getId(), currentSession.getId());

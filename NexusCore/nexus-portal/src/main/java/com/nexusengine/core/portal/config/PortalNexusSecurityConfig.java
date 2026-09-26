@@ -13,8 +13,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 @Configuration
 public class PortalNexusSecurityConfig {
 
-    @Autowired
-    private UmsMemberService memberService;
+    private final UmsMemberService memberService;
+
+    public PortalNexusSecurityConfig(UmsMemberService memberService) {
+        this.memberService = memberService;
+    }
 
     @Bean
     public UserDetailsService memberUserDetailsService() {

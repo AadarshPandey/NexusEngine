@@ -3,7 +3,7 @@ package com.nexusengine.core.model;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -36,7 +36,7 @@ public class PmsComment implements Serializable {
     private String memberIp;
 
     @Column(name = "create_time")
-    private Date createTime;
+    private LocalDateTime createTime;
 
     @Column(name = "show_status")
     private Integer showStatus;

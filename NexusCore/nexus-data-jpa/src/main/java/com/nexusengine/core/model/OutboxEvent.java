@@ -2,7 +2,7 @@ package com.nexusengine.core.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -30,6 +30,5 @@ public class OutboxEvent {
     @Column(columnDefinition = "INTEGER DEFAULT 0")
     private Integer retryCount = 0;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createdAt;
+    private LocalDateTime createdAt;
 }

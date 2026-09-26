@@ -25,7 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.security.SecureRandom;
 
@@ -89,7 +89,7 @@ public class UmsMemberServiceImpl implements UmsMemberService {
         umsMember.setUsername(username);
         umsMember.setEmail(email);
         umsMember.setPassword(passwordEncoder.encode(password));
-        umsMember.setCreateTime(new Date());
+        umsMember.setCreateTime(java.time.LocalDateTime.now());
         umsMember.setStatus(1);
         memberRepository.save(umsMember);
     }

@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,10 +40,10 @@ public class OmsCartItemServiceImpl implements OmsCartItemService {
         cartItem.setDeleteStatus(0);
         OmsCartItem existCartItem = getCartItem(cartItem);
         if (existCartItem == null) {
-            cartItem.setCreateDate(new Date());
+            cartItem.setCreateDate(java.time.LocalDateTime.now());
             cartItemRepository.save(cartItem);
         } else {
-            existCartItem.setModifyDate(new Date());
+            existCartItem.setModifyDate(java.time.LocalDateTime.now());
             existCartItem.setQuantity(existCartItem.getQuantity() + cartItem.getQuantity());
             cartItemRepository.save(existCartItem);
         }
@@ -112,7 +112,7 @@ public class OmsCartItemServiceImpl implements OmsCartItemService {
         OmsCartItem updateCart = cartItemRepository.findById(cartItem.getId()).orElse(null);
         UmsMember currentMember = memberService.getCurrentMember();
         if (updateCart != null && updateCart.getMemberId().equals(currentMember.getId())) {
-            updateCart.setModifyDate(new Date());
+            updateCart.setModifyDate(java.time.LocalDateTime.now());
             updateCart.setDeleteStatus(1);
             cartItemRepository.save(updateCart);
         }

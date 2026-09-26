@@ -1,63 +1,68 @@
 package com.nexusengine.core.common.exception;
 
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import cn.hutool.core.util.StrUtil;
-import com.nexusengine.core.common.api.CommonResult;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.http.ProblemDetail;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.sql.SQLSyntaxErrorException;
+import java.util.stream.Collectors;
 
-/**
- * Represents the GlobalExceptionHandler component.
- * Provides core functionality and operations for GlobalExceptionHandler.
- */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-
-    @ExceptionHandler(value = ApiException.class)
-    public org.springframework.http.ResponseEntity<CommonResult> handle(ApiException e) {
+    @ExceptionHandler(ApiException.class)
+    public ProblemDetail handleApiException(ApiException e) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        if (e.getErrorCode() != null && e.getErrorCode().getCode() != 0) {
+            try {
+                status = HttpStatus.valueOf((int) e.getErrorCode().getCode());
+            } catch (IllegalArgumentException ex) {
+                status = HttpStatus.BAD_REQUEST;
+            }
+        }
+        ProblemDetail pd = ProblemDetail.forStatusAndDetail(status, e.getMessage());
         if (e.getErrorCode() != null) {
-            return org.springframework.http.ResponseEntity.status(org.springframework.http.HttpStatus.BAD_REQUEST).body(CommonResult.failed(e.getErrorCode()));
+            pd.setTitle("API Error");
         }
-        return org.springframework.http.ResponseEntity.status(org.springframework.http.HttpStatus.BAD_REQUEST).body(CommonResult.failed(e.getMessage()));
+        return pd;
     }
 
-
-    @ExceptionHandler(value = MethodArgumentNotValidException.class)
-    public org.springframework.http.ResponseEntity<CommonResult> handleValidException(MethodArgumentNotValidException e) {
-        BindingResult bindingResult = e.getBindingResult();
-        String message = null;
-        if (bindingResult.hasErrors()) {
-            FieldError fieldError = bindingResult.getFieldError();
-            if (fieldError != null) {
-                message = fieldError.getField()+fieldError.getDefaultMessage();
-            }
+    @ExceptionHandler({MethodArgumentNotValidException.class, BindException.class})
+    public ProblemDetail handleValidationException(Exception e) {
+        BindingResult bindingResult = null;
+        if (e instanceof MethodArgumentNotValidException) {
+            bindingResult = ((MethodArgumentNotValidException) e).getBindingResult();
+        } else if (e instanceof BindException) {
+            bindingResult = ((BindException) e).getBindingResult();
         }
-        return org.springframework.http.ResponseEntity.status(org.springframework.http.HttpStatus.BAD_REQUEST).body(CommonResult.validateFailed(message));
+        
+        String message = "Validation failed";
+        if (bindingResult != null && bindingResult.hasErrors()) {
+            message = bindingResult.getFieldErrors().stream()
+                    .map(f -> f.getField() + " " + f.getDefaultMessage())
+                    .collect(Collectors.joining(", "));
+        }
+        ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, message);
+        pd.setTitle("Validation Error");
+        return pd;
     }
 
-
-    @ExceptionHandler(value = BindException.class)
-    public org.springframework.http.ResponseEntity<CommonResult> handleValidException(BindException e) {
-        BindingResult bindingResult = e.getBindingResult();
-        String message = null;
-        if (bindingResult.hasErrors()) {
-            FieldError fieldError = bindingResult.getFieldError();
-            if (fieldError != null) {
-                message = fieldError.getField()+fieldError.getDefaultMessage();
-            }
-        }
-        return org.springframework.http.ResponseEntity.status(org.springframework.http.HttpStatus.BAD_REQUEST).body(CommonResult.validateFailed(message));
+    @ExceptionHandler(SQLSyntaxErrorException.class)
+    public ProblemDetail handleSQLSyntaxErrorException(SQLSyntaxErrorException e) {
+        ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, "Database error occurred");
+        pd.setTitle("Database Error");
+        return pd;
     }
 
-
-    @ExceptionHandler(value = SQLSyntaxErrorException.class)
-    public org.springframework.http.ResponseEntity<CommonResult> handleSQLSyntaxErrorException(SQLSyntaxErrorException e) {
-        return org.springframework.http.ResponseEntity.status(org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR).body(CommonResult.failed("Database error occurred"));
+    @ExceptionHandler(Exception.class)
+    public ProblemDetail handleGlobalException(Exception e) {
+        ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        pd.setTitle("Internal Server Error");
+        return pd;
     }
 }

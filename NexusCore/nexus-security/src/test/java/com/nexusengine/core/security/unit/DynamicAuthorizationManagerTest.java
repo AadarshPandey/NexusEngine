@@ -10,7 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.access.SecurityConfig;
+
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -53,7 +53,7 @@ public class DynamicAuthorizationManagerTest {
         when(request.getRequestURI()).thenReturn("/swagger-ui.html");
         when(ignoreUrlsConfig.getUrls()).thenReturn(Collections.singletonList("/swagger-ui.html"));
 
-        AuthorizationDecision decision = manager.check(() -> authentication, context);
+        AuthorizationDecision decision = manager.authorize(() -> authentication, context);
 
         assertTrue(decision.isGranted());
     }
@@ -64,7 +64,7 @@ public class DynamicAuthorizationManagerTest {
         when(ignoreUrlsConfig.getUrls()).thenReturn(Collections.emptyList());
         when(request.getMethod()).thenReturn(HttpMethod.OPTIONS.name());
 
-        AuthorizationDecision decision = manager.check(() -> authentication, context);
+        AuthorizationDecision decision = manager.authorize(() -> authentication, context);
 
         assertTrue(decision.isGranted());
     }
@@ -77,7 +77,7 @@ public class DynamicAuthorizationManagerTest {
         when(authentication.isAuthenticated()).thenReturn(true);
         when(authentication.getPrincipal()).thenReturn("testuser");
 
-        AuthorizationDecision decision = manager.check(() -> authentication, context);
+        AuthorizationDecision decision = manager.authorize(() -> authentication, context);
 
         assertTrue(decision.isGranted());
     }
@@ -90,7 +90,7 @@ public class DynamicAuthorizationManagerTest {
         when(authentication.isAuthenticated()).thenReturn(true);
         when(authentication.getPrincipal()).thenReturn("anonymousUser");
 
-        AuthorizationDecision decision = manager.check(() -> authentication, context);
+        AuthorizationDecision decision = manager.authorize(() -> authentication, context);
 
         assertFalse(decision.isGranted());
     }
@@ -102,7 +102,7 @@ public class DynamicAuthorizationManagerTest {
         when(request.getMethod()).thenReturn("GET");
         when(securityDataSource.getConfigAttributesWithPath("/admin/secret")).thenReturn(Collections.emptyList());
 
-        AuthorizationDecision decision = manager.check(() -> authentication, context);
+        AuthorizationDecision decision = manager.authorize(() -> authentication, context);
 
         assertFalse(decision.isGranted());
     }
@@ -113,12 +113,12 @@ public class DynamicAuthorizationManagerTest {
         when(ignoreUrlsConfig.getUrls()).thenReturn(Collections.emptyList());
         when(request.getMethod()).thenReturn("GET");
         when(securityDataSource.getConfigAttributesWithPath("/admin/list"))
-                .thenReturn(Collections.singletonList(new SecurityConfig("ROLE_ADMIN")));
+                .thenReturn(Collections.singletonList("ROLE_ADMIN"));
         
         when(authentication.isAuthenticated()).thenReturn(true);
         doReturn(Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN"))).when(authentication).getAuthorities();
 
-        AuthorizationDecision decision = manager.check(() -> authentication, context);
+        AuthorizationDecision decision = manager.authorize(() -> authentication, context);
 
         assertTrue(decision.isGranted());
     }
@@ -129,12 +129,12 @@ public class DynamicAuthorizationManagerTest {
         when(ignoreUrlsConfig.getUrls()).thenReturn(Collections.emptyList());
         when(request.getMethod()).thenReturn("GET");
         when(securityDataSource.getConfigAttributesWithPath("/admin/list"))
-                .thenReturn(Collections.singletonList(new SecurityConfig("ROLE_SUPERADMIN")));
+                .thenReturn(Collections.singletonList("ROLE_SUPERADMIN"));
         
         when(authentication.isAuthenticated()).thenReturn(true);
         doReturn(Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN"))).when(authentication).getAuthorities();
 
-        AuthorizationDecision decision = manager.check(() -> authentication, context);
+        AuthorizationDecision decision = manager.authorize(() -> authentication, context);
 
         assertFalse(decision.isGranted());
     }

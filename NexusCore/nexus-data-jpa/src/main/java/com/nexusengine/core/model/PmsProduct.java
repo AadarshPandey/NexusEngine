@@ -7,7 +7,7 @@ import java.util.List;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.JoinColumn;
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -95,11 +95,11 @@ public class PmsProduct implements Serializable {
 
     @Column(name = "promotion_start_time")
     @Schema(title = "Promotion start time")
-    private Date promotionStartTime;
+    private LocalDateTime promotionStartTime;
 
     @Column(name = "promotion_end_time")
     @Schema(title = "Promotion end time")
-    private Date promotionEndTime;
+    private LocalDateTime promotionEndTime;
 
     @Column(name = "promotion_per_limit")
     @Schema(title = "Promotion per limit")

@@ -3,7 +3,7 @@ package com.nexusengine.core.model;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -29,5 +29,5 @@ public class OmsOrderReturnReason implements Serializable {
 
     @Column(name = "create_time")
     @Schema(title = "Create time")
-    private Date createTime;
+    private LocalDateTime createTime;
 }

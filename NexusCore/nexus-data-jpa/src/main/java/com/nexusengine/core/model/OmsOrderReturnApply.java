@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -38,7 +38,7 @@ public class OmsOrderReturnApply implements Serializable {
 
     @Column(name = "create_time")
     @Schema(title = "Create time")
-    private Date createTime;
+    private LocalDateTime createTime;
 
     @Column(name = "member_username")
     @Schema(title = "Member username")
@@ -61,7 +61,7 @@ public class OmsOrderReturnApply implements Serializable {
 
     @Column(name = "handle_time")
     @Schema(title = "Handle time")
-    private Date handleTime;
+    private LocalDateTime handleTime;
 
     @Column(name = "product_pic")
     @Schema(title = "Product pic")
@@ -115,7 +115,7 @@ public class OmsOrderReturnApply implements Serializable {
 
     @Column(name = "receive_time")
     @Schema(title = "Receive time")
-    private Date receiveTime;
+    private LocalDateTime receiveTime;
 
     @Column(name = "receive_note")
     @Schema(title = "Receive note")

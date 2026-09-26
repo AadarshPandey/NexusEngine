@@ -3,9 +3,7 @@ package com.nexusengine.core.security.component;
 import cn.hutool.core.collection.CollUtil;
 import com.nexusengine.core.security.config.IgnoreUrlsConfig;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.authorization.AuthorizationManager;
 import org.springframework.security.core.Authentication;
@@ -25,18 +23,21 @@ import java.util.stream.Collectors;
  */
 public class DynamicAuthorizationManager implements AuthorizationManager<RequestAuthorizationContext> {
 
-    @Autowired
-    private DynamicSecurityMetadataSource securityDataSource;
-    @Autowired
-    private IgnoreUrlsConfig ignoreUrlsConfig;
+    private final DynamicSecurityMetadataSource securityDataSource;
+    private final IgnoreUrlsConfig ignoreUrlsConfig;
+
+    public DynamicAuthorizationManager(DynamicSecurityMetadataSource securityDataSource, IgnoreUrlsConfig ignoreUrlsConfig) {
+        this.securityDataSource = securityDataSource;
+        this.ignoreUrlsConfig = ignoreUrlsConfig;
+    }
 
     @Override
-    public void verify(Supplier<Authentication> authentication, RequestAuthorizationContext object) {
+    public void verify(Supplier<? extends Authentication> authentication, RequestAuthorizationContext object) {
         AuthorizationManager.super.verify(authentication, object);
     }
 
     @Override
-    public AuthorizationDecision check(Supplier<Authentication> authentication, RequestAuthorizationContext requestAuthorizationContext) {
+    public AuthorizationDecision authorize(Supplier<? extends Authentication> authentication, RequestAuthorizationContext requestAuthorizationContext) {
         HttpServletRequest request = requestAuthorizationContext.getRequest();
         String path = request.getRequestURI();
         PathMatcher pathMatcher = new AntPathMatcher();
@@ -60,10 +61,7 @@ public class DynamicAuthorizationManager implements AuthorizationManager<Request
             }
         }
 
-        List<ConfigAttribute> configAttributeList = securityDataSource.getConfigAttributesWithPath(path);
-        List<String> needAuthorities = configAttributeList.stream()
-                .map(ConfigAttribute::getAttribute)
-                .collect(Collectors.toList());
+        List<String> needAuthorities = securityDataSource.getConfigAttributesWithPath(path);
         if (CollUtil.isEmpty(needAuthorities)) {
             // Fix 5: Fail-closed instead of fail-open.
             // If the endpoint is not explicitly mapped in UmsResource, deny access

@@ -40,19 +40,19 @@ public class CommonSecurityConfig {
     }
 
     @Bean
-    public JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter(){
-        return new JwtAuthenticationTokenFilter();
+    public JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter(org.springframework.security.core.userdetails.UserDetailsService userDetailsService, JwtTokenUtil jwtTokenUtil){
+        return new JwtAuthenticationTokenFilter(userDetailsService, jwtTokenUtil);
     }
 
     @ConditionalOnBean(name = "dynamicSecurityService")
     @Bean
-    public DynamicSecurityMetadataSource dynamicSecurityMetadataSource() {
-        return new DynamicSecurityMetadataSource();
+    public DynamicSecurityMetadataSource dynamicSecurityMetadataSource(DynamicSecurityService dynamicSecurityService) {
+        return new DynamicSecurityMetadataSource(dynamicSecurityService);
     }
 
     @ConditionalOnBean(name = "dynamicSecurityService")
     @Bean
-    public DynamicAuthorizationManager dynamicAuthorizationManager() {
-        return new DynamicAuthorizationManager();
+    public DynamicAuthorizationManager dynamicAuthorizationManager(DynamicSecurityMetadataSource dynamicSecurityMetadataSource, IgnoreUrlsConfig ignoreUrlsConfig) {
+        return new DynamicAuthorizationManager(dynamicSecurityMetadataSource, ignoreUrlsConfig);
     }
 }

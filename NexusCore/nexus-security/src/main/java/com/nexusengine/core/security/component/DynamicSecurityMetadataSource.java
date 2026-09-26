@@ -2,9 +2,6 @@ package com.nexusengine.core.security.component;
 
 import cn.hutool.core.util.URLUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.ConfigAttribute;
-import org.springframework.security.web.FilterInvocation;
-import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
 
@@ -15,11 +12,15 @@ import java.util.*;
  * Represents the DynamicSecurityMetadataSource component.
  * Provides core functionality and operations for DynamicSecurityMetadataSource.
  */
-public class DynamicSecurityMetadataSource implements FilterInvocationSecurityMetadataSource {
+public class DynamicSecurityMetadataSource {
 
-    private static Map<String, ConfigAttribute> configAttributeMap = null;
-    @Autowired
-    private DynamicSecurityService dynamicSecurityService;
+    private static Map<String, String> configAttributeMap = null;
+    
+    private final DynamicSecurityService dynamicSecurityService;
+
+    public DynamicSecurityMetadataSource(DynamicSecurityService dynamicSecurityService) {
+        this.dynamicSecurityService = dynamicSecurityService;
+    }
 
     @PostConstruct
     public void loadDataSource() {
@@ -31,35 +32,15 @@ public class DynamicSecurityMetadataSource implements FilterInvocationSecurityMe
         configAttributeMap = null;
     }
 
-    @Override
-    public Collection<ConfigAttribute> getAttributes(Object o) throws IllegalArgumentException {
-        String url = ((FilterInvocation) o).getRequestUrl();
-        String path = URLUtil.getPath(url);
-        return getConfigAttributesWithPath(path);
-    }
-
-    public List<ConfigAttribute> getConfigAttributesWithPath(String path) {
+    public List<String> getConfigAttributesWithPath(String path) {
         if (configAttributeMap == null) this.loadDataSource();
-        List<ConfigAttribute>  configAttributes = new ArrayList<>();
+        List<String> configAttributes = new ArrayList<>();
         PathMatcher pathMatcher = new AntPathMatcher();
-        Iterator<String> iterator = configAttributeMap.keySet().iterator();
-        while (iterator.hasNext()) {
-            String pattern = iterator.next();
+        for (String pattern : configAttributeMap.keySet()) {
             if (pathMatcher.match(pattern, path)) {
                 configAttributes.add(configAttributeMap.get(pattern));
             }
         }
         return configAttributes;
     }
-
-    @Override
-    public Collection<ConfigAttribute> getAllConfigAttributes() {
-        return null;
-    }
-
-    @Override
-    public boolean supports(Class<?> aClass) {
-        return true;
-    }
-
 }

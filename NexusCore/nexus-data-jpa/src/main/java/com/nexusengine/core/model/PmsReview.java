@@ -3,7 +3,7 @@ package com.nexusengine.core.model;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
@@ -43,7 +43,7 @@ public class PmsReview implements Serializable {
     private Integer status;
 
     @Column(name = "created_time")
-    private Date createdTime;
+    private LocalDateTime createdTime;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "review_id")

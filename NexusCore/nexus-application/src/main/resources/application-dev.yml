@@ -20,11 +20,8 @@ spring:
       ddl-auto: validate
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
   data:
-    mongodb:
-      uri: mongodb://localhost:27017/nexuscore
     redis:
       host: localhost
       database: 0
@@ -48,12 +45,8 @@ spring:
           starttls:
             enable: true
   ai:
-    openai:
-      api-key: ${OPENAI_API_KEY:sk-your-key-here}
-      chat:
-        options:
-          model: gpt-4o-mini
-          temperature: 0.7
+    google-genai:
+      api-key: ${GEMINI_API_KEY:sk-your-key-here}
 
 stripe:
   secretKey: ${STRIPE_SECRET_KEY:sk_test_your_key_here}

@@ -9,9 +9,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Date;
 
 /**
  * {"alg": "HS512","typ": "JWT"}
@@ -187,7 +188,7 @@ public class JwtTokenUtil {
         Date createdDate = null;
         if (created instanceof Long) {
             createdDate = new Date((Long) created);
-        } else if (created instanceof Date) {
+        } else if (created instanceof LocalDateTime) {
             createdDate = (Date) created;
         }
         if (createdDate == null) {

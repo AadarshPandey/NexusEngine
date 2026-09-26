@@ -27,16 +27,23 @@ import org.springframework.security.config.Customizer;
 @org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 public class SecurityConfig {
 
-    @Autowired
-    private IgnoreUrlsConfig ignoreUrlsConfig;
-    @Autowired
-    private RestfulAccessDeniedHandler restfulAccessDeniedHandler;
-    @Autowired
-    private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
-    @Autowired
-    private JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
-    @Autowired(required = false)
-    private DynamicAuthorizationManager dynamicAuthorizationManager;
+    private final IgnoreUrlsConfig ignoreUrlsConfig;
+    private final RestfulAccessDeniedHandler restfulAccessDeniedHandler;
+    private final RestAuthenticationEntryPoint restAuthenticationEntryPoint;
+    private final JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
+    private final DynamicAuthorizationManager dynamicAuthorizationManager;
+
+    public SecurityConfig(IgnoreUrlsConfig ignoreUrlsConfig, 
+                          RestfulAccessDeniedHandler restfulAccessDeniedHandler, 
+                          RestAuthenticationEntryPoint restAuthenticationEntryPoint, 
+                          JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter, 
+                          @Autowired(required = false) DynamicAuthorizationManager dynamicAuthorizationManager) {
+        this.ignoreUrlsConfig = ignoreUrlsConfig;
+        this.restfulAccessDeniedHandler = restfulAccessDeniedHandler;
+        this.restAuthenticationEntryPoint = restAuthenticationEntryPoint;
+        this.jwtAuthenticationTokenFilter = jwtAuthenticationTokenFilter;
+        this.dynamicAuthorizationManager = dynamicAuthorizationManager;
+    }
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {

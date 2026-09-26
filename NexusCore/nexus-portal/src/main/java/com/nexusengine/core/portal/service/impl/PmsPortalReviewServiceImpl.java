@@ -49,7 +49,7 @@ public class PmsPortalReviewServiceImpl implements PmsPortalReviewService {
         review.setContent(param.getContent());
         review.setLikeCount(0);
         review.setStatus(1); // Auto approve for now
-        review.setCreatedTime(new Date());
+        review.setCreatedTime(java.time.LocalDateTime.now());
         
         PmsReview saved = reviewRepository.save(review);
         

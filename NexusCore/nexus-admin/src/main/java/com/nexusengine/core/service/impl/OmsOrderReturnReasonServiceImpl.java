@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -17,7 +17,7 @@ public class OmsOrderReturnReasonServiceImpl implements OmsOrderReturnReasonServ
 
     @Override
     public int create(OmsOrderReturnReason returnReason) {
-        returnReason.setCreateTime(new Date());
+        returnReason.setCreateTime(java.time.LocalDateTime.now());
         returnReasonRepository.save(returnReason);
         return 1;
     }

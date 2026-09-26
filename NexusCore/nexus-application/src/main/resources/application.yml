@@ -19,97 +19,75 @@ spring:
     active: dev
   mvc:
     pathmatch:
-      matching-strategy: ant_path_matcher
   jpa:
     open-in-view: false
     hibernate:
       ddl-auto: validate
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
     show-sql: false
-
+  ai:
+    google-genai:
+      api-key: ${GEMINI_API_KEY:demo-key}
 jwt:
   tokenHeader: Authorization
   secret: ${JWT_SECRET:local-development-jwt-secret-key-needs-32-bytes}
   expiration: 86400
   tokenHead: 'Bearer '
-
 secure:
   ignored:
     urls:
-      - /swagger-ui.html
-      - /actuator/**
-      - /swagger-ui/**
-      - /swagger-resources/**
-      - /v2/api-docs
-      - /v3/api-docs/**
-      - /*/*.html
-      - /*/*.js
-      - /*/*.css
-      - /*/*.png
-      - /favicon.ico
-      - /portal/sso/**
-      - /portal/home/**
-      - /dashboard/**
-      - /productAttribute/**
-      - /productCategory/**
-      - /error
-      - /portal/product/**
-      - /portal/brand/**
-      - /portal/stripe/**
-      - /portal/review/product/**
-      - /portal/review/*/replies
-      - /uploads/**
-      - /admin/login
-      - /admin/info
-      - /admin/logout
-
+    - /swagger-ui.html
+    - /actuator/**
+    - /swagger-ui/**
+    - /v3/api-docs/**
+    - /*/*.html
+    - /*/*.js
+    - /*/*.css
+    - /*/*.png
+    - /favicon.ico
+    - /portal/sso/**
+    - /portal/home/**
+    - /dashboard/**
+    - /productAttribute/**
+    - /productCategory/**
+    - /error
+    - /portal/product/**
+    - /portal/brand/**
+    - /portal/stripe/**
+    - /portal/review/product/**
+    - /portal/review/*/replies
+    - /uploads/**
+    - /admin/login
+    - /admin/info
+    - /admin/logout
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
     enabled: true
-    doc-expansion: 'none'
+    doc-expansion: none
   api-docs:
     path: /v3/api-docs
     enabled: true
   group-configs:
-    - group: 'default'
-      packages-to-scan: com.nexusengine.core.portal.controller,com.nexusengine.core.controller
-
+  - group: default
+    packages-to-scan: com.nexusengine.core.portal.controller,com.nexusengine.core.controller
 redis:
   database: nexuscore
   key:
-    authCode: 'ums:authCode'
-    orderId: 'oms:orderId'
-    member: 'ums:member'
-    admin: 'ums:admin'
-    resourceList: 'ums:resourceList'
+    authCode: ums:authCode
+    orderId: oms:orderId
+    member: ums:member
+    admin: ums:admin
+    resourceList: ums:resourceList
   expire:
     authCode: 90
     common: 86400
-
 rabbitmq:
   queue:
     name:
       cancelOrder: cancelOrderQueue
-
-
-# AWS S3 for Admin
-aws:
-  s3:
-    endpoint: http://localhost:9000
-    access-key: ${AWS_ACCESS_KEY:minioadmin}
-    secret-key: ${AWS_SECRET_KEY:minioadmin}
-    bucket-name: nexuscore
-    region: us-east-1
-    policy:
-      expire: 300
-    maxSize: 10
-    dir:
-      prefix: nexuscore/images/
-
-# Resilience4j
 resilience4j:
   circuitbreaker:
     instances:
@@ -119,13 +97,36 @@ resilience4j:
         minimumNumberOfCalls: 5
         failureRateThreshold: 50
         waitDurationInOpenState: 10000
+      razorpay:
+        registerHealthIndicator: true
+        slidingWindowSize: 5
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 3
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        waitDurationInOpenState: 10s
+        failureRateThreshold: 50
+      openai:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 10
+        permittedNumberOfCallsInHalfOpenState: 3
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        waitDurationInOpenState: 30s
+        failureRateThreshold: 50
   ratelimiter:
     instances:
       default:
         limitForPeriod: 100
         limitRefreshPeriod: 1s
         timeoutDuration: 0
-
+  retry:
+    instances:
+      razorpay:
+        maxAttempts: 3
+        waitDuration: 2s
+      openai:
+        maxAttempts: 3
+        waitDuration: 2s
 management:
   endpoints:
     web:
@@ -138,3 +139,7 @@ management:
   otlp:
     tracing:
       endpoint: http://localhost:4318/v1/traces
+logging:
+  structured:
+    format:
+      console: logstash

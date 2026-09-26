@@ -12,7 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -28,7 +28,7 @@ public class UmsRoleServiceImpl implements UmsRoleService {
 
     @Override
     public int create(UmsRole role) {
-        role.setCreateTime(new Date());
+        role.setCreateTime(java.time.LocalDateTime.now());
         role.setAdminCount(0);
         role.setSort(0);
         roleRepository.save(role);
