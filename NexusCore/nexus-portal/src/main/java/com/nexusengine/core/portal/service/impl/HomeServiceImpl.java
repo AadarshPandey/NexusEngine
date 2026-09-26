@@ -41,17 +41,17 @@ public class HomeServiceImpl implements HomeService {
     @org.springframework.transaction.annotation.Transactional(readOnly = true)
     @Override
     public HomeContentResult content() {
-        HomeContentResult result = new HomeContentResult();
-        result.setAdvertiseList(getHomeAdvertiseList());
-        result.setBrandList(homeDao.getRecommendBrandList(0, 6));
-        result.setNewProductList(homeDao.getNewProductList(0, 4));
-        result.setHotProductList(homeDao.getHotProductList(0, 4));
+        java.util.List<com.nexusengine.core.model.SmsHomeAdvertise> resAdvertiseList = null; java.util.List<com.nexusengine.core.model.PmsBrand> resBrandList = null; java.util.List<com.nexusengine.core.model.PmsProduct> resNewProductList = null; java.util.List<com.nexusengine.core.model.PmsProduct> resHotProductList = null; java.util.List<com.nexusengine.core.model.PmsProduct> resAiRecommendProductList = new java.util.ArrayList<>();
+        resAdvertiseList = (getHomeAdvertiseList());
+        resBrandList = (homeDao.getRecommendBrandList(0, 6));
+        resNewProductList = (homeDao.getNewProductList(0, 4));
+        resHotProductList = (homeDao.getHotProductList(0, 4));
         
-        initializeMediaList(result.getNewProductList());
-        initializeMediaList(result.getHotProductList());
+        initializeMediaList(resNewProductList);
+        initializeMediaList(resHotProductList);
         
         // Fix 4: Wire HomeFlashPromotion to query active session
-        HomeFlashPromotion homeFlashPromotion = new HomeFlashPromotion();
+        java.time.LocalDateTime hfpStartTime = null; java.time.LocalDateTime hfpEndTime = null; java.time.LocalDateTime hfpNextStartTime = null; java.time.LocalDateTime hfpNextEndTime = null; java.util.List<FlashPromotionProduct> hfpProductList = new java.util.ArrayList<>();
         try {
             java.time.LocalDateTime now = java.time.LocalDateTime.now();
             java.time.LocalTime currentTime = java.time.LocalTime.now();
@@ -69,37 +69,33 @@ public class HomeServiceImpl implements HomeService {
                     
                     // Set times based on today + session time
                     java.time.LocalDate today = java.time.LocalDate.now();
-                    homeFlashPromotion.setStartTime(java.time.LocalDateTime.of(today, currentSession.getStartTime()));
-                    homeFlashPromotion.setEndTime(java.time.LocalDateTime.of(today, currentSession.getEndTime()));
+                    hfpStartTime = (java.time.LocalDateTime.of(today, currentSession.getStartTime()));
+                    hfpEndTime = (java.time.LocalDateTime.of(today, currentSession.getEndTime()));
                     
                     // Fetch products
                     List<SmsFlashPromotionProductRelation> relations = flashPromotionProductRelationRepository.findByFlashPromotionIdAndFlashPromotionSessionId(promotion.getId(), currentSession.getId());
                     List<FlashPromotionProduct> flashProductList = new java.util.ArrayList<>();
                     for (SmsFlashPromotionProductRelation relation : relations) {
                         productRepository.findById(relation.getProductId()).ifPresent(p -> {
-                            FlashPromotionProduct flashProduct = new FlashPromotionProduct();
-                            org.springframework.beans.BeanUtils.copyProperties(p, flashProduct);
-                            flashProduct.setFlashPromotionPrice(relation.getFlashPromotionPrice());
-                            flashProduct.setFlashPromotionCount(relation.getFlashPromotionCount());
-                            flashProduct.setFlashPromotionLimit(relation.getFlashPromotionLimit());
+                            FlashPromotionProduct flashProduct = new FlashPromotionProduct(p, relation.getFlashPromotionPrice(), relation.getFlashPromotionCount(), relation.getFlashPromotionLimit());
                             flashProductList.add(flashProduct);
                         });
                     }
-                    homeFlashPromotion.setProductList(flashProductList);
+                    hfpProductList = flashProductList;
                 }
             }
         } catch (Exception e) {
             // fallback
         }
-        result.setHomeFlashPromotion(homeFlashPromotion);
+        
         
         try {
-            result.setAiRecommendProductList(semanticSearchService.semanticSearch(null, "latest trending electronics smartphones laptops"));
-            initializeMediaList(result.getAiRecommendProductList());
+            resAiRecommendProductList = (semanticSearchService.semanticSearch(null, "latest trending electronics smartphones laptops"));
+            initializeMediaList(resAiRecommendProductList);
         } catch (Exception e) {
-            result.setAiRecommendProductList(new java.util.ArrayList<>());
+            resAiRecommendProductList = (new java.util.ArrayList<>());
         }
-        return result;
+        return new HomeContentResult(resAdvertiseList, resBrandList, new HomeFlashPromotion(hfpStartTime, hfpEndTime, hfpNextStartTime, hfpNextEndTime, hfpProductList), resNewProductList, resHotProductList, resAiRecommendProductList);
     }
 
     @Override

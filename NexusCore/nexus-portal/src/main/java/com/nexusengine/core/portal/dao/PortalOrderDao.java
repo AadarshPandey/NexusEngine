@@ -36,10 +36,9 @@ public class PortalOrderDao {
     public OmsOrderDetail getDetail(Long orderId) {
         OmsOrder order = orderRepository.findById(orderId).orElse(null);
         if (order == null) return null;
-        OmsOrderDetail detail = new OmsOrderDetail();
-        BeanUtils.copyProperties(order, detail);
-        detail.setOrderItemList(orderItemRepository.findByOrderId(orderId));
-        return detail;
+        
+        List<OmsOrderItem> orderItemList = orderItemRepository.findByOrderId(orderId);
+        return new OmsOrderDetail(order, orderItemList);
     }
 
     public List<OmsOrderDetail> getTimeOutOrders(Integer minutes) {
@@ -49,10 +48,9 @@ public class PortalOrderDao {
         List<OmsOrder> orders = orderRepository.findByStatusAndDeleteStatusAndCreateTimeBefore(0, 0, deadline);
         List<OmsOrderDetail> result = new ArrayList<>();
         for (OmsOrder order : orders) {
-            OmsOrderDetail detail = new OmsOrderDetail();
-            BeanUtils.copyProperties(order, detail);
-            detail.setOrderItemList(orderItemRepository.findByOrderId(order.getId()));
-            result.add(detail);
+            
+            List<OmsOrderItem> orderItemList = orderItemRepository.findByOrderId(order.getId());
+            result.add(new OmsOrderDetail(order, orderItemList));
         }
         return result;
     }

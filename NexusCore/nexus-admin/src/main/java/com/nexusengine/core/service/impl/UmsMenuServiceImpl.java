@@ -86,12 +86,9 @@ public class UmsMenuServiceImpl implements UmsMenuService {
     }
 
     private UmsMenuNode covertMenuNode(UmsMenu menu, List<UmsMenu> menuList) {
-        UmsMenuNode node = new UmsMenuNode();
-        BeanUtils.copyProperties(menu, node);
         List<UmsMenuNode> children = menuList.stream()
                 .filter(subMenu -> subMenu.getParentId().equals(menu.getId()))
                 .map(subMenu -> covertMenuNode(subMenu, menuList)).collect(Collectors.toList());
-        node.setChildren(children);
-        return node;
+        return new UmsMenuNode(menu, children);
     }
 }

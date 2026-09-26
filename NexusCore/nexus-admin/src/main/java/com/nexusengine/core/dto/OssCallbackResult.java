@@ -8,17 +8,11 @@ import lombok.EqualsAndHashCode;
  * Represents the OssCallbackResult component.
  * Provides core functionality and operations for OssCallbackResult.
  */
-@Data
-@EqualsAndHashCode
-public class OssCallbackResult {
-    @Schema(title = "Filename")
-    private String filename;
-    @Schema(title = "Size")
-    private String size;
-    @Schema(title = "Mime type")
-    private String mimeType;
-    @Schema(title = "Width")
-    private String width;
-    @Schema(title = "Height")
-    private String height;
+public record OssCallbackResult(
+    @Schema(title = "Filename") String filename,
+    @Schema(title = "Size") String size,
+    @Schema(title = "Mime type") String mimeType,
+    @Schema(title = "Width") String width,
+    @Schema(title = "Height") String height
+) {
 }

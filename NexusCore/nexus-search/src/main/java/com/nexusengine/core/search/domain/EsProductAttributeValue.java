@@ -12,7 +12,7 @@ import java.io.Serializable;
  * Provides core functionality and operations for EsProductAttributeValue.
  */
 @Data
-@EqualsAndHashCode
+
 public class EsProductAttributeValue implements Serializable {
     private static final long serialVersionUID = 1L;
     private Long id;

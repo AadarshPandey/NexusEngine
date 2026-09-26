@@ -58,7 +58,7 @@ public class UmsAdminController {
     @PostMapping("/login")
 
     public CommonResult login(@Validated @RequestBody UmsAdminLoginParam umsAdminLoginParam) {
-        String token = adminService.login(umsAdminLoginParam.getUsername(), umsAdminLoginParam.getPassword());
+        String token = adminService.login(umsAdminLoginParam.username(), umsAdminLoginParam.password());
         if (token == null) {
             return CommonResult.validateFailed("Invalid username or password");
         }

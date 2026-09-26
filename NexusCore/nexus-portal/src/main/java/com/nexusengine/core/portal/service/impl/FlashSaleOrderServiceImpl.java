@@ -90,12 +90,7 @@ public class FlashSaleOrderServiceImpl implements FlashSaleOrderService {
         }
 
         // 3. Asynchronous Order Processing (RabbitMQ)
-        FlashSaleOrderMessage message = new FlashSaleOrderMessage();
-        message.setMemberId(currentMember.getId());
-        message.setProductId(productId);
-        message.setFlashPromotionId(flashPromotionId);
-        message.setFlashPromotionSessionId(flashPromotionSessionId);
-        message.setQuantity(quantity);
+        FlashSaleOrderMessage message = new FlashSaleOrderMessage(currentMember.getId(), productId, flashPromotionId, flashPromotionSessionId, quantity);
 
         amqpTemplate.convertAndSend(QueueEnum.QUEUE_FLASH_ORDER.getExchange(), QueueEnum.QUEUE_FLASH_ORDER.getRouteKey(), message);
         log.info("Flash order message sent to MQ for member: {}, product: {}", currentMember.getId(), productId);

@@ -5,5 +5,6 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import java.util.List;
 public interface PmsProductAttributeValueRepository extends JpaRepository<PmsProductAttributeValue, Long>, JpaSpecificationExecutor<PmsProductAttributeValue> {
     List<PmsProductAttributeValue> findByProductIdAndProductAttributeIdIn(Long productId, List<Long> attributeIds);
+    List<PmsProductAttributeValue> findByProductId(Long productId);
     void deleteByProductId(Long productId);
 }

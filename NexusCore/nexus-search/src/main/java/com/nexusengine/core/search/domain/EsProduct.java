@@ -17,7 +17,7 @@ import java.util.List;
  * Provides core functionality and operations for EsProduct.
  */
 @Data
-@EqualsAndHashCode
+
 @Document(indexName = "pms")
 @Setting(shards = 1,replicas = 0)
 public class EsProduct implements Serializable {

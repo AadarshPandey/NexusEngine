@@ -145,7 +145,7 @@ public class UmsMemberServiceImpl implements UmsMemberService {
             return null;
         }
         MemberDetails memberDetails = (MemberDetails) auth.getPrincipal();
-        return memberDetails.getUmsMember();
+        return memberDetails.umsMember();
     }
 
     @Override

@@ -9,8 +9,8 @@ import lombok.EqualsAndHashCode;
  * Created by macro on 2020/7/16.
  */
 @Data
-@EqualsAndHashCode
-@Builder
+
+
 public class SwaggerProperties {
         /**
      * The apiBasePackage property.

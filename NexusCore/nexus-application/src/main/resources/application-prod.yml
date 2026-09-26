@@ -30,7 +30,7 @@ spring:
     host: rabbitmq
     port: 5672
     virtual-host: /nexuscore
-    username: guest
+    username: ${RABBITMQ_USERNAME:guest}
     password: ${RABBITMQ_PASSWORD}
   ai:
     google-genai:

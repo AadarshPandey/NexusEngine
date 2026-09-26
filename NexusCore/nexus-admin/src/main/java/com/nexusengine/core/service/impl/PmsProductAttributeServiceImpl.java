@@ -90,9 +90,7 @@ public class PmsProductAttributeServiceImpl implements PmsProductAttributeServic
             if (rel.getProductCategoryId() != null && rel.getProductCategoryId().equals(productCategoryId)) {
                 com.nexusengine.core.model.PmsProductAttribute attr = productAttributeRepository.findById(rel.getProductAttributeId()).orElse(null);
                 if (attr != null) {
-                    ProductAttrInfo info = new ProductAttrInfo();
-                    info.setAttributeId(attr.getId());
-                    info.setAttributeCategoryId(attr.getProductAttributeCategoryId());
+                    ProductAttrInfo info = new ProductAttrInfo(attr.getId(), attr.getProductAttributeCategoryId());
                     result.add(info);
                 }
             }

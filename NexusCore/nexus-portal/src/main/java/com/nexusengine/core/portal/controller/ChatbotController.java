@@ -33,12 +33,12 @@ public class ChatbotController {
     @PostMapping
     public CommonResult<ChatResponse> chat(@RequestBody ChatRequest request) {
         String answer;
-        if (request.getSessionId() != null && !request.getSessionId().isBlank()) {
-            answer = chatService.askWithContext(request.getQuestion(), request.getSessionId());
+        if (request.sessionId() != null && !request.sessionId().isBlank()) {
+            answer = chatService.askWithContext(request.question(), request.sessionId());
         } else {
-            answer = chatService.ask(request.getQuestion());
+            answer = chatService.ask(request.question());
         }
-        return CommonResult.success(ChatResponse.of(request.getQuestion(), answer, request.getSessionId()));
+        return CommonResult.success(new ChatResponse(request.question(), answer, request.sessionId()));
     }
     
     @Operation(summary = "Get conversation history by session ID")

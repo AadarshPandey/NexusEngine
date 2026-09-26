@@ -4,22 +4,18 @@ import com.nexusengine.core.model.OmsCartItem;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
-
 import java.math.BigDecimal;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
 /**
  * Represents the CartPromotionItem component.
  * Provides core functionality and operations for CartPromotionItem.
  */
-@Getter
-@Setter
-public class CartPromotionItem extends OmsCartItem{
-    @Schema(title = "Promotion message")
-    private String promotionMessage;
-    @Schema(title = "Reduce amount")
-    private BigDecimal reduceAmount;
-    @Schema(title = "Real stock")
-    private Integer realStock;
-    @Schema(title = "Integration")
-    private Integer earnedPoints;
+public record CartPromotionItem(
+    @JsonUnwrapped OmsCartItem omsCartItem,
+    @Schema(title = "Promotion message") String promotionMessage,
+    @Schema(title = "Reduce amount") BigDecimal reduceAmount,
+    @Schema(title = "Real stock") Integer realStock,
+    @Schema(title = "Integration") Integer earnedPoints
+) {
 }

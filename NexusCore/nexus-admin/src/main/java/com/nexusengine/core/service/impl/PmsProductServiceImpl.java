@@ -49,20 +49,20 @@ public class PmsProductServiceImpl implements PmsProductService {
         product.setId(null);
         productRepository.save(product);
         Long productId = product.getId();
-        saveProductLadderList(productParam.getProductLadderList(), productId);
-        saveProductFullReductionList(productParam.getProductFullReductionList(), productId);
-        handleSkuStockCode(productParam.getSkuStockList(), productId);
-        if (CollUtil.isEmpty(productParam.getSkuStockList())) {
+        saveProductLadderList(productParam.productLadderList(), productId);
+        saveProductFullReductionList(productParam.productFullReductionList(), productId);
+        handleSkuStockCode(productParam.skuStockList(), productId);
+        if (CollUtil.isEmpty(productParam.skuStockList())) {
             PmsSkuStock defaultSku = new PmsSkuStock();
             defaultSku.setProductId(productId);
             defaultSku.setSkuCode(java.util.UUID.randomUUID().toString().replace("-","").substring(0,20));
-            defaultSku.setPrice(productParam.getPrice());
-            defaultSku.setStock(productParam.getStock() != null ? productParam.getStock() : 0);
+            defaultSku.setPrice(productParam.pmsProduct().getPrice());
+            defaultSku.setStock(productParam.pmsProduct().getStock() != null ? productParam.pmsProduct().getStock() : 0);
             skuStockRepository.save(defaultSku);
         } else {
-            saveSkuStockList(productParam.getSkuStockList(), productId);
+            saveSkuStockList(productParam.skuStockList(), productId);
         }
-        saveProductAttributeValueList(productParam.getProductAttributeValueList(), productId);
+        saveProductAttributeValueList(productParam.productAttributeValueList(), productId);
         
         
         return 1;
@@ -87,9 +87,7 @@ public class PmsProductServiceImpl implements PmsProductService {
     public PmsProductResult getUpdateInfo(Long id) {
         PmsProduct product = productRepository.findById(id).orElse(null);
         if (product == null) return null;
-        PmsProductResult result = new PmsProductResult();
-        BeanUtils.copyProperties(product, result);
-        return result;
+        return new PmsProductResult(new PmsProductParam(product, productLadderRepository.findByProductId(id), productFullReductionRepository.findByProductId(id), skuStockRepository.findByProductId(id), productAttributeValueRepository.findByProductId(id)), null);
     }
 
     @Override
@@ -100,32 +98,32 @@ public class PmsProductServiceImpl implements PmsProductService {
         product.setId(id);
         productRepository.save(product);
         productLadderRepository.deleteByProductId(id);
-        saveProductLadderList(productParam.getProductLadderList(), id);
+        saveProductLadderList(productParam.productLadderList(), id);
         productFullReductionRepository.deleteByProductId(id);
-        saveProductFullReductionList(productParam.getProductFullReductionList(), id);
+        saveProductFullReductionList(productParam.productFullReductionList(), id);
         handleUpdateSkuStockList(id, productParam);
         productAttributeValueRepository.deleteByProductId(id);
-        saveProductAttributeValueList(productParam.getProductAttributeValueList(), id);
+        saveProductAttributeValueList(productParam.productAttributeValueList(), id);
                 
                 
         return 1;
     }
 
     private void handleUpdateSkuStockList(Long id, PmsProductParam productParam) {
-        List<PmsSkuStock> currSkuList = productParam.getSkuStockList();
+        List<PmsSkuStock> currSkuList = productParam.skuStockList();
         if (CollUtil.isEmpty(currSkuList)) {
             List<PmsSkuStock> existing = skuStockRepository.findByProductId(id);
             if (existing.isEmpty()) {
                 PmsSkuStock defaultSku = new PmsSkuStock();
                 defaultSku.setProductId(id);
                 defaultSku.setSkuCode(java.util.UUID.randomUUID().toString().replace("-","").substring(0,20));
-                defaultSku.setPrice(productParam.getPrice());
-                defaultSku.setStock(productParam.getStock() != null ? productParam.getStock() : 0);
+                defaultSku.setPrice(productParam.pmsProduct().getPrice());
+                defaultSku.setStock(productParam.pmsProduct().getStock() != null ? productParam.pmsProduct().getStock() : 0);
                 skuStockRepository.save(defaultSku);
             } else {
                 for (PmsSkuStock sku : existing) {
-                    if (productParam.getPrice() != null) sku.setPrice(productParam.getPrice());
-                    if (productParam.getStock() != null) sku.setStock(productParam.getStock());
+                    if (productParam.pmsProduct().getPrice() != null) sku.setPrice(productParam.pmsProduct().getPrice());
+                    if (productParam.pmsProduct().getStock() != null) sku.setStock(productParam.pmsProduct().getStock());
                 }
                 skuStockRepository.saveAll(existing);
             }
@@ -166,23 +164,23 @@ public class PmsProductServiceImpl implements PmsProductService {
             if (vendorId != null) {
                 predicates.add(cb.equal(root.get("vendorId"), vendorId));
             }
-            if (queryParam.getPublishStatus() != null) {
-                predicates.add(cb.equal(root.get("publishStatus"), queryParam.getPublishStatus()));
+            if (queryParam.publishStatus() != null) {
+                predicates.add(cb.equal(root.get("publishStatus"), queryParam.publishStatus()));
             }
-            if (queryParam.getVerifyStatus() != null) {
-                predicates.add(cb.equal(root.get("verifyStatus"), queryParam.getVerifyStatus()));
+            if (queryParam.verifyStatus() != null) {
+                predicates.add(cb.equal(root.get("verifyStatus"), queryParam.verifyStatus()));
             }
-            if (StrUtil.isNotEmpty(queryParam.getKeyword())) {
-                predicates.add(cb.like(cb.lower(root.get("name")), "%" + queryParam.getKeyword().toLowerCase() + "%"));
+            if (StrUtil.isNotEmpty(queryParam.keyword())) {
+                predicates.add(cb.like(cb.lower(root.get("name")), "%" + queryParam.keyword().toLowerCase() + "%"));
             }
-            if (StrUtil.isNotEmpty(queryParam.getProductSn())) {
-                predicates.add(cb.equal(root.get("productSn"), queryParam.getProductSn()));
+            if (StrUtil.isNotEmpty(queryParam.productSn())) {
+                predicates.add(cb.equal(root.get("productSn"), queryParam.productSn()));
             }
-            if (queryParam.getBrandId() != null) {
-                predicates.add(cb.equal(root.get("brandId"), queryParam.getBrandId()));
+            if (queryParam.brandId() != null) {
+                predicates.add(cb.equal(root.get("brandId"), queryParam.brandId()));
             }
-            if (queryParam.getProductCategoryId() != null) {
-                predicates.add(cb.equal(root.get("productCategoryId"), queryParam.getProductCategoryId()));
+            if (queryParam.productCategoryId() != null) {
+                predicates.add(cb.equal(root.get("productCategoryId"), queryParam.productCategoryId()));
             }
             return cb.and(predicates.toArray(new jakarta.persistence.criteria.Predicate[0]));
         }, pageable);

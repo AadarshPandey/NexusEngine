@@ -8,11 +8,8 @@ import lombok.EqualsAndHashCode;
  * Represents the MinioUploadDto component.
  * Provides core functionality and operations for MinioUploadDto.
  */
-@Data
-@EqualsAndHashCode
-public class MinioUploadDto {
-    @Schema(title = "Url")
-    private String url;
-    @Schema(title = "Name")
-    private String name;
+public record MinioUploadDto(
+    @Schema(title = "Url") String url,
+    @Schema(title = "Name") String name
+) {
 }

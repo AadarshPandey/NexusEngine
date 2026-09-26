@@ -30,13 +30,13 @@ public class FlashSaleOrderReceiver {
     @RabbitHandler
     @org.springframework.transaction.annotation.Transactional
     public void handle(FlashSaleOrderMessage message) {
-        log.info("Received flash order message for member: {}, product: {}", message.getMemberId(), message.getProductId());
+        log.info("Received flash order message for member: {}, product: {}", message.memberId(), message.productId());
         
         // Fix 3: Idempotency check
-        String idempotencyKey = "flash:order_processed:" + message.getFlashPromotionSessionId() + ":" + message.getProductId() + ":" + message.getMemberId();
+        String idempotencyKey = "flash:order_processed:" + message.flashPromotionSessionId() + ":" + message.productId() + ":" + message.memberId();
         Boolean isFirstProcess = stringRedisTemplate.opsForValue().setIfAbsent(idempotencyKey, "1", java.time.Duration.ofHours(24));
         if (Boolean.FALSE.equals(isFirstProcess)) {
-            log.info("Message already processed for member {}, ignoring.", message.getMemberId());
+            log.info("Message already processed for member {}, ignoring.", message.memberId());
             return;
         }
 
@@ -44,18 +44,18 @@ public class FlashSaleOrderReceiver {
             // (a) Validate DB stock & deduct
             com.nexusengine.core.model.SmsFlashPromotionProductRelation relation = flashPromotionProductRelationRepository
                 .findByFlashPromotionIdAndFlashPromotionSessionIdAndProductId(
-                    message.getFlashPromotionId(), message.getFlashPromotionSessionId(), message.getProductId()
+                    message.flashPromotionId(), message.flashPromotionSessionId(), message.productId()
                 ).orElseThrow(() -> new RuntimeException("Flash promotion relation not found"));
 
-            if (relation.getFlashPromotionCount() < message.getQuantity()) {
+            if (relation.getFlashPromotionCount() < message.quantity()) {
                 throw new RuntimeException("Insufficient flash stock in DB");
             }
-            relation.setFlashPromotionCount(relation.getFlashPromotionCount() - message.getQuantity());
+            relation.setFlashPromotionCount(relation.getFlashPromotionCount() - message.quantity());
             flashPromotionProductRelationRepository.save(relation);
 
             // (b) Create OmsOrder + OmsOrderItem
             com.nexusengine.core.model.OmsOrder order = new com.nexusengine.core.model.OmsOrder();
-            order.setMemberId(message.getMemberId());
+            order.setMemberId(message.memberId());
             order.setCreateTime(java.time.LocalDateTime.now());
             order.setStatus(0);
             order.setDeleteStatus(0);
@@ -64,47 +64,47 @@ public class FlashSaleOrderReceiver {
             
             com.nexusengine.core.model.OmsOrderItem orderItem = new com.nexusengine.core.model.OmsOrderItem();
             orderItem.setOrderId(order.getId());
-            orderItem.setProductId(message.getProductId());
-            orderItem.setProductQuantity(message.getQuantity());
+            orderItem.setProductId(message.productId());
+            orderItem.setProductQuantity(message.quantity());
             orderItem.setProductPrice(relation.getFlashPromotionPrice());
             orderItemRepository.save(orderItem);
 
             // (c) log to sms_flash_promotion_log
             com.nexusengine.core.model.SmsFlashPromotionLog logEntry = new com.nexusengine.core.model.SmsFlashPromotionLog();
-            logEntry.setMemberId(message.getMemberId());
-            logEntry.setProductId(message.getProductId());
-            logEntry.setFlashPromotionId(message.getFlashPromotionId());
-            logEntry.setSessionId(message.getFlashPromotionSessionId());
+            logEntry.setMemberId(message.memberId());
+            logEntry.setProductId(message.productId());
+            logEntry.setFlashPromotionId(message.flashPromotionId());
+            logEntry.setSessionId(message.flashPromotionSessionId());
             logEntry.setOrderId(order.getId());
-            logEntry.setQuantity(message.getQuantity());
+            logEntry.setQuantity(message.quantity());
             logEntry.setStatus("SUCCESS");
             logEntry.setCreateTime(java.time.LocalDateTime.now());
             flashPromotionLogRepository.save(logEntry);
 
-            log.info("Successfully persisted flash order to database for member: {}", message.getMemberId());
+            log.info("Successfully persisted flash order to database for member: {}", message.memberId());
         } catch (Exception e) {
-            log.error("Failed to process flash order for member: {}", message.getMemberId(), e);
+            log.error("Failed to process flash order for member: {}", message.memberId(), e);
             stringRedisTemplate.delete(idempotencyKey); // allow retry
             
             // Log failure
             com.nexusengine.core.model.SmsFlashPromotionLog logEntry = new com.nexusengine.core.model.SmsFlashPromotionLog();
-            logEntry.setMemberId(message.getMemberId());
-            logEntry.setProductId(message.getProductId());
-            logEntry.setFlashPromotionId(message.getFlashPromotionId());
-            logEntry.setSessionId(message.getFlashPromotionSessionId());
-            logEntry.setQuantity(message.getQuantity());
+            logEntry.setMemberId(message.memberId());
+            logEntry.setProductId(message.productId());
+            logEntry.setFlashPromotionId(message.flashPromotionId());
+            logEntry.setSessionId(message.flashPromotionSessionId());
+            logEntry.setQuantity(message.quantity());
             logEntry.setStatus("FAILED");
             logEntry.setCreateTime(java.time.LocalDateTime.now());
             flashPromotionLogRepository.save(logEntry);
             
             try {
                 // Fix 7: Safe compensation
-                String stockKey = "flash:stock:" + message.getFlashPromotionId() + ":" + message.getFlashPromotionSessionId() + ":" + message.getProductId();
-                redisService.incr(stockKey, message.getQuantity());
+                String stockKey = "flash:stock:" + message.flashPromotionId() + ":" + message.flashPromotionSessionId() + ":" + message.productId();
+                redisService.incr(stockKey, message.quantity());
                 
-                String userSetKey = "flash:users:" + message.getFlashPromotionId() + ":" + message.getFlashPromotionSessionId() + ":" + message.getProductId();
-                stringRedisTemplate.opsForSet().remove(userSetKey, String.valueOf(message.getMemberId()));
-                log.info("Compensated Redis stock for key: {}, quantity: {}", stockKey, message.getQuantity());
+                String userSetKey = "flash:users:" + message.flashPromotionId() + ":" + message.flashPromotionSessionId() + ":" + message.productId();
+                stringRedisTemplate.opsForSet().remove(userSetKey, String.valueOf(message.memberId()));
+                log.info("Compensated Redis stock for key: {}, quantity: {}", stockKey, message.quantity());
             } catch (Exception redisEx) {
                 log.error("CRITICAL: Failed to compensate Redis stock!", redisEx);
                 // In production, send to Dead Letter Queue (DLQ) or fallback DB table here

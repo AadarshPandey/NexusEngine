@@ -42,25 +42,25 @@ public class PmsPortalReviewServiceImpl implements PmsPortalReviewService {
     public PmsReview create(ReviewParam param) {
         var member = memberService.getCurrentMember();
         PmsReview review = new PmsReview();
-        review.setProductId(param.getProductId());
-        review.setParentId(param.getParentId());
+        review.setProductId(param.productId());
+        review.setParentId(param.parentId());
         review.setMemberId(member.getId());
-        review.setRating(param.getRating());
-        review.setContent(param.getContent());
+        review.setRating(param.rating());
+        review.setContent(param.content());
         review.setLikeCount(0);
         review.setStatus(1); // Auto approve for now
         review.setCreatedTime(java.time.LocalDateTime.now());
         
         PmsReview saved = reviewRepository.save(review);
         
-        if (param.getMediaList() != null && !param.getMediaList().isEmpty()) {
+        if (param.mediaList() != null && !param.mediaList().isEmpty()) {
             List<PmsReviewMedia> mediaList = new ArrayList<>();
-            for (var m : param.getMediaList()) {
+            for (var m : param.mediaList()) {
                 PmsReviewMedia media = new PmsReviewMedia();
                 media.setReviewId(saved.getId());
-                media.setMediaType(m.getMediaType());
-                media.setMediaUrl(m.getMediaUrl());
-                media.setSortOrder(m.getSortOrder());
+                media.setMediaType(m.mediaType());
+                media.setMediaUrl(m.mediaUrl());
+                media.setSortOrder(m.sortOrder());
                 mediaList.add(media);
             }
             reviewMediaRepository.saveAll(mediaList);

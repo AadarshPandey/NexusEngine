@@ -37,68 +37,66 @@ public class OmsPromotionServiceImpl implements OmsPromotionService {
                 handleNoReduce(cartPromotionItemList, itemList, null);
                 continue;
             }
-            Integer promotionType = promotionProduct.getPromotionType();
+            Integer promotionType = promotionProduct.pmsProduct().getPromotionType();
             if (promotionType == null) {
                 handleNoReduce(cartPromotionItemList, itemList, promotionProduct);
                 continue;
             }
             if (promotionType == 1) {
                 for (OmsCartItem item : itemList) {
-                    CartPromotionItem cartPromotionItem = new CartPromotionItem();
-                    BeanUtils.copyProperties(item, cartPromotionItem);
-                    cartPromotionItem.setPromotionMessage("Single item promotion");
+                    String promotionMessage = "Single item promotion";
+                    BigDecimal reduceAmount = new BigDecimal(0);
+                    Integer realStock = 0;
                     PmsSkuStock skuStock = getOriginalPrice(promotionProduct, item.getProductSkuId());
                     if (skuStock != null) {
                         BigDecimal originalPrice = skuStock.getPrice();
-                        cartPromotionItem.setPrice(originalPrice);
-                        cartPromotionItem.setReduceAmount(originalPrice.subtract(
-                                skuStock.getPromotionPrice() != null ? skuStock.getPromotionPrice() : originalPrice));
-                        cartPromotionItem.setRealStock(skuStock.getStock() - skuStock.getLockStock());
+                        item.setPrice(originalPrice);
+                        reduceAmount = originalPrice.subtract(
+                                skuStock.getPromotionPrice() != null ? skuStock.getPromotionPrice() : originalPrice);
+                        realStock = skuStock.getStock() - skuStock.getLockStock();
                     } else {
-                        cartPromotionItem.setRealStock(promotionProduct.getSkuStockList() != null ? promotionProduct.getSkuStockList().stream().mapToInt(s -> (s.getStock() != null ? s.getStock() : 0) - (s.getLockStock() != null ? s.getLockStock() : 0)).sum() : 0);
+                        realStock = promotionProduct.skuStockList() != null ? promotionProduct.skuStockList().stream().mapToInt(s -> (s.getStock() != null ? s.getStock() : 0) - (s.getLockStock() != null ? s.getLockStock() : 0)).sum() : 0;
                     }
-                    cartPromotionItemList.add(cartPromotionItem);
+                    cartPromotionItemList.add(new CartPromotionItem(item, promotionMessage, reduceAmount, realStock, null));
                 }
             } else if (promotionType == 3) {
                 int count = getCartItemCount(itemList);
-                PmsProductLadder ladder = getProductLadder(count, promotionProduct.getProductLadderList());
+                PmsProductLadder ladder = getProductLadder(count, promotionProduct.productLadderList());
                 if (ladder != null) {
                     for (OmsCartItem item : itemList) {
-                        CartPromotionItem cartPromotionItem = new CartPromotionItem();
-                        BeanUtils.copyProperties(item, cartPromotionItem);
-                        cartPromotionItem.setPromotionMessage("Ladder discount: buy " + ladder.getCount() + " get " + ladder.getDiscount().multiply(new BigDecimal(10)) + "% off");
+                        String promotionMessage = "Ladder discount: buy " + ladder.getCount() + " get " + ladder.getDiscount().multiply(new BigDecimal(10)) + "% off";
+                        BigDecimal reduceAmount = new BigDecimal(0);
+                        Integer realStock = 0;
                         PmsSkuStock skuStock = getOriginalPrice(promotionProduct, item.getProductSkuId());
                         if (skuStock != null) {
                             BigDecimal originalPrice = skuStock.getPrice();
-                            BigDecimal reduceAmount = originalPrice.subtract(ladder.getDiscount().multiply(originalPrice));
-                            cartPromotionItem.setReduceAmount(reduceAmount);
-                            cartPromotionItem.setRealStock(skuStock.getStock() - skuStock.getLockStock());
+                            reduceAmount = originalPrice.subtract(ladder.getDiscount().multiply(originalPrice));
+                            realStock = skuStock.getStock() - skuStock.getLockStock();
                         } else {
-                            cartPromotionItem.setRealStock(promotionProduct.getSkuStockList() != null ? promotionProduct.getSkuStockList().stream().mapToInt(s -> (s.getStock() != null ? s.getStock() : 0) - (s.getLockStock() != null ? s.getLockStock() : 0)).sum() : 0);
+                            realStock = promotionProduct.skuStockList() != null ? promotionProduct.skuStockList().stream().mapToInt(s -> (s.getStock() != null ? s.getStock() : 0) - (s.getLockStock() != null ? s.getLockStock() : 0)).sum() : 0;
                         }
-                        cartPromotionItemList.add(cartPromotionItem);
+                        cartPromotionItemList.add(new CartPromotionItem(item, promotionMessage, reduceAmount, realStock, null));
                     }
                 } else {
                     handleNoReduce(cartPromotionItemList, itemList, promotionProduct);
                 }
             } else if (promotionType == 4) {
                 BigDecimal totalAmount = getCartItemAmount(itemList, promotionProductList);
-                PmsProductFullReduction fullReduction = getProductFullReduction(totalAmount, promotionProduct.getProductFullReductionList());
+                PmsProductFullReduction fullReduction = getProductFullReduction(totalAmount, promotionProduct.productFullReductionList());
                 if (fullReduction != null) {
                     for (OmsCartItem item : itemList) {
-                        CartPromotionItem cartPromotionItem = new CartPromotionItem();
-                        BeanUtils.copyProperties(item, cartPromotionItem);
-                        cartPromotionItem.setPromotionMessage("Full reduction: spend " + fullReduction.getFullPrice() + " save " + fullReduction.getReducePrice());
+                        String promotionMessage = "Full reduction: spend " + fullReduction.getFullPrice() + " save " + fullReduction.getReducePrice();
+                        BigDecimal reduceAmount = new BigDecimal(0);
+                        Integer realStock = 0;
                         PmsSkuStock skuStock = getOriginalPrice(promotionProduct, item.getProductSkuId());
                         if (skuStock != null) {
                             BigDecimal originalPrice = skuStock.getPrice();
-                            BigDecimal reduceAmount = originalPrice.divide(totalAmount, RoundingMode.HALF_EVEN).multiply(fullReduction.getReducePrice());
-                            cartPromotionItem.setReduceAmount(reduceAmount);
-                            cartPromotionItem.setRealStock(skuStock.getStock() - skuStock.getLockStock());
+                            reduceAmount = originalPrice.divide(totalAmount, RoundingMode.HALF_EVEN).multiply(fullReduction.getReducePrice());
+                            realStock = skuStock.getStock() - skuStock.getLockStock();
                         } else {
-                            cartPromotionItem.setRealStock(promotionProduct.getSkuStockList() != null ? promotionProduct.getSkuStockList().stream().mapToInt(s -> (s.getStock() != null ? s.getStock() : 0) - (s.getLockStock() != null ? s.getLockStock() : 0)).sum() : 0);
+                            realStock = promotionProduct.skuStockList() != null ? promotionProduct.skuStockList().stream().mapToInt(s -> (s.getStock() != null ? s.getStock() : 0) - (s.getLockStock() != null ? s.getLockStock() : 0)).sum() : 0;
                         }
-                        cartPromotionItemList.add(cartPromotionItem);
+                        cartPromotionItemList.add(new CartPromotionItem(item, promotionMessage, reduceAmount, realStock, null));
                     }
                 } else {
                     handleNoReduce(cartPromotionItemList, itemList, promotionProduct);
@@ -128,19 +126,18 @@ public class OmsPromotionServiceImpl implements OmsPromotionService {
 
     private void handleNoReduce(List<CartPromotionItem> cartPromotionItemList, List<OmsCartItem> itemList, PromotionProduct promotionProduct) {
         for (OmsCartItem item : itemList) {
-            CartPromotionItem cartPromotionItem = new CartPromotionItem();
-            BeanUtils.copyProperties(item, cartPromotionItem);
-            cartPromotionItem.setPromotionMessage("No promotion");
-            cartPromotionItem.setReduceAmount(new BigDecimal(0));
+            String promotionMessage = "No promotion";
+            BigDecimal reduceAmount = new BigDecimal(0);
+            Integer realStock = 0;
             if (promotionProduct != null) {
                 PmsSkuStock skuStock = getOriginalPrice(promotionProduct, item.getProductSkuId());
                 if (skuStock != null) {
-                    cartPromotionItem.setRealStock(skuStock.getStock() - skuStock.getLockStock());
+                    realStock = skuStock.getStock() - skuStock.getLockStock();
                 } else {
-                    cartPromotionItem.setRealStock(promotionProduct.getSkuStockList() != null ? promotionProduct.getSkuStockList().stream().mapToInt(s -> (s.getStock() != null ? s.getStock() : 0) - (s.getLockStock() != null ? s.getLockStock() : 0)).sum() : 0);
+                    realStock = promotionProduct.skuStockList() != null ? promotionProduct.skuStockList().stream().mapToInt(s -> (s.getStock() != null ? s.getStock() : 0) - (s.getLockStock() != null ? s.getLockStock() : 0)).sum() : 0;
                 }
             }
-            cartPromotionItemList.add(cartPromotionItem);
+            cartPromotionItemList.add(new CartPromotionItem(item, promotionMessage, reduceAmount, realStock, null));
         }
     }
 
@@ -189,8 +186,8 @@ public class OmsPromotionServiceImpl implements OmsPromotionService {
     }
 
     private PmsSkuStock getOriginalPrice(PromotionProduct promotionProduct, Long productSkuId) {
-        if (promotionProduct.getSkuStockList() == null) return null;
-        for (PmsSkuStock skuStock : promotionProduct.getSkuStockList()) {
+        if (promotionProduct.skuStockList() == null) return null;
+        for (PmsSkuStock skuStock : promotionProduct.skuStockList()) {
             if (productSkuId != null && productSkuId.equals(skuStock.getId())) {
                 return skuStock;
             }
@@ -200,7 +197,7 @@ public class OmsPromotionServiceImpl implements OmsPromotionService {
 
     private PromotionProduct getPromotionProductById(Long productId, List<PromotionProduct> promotionProductList) {
         for (PromotionProduct promotionProduct : promotionProductList) {
-            if (productId.equals(promotionProduct.getId())) {
+            if (productId.equals(promotionProduct.pmsProduct().getId())) {
                 return promotionProduct;
             }
         }

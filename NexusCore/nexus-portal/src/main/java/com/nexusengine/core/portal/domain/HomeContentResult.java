@@ -6,26 +6,18 @@ import com.nexusengine.core.model.SmsHomeAdvertise;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
-
 import java.util.List;
 
 /**
  * Represents the HomeContentResult component.
  * Provides core functionality and operations for HomeContentResult.
  */
-@Getter
-@Setter
-public class HomeContentResult {
-    @Schema(title = "Advertise list")
-    private List<SmsHomeAdvertise> advertiseList;
-    @Schema(title = "Brand list")
-    private List<PmsBrand> brandList;
-    @Schema(title = "Home flash promotion")
-    private HomeFlashPromotion homeFlashPromotion;
-    @Schema(title = "New product list")
-    private List<PmsProduct> newProductList;
-    @Schema(title = "Hot product list")
-    private List<PmsProduct> hotProductList;
-    @Schema(title = "AI Recommended product list")
-    private List<PmsProduct> aiRecommendProductList;
+public record HomeContentResult(
+    @Schema(title = "Advertise list") List<SmsHomeAdvertise> advertiseList,
+    @Schema(title = "Brand list") List<PmsBrand> brandList,
+    @Schema(title = "Home flash promotion") HomeFlashPromotion homeFlashPromotion,
+    @Schema(title = "New product list") List<PmsProduct> newProductList,
+    @Schema(title = "Hot product list") List<PmsProduct> hotProductList,
+    @Schema(title = "AI Recommended product list") List<PmsProduct> aiRecommendProductList
+) {
 }

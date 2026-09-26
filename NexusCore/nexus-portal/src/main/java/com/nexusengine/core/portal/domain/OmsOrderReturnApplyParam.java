@@ -3,47 +3,28 @@ package com.nexusengine.core.portal.domain;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
-
 import java.math.BigDecimal;
 
 /**
  * Represents the OmsOrderReturnApplyParam component.
  * Provides core functionality and operations for OmsOrderReturnApplyParam.
  */
-@Getter
-@Setter
-public class OmsOrderReturnApplyParam {
-    @Schema(title = "Order id")
-    private Long orderId;
-    @Schema(title = "Product id")
-    private Long productId;
-    @Schema(title = "Order sn")
-    private String orderSn;
-    @Schema(title = "Member username")
-    private String memberUsername;
-    @Schema(title = "Return name")
-    private String returnName;
-    @Schema(title = "Return phone")
-    private String returnPhone;
-    @Schema(title = "Product pic")
-    private String productPic;
-    @Schema(title = "Product name")
-    private String productName;
-    @Schema(title = "Product brand")
-    private String productBrand;
-    @Schema(title = "Product attr")
-    private String productAttr;
-    @Schema(title = "Product count")
-    private Integer productCount;
-    @Schema(title = "Product price")
-    private BigDecimal productPrice;
-    @Schema(title = "Product real price")
-    private BigDecimal productRealPrice;
-    @Schema(title = "Reason")
-    private String reason;
-    @Schema(title = "Description")
-    private String description;
-    @Schema(title = "Proof pics")
-    private String proofPics;
-
+public record OmsOrderReturnApplyParam(
+    @Schema(title = "Order id") Long orderId,
+    @Schema(title = "Product id") Long productId,
+    @Schema(title = "Order sn") String orderSn,
+    @Schema(title = "Member username") String memberUsername,
+    @Schema(title = "Return name") String returnName,
+    @Schema(title = "Return phone") String returnPhone,
+    @Schema(title = "Product pic") String productPic,
+    @Schema(title = "Product name") String productName,
+    @Schema(title = "Product brand") String productBrand,
+    @Schema(title = "Product attr") String productAttr,
+    @Schema(title = "Product count") Integer productCount,
+    @Schema(title = "Product price") BigDecimal productPrice,
+    @Schema(title = "Product real price") BigDecimal productRealPrice,
+    @Schema(title = "Reason") String reason,
+    @Schema(title = "Description") String description,
+    @Schema(title = "Proof pics") String proofPics
+) {
 }

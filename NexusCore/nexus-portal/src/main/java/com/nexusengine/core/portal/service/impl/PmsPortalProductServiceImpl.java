@@ -90,50 +90,47 @@ public class PmsPortalProductServiceImpl implements PmsPortalProductService {
 
     @Override
     public PmsPortalProductDetail detail(Long id) {
-        PmsPortalProductDetail result = new PmsPortalProductDetail();
         PmsProduct product = productRepository.findById(id).orElse(null);
         if (product != null && product.getMediaList() != null) {
             org.hibernate.Hibernate.initialize(product.getMediaList());
         }
-        result.setProduct(product);
-        if (product == null) return result;
-        // Brand info
+        if (product == null) return new PmsPortalProductDetail(null, null, null, null, null, null, null, null);
+        
+        PmsBrand brand = null;
         if (product.getBrandId() != null) {
-            PmsBrand brand = brandRepository.findById(product.getBrandId()).orElse(null);
-            result.setBrand(brand);
+            brand = brandRepository.findById(product.getBrandId()).orElse(null);
         }
-        // Product attributes
+        
         List<PmsProductAttribute> productAttributeList = productAttributeRepository
                 .findByProductAttributeCategoryId(product.getProductAttributeCategoryId());
-        result.setProductAttributeList(productAttributeList);
-        // Product attribute values
+                
+        List<PmsProductAttributeValue> valueList = null;
         if (CollUtil.isNotEmpty(productAttributeList)) {
             List<Long> attributeIds = productAttributeList.stream().map(PmsProductAttribute::getId).collect(Collectors.toList());
-            List<PmsProductAttributeValue> valueList = productAttributeValueRepository.findByProductIdAndProductAttributeIdIn(product.getId(), attributeIds);
-            result.setProductAttributeValueList(valueList);
+            valueList = productAttributeValueRepository.findByProductIdAndProductAttributeIdIn(product.getId(), attributeIds);
         }
-        // SKU stock
-        result.setSkuStockList(skuStockRepository.findByProductId(product.getId()));
-        // Ladder pricing
+        
+        List<PmsSkuStock> skuStockList = skuStockRepository.findByProductId(product.getId());
+        
+        List<PmsProductLadder> productLadderList = null;
         if (product.getPromotionType() != null && product.getPromotionType() == 3) {
-            result.setProductLadderList(productLadderRepository.findByProductId(product.getId()));
+            productLadderList = productLadderRepository.findByProductId(product.getId());
         }
-        // Full reduction
+        
+        List<PmsProductFullReduction> productFullReductionList = null;
         if (product.getPromotionType() != null && product.getPromotionType() == 4) {
-            result.setProductFullReductionList(productFullReductionRepository.findByProductId(product.getId()));
+            productFullReductionList = productFullReductionRepository.findByProductId(product.getId());
         }
-        // Available coupons
-        result.setCouponList(portalProductDao.getAvailableCouponList(product.getId(), product.getProductCategoryId()));
-        return result;
+        
+        List<com.nexusengine.core.model.SmsCoupon> couponList = portalProductDao.getAvailableCouponList(product.getId(), product.getProductCategoryId());
+        
+        return new PmsPortalProductDetail(product, brand, productAttributeList, valueList, skuStockList, productLadderList, productFullReductionList, couponList);
     }
 
     private PmsProductCategoryNode covert(PmsProductCategory item, List<PmsProductCategory> allList) {
-        PmsProductCategoryNode node = new PmsProductCategoryNode();
-        BeanUtils.copyProperties(item, node);
         List<PmsProductCategoryNode> children = allList.stream()
                 .filter(subItem -> subItem.getParentId().equals(item.getId()))
                 .map(subItem -> covert(subItem, allList)).collect(Collectors.toList());
-        node.setChildren(children);
-        return node;
+        return new PmsProductCategoryNode(item, children);
     }
 }

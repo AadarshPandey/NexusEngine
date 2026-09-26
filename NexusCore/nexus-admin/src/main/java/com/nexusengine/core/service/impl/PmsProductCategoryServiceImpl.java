@@ -30,7 +30,7 @@ public class PmsProductCategoryServiceImpl implements PmsProductCategoryService 
         BeanUtils.copyProperties(pmsProductCategoryParam, productCategory);
         setCategoryLevel(productCategory);
         productCategoryRepository.save(productCategory);
-        List<Long> productAttributeIdList = pmsProductCategoryParam.getProductAttributeIdList();
+        List<Long> productAttributeIdList = pmsProductCategoryParam.productAttributeIdList();
         if (!CollUtil.isEmpty(productAttributeIdList)) {
             insertRelationList(productCategory.getId(), productAttributeIdList);
         }
@@ -55,8 +55,8 @@ public class PmsProductCategoryServiceImpl implements PmsProductCategoryService 
         BeanUtils.copyProperties(pmsProductCategoryParam, productCategory);
         setCategoryLevel(productCategory);
         productCategoryAttributeRelationRepository.deleteByProductCategoryId(id);
-        if (!CollUtil.isEmpty(pmsProductCategoryParam.getProductAttributeIdList())) {
-            insertRelationList(id, pmsProductCategoryParam.getProductAttributeIdList());
+        if (!CollUtil.isEmpty(pmsProductCategoryParam.productAttributeIdList())) {
+            insertRelationList(id, pmsProductCategoryParam.productAttributeIdList());
         }
         productCategoryRepository.save(productCategory);
         return 1;
@@ -108,16 +108,14 @@ public class PmsProductCategoryServiceImpl implements PmsProductCategoryService 
         
         for (PmsProductCategory category : allCategories) {
             if (category.getParentId() == 0) {
-                PmsProductCategoryWithChildrenItem item = new PmsProductCategoryWithChildrenItem();
-                org.springframework.beans.BeanUtils.copyProperties(category, item);
-                
                 List<PmsProductCategory> children = new ArrayList<>();
                 for (PmsProductCategory child : allCategories) {
                     if (child.getParentId() != null && child.getParentId().equals(category.getId())) {
                         children.add(child);
                     }
                 }
-                item.setChildren(children);
+                
+                PmsProductCategoryWithChildrenItem item = new PmsProductCategoryWithChildrenItem(category, children);
                 result.add(item);
             }
         }

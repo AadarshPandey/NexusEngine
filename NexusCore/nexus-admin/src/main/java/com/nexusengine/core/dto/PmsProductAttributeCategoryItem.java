@@ -5,16 +5,15 @@ import com.nexusengine.core.model.PmsProductAttributeCategory;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
-
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
 /**
  * Represents the PmsProductAttributeCategoryItem component.
  * Provides core functionality and operations for PmsProductAttributeCategoryItem.
  */
-public class PmsProductAttributeCategoryItem extends PmsProductAttributeCategory {
-    @Getter
-    @Setter
-    @Schema(title =  "Product attribute list")
-    private List<PmsProductAttribute> productAttributeList;
+public record PmsProductAttributeCategoryItem(
+    @JsonUnwrapped PmsProductAttributeCategory pmsProductAttributeCategory,
+    @Schema(title =  "Product attribute list") List<PmsProductAttribute> productAttributeList
+) {
 }

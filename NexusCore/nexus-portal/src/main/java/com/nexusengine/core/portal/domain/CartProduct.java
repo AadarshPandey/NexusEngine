@@ -6,18 +6,16 @@ import com.nexusengine.core.model.PmsSkuStock;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
-
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
 /**
  * Represents the CartProduct component.
  * Provides core functionality and operations for CartProduct.
  */
-@Getter
-@Setter
-public class CartProduct extends PmsProduct {
-    @Schema(title = "Product attribute list")
-    private List<PmsProductAttribute> productAttributeList;
-    @Schema(title = "Sku stock list")
-    private List<PmsSkuStock> skuStockList;
+public record CartProduct(
+    @JsonUnwrapped PmsProduct pmsProduct,
+    @Schema(title = "Product attribute list") List<PmsProductAttribute> productAttributeList,
+    @Schema(title = "Sku stock list") List<PmsSkuStock> skuStockList
+) {
 }

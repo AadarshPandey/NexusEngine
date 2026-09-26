@@ -6,6 +6,8 @@ package com.nexusengine.core.common.api;
  *
  * @param <T> the type of the payload data
  */
+@lombok.Getter
+@lombok.Setter
 public class CommonResult<T> {
     /**
      * The status code of the response.
@@ -139,27 +141,4 @@ public class CommonResult<T> {
         return new CommonResult<T>(ResultCode.FORBIDDEN.getCode(), ResultCode.FORBIDDEN.getMessage(), data);
     }
 
-    public long getCode() {
-        return code;
-    }
-
-    public void setCode(long code) {
-        this.code = code;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public T getData() {
-        return data;
-    }
-
-    public void setData(T data) {
-        this.data = data;
-    }
 }

@@ -8,19 +8,12 @@ import lombok.Setter;
  * Represents the OmsReturnApplyQueryParam component.
  * Provides core functionality and operations for OmsReturnApplyQueryParam.
  */
-@Getter
-@Setter
-public class OmsReturnApplyQueryParam {
-    @Schema(title = "Id")
-    private Long id;
-    @Schema(title =  "Receiver keyword")
-    private String receiverKeyword;
-    @Schema(title =  "Status")
-    private Integer status;
-    @Schema(title =  "Create time")
-    private String createTime;
-    @Schema(title =  "Handle man")
-    private String handleMan;
-    @Schema(title =  "Handle time")
-    private String handleTime;
+public record OmsReturnApplyQueryParam(
+    @Schema(title = "Id") Long id,
+    @Schema(title =  "Receiver keyword") String receiverKeyword,
+    @Schema(title =  "Status") Integer status,
+    @Schema(title =  "Create time") String createTime,
+    @Schema(title =  "Handle man") String handleMan,
+    @Schema(title =  "Handle time") String handleTime
+) {
 }

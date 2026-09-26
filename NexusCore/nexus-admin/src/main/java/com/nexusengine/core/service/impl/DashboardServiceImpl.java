@@ -12,7 +12,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -24,8 +23,6 @@ public class DashboardServiceImpl implements DashboardService {
 
     @Override
     public DashboardInfo getDashboardInfo() {
-        DashboardInfo info = new DashboardInfo();
-        
         LocalDate today = LocalDate.now();
         LocalDate yesterday = today.minusDays(1);
         LocalDateTime todayStart = LocalDateTime.from(today.atStartOfDay(ZoneId.systemDefault()).toInstant());
@@ -37,89 +34,81 @@ public class DashboardServiceImpl implements DashboardService {
                 .setParameter("start", todayStart)
                 .setParameter("end", todayEnd)
                 .getSingleResult();
-        info.setTodayOrders(todayOrders != null ? todayOrders : 0L);
+        todayOrders = todayOrders != null ? todayOrders : 0L;
 
         // 2. Today's Revenue
         BigDecimal todayRevenue = (BigDecimal) entityManager.createQuery("SELECT SUM(o.payAmount) FROM OmsOrder o WHERE o.createTime >= :start AND o.createTime < :end AND o.status IN (1,2,3)")
                 .setParameter("start", todayStart)
                 .setParameter("end", todayEnd)
                 .getSingleResult();
-        info.setTodayRevenue(todayRevenue != null ? todayRevenue : BigDecimal.ZERO);
+        todayRevenue = todayRevenue != null ? todayRevenue : BigDecimal.ZERO;
 
         // 3. Yesterday's Revenue
         BigDecimal yesterdayRevenue = (BigDecimal) entityManager.createQuery("SELECT SUM(o.payAmount) FROM OmsOrder o WHERE o.createTime >= :start AND o.createTime < :end AND o.status IN (1,2,3)")
                 .setParameter("start", yesterdayStart)
                 .setParameter("end", todayStart)
                 .getSingleResult();
-        info.setYesterdayRevenue(yesterdayRevenue != null ? yesterdayRevenue : BigDecimal.ZERO);
+        yesterdayRevenue = yesterdayRevenue != null ? yesterdayRevenue : BigDecimal.ZERO;
 
         // 4. Total Products
         Long totalProducts = (Long) entityManager.createQuery("SELECT COUNT(p) FROM PmsProduct p")
                 .getSingleResult();
-        info.setTotalProducts(totalProducts != null ? totalProducts : 0L);
+        totalProducts = totalProducts != null ? totalProducts : 0L;
 
         // Pending Tasks
-        DashboardInfo.PendingTasks tasks = new DashboardInfo.PendingTasks();
-        tasks.setAwaitingPayment((Long) entityManager.createQuery("SELECT COUNT(o) FROM OmsOrder o WHERE o.status = 0").getSingleResult());
-        tasks.setAwaitingShipment((Long) entityManager.createQuery("SELECT COUNT(o) FROM OmsOrder o WHERE o.status = 1").getSingleResult());
-        tasks.setShippedOrders((Long) entityManager.createQuery("SELECT COUNT(o) FROM OmsOrder o WHERE o.status = 2").getSingleResult());
-        tasks.setCompletedOrders((Long) entityManager.createQuery("SELECT COUNT(o) FROM OmsOrder o WHERE o.status = 3").getSingleResult());
-        tasks.setAwaitingConfirmation((Long) entityManager.createQuery("SELECT COUNT(o) FROM OmsOrder o WHERE o.status = 2").getSingleResult());
-        tasks.setPendingReturns((Long) entityManager.createQuery("SELECT COUNT(o) FROM OmsOrderReturnApply o WHERE o.status = 0").getSingleResult());
-        tasks.setPendingRefunds((Long) entityManager.createQuery("SELECT COUNT(o) FROM OmsOrderReturnApply o WHERE o.status = 1").getSingleResult());
-        tasks.setOutOfStockItems((Long) entityManager.createQuery("SELECT COUNT(p) FROM PmsProduct p WHERE NOT EXISTS (SELECT 1 FROM PmsSkuStock s WHERE s.productId = p.id AND (s.stock - s.lockStock) > 0)").getSingleResult());
-        tasks.setExpiringAds(0L); // Mock for now
-        info.setPendingTasks(tasks);
+        DashboardInfo.PendingTasks tasks = new DashboardInfo.PendingTasks(
+            (Long) entityManager.createQuery("SELECT COUNT(o) FROM OmsOrder o WHERE o.status = 0").getSingleResult(),
+            (Long) entityManager.createQuery("SELECT COUNT(o) FROM OmsOrder o WHERE o.status = 1").getSingleResult(),
+            (Long) entityManager.createQuery("SELECT COUNT(o) FROM OmsOrder o WHERE o.status = 2").getSingleResult(),
+            (Long) entityManager.createQuery("SELECT COUNT(o) FROM OmsOrder o WHERE o.status = 3").getSingleResult(),
+            (Long) entityManager.createQuery("SELECT COUNT(o) FROM OmsOrder o WHERE o.status = 2").getSingleResult(),
+            (Long) entityManager.createQuery("SELECT COUNT(o) FROM OmsOrderReturnApply o WHERE o.status = 0").getSingleResult(),
+            (Long) entityManager.createQuery("SELECT COUNT(o) FROM OmsOrderReturnApply o WHERE o.status = 1").getSingleResult(),
+            (Long) entityManager.createQuery("SELECT COUNT(p) FROM PmsProduct p WHERE NOT EXISTS (SELECT 1 FROM PmsSkuStock s WHERE s.productId = p.id AND (s.stock - s.lockStock) > 0)").getSingleResult(),
+            0L // Mock for now
+        );
 
         // Product Overview
-        DashboardInfo.ProductOverview pOverview = new DashboardInfo.ProductOverview();
-        pOverview.setListed((Long) entityManager.createQuery("SELECT COUNT(p) FROM PmsProduct p WHERE p.publishStatus = 1").getSingleResult());
-        pOverview.setUnlisted((Long) entityManager.createQuery("SELECT COUNT(p) FROM PmsProduct p WHERE p.publishStatus = 0").getSingleResult());
-        pOverview.setLowStock((Long) entityManager.createQuery("SELECT COUNT(p) FROM PmsProduct p WHERE EXISTS (SELECT 1 FROM PmsSkuStock s WHERE s.productId = p.id AND (s.stock - s.lockStock) < s.lowStock)").getSingleResult());
-        pOverview.setTotal(info.getTotalProducts());
-        info.setProductOverview(pOverview);
+        DashboardInfo.ProductOverview pOverview = new DashboardInfo.ProductOverview(
+            (Long) entityManager.createQuery("SELECT COUNT(p) FROM PmsProduct p WHERE p.publishStatus = 0").getSingleResult(),
+            (Long) entityManager.createQuery("SELECT COUNT(p) FROM PmsProduct p WHERE p.publishStatus = 1").getSingleResult(),
+            (Long) entityManager.createQuery("SELECT COUNT(p) FROM PmsProduct p WHERE EXISTS (SELECT 1 FROM PmsSkuStock s WHERE s.productId = p.id AND (s.stock - s.lockStock) < s.lowStock)").getSingleResult(),
+            totalProducts
+        );
 
         // User Overview
-        DashboardInfo.UserOverview uOverview = new DashboardInfo.UserOverview();
-        uOverview.setTodayNew((Long) entityManager.createQuery("SELECT COUNT(u) FROM UmsMember u WHERE u.createTime >= :start AND u.createTime < :end")
-                .setParameter("start", todayStart).setParameter("end", todayEnd).getSingleResult());
-        uOverview.setYesterdayNew((Long) entityManager.createQuery("SELECT COUNT(u) FROM UmsMember u WHERE u.createTime >= :start AND u.createTime < :end")
-                .setParameter("start", yesterdayStart).setParameter("end", todayStart).getSingleResult());
         LocalDate firstDayOfMonth = today.withDayOfMonth(1);
         LocalDateTime monthStart = LocalDateTime.from(firstDayOfMonth.atStartOfDay(ZoneId.systemDefault()).toInstant());
-        uOverview.setThisMonth((Long) entityManager.createQuery("SELECT COUNT(u) FROM UmsMember u WHERE u.createTime >= :start")
-                .setParameter("start", monthStart).getSingleResult());
-        uOverview.setTotalMembers((Long) entityManager.createQuery("SELECT COUNT(u) FROM UmsMember u").getSingleResult());
-        info.setUserOverview(uOverview);
+        DashboardInfo.UserOverview uOverview = new DashboardInfo.UserOverview(
+            (Long) entityManager.createQuery("SELECT COUNT(u) FROM UmsMember u WHERE u.createTime >= :start AND u.createTime < :end").setParameter("start", todayStart).setParameter("end", todayEnd).getSingleResult(),
+            (Long) entityManager.createQuery("SELECT COUNT(u) FROM UmsMember u WHERE u.createTime >= :start AND u.createTime < :end").setParameter("start", yesterdayStart).setParameter("end", todayStart).getSingleResult(),
+            (Long) entityManager.createQuery("SELECT COUNT(u) FROM UmsMember u WHERE u.createTime >= :start").setParameter("start", monthStart).getSingleResult(),
+            (Long) entityManager.createQuery("SELECT COUNT(u) FROM UmsMember u").getSingleResult()
+        );
 
         // Monthly Summary
-        DashboardInfo.MonthlySummary mSummary = new DashboardInfo.MonthlySummary();
         Long monthOrders = (Long) entityManager.createQuery("SELECT COUNT(o) FROM OmsOrder o WHERE o.createTime >= :start AND o.status IN (1,2,3)")
                 .setParameter("start", monthStart).getSingleResult();
-        mSummary.setMonthlyOrders(monthOrders);
-        mSummary.setMonthlyOrdersTrend("+5%");
-        mSummary.setMonthlyOrdersTrendUp(true);
         
         LocalDate firstDayOfWeek = today.minusDays(today.getDayOfWeek().getValue() - 1);
         LocalDateTime weekStart = LocalDateTime.from(firstDayOfWeek.atStartOfDay(ZoneId.systemDefault()).toInstant());
         Long weekOrders = (Long) entityManager.createQuery("SELECT COUNT(o) FROM OmsOrder o WHERE o.createTime >= :start AND o.status IN (1,2,3)")
                 .setParameter("start", weekStart).getSingleResult();
-        mSummary.setWeeklyOrders(weekOrders);
-        mSummary.setWeeklyOrdersTrend("+12%");
-        mSummary.setWeeklyOrdersTrendUp(true);
 
         BigDecimal monthRev = (BigDecimal) entityManager.createQuery("SELECT SUM(o.payAmount) FROM OmsOrder o WHERE o.createTime >= :start AND o.status IN (1,2,3)")
                 .setParameter("start", monthStart).getSingleResult();
-        mSummary.setMonthlyRevenue(monthRev != null ? monthRev : BigDecimal.ZERO);
-        mSummary.setMonthlyRevenueTrend("+8%");
-        mSummary.setMonthlyRevenueTrendUp(true);
+        monthRev = monthRev != null ? monthRev : BigDecimal.ZERO;
 
         BigDecimal weekRev = (BigDecimal) entityManager.createQuery("SELECT SUM(o.payAmount) FROM OmsOrder o WHERE o.createTime >= :start AND o.status IN (1,2,3)")
                 .setParameter("start", weekStart).getSingleResult();
-        mSummary.setWeeklyRevenue(weekRev != null ? weekRev : BigDecimal.ZERO);
-        mSummary.setWeeklyRevenueTrend("+15%");
-        mSummary.setWeeklyRevenueTrendUp(true);
-        info.setMonthlySummary(mSummary);
+        weekRev = weekRev != null ? weekRev : BigDecimal.ZERO;
+
+        DashboardInfo.MonthlySummary mSummary = new DashboardInfo.MonthlySummary(
+            monthOrders, "+5%", true,
+            weekOrders, "+12%", true,
+            monthRev, "+8%", true,
+            weekRev, "+15%", true
+        );
 
         // Chart Data (last 15 days)
         List<DashboardInfo.ChartData> chartList = new ArrayList<>();
@@ -133,14 +122,13 @@ public class DashboardServiceImpl implements DashboardService {
             BigDecimal amt = (BigDecimal) entityManager.createQuery("SELECT SUM(o.payAmount) FROM OmsOrder o WHERE o.createTime >= :start AND o.createTime < :end AND o.status IN (1,2,3)")
                 .setParameter("start", dStart).setParameter("end", dEnd).getSingleResult();
                 
-            DashboardInfo.ChartData cd = new DashboardInfo.ChartData();
-            cd.setDate(d.getMonthValue() + "/" + d.getDayOfMonth());
-            cd.setOrderCount(cnt != null ? cnt : 0L);
-            cd.setOrderAmount(amt != null ? amt : BigDecimal.ZERO);
-            chartList.add(cd);
+            chartList.add(new DashboardInfo.ChartData(
+                d.getMonthValue() + "/" + d.getDayOfMonth(),
+                cnt != null ? cnt : 0L,
+                amt != null ? amt : BigDecimal.ZERO
+            ));
         }
-        info.setChartData(chartList);
 
-        return info;
+        return new DashboardInfo(todayOrders, todayRevenue, yesterdayRevenue, totalProducts, chartList, tasks, pOverview, uOverview, mSummary);
     }
 }

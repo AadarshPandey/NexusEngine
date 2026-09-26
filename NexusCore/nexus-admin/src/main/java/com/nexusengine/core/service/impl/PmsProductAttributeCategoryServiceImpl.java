@@ -56,13 +56,10 @@ public class PmsProductAttributeCategoryServiceImpl implements PmsProductAttribu
         List<PmsProductAttributeCategoryItem> result = new ArrayList<>();
         
         for (PmsProductAttributeCategory category : allCategories) {
-            PmsProductAttributeCategoryItem item = new PmsProductAttributeCategoryItem();
-            org.springframework.beans.BeanUtils.copyProperties(category, item);
-            
             // fetch attributes
             List<com.nexusengine.core.model.PmsProductAttribute> attrs = productAttributeRepository.findByProductAttributeCategoryId(category.getId());
-            item.setProductAttributeList(attrs);
             
+            PmsProductAttributeCategoryItem item = new PmsProductAttributeCategoryItem(category, attrs);
             result.add(item);
         }
         return result;

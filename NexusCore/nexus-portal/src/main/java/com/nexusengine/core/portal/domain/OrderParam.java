@@ -3,24 +3,17 @@ package com.nexusengine.core.portal.domain;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
 import java.util.List;
 
 /**
  * Represents the OrderParam component.
  * Provides core functionality and operations for OrderParam.
  */
-@Data
-@EqualsAndHashCode
-public class OrderParam {
-    @Schema(title = "Member receive address id")
-    private Long memberReceiveAddressId;
-    @Schema(title = "Coupon id")
-    private Long couponId;
-    @Schema(title = "Use integration")
-    private Integer usePoints;
-    @Schema(title = "Pay type")
-    private Integer payType;
-    @Schema(title = "Cart ids")
-    private List<Long> cartIds;
+public record OrderParam(
+    @Schema(title = "Member receive address id") Long memberReceiveAddressId,
+    @Schema(title = "Coupon id") Long couponId,
+    @Schema(title = "Use integration") Integer usePoints,
+    @Schema(title = "Pay type") Integer payType,
+    @Schema(title = "Cart ids") List<Long> cartIds
+) {
 }

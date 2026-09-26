@@ -8,19 +8,12 @@ import lombok.EqualsAndHashCode;
  * Represents the PmsProductQueryParam component.
  * Provides core functionality and operations for PmsProductQueryParam.
  */
-@Data
-@EqualsAndHashCode
-public class PmsProductQueryParam {
-    @Schema(title = "Publish status")
-    private Integer publishStatus;
-    @Schema(title = "Verify status")
-    private Integer verifyStatus;
-    @Schema(title = "Keyword")
-    private String keyword;
-    @Schema(title = "Product sn")
-    private String productSn;
-    @Schema(title = "Product category id")
-    private Long productCategoryId;
-    @Schema(title = "Brand id")
-    private Long brandId;
+public record PmsProductQueryParam(
+    @Schema(title = "Publish status") Integer publishStatus,
+    @Schema(title = "Verify status") Integer verifyStatus,
+    @Schema(title = "Keyword") String keyword,
+    @Schema(title = "Product sn") String productSn,
+    @Schema(title = "Product category id") Long productCategoryId,
+    @Schema(title = "Brand id") Long brandId
+) {
 }

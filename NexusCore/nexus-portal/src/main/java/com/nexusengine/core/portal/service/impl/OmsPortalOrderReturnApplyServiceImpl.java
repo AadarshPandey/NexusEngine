@@ -29,10 +29,10 @@ public class OmsPortalOrderReturnApplyServiceImpl implements OmsPortalOrderRetur
     @Override
     public int create(OmsOrderReturnApplyParam returnApply) {
         com.nexusengine.core.model.UmsMember currentMember = memberService.getCurrentMember();
-        if (returnApply.getOrderId() == null) {
+        if (returnApply.orderId() == null) {
             return 0;
         }
-        com.nexusengine.core.model.OmsOrder order = orderRepository.findById(returnApply.getOrderId()).orElse(null);
+        com.nexusengine.core.model.OmsOrder order = orderRepository.findById(returnApply.orderId()).orElse(null);
         if (order == null || !order.getMemberId().equals(currentMember.getId())) {
              throw new RuntimeException("Unauthorized to apply return for this order");
         }

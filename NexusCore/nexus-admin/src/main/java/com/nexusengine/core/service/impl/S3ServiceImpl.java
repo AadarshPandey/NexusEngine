@@ -39,7 +39,6 @@ public class S3ServiceImpl implements S3Service {
 
     @Override
     public S3PolicyResult presign() {
-        S3PolicyResult result = new S3PolicyResult();
         // Generate unique object key
         DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyyMMdd");
         String objectKey = dirPrefix + java.time.LocalDateTime.now().format(sdf) + "/" + UUID.randomUUID() + ".jpg";
@@ -56,21 +55,13 @@ public class S3ServiceImpl implements S3Service {
 
         var presignedUrl = s3Presigner.presignPutObject(presignRequest).url().toString();
 
-        result.setPresignedUrl(presignedUrl);
-        result.setObjectKey(objectKey);
-        result.setBucketName(bucketName);
-        return result;
+        return new S3PolicyResult(presignedUrl, objectKey, bucketName);
     }
 
     @Override
     public S3CallbackResult callback(HttpServletRequest request) {
-        S3CallbackResult result = new S3CallbackResult();
         String objectKey = request.getParameter("key");
         String url = endpoint + "/" + bucketName + "/" + objectKey;
-        result.setFilename(objectKey);
-        result.setSize(request.getParameter("size"));
-        result.setMimeType(request.getParameter("mimeType"));
-        result.setUrl(url);
-        return result;
+        return new S3CallbackResult(objectKey, request.getParameter("size"), request.getParameter("mimeType"), url);
     }
 }

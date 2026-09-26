@@ -123,10 +123,10 @@ public class UmsMemberCouponServiceImpl implements UmsMemberCouponService {
         List<SmsCouponHistoryDetail> enableList = new ArrayList<>();
         List<SmsCouponHistoryDetail> disableList = new ArrayList<>();
         for (SmsCouponHistoryDetail couponHistoryDetail : allList) {
-            if (couponHistoryDetail.getCoupon() == null) continue;
-            Integer useType = couponHistoryDetail.getCoupon().getUseType();
-            BigDecimal minPoint = couponHistoryDetail.getCoupon().getMinPoint();
-            LocalDateTime endTime = couponHistoryDetail.getCoupon().getEndTime();
+            if (couponHistoryDetail.coupon() == null) continue;
+            Integer useType = couponHistoryDetail.coupon().getUseType();
+            BigDecimal minPoint = couponHistoryDetail.coupon().getMinPoint();
+            LocalDateTime endTime = couponHistoryDetail.coupon().getEndTime();
             if (useType.equals(0)) {
                 BigDecimal totalAmount = calcTotalAmount(cartItemList);
                 if (now.isBefore(endTime) && totalAmount.subtract(minPoint).intValue() >= 0) {
@@ -135,7 +135,7 @@ public class UmsMemberCouponServiceImpl implements UmsMemberCouponService {
                     disableList.add(couponHistoryDetail);
                 }
             } else if (useType.equals(1)) {
-                List<Long> productCategoryIds = couponHistoryDetail.getCategoryRelationList().stream()
+                List<Long> productCategoryIds = couponHistoryDetail.categoryRelationList().stream()
                         .map(SmsCouponProductCategoryRelation::getProductCategoryId).collect(Collectors.toList());
                 BigDecimal totalAmount = calcTotalAmountByProductCategoryId(cartItemList, productCategoryIds);
                 if (now.isBefore(endTime) && totalAmount.intValue() > 0 && totalAmount.subtract(minPoint).intValue() >= 0) {
@@ -144,7 +144,7 @@ public class UmsMemberCouponServiceImpl implements UmsMemberCouponService {
                     disableList.add(couponHistoryDetail);
                 }
             } else if (useType.equals(2)) {
-                List<Long> productIds = couponHistoryDetail.getProductRelationList().stream()
+                List<Long> productIds = couponHistoryDetail.productRelationList().stream()
                         .map(SmsCouponProductRelation::getProductId).collect(Collectors.toList());
                 BigDecimal totalAmount = calcTotalAmountByProductId(cartItemList, productIds);
                 if (now.isBefore(endTime) && totalAmount.intValue() > 0 && totalAmount.subtract(minPoint).intValue() >= 0) {
@@ -180,8 +180,8 @@ public class UmsMemberCouponServiceImpl implements UmsMemberCouponService {
     private BigDecimal calcTotalAmount(List<CartPromotionItem> cartItemList) {
         BigDecimal total = new BigDecimal("0");
         for (CartPromotionItem item : cartItemList) {
-            BigDecimal realPrice = item.getPrice().subtract(item.getReduceAmount());
-            total = total.add(realPrice.multiply(new BigDecimal(item.getQuantity())));
+            BigDecimal realPrice = item.omsCartItem().getPrice().subtract(item.reduceAmount());
+            total = total.add(realPrice.multiply(new BigDecimal(item.omsCartItem().getQuantity())));
         }
         return total;
     }
@@ -189,9 +189,9 @@ public class UmsMemberCouponServiceImpl implements UmsMemberCouponService {
     private BigDecimal calcTotalAmountByProductCategoryId(List<CartPromotionItem> cartItemList, List<Long> productCategoryIds) {
         BigDecimal total = new BigDecimal("0");
         for (CartPromotionItem item : cartItemList) {
-            if (productCategoryIds.contains(item.getProductCategoryId())) {
-                BigDecimal realPrice = item.getPrice().subtract(item.getReduceAmount());
-                total = total.add(realPrice.multiply(new BigDecimal(item.getQuantity())));
+            if (productCategoryIds.contains(item.omsCartItem().getProductCategoryId())) {
+                BigDecimal realPrice = item.omsCartItem().getPrice().subtract(item.reduceAmount());
+                total = total.add(realPrice.multiply(new BigDecimal(item.omsCartItem().getQuantity())));
             }
         }
         return total;
@@ -200,9 +200,9 @@ public class UmsMemberCouponServiceImpl implements UmsMemberCouponService {
     private BigDecimal calcTotalAmountByProductId(List<CartPromotionItem> cartItemList, List<Long> productIds) {
         BigDecimal total = new BigDecimal("0");
         for (CartPromotionItem item : cartItemList) {
-            if (productIds.contains(item.getProductId())) {
-                BigDecimal realPrice = item.getPrice().subtract(item.getReduceAmount());
-                total = total.add(realPrice.multiply(new BigDecimal(item.getQuantity())));
+            if (productIds.contains(item.omsCartItem().getProductId())) {
+                BigDecimal realPrice = item.omsCartItem().getPrice().subtract(item.reduceAmount());
+                total = total.add(realPrice.multiply(new BigDecimal(item.omsCartItem().getQuantity())));
             }
         }
         return total;

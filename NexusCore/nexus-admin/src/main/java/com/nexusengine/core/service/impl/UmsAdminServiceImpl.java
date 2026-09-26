@@ -66,10 +66,10 @@ public class UmsAdminServiceImpl implements UmsAdminService {
 
     @Override
     public UmsAdmin register(UmsAdminParam umsAdminParam) {
-        if (umsAdminParam.getPassword() == null || umsAdminParam.getPassword().length() < 8) {
+        if (umsAdminParam.password() == null || umsAdminParam.password().length() < 8) {
             Asserts.fail("Password must be at least 8 characters long");
         }
-        if (!umsAdminParam.getPassword().matches(".*[A-Z].*") || !umsAdminParam.getPassword().matches(".*[a-z].*") || !umsAdminParam.getPassword().matches(".*\\\\d.*")) {
+        if (!umsAdminParam.password().matches(".*[A-Z].*") || !umsAdminParam.password().matches(".*[a-z].*") || !umsAdminParam.password().matches(".*\\\\d.*")) {
             Asserts.fail("Password must contain at least one uppercase letter, one lowercase letter, and one digit");
         }
         UmsAdmin umsAdmin = new UmsAdmin();
@@ -210,25 +210,25 @@ public class UmsAdminServiceImpl implements UmsAdminService {
 
     @Override
     public int updatePassword(UpdateAdminPasswordParam param) {
-        if(StrUtil.isEmpty(param.getUsername())
-                ||StrUtil.isEmpty(param.getOldPassword())
-                ||StrUtil.isEmpty(param.getNewPassword())){
+        if(StrUtil.isEmpty(param.username())
+                ||StrUtil.isEmpty(param.oldPassword())
+                ||StrUtil.isEmpty(param.newPassword())){
             return -1;
         }
-        if (param.getNewPassword().length() < 8) {
+        if (param.newPassword().length() < 8) {
             Asserts.fail("Password must be at least 8 characters long");
         }
-        if (!param.getNewPassword().matches(".*[A-Z].*") || !param.getNewPassword().matches(".*[a-z].*") || !param.getNewPassword().matches(".*\\\\d.*")) {
+        if (!param.newPassword().matches(".*[A-Z].*") || !param.newPassword().matches(".*[a-z].*") || !param.newPassword().matches(".*\\\\d.*")) {
             Asserts.fail("Password must contain at least one uppercase letter, one lowercase letter, and one digit");
         }
-        UmsAdmin umsAdmin = adminRepository.findByUsername(param.getUsername());
+        UmsAdmin umsAdmin = adminRepository.findByUsername(param.username());
         if(umsAdmin == null){
             return -2;
         }
-        if(!passwordEncoder.matches(param.getOldPassword(),umsAdmin.getPassword())){
+        if(!passwordEncoder.matches(param.oldPassword(),umsAdmin.getPassword())){
             return -3;
         }
-        umsAdmin.setPassword(passwordEncoder.encode(param.getNewPassword()));
+        umsAdmin.setPassword(passwordEncoder.encode(param.newPassword()));
         adminRepository.save(umsAdmin);
         getCacheService().delAdmin(umsAdmin.getId());
         return 1;

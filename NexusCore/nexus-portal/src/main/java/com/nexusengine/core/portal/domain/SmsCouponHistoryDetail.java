@@ -7,20 +7,17 @@ import com.nexusengine.core.model.SmsCouponProductRelation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
-
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
 /**
  * Represents the SmsCouponHistoryDetail component.
  * Provides core functionality and operations for SmsCouponHistoryDetail.
  */
-@Getter
-@Setter
-public class SmsCouponHistoryDetail extends SmsCouponHistory {
-    @Schema(title = "Coupon")
-    private SmsCoupon coupon;
-    @Schema(title = "Product relation list")
-    private List<SmsCouponProductRelation> productRelationList;
-    @Schema(title = "Category relation list")
-    private List<SmsCouponProductCategoryRelation> categoryRelationList;
+public record SmsCouponHistoryDetail(
+    @JsonUnwrapped SmsCouponHistory smsCouponHistory,
+    @Schema(title = "Coupon") SmsCoupon coupon,
+    @Schema(title = "Product relation list") List<SmsCouponProductRelation> productRelationList,
+    @Schema(title = "Category relation list") List<SmsCouponProductCategoryRelation> categoryRelationList
+) {
 }

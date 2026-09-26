@@ -22,21 +22,22 @@ public class SmsCouponServiceImpl implements SmsCouponService {
 
     @Override
     public int create(SmsCouponParam couponParam) {
-        couponParam.setCount(couponParam.getPublishCount());
-        couponParam.setUseCount(0);
-        couponParam.setReceiveCount(0);
-        couponRepository.save(couponParam);
-        if (couponParam.getUseType().equals(2)) {
-            for (SmsCouponProductRelation rel : couponParam.getProductRelationList()) {
-                rel.setCouponId(couponParam.getId());
+        SmsCoupon smsCoupon = couponParam.smsCoupon();
+        smsCoupon.setCount(smsCoupon.getPublishCount());
+        smsCoupon.setUseCount(0);
+        smsCoupon.setReceiveCount(0);
+        couponRepository.save(smsCoupon);
+        if (smsCoupon.getUseType().equals(2)) {
+            for (SmsCouponProductRelation rel : couponParam.productRelationList()) {
+                rel.setCouponId(smsCoupon.getId());
             }
-            productRelationRepository.saveAll(couponParam.getProductRelationList());
+            productRelationRepository.saveAll(couponParam.productRelationList());
         }
-        if (couponParam.getUseType().equals(1)) {
-            for (SmsCouponProductCategoryRelation rel : couponParam.getProductCategoryRelationList()) {
-                rel.setCouponId(couponParam.getId());
+        if (smsCoupon.getUseType().equals(1)) {
+            for (SmsCouponProductCategoryRelation rel : couponParam.productCategoryRelationList()) {
+                rel.setCouponId(smsCoupon.getId());
             }
-            productCategoryRelationRepository.saveAll(couponParam.getProductCategoryRelationList());
+            productCategoryRelationRepository.saveAll(couponParam.productCategoryRelationList());
         }
         return 1;
     }
@@ -51,21 +52,22 @@ public class SmsCouponServiceImpl implements SmsCouponService {
 
     @Override
     public int update(Long id, SmsCouponParam couponParam) {
-        couponParam.setId(id);
-        couponRepository.save(couponParam);
-        if (couponParam.getUseType().equals(2)) {
-            for (SmsCouponProductRelation rel : couponParam.getProductRelationList()) {
+        SmsCoupon smsCoupon = couponParam.smsCoupon();
+        smsCoupon.setId(id);
+        couponRepository.save(smsCoupon);
+        if (smsCoupon.getUseType().equals(2)) {
+            for (SmsCouponProductRelation rel : couponParam.productRelationList()) {
                 rel.setCouponId(id);
             }
             productRelationRepository.deleteByCouponId(id);
-            productRelationRepository.saveAll(couponParam.getProductRelationList());
+            productRelationRepository.saveAll(couponParam.productRelationList());
         }
-        if (couponParam.getUseType().equals(1)) {
-            for (SmsCouponProductCategoryRelation rel : couponParam.getProductCategoryRelationList()) {
+        if (smsCoupon.getUseType().equals(1)) {
+            for (SmsCouponProductCategoryRelation rel : couponParam.productCategoryRelationList()) {
                 rel.setCouponId(id);
             }
             productCategoryRelationRepository.deleteByCouponId(id);
-            productCategoryRelationRepository.saveAll(couponParam.getProductCategoryRelationList());
+            productCategoryRelationRepository.saveAll(couponParam.productCategoryRelationList());
         }
         return 1;
     }
@@ -90,10 +92,6 @@ public class SmsCouponServiceImpl implements SmsCouponService {
     public SmsCouponParam getItem(Long id) {
         SmsCoupon coupon = couponRepository.findById(id).orElse(null);
         if (coupon == null) return null;
-        SmsCouponParam param = new SmsCouponParam();
-        BeanUtils.copyProperties(coupon, param);
-        param.setProductRelationList(productRelationRepository.findByCouponId(id));
-        param.setProductCategoryRelationList(productCategoryRelationRepository.findByCouponId(id));
-        return param;
+        return new SmsCouponParam(coupon, productRelationRepository.findByCouponId(id), productCategoryRelationRepository.findByCouponId(id));
     }
 }

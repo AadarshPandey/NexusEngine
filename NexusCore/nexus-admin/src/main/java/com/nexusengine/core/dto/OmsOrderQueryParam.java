@@ -8,19 +8,12 @@ import lombok.Setter;
  * Represents the OmsOrderQueryParam component.
  * Provides core functionality and operations for OmsOrderQueryParam.
  */
-@Getter
-@Setter
-public class OmsOrderQueryParam {
-    @Schema(title =  "Order sn")
-    private String orderSn;
-    @Schema(title =  "Receiver keyword")
-    private String receiverKeyword;
-    @Schema(title =  "Status")
-    private Integer status;
-    @Schema(title =  "Order type")
-    private Integer orderType;
-    @Schema(title =  "Source type")
-    private Integer sourceType;
-    @Schema(title =  "Create time")
-    private String createTime;
+public record OmsOrderQueryParam(
+    @Schema(title =  "Order sn") String orderSn,
+    @Schema(title =  "Receiver keyword") String receiverKeyword,
+    @Schema(title =  "Status") Integer status,
+    @Schema(title =  "Order type") Integer orderType,
+    @Schema(title =  "Source type") Integer sourceType,
+    @Schema(title =  "Create time") String createTime
+) {
 }

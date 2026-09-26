@@ -79,19 +79,19 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
     @Override
     public Map<String, Object> generateOrder(OrderParam orderParam) {
         List<OmsOrderItem> orderItemList = new ArrayList<>();
-        if (orderParam.getMemberReceiveAddressId() == null) {
+        if (orderParam.memberReceiveAddressId() == null) {
             Asserts.fail("Please select a shipping address");
         }
         UmsMember currentMember = memberService.getCurrentMember();
-        List<CartPromotionItem> cartPromotionItemList = cartItemService.listPromotion(currentMember.getId(), orderParam.getCartIds());
+        List<CartPromotionItem> cartPromotionItemList = cartItemService.listPromotion(currentMember.getId(), orderParam.cartIds());
         
         // Fix 2: Sort by product ID to prevent deadlocks
-        cartPromotionItemList.sort(Comparator.comparing(CartPromotionItem::getProductId));
+        cartPromotionItemList.sort(Comparator.comparing(item -> item.omsCartItem().getProductId()));
 
         // REDISSON DISTRIBUTED LOCK
         List<org.redisson.api.RLock> productLocks = new ArrayList<>();
         for (CartPromotionItem item : cartPromotionItemList) {
-            productLocks.add(redissonClient.getLock("lock:product:stock:" + item.getProductId()));
+            productLocks.add(redissonClient.getLock("lock:product:stock:" + item.omsCartItem().getProductId()));
         }
         org.redisson.api.RLock multiLock = redissonClient.getMultiLock(productLocks.toArray(new org.redisson.api.RLock[0]));
         boolean isLocked = false;
@@ -106,49 +106,49 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
             return transactionTemplate.execute(status -> {
                 for (CartPromotionItem cartPromotionItem : cartPromotionItemList) {
             OmsOrderItem orderItem = new OmsOrderItem();
-            orderItem.setProductId(cartPromotionItem.getProductId());
-            orderItem.setProductName(cartPromotionItem.getProductName());
-            orderItem.setProductPic(cartPromotionItem.getProductPic());
-            orderItem.setProductAttr(cartPromotionItem.getProductAttr());
-            orderItem.setProductBrand(cartPromotionItem.getProductBrand());
-            orderItem.setProductSn(cartPromotionItem.getProductSn());
-            orderItem.setProductPrice(cartPromotionItem.getPrice());
-            orderItem.setProductQuantity(cartPromotionItem.getQuantity());
-            orderItem.setProductSkuId(cartPromotionItem.getProductSkuId());
-            orderItem.setProductSkuCode(cartPromotionItem.getProductSkuCode());
-            orderItem.setProductCategoryId(cartPromotionItem.getProductCategoryId());
-            orderItem.setPromotionAmount(cartPromotionItem.getReduceAmount());
-            orderItem.setPromotionName(cartPromotionItem.getPromotionMessage());
-            orderItem.setEarnedPoints(cartPromotionItem.getEarnedPoints());
+            orderItem.setProductId(cartPromotionItem.omsCartItem().getProductId());
+            orderItem.setProductName(cartPromotionItem.omsCartItem().getProductName());
+            orderItem.setProductPic(cartPromotionItem.omsCartItem().getProductPic());
+            orderItem.setProductAttr(cartPromotionItem.omsCartItem().getProductAttr());
+            orderItem.setProductBrand(cartPromotionItem.omsCartItem().getProductBrand());
+            orderItem.setProductSn(cartPromotionItem.omsCartItem().getProductSn());
+            orderItem.setProductPrice(cartPromotionItem.omsCartItem().getPrice());
+            orderItem.setProductQuantity(cartPromotionItem.omsCartItem().getQuantity());
+            orderItem.setProductSkuId(cartPromotionItem.omsCartItem().getProductSkuId());
+            orderItem.setProductSkuCode(cartPromotionItem.omsCartItem().getProductSkuCode());
+            orderItem.setProductCategoryId(cartPromotionItem.omsCartItem().getProductCategoryId());
+            orderItem.setPromotionAmount(cartPromotionItem.reduceAmount());
+            orderItem.setPromotionName(cartPromotionItem.promotionMessage());
+            orderItem.setEarnedPoints(cartPromotionItem.earnedPoints());
             orderItemList.add(orderItem);
         }
             for (CartPromotionItem item : cartPromotionItemList) {
                 
-                if (item.getProductSkuId() != null) {
-                    PmsSkuStock skuStock = skuStockRepository.findById(item.getProductSkuId()).orElse(null);
-                    if (skuStock == null || (skuStock.getStock() - (skuStock.getLockStock() == null ? 0 : skuStock.getLockStock())) < item.getQuantity()) {
+                if (item.omsCartItem().getProductSkuId() != null) {
+                    PmsSkuStock skuStock = skuStockRepository.findById(item.omsCartItem().getProductSkuId()).orElse(null);
+                    if (skuStock == null || (skuStock.getStock() - (skuStock.getLockStock() == null ? 0 : skuStock.getLockStock())) < item.omsCartItem().getQuantity()) {
                         Asserts.fail("Insufficient stock for SKU");
                     }
                 }
             }
-        if (orderParam.getCouponId() == null) {
+        if (orderParam.couponId() == null) {
             for (OmsOrderItem orderItem : orderItemList) {
                 orderItem.setCouponAmount(new BigDecimal(0));
             }
         } else {
-            SmsCouponHistoryDetail couponHistoryDetail = getUseCoupon(cartPromotionItemList, orderParam.getCouponId());
+            SmsCouponHistoryDetail couponHistoryDetail = getUseCoupon(cartPromotionItemList, orderParam.couponId());
             if (couponHistoryDetail == null) {
                 Asserts.fail("Coupon not available");
             }
             handleCouponAmount(orderItemList, couponHistoryDetail);
         }
-        if (orderParam.getUsePoints() == null || orderParam.getUsePoints().equals(0)) {
+        if (orderParam.usePoints() == null || orderParam.usePoints().equals(0)) {
             for (OmsOrderItem orderItem : orderItemList) {
                 orderItem.setPointsDiscountAmount(new BigDecimal(0));
             }
         } else {
             BigDecimal totalAmount = calcTotalAmount(orderItemList);
-            BigDecimal pointsAmount = getUsePointsAmount(orderParam.getUsePoints(), totalAmount, currentMember, orderParam.getCouponId() != null);
+            BigDecimal pointsAmount = getUsePointsAmount(orderParam.usePoints(), totalAmount, currentMember, orderParam.couponId() != null);
             if (pointsAmount.compareTo(new BigDecimal(0)) == 0) {
                 Asserts.fail("Points points not applicable");
             } else {
@@ -167,11 +167,11 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
         order.setFreightAmount(originalFreight);
         order.setPromotionAmount(calcPromotionAmount(orderItemList));
         order.setPromotionInfo(getOrderPromotionInfo(orderItemList));
-        if (orderParam.getCouponId() == null) {
+        if (orderParam.couponId() == null) {
             order.setCouponAmount(new BigDecimal(0));
         } else {
-            SmsCoupon coupon = getUseCoupon(cartPromotionItemList, orderParam.getCouponId()).getCoupon();
-            order.setCouponId(orderParam.getCouponId());
+            SmsCoupon coupon = getUseCoupon(cartPromotionItemList, orderParam.couponId()).coupon();
+            order.setCouponId(orderParam.couponId());
             if (coupon.getType() != null && coupon.getType() == 2) {
                 order.setFreightAmount(BigDecimal.ZERO);
                 order.setCouponAmount(originalFreight); // Show the savings
@@ -179,18 +179,18 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
                 order.setCouponAmount(calcCouponAmount(orderItemList));
             }
         }
-        if (orderParam.getUsePoints() == null) {
+        if (orderParam.usePoints() == null) {
             order.setEarnedPoints(0);
             order.setPointsDiscountAmount(new BigDecimal(0));
         } else {
-            order.setEarnedPoints(orderParam.getUsePoints());
+            order.setEarnedPoints(orderParam.usePoints());
             order.setPointsDiscountAmount(calcPointsAmount(orderItemList));
         }
         order.setPayAmount(calcPayAmount(order));
         order.setMemberId(currentMember.getId());
         order.setCreateTime(java.time.LocalDateTime.now());
         order.setMemberUsername(currentMember.getUsername());
-        order.setPayType(orderParam.getPayType());
+        order.setPayType(orderParam.payType());
         order.setSourceType(1);
         order.setStatus(0);
         order.setOrderType(0);
@@ -200,7 +200,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
                 order.setVendorId(product.getVendorId());
             }
         }
-        UmsMemberReceiveAddress address = memberReceiveAddressService.getItem(orderParam.getMemberReceiveAddressId());
+        UmsMemberReceiveAddress address = memberReceiveAddressService.getItem(orderParam.memberReceiveAddressId());
         if (address == null) {
             Asserts.fail("Invalid shipping address");
         }
@@ -225,15 +225,15 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
             orderItem.setOrderSn(order.getOrderSn());
         }
         orderItemRepository.saveAll(orderItemList);
-        if (orderParam.getCouponId() != null) {
-            updateCouponStatus(orderParam.getCouponId(), currentMember.getId(), 1);
+        if (orderParam.couponId() != null) {
+            updateCouponStatus(orderParam.couponId(), currentMember.getId(), 1);
         }
-        if (orderParam.getUsePoints() != null) {
-            order.setUsedPoints(orderParam.getUsePoints());
+        if (orderParam.usePoints() != null) {
+            order.setUsedPoints(orderParam.usePoints());
             if (currentMember.getPoints() == null) {
                 currentMember.setPoints(0);
             }
-            memberService.updatePoints(currentMember.getId(), currentMember.getPoints() - orderParam.getUsePoints());
+            memberService.updatePoints(currentMember.getId(), currentMember.getPoints() - orderParam.usePoints());
         }
         deleteCartItemList(cartPromotionItemList, currentMember);
         sendDelayMessageCancelOrder(order.getId());
@@ -275,8 +275,8 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
                 orderRepository.flush(); // ensure commit
 
                 OmsOrderDetail orderDetail = portalOrderDao.getDetail(orderId);
-                if (orderDetail != null && !CollectionUtils.isEmpty(orderDetail.getOrderItemList())) {
-                    return portalOrderDao.updateSkuStock(orderDetail.getOrderItemList());
+                if (orderDetail != null && !CollectionUtils.isEmpty(orderDetail.orderItemList())) {
+                    return portalOrderDao.updateSkuStock(orderDetail.orderItemList());
                 }
                 return 1;
             } else {
@@ -302,14 +302,14 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
                 if (orderSetting == null) return 0;
                 List<OmsOrderDetail> timeOutOrders = portalOrderDao.getTimeOutOrders(orderSetting.getNormalOrderOvertime());
                 if (CollectionUtils.isEmpty(timeOutOrders)) return count;
-                List<Long> ids = timeOutOrders.stream().map(OmsOrderDetail::getId).collect(Collectors.toList());
+                List<Long> ids = timeOutOrders.stream().map(detail -> detail.omsOrder().getId()).collect(Collectors.toList());
                 portalOrderDao.updateOrderStatus(ids, 4);
                 for (OmsOrderDetail timeOutOrder : timeOutOrders) {
-                    portalOrderDao.releaseSkuStockLock(timeOutOrder.getOrderItemList());
-                    updateCouponStatus(timeOutOrder.getCouponId(), timeOutOrder.getMemberId(), 0);
-                    if (timeOutOrder.getUsedPoints() != null) {
-                        UmsMember member = memberService.getById(timeOutOrder.getMemberId());
-                        memberService.updatePoints(timeOutOrder.getMemberId(), member.getPoints() + timeOutOrder.getUsedPoints());
+                    portalOrderDao.releaseSkuStockLock(timeOutOrder.orderItemList());
+                    updateCouponStatus(timeOutOrder.omsOrder().getCouponId(), timeOutOrder.omsOrder().getMemberId(), 0);
+                    if (timeOutOrder.omsOrder().getUsedPoints() != null) {
+                        UmsMember member = memberService.getById(timeOutOrder.omsOrder().getMemberId());
+                        memberService.updatePoints(timeOutOrder.omsOrder().getMemberId(), member.getPoints() + timeOutOrder.omsOrder().getUsedPoints());
                     }
                 }
                 return timeOutOrders.size();
@@ -415,10 +415,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
 
         List<OmsOrderDetail> orderDetailList = new ArrayList<>();
         for (OmsOrder omsOrder : orderList) {
-            OmsOrderDetail orderDetail = new OmsOrderDetail();
-            BeanUtil.copyProperties(omsOrder, orderDetail);
-            orderDetail.setOrderItemList(itemMap.getOrDefault(omsOrder.getId(), Collections.emptyList()));
-            orderDetail.setReturnApplyList(applyMap.getOrDefault(omsOrder.getId(), Collections.emptyList()));
+            OmsOrderDetail orderDetail = new OmsOrderDetail(omsOrder, itemMap.getOrDefault(omsOrder.getId(), Collections.emptyList()));
             orderDetailList.add(orderDetail);
         }
         resultPage.setList(orderDetailList);
@@ -471,7 +468,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
     }
 
     private void deleteCartItemList(List<CartPromotionItem> cartPromotionItemList, UmsMember currentMember) {
-        List<Long> ids = cartPromotionItemList.stream().map(CartPromotionItem::getId).collect(Collectors.toList());
+        List<Long> ids = cartPromotionItemList.stream().map(item -> item.omsCartItem().getId()).collect(Collectors.toList());
         cartItemService.delete(currentMember.getId(), ids);
     }
 
@@ -551,7 +548,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
     }
 
     private void handleCouponAmount(List<OmsOrderItem> orderItemList, SmsCouponHistoryDetail couponHistoryDetail) {
-        SmsCoupon coupon = couponHistoryDetail.getCoupon();
+        SmsCoupon coupon = couponHistoryDetail.coupon();
         List<OmsOrderItem> eligibleItems;
         if (coupon.getUseType().equals(0)) {
             eligibleItems = orderItemList;
@@ -581,13 +578,13 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
     private List<OmsOrderItem> getCouponOrderItemByRelation(SmsCouponHistoryDetail detail, List<OmsOrderItem> orderItemList, int type) {
         List<OmsOrderItem> result = new ArrayList<>();
         if (type == 0) {
-            List<Long> categoryIds = detail.getCategoryRelationList().stream().map(SmsCouponProductCategoryRelation::getProductCategoryId).collect(Collectors.toList());
+            List<Long> categoryIds = detail.categoryRelationList().stream().map(SmsCouponProductCategoryRelation::getProductCategoryId).collect(Collectors.toList());
             for (OmsOrderItem item : orderItemList) {
                 if (categoryIds.contains(item.getProductCategoryId())) result.add(item);
                 else item.setCouponAmount(new BigDecimal(0));
             }
         } else {
-            List<Long> productIds = detail.getProductRelationList().stream().map(SmsCouponProductRelation::getProductId).collect(Collectors.toList());
+            List<Long> productIds = detail.productRelationList().stream().map(SmsCouponProductRelation::getProductId).collect(Collectors.toList());
             for (OmsOrderItem item : orderItemList) {
                 if (productIds.contains(item.getProductId())) result.add(item);
                 else item.setCouponAmount(new BigDecimal(0));
@@ -599,7 +596,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
     private SmsCouponHistoryDetail getUseCoupon(List<CartPromotionItem> cartPromotionItemList, Long couponId) {
         List<SmsCouponHistoryDetail> list = memberCouponService.listCart(cartPromotionItemList, 1);
         for (SmsCouponHistoryDetail detail : list) {
-            if (detail.getCoupon().getId().equals(couponId)) return detail;
+            if (detail.coupon().getId().equals(couponId)) return detail;
         }
         return null;
     }
@@ -614,10 +611,10 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
 
     private void lockStock(List<CartPromotionItem> cartPromotionItemList) {
         for (CartPromotionItem item : cartPromotionItemList) {
-            if (item.getProductSkuId() != null) {
-                PmsSkuStock skuStock = skuStockRepository.findById(item.getProductSkuId()).orElse(null);
+            if (item.omsCartItem().getProductSkuId() != null) {
+                PmsSkuStock skuStock = skuStockRepository.findById(item.omsCartItem().getProductSkuId()).orElse(null);
                 if (skuStock != null) {
-                    skuStock.setLockStock(skuStock.getLockStock() + item.getQuantity());
+                    skuStock.setLockStock(skuStock.getLockStock() + item.omsCartItem().getQuantity());
                     skuStockRepository.save(skuStock);
                 }
             }
@@ -627,7 +624,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
 
     private boolean hasStock(List<CartPromotionItem> cartPromotionItemList) {
         for (CartPromotionItem item : cartPromotionItemList) {
-            if (item.getRealStock() == null || item.getRealStock() <= 0 || item.getRealStock() < item.getQuantity()) {
+            if (item.realStock() == null || item.realStock() <= 0 || item.realStock() < item.omsCartItem().getQuantity()) {
                 return false;
             }
         }
@@ -659,8 +656,8 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
         BigDecimal totalAmount = new BigDecimal("0");
         BigDecimal promotionAmount = new BigDecimal("0");
         for (CartPromotionItem item : cartPromotionItemList) {
-            totalAmount = totalAmount.add(item.getPrice().multiply(new BigDecimal(item.getQuantity())));
-            promotionAmount = promotionAmount.add(item.getReduceAmount().multiply(new BigDecimal(item.getQuantity())));
+            totalAmount = totalAmount.add(item.omsCartItem().getPrice().multiply(new BigDecimal(item.omsCartItem().getQuantity())));
+            promotionAmount = promotionAmount.add(item.reduceAmount().multiply(new BigDecimal(item.omsCartItem().getQuantity())));
         }
         calcAmount.setTotalAmount(totalAmount);
         calcAmount.setPromotionAmount(promotionAmount);

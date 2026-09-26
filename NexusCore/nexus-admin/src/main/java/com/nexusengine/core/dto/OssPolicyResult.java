@@ -8,19 +8,12 @@ import lombok.EqualsAndHashCode;
  * Represents the OssPolicyResult component.
  * Provides core functionality and operations for OssPolicyResult.
  */
-@Data
-@EqualsAndHashCode
-public class OssPolicyResult {
-    @Schema(title = "Access key id")
-    private String accessKeyId;
-    @Schema(title = "Policy")
-    private String policy;
-    @Schema(title = "Signature")
-    private String signature;
-    @Schema(title = "Dir")
-    private String dir;
-    @Schema(title = "Host")
-    private String host;
-    @Schema(title = "Callback")
-    private String callback;
+public record OssPolicyResult(
+    @Schema(title = "Access key id") String accessKeyId,
+    @Schema(title = "Policy") String policy,
+    @Schema(title = "Signature") String signature,
+    @Schema(title = "Dir") String dir,
+    @Schema(title = "Host") String host,
+    @Schema(title = "Callback") String callback
+) {
 }

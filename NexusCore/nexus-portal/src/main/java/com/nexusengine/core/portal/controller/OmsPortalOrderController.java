@@ -101,8 +101,8 @@ public class OmsPortalOrderController {
             OmsOrderDetail orderDetail = portalOrderService.detail(orderId);
             if (orderDetail == null) return CommonResult.failed("Order not found");
             
-            int amount = orderDetail.getPayAmount().multiply(new java.math.BigDecimal("100")).intValue();
-            Map<String, String> result = razorpayPaymentGatewayService.createOrder(amount, orderDetail.getOrderSn());
+            int amount = orderDetail.omsOrder().getPayAmount().multiply(new java.math.BigDecimal("100")).intValue();
+            Map<String, String> result = razorpayPaymentGatewayService.createOrder(amount, orderDetail.omsOrder().getOrderSn());
             
             return CommonResult.success(result);
         } catch (RuntimeException e) {
@@ -128,10 +128,10 @@ public class OmsPortalOrderController {
             if (orderDetail == null) return CommonResult.failed("Order not found");
             // Check ownership and status
             com.nexusengine.core.model.UmsMember currentMember = memberService.getCurrentMember();
-            if (!orderDetail.getMemberId().equals(currentMember.getId())) {
+            if (!orderDetail.omsOrder().getMemberId().equals(currentMember.getId())) {
                 return CommonResult.failed("Order ownership verification failed");
             }
-            if (orderDetail.getStatus() != 0) {
+            if (orderDetail.omsOrder().getStatus() != 0) {
                  return CommonResult.failed("Order already paid or closed");
             }
             if (omsOrderRepository.existsByPaymentId(razorpayPaymentId)) {
@@ -141,7 +141,7 @@ public class OmsPortalOrderController {
             boolean isValid = razorpayPaymentGatewayService.verifySignature(razorpayOrderId, razorpayPaymentId, razorpaySignature);
             if (!isValid) return CommonResult.failed("Invalid signature");
             
-            int expectedAmount = orderDetail.getPayAmount().multiply(new java.math.BigDecimal("100")).intValue();
+            int expectedAmount = orderDetail.omsOrder().getPayAmount().multiply(new java.math.BigDecimal("100")).intValue();
             boolean isAmountValid = razorpayPaymentGatewayService.verifyPaymentAmount(razorpayPaymentId, expectedAmount);
             if (!isAmountValid) return CommonResult.failed("Payment amount does not match order amount");
             

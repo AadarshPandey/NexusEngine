@@ -8,7 +8,7 @@ import lombok.EqualsAndHashCode;
  * Created by macro on 2018/4/26.
  */
 @Data
-@EqualsAndHashCode
+
 public class WebLog {
         /**
      * The description property.

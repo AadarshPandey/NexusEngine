@@ -39,10 +39,10 @@ public class OmsOrderServiceImpl implements OmsOrderService {
     public int delivery(List<OmsOrderDeliveryParam> deliveryParamList) {
         int count = 0;
         for (OmsOrderDeliveryParam param : deliveryParamList) {
-            OmsOrder order = orderRepository.findById(param.getOrderId()).orElse(null);
+            OmsOrder order = orderRepository.findById(param.orderId()).orElse(null);
             if (order != null) {
-                order.setDeliverySn(param.getDeliverySn());
-                order.setDeliveryCompany(param.getDeliveryCompany());
+                order.setDeliverySn(param.deliverySn());
+                order.setDeliveryCompany(param.deliveryCompany());
                 order.setDeliveryTime(java.time.LocalDateTime.now());
                 order.setStatus(2);
                 orderRepository.save(order);
@@ -51,7 +51,7 @@ public class OmsOrderServiceImpl implements OmsOrderService {
         }
         List<OmsOrderOperateHistory> historyList = deliveryParamList.stream().map(p -> {
             OmsOrderOperateHistory h = new OmsOrderOperateHistory();
-            h.setOrderId(p.getOrderId());
+            h.setOrderId(p.orderId());
             h.setCreateTime(java.time.LocalDateTime.now());
             h.setOperateMan("Admin");
             h.setOrderStatus(2);
@@ -96,31 +96,27 @@ public class OmsOrderServiceImpl implements OmsOrderService {
     public OmsOrderDetail detail(Long id) {
         OmsOrder order = orderRepository.findById(id).orElse(null);
         if (order == null) return null;
-        OmsOrderDetail detail = new OmsOrderDetail();
-        BeanUtils.copyProperties(order, detail);
-        detail.setOrderItemList(orderItemRepository.findByOrderId(id));
-        detail.setHistoryList(orderOperateHistoryRepository.findByOrderId(id));
-        return detail;
+        return new OmsOrderDetail(order, orderItemRepository.findByOrderId(id), orderOperateHistoryRepository.findByOrderId(id));
     }
 
     @Override
     public int updateReceiverInfo(OmsReceiverInfoParam receiverInfoParam) {
-        OmsOrder order = orderRepository.findById(receiverInfoParam.getOrderId()).orElse(null);
+        OmsOrder order = orderRepository.findById(receiverInfoParam.orderId()).orElse(null);
         if (order == null) return 0;
-        order.setReceiverName(receiverInfoParam.getReceiverName());
-        order.setReceiverPhone(receiverInfoParam.getReceiverPhone());
-        order.setReceiverPostCode(receiverInfoParam.getReceiverPostCode());
-        order.setReceiverDetailAddress(receiverInfoParam.getReceiverDetailAddress());
-        order.setReceiverProvince(receiverInfoParam.getReceiverProvince());
-        order.setReceiverCity(receiverInfoParam.getReceiverCity());
-        order.setReceiverRegion(receiverInfoParam.getReceiverRegion());
+        order.setReceiverName(receiverInfoParam.receiverName());
+        order.setReceiverPhone(receiverInfoParam.receiverPhone());
+        order.setReceiverPostCode(receiverInfoParam.receiverPostCode());
+        order.setReceiverDetailAddress(receiverInfoParam.receiverDetailAddress());
+        order.setReceiverProvince(receiverInfoParam.receiverProvince());
+        order.setReceiverCity(receiverInfoParam.receiverCity());
+        order.setReceiverRegion(receiverInfoParam.receiverRegion());
         order.setModifyTime(java.time.LocalDateTime.now());
         orderRepository.save(order);
         OmsOrderOperateHistory h = new OmsOrderOperateHistory();
-        h.setOrderId(receiverInfoParam.getOrderId());
+        h.setOrderId(receiverInfoParam.orderId());
         h.setCreateTime(java.time.LocalDateTime.now());
         h.setOperateMan("Admin");
-        h.setOrderStatus(receiverInfoParam.getStatus());
+        h.setOrderStatus(receiverInfoParam.status());
         h.setNote("Modified receiver info");
         orderOperateHistoryRepository.save(h);
         return 1;
@@ -128,17 +124,17 @@ public class OmsOrderServiceImpl implements OmsOrderService {
 
     @Override
     public int updateMoneyInfo(OmsMoneyInfoParam moneyInfoParam) {
-        OmsOrder order = orderRepository.findById(moneyInfoParam.getOrderId()).orElse(null);
+        OmsOrder order = orderRepository.findById(moneyInfoParam.orderId()).orElse(null);
         if (order == null) return 0;
-        order.setFreightAmount(moneyInfoParam.getFreightAmount());
-        order.setDiscountAmount(moneyInfoParam.getDiscountAmount());
+        order.setFreightAmount(moneyInfoParam.freightAmount());
+        order.setDiscountAmount(moneyInfoParam.discountAmount());
         order.setModifyTime(java.time.LocalDateTime.now());
         orderRepository.save(order);
         OmsOrderOperateHistory h = new OmsOrderOperateHistory();
-        h.setOrderId(moneyInfoParam.getOrderId());
+        h.setOrderId(moneyInfoParam.orderId());
         h.setCreateTime(java.time.LocalDateTime.now());
         h.setOperateMan("Admin");
-        h.setOrderStatus(moneyInfoParam.getStatus());
+        h.setOrderStatus(moneyInfoParam.status());
         h.setNote("Modified fee info");
         orderOperateHistoryRepository.save(h);
         return 1;

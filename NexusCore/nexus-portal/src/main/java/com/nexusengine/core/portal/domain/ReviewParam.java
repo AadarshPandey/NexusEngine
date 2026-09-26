@@ -1,20 +1,13 @@
 package com.nexusengine.core.portal.domain;
 
-import lombok.Data;
 import java.util.List;
 
-@Data
-public class ReviewParam {
-    private Long productId;
-    private Long parentId;
-    private Integer rating;
-    private String content;
-    private List<MediaParam> mediaList;
+public record ReviewParam(
+    Long productId,
+    Long parentId,
+    Integer rating,
+    String content,
+    List<ReviewMediaParam> mediaList
+) {
 
-    @Data
-    public static class MediaParam {
-        private String mediaType;
-        private String mediaUrl;
-        private Integer sortOrder;
-    }
 }

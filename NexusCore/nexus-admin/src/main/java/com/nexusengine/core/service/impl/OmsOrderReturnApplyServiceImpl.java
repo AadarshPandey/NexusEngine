@@ -33,24 +33,24 @@ public class OmsOrderReturnApplyServiceImpl implements OmsOrderReturnApplyServic
     public int updateStatus(Long id, OmsUpdateStatusParam statusParam) {
         OmsOrderReturnApply returnApply = returnApplyRepository.findById(id).orElse(null);
         if (returnApply == null) return 0;
-        Integer status = statusParam.getStatus();
+        Integer status = statusParam.status();
         if (status.equals(1)) {
             returnApply.setStatus(1);
-            returnApply.setReturnAmount(statusParam.getReturnAmount());
-            returnApply.setCompanyAddressId(statusParam.getCompanyAddressId());
+            returnApply.setReturnAmount(statusParam.returnAmount());
+            returnApply.setCompanyAddressId(statusParam.companyAddressId());
             returnApply.setHandleTime(java.time.LocalDateTime.now());
-            returnApply.setHandleMan(statusParam.getHandleMan());
-            returnApply.setHandleNote(statusParam.getHandleNote());
+            returnApply.setHandleMan(statusParam.handleMan());
+            returnApply.setHandleNote(statusParam.handleNote());
         } else if (status.equals(2)) {
             returnApply.setStatus(2);
             returnApply.setReceiveTime(java.time.LocalDateTime.now());
-            returnApply.setReceiveMan(statusParam.getReceiveMan());
-            returnApply.setReceiveNote(statusParam.getReceiveNote());
+            returnApply.setReceiveMan(statusParam.receiveMan());
+            returnApply.setReceiveNote(statusParam.receiveNote());
         } else if (status.equals(3)) {
             returnApply.setStatus(3);
             returnApply.setHandleTime(java.time.LocalDateTime.now());
-            returnApply.setHandleMan(statusParam.getHandleMan());
-            returnApply.setHandleNote(statusParam.getHandleNote());
+            returnApply.setHandleMan(statusParam.handleMan());
+            returnApply.setHandleNote(statusParam.handleNote());
         } else {
             return 0;
         }
@@ -62,8 +62,6 @@ public class OmsOrderReturnApplyServiceImpl implements OmsOrderReturnApplyServic
     public OmsOrderReturnApplyResult getItem(Long id) {
         OmsOrderReturnApply apply = returnApplyRepository.findById(id).orElse(null);
         if (apply == null) return null;
-        OmsOrderReturnApplyResult result = new OmsOrderReturnApplyResult();
-        BeanUtils.copyProperties(apply, result);
-        return result;
+        return new OmsOrderReturnApplyResult(apply, null);
     }
 }
