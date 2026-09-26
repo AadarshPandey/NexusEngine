@@ -21,6 +21,9 @@ public class UmsMemberLoginLog implements Serializable {
 
     @Column(name = "member_id")
     private Long memberId;
+    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
+    @jakarta.persistence.JoinColumn(name = "member_id", insertable = false, updatable = false)
+    private UmsMember member;
 
     @Column(name = "create_time")
     private LocalDateTime createTime;

@@ -23,9 +23,15 @@ public class OmsOrder implements Serializable {
 
     @Column(name = "member_id")
     private Long memberId;
+    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
+    @jakarta.persistence.JoinColumn(name = "member_id", insertable = false, updatable = false)
+    private UmsMember member;
 
     @Column(name = "coupon_id")
     private Long couponId;
+    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
+    @jakarta.persistence.JoinColumn(name = "coupon_id", insertable = false, updatable = false)
+    private SmsCoupon coupon;
 
     @Column(name = "order_sn")
     @Schema(title = "Order sn")

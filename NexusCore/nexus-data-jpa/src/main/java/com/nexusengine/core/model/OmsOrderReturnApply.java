@@ -23,14 +23,23 @@ public class OmsOrderReturnApply implements Serializable {
     @Column(name = "order_id")
     @Schema(title = "Order id")
     private Long orderId;
+    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
+    @jakarta.persistence.JoinColumn(name = "order_id", insertable = false, updatable = false)
+    private OmsOrder order;
 
     @Column(name = "company_address_id")
     @Schema(title = "Company address id")
     private Long companyAddressId;
+    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
+    @jakarta.persistence.JoinColumn(name = "company_address_id", insertable = false, updatable = false)
+    private OmsCompanyAddress companyAddress;
 
     @Column(name = "product_id")
     @Schema(title = "Product id")
     private Long productId;
+    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
+    @jakarta.persistence.JoinColumn(name = "product_id", insertable = false, updatable = false)
+    private PmsProduct product;
 
     @Column(name = "order_sn")
     @Schema(title = "Order sn")

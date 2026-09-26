@@ -19,7 +19,13 @@ public class UmsAdminRoleRelation implements Serializable {
 
     @Column(name = "admin_id")
     private Long adminId;
+    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
+    @jakarta.persistence.JoinColumn(name = "admin_id", insertable = false, updatable = false)
+    private UmsAdmin admin;
 
     @Column(name = "role_id")
     private Long roleId;
+    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
+    @jakarta.persistence.JoinColumn(name = "role_id", insertable = false, updatable = false)
+    private UmsRole role;
 }

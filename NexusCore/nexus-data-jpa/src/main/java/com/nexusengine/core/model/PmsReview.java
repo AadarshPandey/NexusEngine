@@ -22,9 +22,15 @@ public class PmsReview implements Serializable {
 
     @Column(name = "product_id")
     private Long productId;
+    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
+    @jakarta.persistence.JoinColumn(name = "product_id", insertable = false, updatable = false)
+    private PmsProduct product;
 
     @Column(name = "member_id")
     private Long memberId;
+    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
+    @jakarta.persistence.JoinColumn(name = "member_id", insertable = false, updatable = false)
+    private UmsMember member;
 
     @Column(name = "parent_id")
     @Schema(title = "Parent review ID if this is a reply")

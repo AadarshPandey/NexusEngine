@@ -22,6 +22,9 @@ public class OmsOrderOperateHistory implements Serializable {
     @Column(name = "order_id")
     @Schema(title = "Order id")
     private Long orderId;
+    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
+    @jakarta.persistence.JoinColumn(name = "order_id", insertable = false, updatable = false)
+    private OmsOrder order;
 
     @Column(name = "operate_man")
     @Schema(title = "Operate man")

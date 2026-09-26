@@ -24,12 +24,21 @@ public class PmsProduct implements Serializable {
     private Long id;
     @Column(name = "brand_id")
     private Long brandId;
+    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
+    @jakarta.persistence.JoinColumn(name = "brand_id", insertable = false, updatable = false)
+    private PmsBrand brand;
 
     @Column(name = "product_category_id")
     private Long productCategoryId;
+    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
+    @jakarta.persistence.JoinColumn(name = "product_category_id", insertable = false, updatable = false)
+    private PmsProductCategory productCategory;
 
     @Column(name = "product_attribute_category_id")
     private Long productAttributeCategoryId;
+    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
+    @jakarta.persistence.JoinColumn(name = "product_attribute_category_id", insertable = false, updatable = false)
+    private PmsProductAttributeCategory productAttributeCategory;
 
     private String name;
 

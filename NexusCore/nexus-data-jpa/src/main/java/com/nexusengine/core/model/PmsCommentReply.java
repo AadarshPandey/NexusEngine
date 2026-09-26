@@ -21,6 +21,9 @@ public class PmsCommentReply implements Serializable {
 
     @Column(name = "comment_id")
     private Long commentId;
+    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
+    @jakarta.persistence.JoinColumn(name = "comment_id", insertable = false, updatable = false)
+    private PmsComment comment;
 
     @Column(name = "member_nick_name")
     private String memberNickName;

@@ -22,6 +22,9 @@ public class OmsOrderItem implements Serializable {
     @Column(name = "order_id")
     @Schema(title = "Order id")
     private Long orderId;
+    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
+    @jakarta.persistence.JoinColumn(name = "order_id", insertable = false, updatable = false)
+    private OmsOrder order;
 
     @Column(name = "order_sn")
     @Schema(title = "Order sn")
@@ -29,6 +32,9 @@ public class OmsOrderItem implements Serializable {
 
     @Column(name = "product_id")
     private Long productId;
+    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
+    @jakarta.persistence.JoinColumn(name = "product_id", insertable = false, updatable = false)
+    private PmsProduct product;
 
     @Column(name = "product_pic")
     private String productPic;
@@ -61,6 +67,9 @@ public class OmsOrderItem implements Serializable {
     @Column(name = "product_category_id")
     @Schema(title = "Product category id")
     private Long productCategoryId;
+    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
+    @jakarta.persistence.JoinColumn(name = "product_category_id", insertable = false, updatable = false)
+    private PmsProductCategory productCategory;
 
     @Column(name = "promotion_name")
     @Schema(title = "Promotion name")

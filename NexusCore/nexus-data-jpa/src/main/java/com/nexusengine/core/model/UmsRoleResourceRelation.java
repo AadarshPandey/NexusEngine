@@ -21,8 +21,14 @@ public class UmsRoleResourceRelation implements Serializable {
     @Column(name = "role_id")
     @Schema(title = "Role id")
     private Long roleId;
+    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
+    @jakarta.persistence.JoinColumn(name = "role_id", insertable = false, updatable = false)
+    private UmsRole role;
 
     @Column(name = "resource_id")
     @Schema(title = "Resource id")
     private Long resourceId;
+    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
+    @jakarta.persistence.JoinColumn(name = "resource_id", insertable = false, updatable = false)
+    private UmsResource resource;
 }

@@ -22,6 +22,9 @@ public class PmsProductOperateLog implements Serializable {
 
     @Column(name = "product_id")
     private Long productId;
+    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
+    @jakarta.persistence.JoinColumn(name = "product_id", insertable = false, updatable = false)
+    private PmsProduct product;
 
     @Column(name = "price_old")
     private BigDecimal priceOld;

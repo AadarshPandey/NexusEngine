@@ -20,6 +20,9 @@ public class PmsProductAttribute implements Serializable {
 
     @Column(name = "product_attribute_category_id")
     private Long productAttributeCategoryId;
+    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
+    @jakarta.persistence.JoinColumn(name = "product_attribute_category_id", insertable = false, updatable = false)
+    private PmsProductAttributeCategory productAttributeCategory;
 
     private String name;
 

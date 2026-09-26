@@ -18,12 +18,21 @@ public class SmsFlashPromotionProductRelation implements Serializable {
 
     @Column(name = "flash_promotion_id", nullable = false)
     private Long flashPromotionId;
+    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
+    @jakarta.persistence.JoinColumn(name = "flash_promotion_id", insertable = false, updatable = false)
+    private SmsFlashPromotion flashPromotion;
 
     @Column(name = "flash_promotion_session_id", nullable = false)
     private Long flashPromotionSessionId;
+    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
+    @jakarta.persistence.JoinColumn(name = "flash_promotion_session_id", insertable = false, updatable = false)
+    private SmsFlashPromotionSession flashPromotionSession;
 
     @Column(name = "product_id", nullable = false)
     private Long productId;
+    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
+    @jakarta.persistence.JoinColumn(name = "product_id", insertable = false, updatable = false)
+    private PmsProduct product;
 
     @Column(name = "flash_promotion_price", nullable = false)
     private BigDecimal flashPromotionPrice;

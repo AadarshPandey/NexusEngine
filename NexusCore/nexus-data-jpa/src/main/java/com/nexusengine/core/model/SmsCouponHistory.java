@@ -21,9 +21,15 @@ public class SmsCouponHistory implements Serializable {
 
     @Column(name = "coupon_id")
     private Long couponId;
+    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
+    @jakarta.persistence.JoinColumn(name = "coupon_id", insertable = false, updatable = false)
+    private SmsCoupon coupon;
 
     @Column(name = "member_id")
     private Long memberId;
+    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
+    @jakarta.persistence.JoinColumn(name = "member_id", insertable = false, updatable = false)
+    private UmsMember member;
 
     @Column(name = "coupon_code")
     private String couponCode;
@@ -50,6 +56,9 @@ public class SmsCouponHistory implements Serializable {
     @Column(name = "order_id")
     @Schema(title = "Order id")
     private Long orderId;
+    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
+    @jakarta.persistence.JoinColumn(name = "order_id", insertable = false, updatable = false)
+    private OmsOrder order;
 
     @Column(name = "order_sn")
     @Schema(title = "Order sn")

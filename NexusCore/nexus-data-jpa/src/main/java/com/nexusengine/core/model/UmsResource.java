@@ -35,4 +35,7 @@ public class UmsResource implements Serializable {
     @Column(name = "category_id")
     @Schema(title = "Category id")
     private Long categoryId;
+    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
+    @jakarta.persistence.JoinColumn(name = "category_id", insertable = false, updatable = false)
+    private PmsProductCategory category;
 }

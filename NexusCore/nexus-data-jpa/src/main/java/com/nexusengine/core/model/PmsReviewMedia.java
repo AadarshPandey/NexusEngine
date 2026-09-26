@@ -20,6 +20,9 @@ public class PmsReviewMedia implements Serializable {
 
     @Column(name = "review_id")
     private Long reviewId;
+    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
+    @jakarta.persistence.JoinColumn(name = "review_id", insertable = false, updatable = false)
+    private PmsReview review;
 
     @Column(name = "media_type")
     @Schema(title = "Type: IMAGE or VIDEO")

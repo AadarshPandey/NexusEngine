@@ -21,8 +21,14 @@ public class UmsRoleMenuRelation implements Serializable {
     @Column(name = "role_id")
     @Schema(title = "Role id")
     private Long roleId;
+    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
+    @jakarta.persistence.JoinColumn(name = "role_id", insertable = false, updatable = false)
+    private UmsRole role;
 
     @Column(name = "menu_id")
     @Schema(title = "Menu id")
     private Long menuId;
+    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
+    @jakarta.persistence.JoinColumn(name = "menu_id", insertable = false, updatable = false)
+    private UmsMenu menu;
 }

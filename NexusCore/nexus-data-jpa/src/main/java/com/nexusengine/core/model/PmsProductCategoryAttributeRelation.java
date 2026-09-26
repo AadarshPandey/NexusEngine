@@ -19,7 +19,13 @@ public class PmsProductCategoryAttributeRelation implements Serializable {
 
     @Column(name = "product_category_id")
     private Long productCategoryId;
+    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
+    @jakarta.persistence.JoinColumn(name = "product_category_id", insertable = false, updatable = false)
+    private PmsProductCategory productCategory;
 
     @Column(name = "product_attribute_id")
     private Long productAttributeId;
+    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
+    @jakarta.persistence.JoinColumn(name = "product_attribute_id", insertable = false, updatable = false)
+    private PmsProductAttribute productAttribute;
 }

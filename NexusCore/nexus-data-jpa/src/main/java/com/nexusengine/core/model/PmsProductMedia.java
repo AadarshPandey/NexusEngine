@@ -16,6 +16,9 @@ public class PmsProductMedia implements Serializable {
 
     @Column(name = "product_id", nullable = false)
     private Long productId;
+    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
+    @jakarta.persistence.JoinColumn(name = "product_id", insertable = false, updatable = false)
+    private PmsProduct product;
 
     @Column(name = "media_type", length = 50)
     private String mediaType;

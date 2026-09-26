@@ -18,6 +18,9 @@ public class AiChatConversation implements Serializable {
 
     @Column(name = "member_id")
     private Long memberId;
+    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
+    @jakarta.persistence.JoinColumn(name = "member_id", insertable = false, updatable = false)
+    private UmsMember member;
 
     @Column(name = "session_id", nullable = false)
     private String sessionId;

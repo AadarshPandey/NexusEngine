@@ -21,6 +21,9 @@ public class OmsPaymentTransaction implements Serializable {
 
     @Column(name = "order_id", nullable = false)
     private Long orderId;
+    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
+    @jakarta.persistence.JoinColumn(name = "order_id", insertable = false, updatable = false)
+    private OmsOrder order;
 
     @Column(name = "transaction_id", nullable = false, unique = true)
     private String transactionId;

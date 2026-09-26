@@ -18,18 +18,33 @@ public class SmsFlashPromotionLog implements Serializable {
 
     @Column(name = "member_id", nullable = false)
     private Long memberId;
+    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
+    @jakarta.persistence.JoinColumn(name = "member_id", insertable = false, updatable = false)
+    private UmsMember member;
 
     @Column(name = "product_id", nullable = false)
     private Long productId;
+    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
+    @jakarta.persistence.JoinColumn(name = "product_id", insertable = false, updatable = false)
+    private PmsProduct product;
 
     @Column(name = "flash_promotion_id")
     private Long flashPromotionId;
+    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
+    @jakarta.persistence.JoinColumn(name = "flash_promotion_id", insertable = false, updatable = false)
+    private SmsFlashPromotion flashPromotion;
 
     @Column(name = "session_id")
     private Long sessionId;
+    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
+    @jakarta.persistence.JoinColumn(name = "session_id", insertable = false, updatable = false)
+    private SmsFlashPromotionSession session;
 
     @Column(name = "order_id")
     private Long orderId;
+    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
+    @jakarta.persistence.JoinColumn(name = "order_id", insertable = false, updatable = false)
+    private OmsOrder order;
 
     @Column(name = "quantity")
     private Integer quantity;

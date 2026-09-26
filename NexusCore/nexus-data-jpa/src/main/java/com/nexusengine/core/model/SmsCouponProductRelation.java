@@ -20,9 +20,15 @@ public class SmsCouponProductRelation implements Serializable {
 
     @Column(name = "coupon_id")
     private Long couponId;
+    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
+    @jakarta.persistence.JoinColumn(name = "coupon_id", insertable = false, updatable = false)
+    private SmsCoupon coupon;
 
     @Column(name = "product_id")
     private Long productId;
+    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
+    @jakarta.persistence.JoinColumn(name = "product_id", insertable = false, updatable = false)
+    private PmsProduct product;
 
     @Column(name = "product_name")
     @Schema(title = "Product name")
