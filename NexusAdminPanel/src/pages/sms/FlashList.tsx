@@ -4,6 +4,9 @@ import { useNavigate } from 'react-router';
 import { getFlashListAPI, flashUpdateStatusByIdAPI, flashDeleteByIdAPI, flashCreateAPI, flashUpdateByIdAPI } from '@/apis/flash';
 import type { SmsFlashPromotion } from '@/types/flash';
 import dayjs from 'dayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 const FlashList: React.FC = () => {
   const navigate = useNavigate();
@@ -119,16 +122,22 @@ const FlashList: React.FC = () => {
             value={editData?.title || ''}
             onChange={(e) => setEditData(prev => ({ ...prev!, title: e.target.value }))}
           />
-          <TextField
-            fullWidth margin="normal" label="Start Date (YYYY-MM-DD)"
-            value={editData?.startDate?.split('T')[0] || ''}
-            onChange={(e) => setEditData(prev => ({ ...prev!, startDate: e.target.value }))}
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DatePicker
+            label="Start Date"
+            format="DD/MM/YYYY"
+            value={editData?.startDate ? dayjs(editData.startDate) : null}
+            onChange={(newValue) => setEditData(prev => ({ ...prev!, startDate: newValue ? newValue.format('YYYY-MM-DD') : '' }))}
+            slotProps={{ textField: { fullWidth: true, margin: 'normal' } }}
           />
-          <TextField
-            fullWidth margin="normal" label="End Date (YYYY-MM-DD)"
-            value={editData?.endDate?.split('T')[0] || ''}
-            onChange={(e) => setEditData(prev => ({ ...prev!, endDate: e.target.value }))}
+          <DatePicker
+            label="End Date"
+            format="DD/MM/YYYY"
+            value={editData?.endDate ? dayjs(editData.endDate) : null}
+            onChange={(newValue) => setEditData(prev => ({ ...prev!, endDate: newValue ? newValue.format('YYYY-MM-DD') : '' }))}
+            slotProps={{ textField: { fullWidth: true, margin: 'normal' } }}
           />
+        </LocalizationProvider>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen(false)}>Cancel</Button>
