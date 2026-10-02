@@ -69,14 +69,44 @@ public class PmsPortalReviewServiceImpl implements PmsPortalReviewService {
         if (param.mediaList() != null && !param.mediaList().isEmpty()) {
             List<PmsReviewMedia> mediaList = new ArrayList<>();
             List<String> picUrls = new ArrayList<>();
+            
+            io.minio.MinioClient minioClient = io.minio.MinioClient.builder()
+                    .endpoint("http://minio:9000")
+                    .credentials("minioadmin", "minioadmin")
+                    .build();
+                    
             for (var m : param.mediaList()) {
+                String mediaUrl = m.mediaUrl();
+                // Move from temp folder to final folder if it's a new upload
+                if (mediaUrl.contains("public/users/comments/temp_" + member.getId())) {
+                    try {
+                        String oldObjectName = mediaUrl.substring(mediaUrl.indexOf("public/users/comments/temp_"));
+                        String uuidAndExt = oldObjectName.substring(oldObjectName.lastIndexOf("/") + 1);
+                        String newObjectName = "public/users/comments/" + member.getId() + "/" + saved.getId() + "/" + uuidAndExt;
+                        
+                        minioClient.copyObject(
+                                io.minio.CopyObjectArgs.builder()
+                                        .bucket("nexus-media")
+                                        .object(newObjectName)
+                                        .source(io.minio.CopySource.builder()
+                                                .bucket("nexus-media")
+                                                .object(oldObjectName)
+                                                .build())
+                                        .build());
+                        
+                        mediaUrl = "http://localhost:9000/nexus-media/" + newObjectName;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                
                 PmsReviewMedia media = new PmsReviewMedia();
                 media.setReviewId(saved.getId());
                 media.setMediaType(m.mediaType());
-                media.setMediaUrl(m.mediaUrl());
+                media.setMediaUrl(mediaUrl);
                 media.setSortOrder(m.sortOrder());
                 mediaList.add(media);
-                picUrls.add(m.mediaUrl());
+                picUrls.add(mediaUrl);
             }
             reviewMediaRepository.saveAll(mediaList);
             saved.setMediaList(mediaList);
@@ -141,20 +171,30 @@ public class PmsPortalReviewServiceImpl implements PmsPortalReviewService {
 
     @Override
     public Map<String, String> uploadMedia(MultipartFile file) {
-        // Simple local mock upload for testing
         try {
-            String filename = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
-            String dir = System.getProperty("user.dir") + "/uploads/";
-            File dirFile = new File(dir);
-            if (!dirFile.exists()) dirFile.mkdirs();
-            File dest = new File(dir + filename);
-            file.transferTo(dest);
+            var member = memberService.getCurrentMember();
+            Long userId = member != null ? member.getId() : 0L;
+            String originalFilename = file.getOriginalFilename();
+            String ext = originalFilename != null && originalFilename.contains(".") ? originalFilename.substring(originalFilename.lastIndexOf(".")) : ".png";
+            String uuid = UUID.randomUUID().toString();
+            String objectName = "public/users/comments/temp_" + userId + "/" + uuid + ext;
+            
+            io.minio.MinioClient minioClient = io.minio.MinioClient.builder()
+                    .endpoint("http://minio:9000") // Docker internal host
+                    .credentials("minioadmin", "minioadmin")
+                    .build();
+                    
+            minioClient.putObject(io.minio.PutObjectArgs.builder()
+                    .bucket("nexus-media")
+                    .object(objectName)
+                    .stream(file.getInputStream(), file.getSize(), -1)
+                    .contentType(file.getContentType())
+                    .build());
             
             Map<String, String> result = new HashMap<>();
-            // Assuming we serve uploads statically or mock it
-            result.put("url", "/uploads/" + filename); 
+            result.put("url", "http://localhost:9000/nexus-media/" + objectName); 
             return result;
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new RuntimeException("Upload failed", e);
         }
     }
