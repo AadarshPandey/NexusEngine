@@ -1,5 +1,7 @@
 package com.nexusengine.core.portal.service.impl;
 
+import com.nexusengine.core.model.PmsCommentReply;
+import com.nexusengine.core.repository.PmsCommentReplyRepository;
 import com.nexusengine.core.common.api.CommonPage;
 import com.nexusengine.core.model.PmsReview;
 import com.nexusengine.core.model.PmsReviewMedia;
@@ -34,6 +36,7 @@ public class PmsPortalReviewServiceImpl implements PmsPortalReviewService {
     private final PmsCommentRepository commentRepository;
     private final PmsProductRepository productRepository;
     private final PmsBrandRepository brandRepository;
+    private final PmsCommentReplyRepository commentReplyRepository;
 
     @Override
     public CommonPage<PmsReview> list(Long productId, Integer pageNum, Integer pageSize) {
@@ -80,34 +83,58 @@ public class PmsPortalReviewServiceImpl implements PmsPortalReviewService {
             pics = String.join(",", picUrls);
         }
         
-        // Also save to PmsComment for backward compatibility
-        PmsComment comment = new PmsComment();
-        comment.setProductId(param.productId());
-        comment.setMemberNickName(member.getNickname());
-        comment.setMemberIcon(member.getIcon());
-        comment.setStar(param.rating());
-        comment.setContent(param.content());
-        comment.setCreateTime(java.time.LocalDateTime.now());
-        comment.setShowStatus(1);
-        comment.setLikesCount(0);
-        comment.setReadCount(0);
-        comment.setReplyCount(0);
-        comment.setPics(pics);
-        
-        PmsProduct product = productRepository.findById(param.productId()).orElse(null);
-        if (product != null) {
-            comment.setProductName(product.getName());
-            comment.setProductAttribute(product.getSubTitle());
+        if (param.parentId() == null) {
+            // Also save to PmsComment for backward compatibility
+            PmsComment comment = new PmsComment();
+            comment.setProductId(param.productId());
+            comment.setMemberNickName(member.getNickname());
+            comment.setMemberIcon(member.getIcon());
+            comment.setStar(param.rating());
+            comment.setContent(param.content());
+            comment.setCreateTime(java.time.LocalDateTime.now());
+            comment.setShowStatus(1);
+            comment.setLikesCount(0);
+            comment.setReadCount(0);
+            comment.setReplyCount(0);
+            comment.setPics(pics);
             
-            if (product.getBrandId() != null) {
-                PmsBrand brand = brandRepository.findById(product.getBrandId()).orElse(null);
-                if (brand != null) {
-                    brand.setProductCommentCount((brand.getProductCommentCount() == null ? 0 : brand.getProductCommentCount()) + 1);
-                    brandRepository.save(brand);
+            PmsProduct product = productRepository.findById(param.productId()).orElse(null);
+            if (product != null) {
+                comment.setProductName(product.getName());
+                comment.setProductAttribute(product.getSubTitle());
+            }
+            commentRepository.save(comment);
+        } else {
+            // It's a reply! Save to PmsCommentReply
+            PmsReview parentReview = reviewRepository.findById(param.parentId()).orElse(null);
+            if (parentReview != null) {
+                PmsComment parentComment = commentRepository.findFirstByProductIdAndContentOrderByIdDesc(parentReview.getProductId(), parentReview.getContent());
+                if (parentComment != null) {
+                    PmsCommentReply reply = new PmsCommentReply();
+                    reply.setCommentId(parentComment.getId()); 
+                    reply.setMemberNickName(member.getNickname());
+                    reply.setMemberIcon(member.getIcon());
+                    reply.setContent(param.content());
+                    reply.setCreateTime(java.time.LocalDateTime.now());
+                    reply.setType(0); // 0->Member Reply
+                    commentReplyRepository.save(reply);
+                    
+                    // Increment reply_count on the parent comment
+                    parentComment.setReplyCount((parentComment.getReplyCount() == null ? 0 : parentComment.getReplyCount()) + 1);
+                    commentRepository.save(parentComment);
                 }
             }
         }
-        commentRepository.save(comment);
+        
+        // Universally update brand's comment count for both comments and replies
+        PmsProduct product = productRepository.findById(param.productId()).orElse(null);
+        if (product != null && product.getBrandId() != null) {
+            PmsBrand brand = brandRepository.findById(product.getBrandId()).orElse(null);
+            if (brand != null) {
+                brand.setProductCommentCount((brand.getProductCommentCount() == null ? 0 : brand.getProductCommentCount()) + 1);
+                brandRepository.save(brand);
+            }
+        }
         
         return saved;
     }
