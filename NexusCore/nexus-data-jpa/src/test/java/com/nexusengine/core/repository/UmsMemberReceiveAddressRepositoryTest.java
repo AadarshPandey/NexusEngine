@@ -8,8 +8,14 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @DataJpaTest
 class UmsMemberReceiveAddressRepositoryTest {
 
+    private final UmsMemberReceiveAddressRepository repository;
+
     @Autowired
-    private UmsMemberReceiveAddressRepository repository;
+    UmsMemberReceiveAddressRepositoryTest(UmsMemberReceiveAddressRepository repository) {
+        this.repository = repository;
+    }
+
+
 
     @Test
     void testContextLoads() {

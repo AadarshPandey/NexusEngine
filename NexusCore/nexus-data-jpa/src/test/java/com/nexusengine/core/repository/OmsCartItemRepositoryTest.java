@@ -7,9 +7,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @DataJpaTest
 class OmsCartItemRepositoryTest {
+    private final OmsCartItemRepository repository;
 
     @Autowired
-    private OmsCartItemRepository repository;
+    OmsCartItemRepositoryTest(OmsCartItemRepository repository) {
+        this.repository = repository;
+    }
 
     @Test
     void testContextLoads() {

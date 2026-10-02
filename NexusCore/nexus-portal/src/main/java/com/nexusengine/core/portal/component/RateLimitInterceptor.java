@@ -3,32 +3,34 @@ package com.nexusengine.core.portal.component;
 import com.nexusengine.core.common.api.CommonResult;
 import com.nexusengine.core.model.UmsMember;
 import com.nexusengine.core.portal.service.UmsMemberService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.HandlerInterceptor;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.redisson.api.RRateLimiter;
 import org.redisson.api.RateIntervalUnit;
 import org.redisson.api.RateType;
 import org.redisson.api.RedissonClient;
-
-import java.util.concurrent.TimeUnit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.HandlerInterceptor;
 
 @Component
 public class RateLimitInterceptor implements HandlerInterceptor {
+    private static final Logger log = LoggerFactory.getLogger(RateLimitInterceptor.class);
 
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(RateLimitInterceptor.class);
+    private final RedissonClient redissonClient;
+    private final UmsMemberService memberService;
+    private final ObjectMapper objectMapper;
 
-    @Autowired
-    private RedissonClient redissonClient;
-    @Autowired
-    private UmsMemberService memberService;
-
-    @Autowired
-    private ObjectMapper objectMapper;
+    public RateLimitInterceptor(RedissonClient redissonClient,
+                                UmsMemberService memberService,
+                                ObjectMapper objectMapper) {
+        this.redissonClient = redissonClient;
+        this.memberService = memberService;
+        this.objectMapper = objectMapper;
+    }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -68,8 +70,6 @@ public class RateLimitInterceptor implements HandlerInterceptor {
         
         return true;
     }
-
-
 
     private void handleRateLimitResponse(HttpServletResponse response, long retryAfterSeconds) throws Exception {
         response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());

@@ -108,7 +108,7 @@ const Checkout: React.FC = () => {
         couponId: selectedCouponId ? (selectedCouponId as number) : undefined
       });
       
-      const order = ((orderRes as any).data).order;
+      const order = orderRes.data.order;
       
       // 2. Import Razorpay APIs
       const { createRazorpayOrder, verifyRazorpayPayment } = await import('../api/order');
@@ -138,7 +138,7 @@ const Checkout: React.FC = () => {
       }
 
       // 5. Open Razorpay Checkout overlay
-      const options = {
+      const options: RazorpayOptions = {
         key: keyId, 
         amount: amount, 
         currency: 'INR',
@@ -146,7 +146,7 @@ const Checkout: React.FC = () => {
         description: `Payment for Order #${order.orderSn}`,
         image: 'https://cdn.razorpay.com/logos/FF7H1D9qU0R55R_medium.png',
         order_id: razorpayOrderId,
-        handler: async function (response: any) {
+        handler: async function (response: RazorpayResponse) {
           try {
             await verifyRazorpayPayment(
               order.id, 
@@ -179,7 +179,7 @@ const Checkout: React.FC = () => {
       };
       
       const rzp = new window.Razorpay(options);
-      rzp.on('payment.failed', function (response: any){
+      rzp.on('payment.failed', function (response: RazorpayFailedResponse){
         alert(`Payment Failed: ${response.error.description}`);
       });
       rzp.open();

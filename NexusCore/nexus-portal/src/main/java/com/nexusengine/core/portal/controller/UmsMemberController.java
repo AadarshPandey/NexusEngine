@@ -77,7 +77,7 @@ public class UmsMemberController {
                     .build());
             return CommonResult.success("http://localhost:9000/nexus-media/public/users/" + filename);
         } catch (Exception e) {
-            e.printStackTrace();
+            org.slf4j.LoggerFactory.getLogger(UmsMemberController.class).error("Failed to upload avatar", e);
             return CommonResult.failed(e.getMessage());
         }
     }

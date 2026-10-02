@@ -99,7 +99,9 @@ public class WebLogAspect {
             String paramStr = "";
             try {
                 paramStr = objectMapper.writeValueAsString(webLog.getParameter());
-            } catch (Exception e) {}
+            } catch (Exception e) {
+                LOGGER.warn("Failed to serialize parameters", e);
+            }
             paramStr = paramStr.replaceAll("\"(?i)(.*?password.*?)\":\"[^\"]+\"", "\"$1\":\"***\"");
             if (!paramStr.isEmpty()) {
                 try {

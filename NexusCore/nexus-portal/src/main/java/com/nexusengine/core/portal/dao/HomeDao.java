@@ -5,7 +5,6 @@ import com.nexusengine.core.model.PmsProduct;
 import com.nexusengine.core.portal.domain.FlashPromotionProduct;
 import com.nexusengine.core.repository.PmsBrandRepository;
 import com.nexusengine.core.repository.PmsProductRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
@@ -18,10 +17,13 @@ import java.util.List;
  */
 @Repository
 public class HomeDao {
-    @Autowired
-    private PmsProductRepository productRepository;
-    @Autowired
-    private PmsBrandRepository brandRepository;
+    private final PmsProductRepository productRepository;
+    private final PmsBrandRepository brandRepository;
+
+    public HomeDao(PmsProductRepository productRepository, PmsBrandRepository brandRepository) {
+        this.productRepository = productRepository;
+        this.brandRepository = brandRepository;
+    }
 
     public List<PmsBrand> getRecommendBrandList(int offset, int limit) {
         // Return first N brands sorted by sort order

@@ -10,7 +10,6 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.util.Date;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -18,6 +17,14 @@ import static org.junit.jupiter.api.Assertions.*;
 @DataJpaTest
 @Testcontainers
 class UmsAdminRepositoryTest {
+
+    private final UmsAdminRepository adminRepository;
+
+    @Autowired
+    UmsAdminRepositoryTest(UmsAdminRepository adminRepository) {
+        this.adminRepository = adminRepository;
+    }
+
 
     @Container
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15-alpine")
@@ -34,8 +41,6 @@ class UmsAdminRepositoryTest {
         registry.add("spring.flyway.enabled", () -> "false");
     }
 
-    @Autowired
-    private UmsAdminRepository adminRepository;
 
     @Test
     void saveAndFind() {

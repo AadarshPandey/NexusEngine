@@ -8,8 +8,14 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @DataJpaTest
 class UmsRoleMenuRelationRepositoryTest {
 
+    private final UmsRoleMenuRelationRepository repository;
+
     @Autowired
-    private UmsRoleMenuRelationRepository repository;
+    UmsRoleMenuRelationRepositoryTest(UmsRoleMenuRelationRepository repository) {
+        this.repository = repository;
+    }
+
+
 
     @Test
     void testContextLoads() {

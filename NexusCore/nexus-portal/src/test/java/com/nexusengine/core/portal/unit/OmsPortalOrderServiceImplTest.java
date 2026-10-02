@@ -126,6 +126,7 @@ public class OmsPortalOrderServiceImplTest {
         try {
             when(mockLock.tryLock(anyLong(), anyLong(), any())).thenReturn(true);
         } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
 
         Map<String, Object> result = orderService.generateOrder(orderParam);
@@ -164,6 +165,7 @@ public class OmsPortalOrderServiceImplTest {
         try {
             when(mockLock.tryLock(anyLong(), anyLong(), any())).thenReturn(true);
         } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
 
         PmsProduct mockProduct = new PmsProduct();

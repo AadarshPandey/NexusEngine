@@ -29,14 +29,20 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Testcontainers
 public class CouponConcurrencyIntegrationTest {
 
-    @Autowired
-    private UmsMemberCouponService memberCouponService;
+    private final UmsMemberCouponService memberCouponService;
+    private final SmsCouponRepository couponRepository;
+    private final UmsMemberRepository memberRepository;
 
     @Autowired
-    private SmsCouponRepository couponRepository;
+    CouponConcurrencyIntegrationTest(UmsMemberCouponService memberCouponService, SmsCouponRepository couponRepository, UmsMemberRepository memberRepository) {
+        this.memberCouponService = memberCouponService;
+        this.couponRepository = couponRepository;
+        this.memberRepository = memberRepository;
+    }
 
-    @Autowired
-    private UmsMemberRepository memberRepository;
+
+
+
 
     @BeforeEach
     void setUp() {
@@ -71,6 +77,7 @@ public class CouponConcurrencyIntegrationTest {
                     memberCouponService.add(couponId);
                     successCount.incrementAndGet();
                 } catch (Exception ignored) {
+                    // Expected: concurrent threads failing to claim coupon throw exceptions
                 }
             });
         }

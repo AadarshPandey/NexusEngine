@@ -67,7 +67,7 @@ public class PmsProductSemanticSearchServiceImpl implements PmsProductSemanticSe
             
             // Sleep to avoid rate limits
             try {
-                Thread.sleep(1000);
+                java.util.concurrent.TimeUnit.MILLISECONDS.sleep(1000);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }

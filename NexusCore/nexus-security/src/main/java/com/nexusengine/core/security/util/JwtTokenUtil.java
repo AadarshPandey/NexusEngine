@@ -1,6 +1,5 @@
 package com.nexusengine.core.security.util;
 
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.jwt.JWTUtil;
 import org.slf4j.Logger;
@@ -9,10 +8,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Date;
 
 /**
  * {"alg": "HS512","typ": "JWT"}
@@ -45,8 +43,8 @@ public class JwtTokenUtil {
      * @return the result of the operation
      */
     private String generateToken(Map<String, Object> claims) {
-        // Fix 8: Standard JWT exp claim must be in seconds since epoch, not milliseconds.
-        long expireTime = (System.currentTimeMillis() / 1000) + expiration;
+        // Standard JWT exp claim must be in seconds since epoch, not milliseconds.
+        long expireTime = Instant.now().getEpochSecond() + expiration;
         claims.put("exp", expireTime);
         return JWTUtil.createToken(claims, getSigningKey());
     }
@@ -112,7 +110,7 @@ public class JwtTokenUtil {
                 return false;
             }
             long expTime = exp instanceof Long ? (Long) exp : ((Number) exp).longValue();
-            return expTime < (System.currentTimeMillis() / 1000);
+            return expTime < Instant.now().getEpochSecond();
         } catch (Exception e) {
             return true;
         }
@@ -123,16 +121,16 @@ public class JwtTokenUtil {
      * @param token the token
      * @return the result of the operation
      */
-    private Date getExpiredDateFromToken(String token) {
+    private Instant getExpiredDateFromToken(String token) {
         Map<String, Object> payload = getPayloadFromToken(token);
         if (payload == null) {
             return null;
         }
         Object exp = payload.get("exp");
         if (exp instanceof Long) {
-            return new Date((Long) exp);
+            return Instant.ofEpochSecond((Long) exp);
         } else if (exp instanceof Integer) {
-            return new Date(((Integer) exp).longValue());
+            return Instant.ofEpochSecond(((Integer) exp).longValue());
         }
         return null;
     }
@@ -146,7 +144,7 @@ public class JwtTokenUtil {
         Map<String, Object> claims = new HashMap<>();
         String prefix = userDetails.getClass().getSimpleName().contains("Admin") ? "admin:" : "member:";
         claims.put(CLAIM_KEY_USERNAME, prefix + userDetails.getUsername());
-        claims.put(CLAIM_KEY_CREATED, new Date());
+        claims.put(CLAIM_KEY_CREATED, Instant.now().toEpochMilli());
         return generateToken(claims);
     }
 
@@ -171,7 +169,7 @@ public class JwtTokenUtil {
         if (tokenRefreshJustBefore(token, 30 * 60)) {
             return token;
         } else {
-            payload.put(CLAIM_KEY_CREATED, new Date());
+            payload.put(CLAIM_KEY_CREATED, Instant.now().toEpochMilli());
             return generateToken(payload);
         }
     }
@@ -185,16 +183,16 @@ public class JwtTokenUtil {
             return false;
         }
         Object created = payload.get(CLAIM_KEY_CREATED);
-        Date createdDate = null;
+        Instant createdInstant = null;
         if (created instanceof Long) {
-            createdDate = new Date((Long) created);
-        } else if (created instanceof LocalDateTime) {
-            createdDate = (Date) created;
+            createdInstant = Instant.ofEpochMilli((Long) created);
+        } else if (created instanceof Number) {
+            createdInstant = Instant.ofEpochMilli(((Number) created).longValue());
         }
-        if (createdDate == null) {
+        if (createdInstant == null) {
             return false;
         }
-        Date refreshDate = new Date();
-        return refreshDate.after(createdDate) && refreshDate.before(DateUtil.offsetSecond(createdDate, time));
+        Instant now = Instant.now();
+        return now.isAfter(createdInstant) && now.isBefore(createdInstant.plusSeconds(time));
     }
 }

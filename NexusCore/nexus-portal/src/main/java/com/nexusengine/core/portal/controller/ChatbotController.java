@@ -8,8 +8,6 @@ import com.nexusengine.core.model.AiChatConversation;
 import com.nexusengine.core.repository.AiChatConversationRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,12 +21,11 @@ import java.util.List;
 @RequestMapping("/portal/chat")
 public class ChatbotController {
 
-    @Qualifier("portalChatServiceImpl")
     private final NexusChatService chatService;
-    
     private final AiChatConversationRepository conversationRepository;
-    @Autowired
-    public ChatbotController(@Qualifier("portalChatServiceImpl") NexusChatService chatService, AiChatConversationRepository conversationRepository) {
+
+    public ChatbotController(@Qualifier("portalChatServiceImpl") NexusChatService chatService,
+                             AiChatConversationRepository conversationRepository) {
         this.chatService = chatService;
         this.conversationRepository = conversationRepository;
     }

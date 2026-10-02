@@ -44,7 +44,9 @@ class AbstractNexusChatServiceTest {
                 java.lang.reflect.Field f = AbstractNexusChatService.class.getDeclaredField("vectorStore");
                 f.setAccessible(true);
                 f.set(this, vectorStore);
-            } catch (Exception e) {}
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to inject vectorStore", e);
+            }
         }
     }
 

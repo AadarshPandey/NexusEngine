@@ -4,8 +4,18 @@ import { Box, IconButton, Typography } from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
+export interface Banner {
+  id?: number | string;
+  url?: string;
+  pic?: string;
+  name?: string;
+  title?: string;
+  note?: string;
+  description?: string;
+}
+
 interface BannerCarouselProps {
-  banners: any[];
+  banners: Banner[];
 }
 
 const BannerCarousel: React.FC<BannerCarouselProps> = ({ banners }) => {

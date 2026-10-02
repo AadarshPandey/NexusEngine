@@ -38,11 +38,15 @@ public class UnifiedSecurityConfig {
                 try {
                     UserDetails admin = adminService.loadUserByUsername(username);
                     if (admin != null) return admin;
-                } catch (UsernameNotFoundException e) {}
+                } catch (UsernameNotFoundException e) {
+                    // Ignore, try member fallback
+                }
                 try {
                     UserDetails member = memberService.loadUserByUsername(username);
                     if (member != null) return member;
-                } catch (UsernameNotFoundException e) {}
+                } catch (UsernameNotFoundException e) {
+                    // Ignore, will throw below
+                }
             }
             throw new UsernameNotFoundException("User not found: " + username);
         };

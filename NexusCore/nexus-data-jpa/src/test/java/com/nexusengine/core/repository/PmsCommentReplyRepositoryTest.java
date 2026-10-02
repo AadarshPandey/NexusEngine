@@ -7,9 +7,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @DataJpaTest
 class PmsCommentReplyRepositoryTest {
+    private final PmsCommentReplyRepository repository;
 
     @Autowired
-    private PmsCommentReplyRepository repository;
+    PmsCommentReplyRepositoryTest(PmsCommentReplyRepository repository) {
+        this.repository = repository;
+    }
 
     @Test
     void testContextLoads() {

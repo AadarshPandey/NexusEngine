@@ -8,8 +8,14 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @DataJpaTest
 class UmsAdminLoginLogRepositoryTest {
 
+    private final UmsAdminLoginLogRepository repository;
+
     @Autowired
-    private UmsAdminLoginLogRepository repository;
+    UmsAdminLoginLogRepositoryTest(UmsAdminLoginLogRepository repository) {
+        this.repository = repository;
+    }
+
+
 
     @Test
     void testContextLoads() {

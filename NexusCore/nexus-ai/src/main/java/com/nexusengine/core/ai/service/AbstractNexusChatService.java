@@ -8,7 +8,7 @@ import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.ai.vectorstore.SearchRequest;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 
 import java.util.List;
 import java.util.Map;
@@ -21,17 +21,19 @@ public abstract class AbstractNexusChatService implements NexusChatService {
 
     private final ChatClient chatClient;
     private final ChatClient.Builder chatClientBuilder;
-    
-    @Autowired(required = false)
-    private ChatMemory chatMemory;
-    
-    @Autowired(required = false)
-    private VectorStore vectorStore;
+    @Nullable
+    private final ChatMemory chatMemory;
+    @Nullable
+    private final VectorStore vectorStore;
 
     private final Map<String, ChatClient> sessionClients = new ConcurrentHashMap<>();
 
-    protected AbstractNexusChatService(ChatClient.Builder chatClientBuilder) {
+    protected AbstractNexusChatService(ChatClient.Builder chatClientBuilder,
+                                       @Nullable ChatMemory chatMemory,
+                                       @Nullable VectorStore vectorStore) {
         this.chatClientBuilder = chatClientBuilder;
+        this.chatMemory = chatMemory;
+        this.vectorStore = vectorStore;
         this.chatClient = chatClientBuilder
                 .defaultSystem(getSystemPrompt())
                 .build();

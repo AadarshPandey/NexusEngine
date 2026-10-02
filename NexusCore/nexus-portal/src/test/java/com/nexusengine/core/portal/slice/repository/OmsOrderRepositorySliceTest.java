@@ -24,8 +24,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ActiveProfiles("test")
 public class OmsOrderRepositorySliceTest {
 
+    private final OmsOrderRepository orderRepository;
+
     @Autowired
-    private OmsOrderRepository orderRepository;
+    OmsOrderRepositorySliceTest(OmsOrderRepository orderRepository) {
+        this.orderRepository = orderRepository;
+    }
+
+
 
     @Test
     void save_NewOrder_PersistsAllFields() {

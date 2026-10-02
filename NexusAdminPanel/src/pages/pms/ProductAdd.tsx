@@ -118,10 +118,10 @@ const ProductAdd: React.FC = () => {
               <FormControl fullWidth required>
                 <InputLabel>Product Category</InputLabel>
                 <Select label="Product Category" value={formData.productCategoryId} onChange={e => setFormData({...formData, productCategoryId: e.target.value as string})}>
-                  {categories.map((parent: any) => [
+                  {categories.map((parent: import('@/types/productCate').PmsProductCategoryExt) => [
                     <ListSubheader key={`header-${parent.id}`}>{parent.name}</ListSubheader>,
-                    ...(parent.children || []).map((child: any) => (
-                      <MenuItem key={child.id} value={child.id.toString()} sx={{ pl: 4 }}>
+                    ...(parent.children || []).map((child: import('@/types/productCate').PmsProductCategory) => (
+                      <MenuItem key={child.id} value={child.id!.toString()} sx={{ pl: 4 }}>
                         {child.name}
                       </MenuItem>
                     ))
@@ -133,7 +133,7 @@ const ProductAdd: React.FC = () => {
               <FormControl fullWidth required>
                 <InputLabel>Brand</InputLabel>
                 <Select label="Brand" value={formData.brandId} onChange={e => setFormData({...formData, brandId: e.target.value as string})}>
-                  {brands.map((b: any) => (
+                  {brands.map((b: import('@/types/brand').PmsBrand) => (
                     <MenuItem key={b.id} value={b.id}>{b.name}</MenuItem>
                   ))}
                 </Select>

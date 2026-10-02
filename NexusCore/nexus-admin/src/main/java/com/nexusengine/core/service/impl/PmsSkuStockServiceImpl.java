@@ -38,7 +38,9 @@ public class PmsSkuStockServiceImpl implements PmsSkuStockService {
         String username = "admin";
         try {
             username = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getName();
-        } catch(Exception e) {}
+        } catch(Exception e) {
+            org.slf4j.LoggerFactory.getLogger(PmsSkuStockServiceImpl.class).warn("Failed to get username from security context", e);
+        }
 
         for (PmsSkuStock newSku : filterSkuList) {
             PmsSkuStock oldSku = oldSkus.stream().filter(o -> o.getId().equals(newSku.getId())).findFirst().orElse(null);

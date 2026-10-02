@@ -38,7 +38,7 @@ const ChatWidget: React.FC = () => {
     axios.get(`/api/portal/chat/history?sessionId=${sId}`)
       .then(res => {
         if (res.data.code === 200 && res.data.data) {
-           const history = res.data.data.map((item: any) => ({
+           const history = res.data.data.map((item: ChatMessage) => ({
              role: item.role,
              content: item.content
            }));

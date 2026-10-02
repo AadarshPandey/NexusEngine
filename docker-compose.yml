@@ -97,7 +97,7 @@ services:
       - nexus-network
 
   redis:
-    image: redis:7.2-alpine
+    image: redis:8-alpine
     container_name: redis
     restart: always
     command: redis-server --appendonly yes
@@ -114,7 +114,7 @@ services:
       - nexus-network
 
   rabbitmq:
-    image: rabbitmq:4.1-management
+    image: rabbitmq:4-management
     container_name: rabbitmq
     restart: always
     ports:
@@ -131,7 +131,7 @@ services:
       - nexus-network
 
   elasticsearch:
-    image: elasticsearch:8.15.5
+    image: elasticsearch:8.19.22
     container_name: elasticsearch
     restart: always
     environment:
@@ -170,7 +170,7 @@ services:
   # ─── Observability Stack ───────────────────────────────
 
   prometheus:
-    image: prom/prometheus:v2.54.1
+    image: prom/prometheus:v3.15.0
     container_name: prometheus
     extra_hosts:
       - "host.docker.internal:host-gateway"
@@ -184,7 +184,7 @@ services:
       - nexus-network
 
   grafana:
-    image: grafana/grafana:11.2.0
+    image: grafana/grafana-enterprise:13.2.3
     container_name: grafana
     restart: always
     environment:

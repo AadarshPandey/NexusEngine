@@ -96,7 +96,7 @@ public class PmsPortalReviewServiceImpl implements PmsPortalReviewService {
                         
                         mediaUrl = "http://localhost:9000/nexus-media/" + newObjectName;
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        org.slf4j.LoggerFactory.getLogger(PmsPortalReviewServiceImpl.class).error("Failed to copy media object", e);
                     }
                 }
                 

@@ -8,7 +8,6 @@ import com.nexusengine.core.portal.domain.HomeContentResult;
 import com.nexusengine.core.portal.service.HomeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,17 +36,8 @@ public class HomeController {
 
     public CommonResult<List<PmsProduct>> recommendProductList(@RequestParam(value = "pageSize", defaultValue = "4") Integer pageSize,
                                                                @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
-        try {
-            List<PmsProduct> productList = homeService.recommendProductList(pageSize, pageNum);
-            return CommonResult.success(productList);
-        } catch (Throwable t) {
-            try {
-                java.io.PrintWriter pw = new java.io.PrintWriter(new java.io.FileWriter("/tmp/soe.log"));
-                t.printStackTrace(pw);
-                pw.close();
-            } catch (Exception e) {}
-            throw t;
-        }
+        List<PmsProduct> productList = homeService.recommendProductList(pageSize, pageNum);
+        return CommonResult.success(productList);
     }
 
     @Operation(summary = "Get product cate list Operation")

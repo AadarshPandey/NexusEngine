@@ -178,8 +178,12 @@ export const generateConfirmOrder = (cartIds: number[]) => {
   return request.post<unknown, { data: ConfirmOrderResult }>('/order/generateConfirmOrder', cartIds);
 };
 
+export interface GenerateOrderResult {
+  order: OmsOrderDetail;
+}
+
 export const generateOrder = (orderParam: OrderParam) => {
-  return request.post<unknown, { data: unknown }>('/order/generateOrder', orderParam);
+  return request.post<unknown, { data: GenerateOrderResult }>('/order/generateOrder', orderParam);
 };
 
 export const fetchOrderList = (status: number = -1, pageNum: number = 1, pageSize: number = 5) => {

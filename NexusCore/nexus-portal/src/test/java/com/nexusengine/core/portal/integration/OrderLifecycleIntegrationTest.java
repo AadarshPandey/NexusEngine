@@ -24,17 +24,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Testcontainers
 public class OrderLifecycleIntegrationTest {
 
-    @Autowired
-    private OmsPortalOrderService portalOrderService;
+    private final OmsPortalOrderService portalOrderService;
+    private final OmsOrderRepository orderRepository;
+    private final OmsPaymentTransactionRepository paymentTransactionRepository;
+    private final PmsSkuStockRepository skuStockRepository;
 
     @Autowired
-    private OmsOrderRepository orderRepository;
+    OrderLifecycleIntegrationTest(OmsPortalOrderService portalOrderService, OmsOrderRepository orderRepository, OmsPaymentTransactionRepository paymentTransactionRepository, PmsSkuStockRepository skuStockRepository) {
+        this.portalOrderService = portalOrderService;
+        this.orderRepository = orderRepository;
+        this.paymentTransactionRepository = paymentTransactionRepository;
+        this.skuStockRepository = skuStockRepository;
+    }
 
-    @Autowired
-    private OmsPaymentTransactionRepository paymentTransactionRepository;
 
-    @Autowired
-    private PmsSkuStockRepository skuStockRepository;
+
+
+
 
     @Test
     void paymentWebhook_ValidPayload_CreatesTransactionAndUpdatesOrder() {

@@ -27,6 +27,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @org.junit.jupiter.api.Disabled
 public class PmsProductSemanticSearchServiceIntegrationTest {
 
+    private final PmsProductRepository productRepository;
+    private final PmsProductEmbeddingRepository embeddingRepository;
+    private final PmsProductSemanticSearchService semanticSearchService;
+
+    @Autowired
+    PmsProductSemanticSearchServiceIntegrationTest(PmsProductRepository productRepository, PmsProductEmbeddingRepository embeddingRepository, PmsProductSemanticSearchService semanticSearchService) {
+        this.productRepository = productRepository;
+        this.embeddingRepository = embeddingRepository;
+        this.semanticSearchService = semanticSearchService;
+    }
+
+
     @Container
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(DockerImageName.parse("pgvector/pgvector:pg17").asCompatibleSubstituteFor("postgres"))
             .withDatabaseName("nexuscore")
@@ -36,12 +48,6 @@ public class PmsProductSemanticSearchServiceIntegrationTest {
     private RabbitTemplate rabbitTemplate;
     @MockBean
     private com.nexusengine.core.common.service.RedisService redisService;
-    @Autowired
-    private PmsProductRepository productRepository;
-    @Autowired
-    private PmsProductEmbeddingRepository embeddingRepository;
-    @Autowired
-    private PmsProductSemanticSearchService semanticSearchService;
 
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) throws Exception {

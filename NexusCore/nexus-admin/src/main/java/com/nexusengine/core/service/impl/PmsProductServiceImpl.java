@@ -219,7 +219,9 @@ public class PmsProductServiceImpl implements PmsProductService {
             String username = "admin";
             try {
                 username = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getName();
-            } catch(Exception e) {}
+            } catch(Exception e) {
+                LOGGER.warn("Failed to get username from security context", e);
+            }
             record.setReviewerName(username);
             records.add(record);
         }

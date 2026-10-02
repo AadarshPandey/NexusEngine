@@ -8,8 +8,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @DataJpaTest
 class PmsReviewMediaRepositoryTest {
 
+    private final PmsReviewMediaRepository repository;
+
     @Autowired
-    private PmsReviewMediaRepository repository;
+    PmsReviewMediaRepositoryTest(PmsReviewMediaRepository repository) {
+        this.repository = repository;
+    }
 
     @Test
     void testContextLoads() {

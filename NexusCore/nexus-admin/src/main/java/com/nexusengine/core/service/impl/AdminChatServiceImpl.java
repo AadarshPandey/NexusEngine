@@ -11,8 +11,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class AdminChatServiceImpl extends AbstractNexusChatService {
 
-    public AdminChatServiceImpl(ChatClient.Builder chatClientBuilder) {
-        super(chatClientBuilder);
+    public AdminChatServiceImpl(ChatClient.Builder chatClientBuilder,
+                                org.springframework.ai.chat.memory.ChatMemory chatMemory,
+                                org.springframework.ai.vectorstore.VectorStore vectorStore) {
+        super(chatClientBuilder, chatMemory, vectorStore);
     }
 
     @Override

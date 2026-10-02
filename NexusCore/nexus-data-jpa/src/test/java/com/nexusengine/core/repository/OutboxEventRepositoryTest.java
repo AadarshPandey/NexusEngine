@@ -7,9 +7,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @DataJpaTest
 class OutboxEventRepositoryTest {
+    private final OutboxEventRepository repository;
 
     @Autowired
-    private OutboxEventRepository repository;
+    OutboxEventRepositoryTest(OutboxEventRepository repository) {
+        this.repository = repository;
+    }
 
     @Test
     void testContextLoads() {

@@ -3,7 +3,6 @@ package com.nexusengine.core.portal.component;
 import com.nexusengine.core.portal.service.OmsPortalOrderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -13,9 +12,12 @@ import org.springframework.stereotype.Component;
  */
 //@Component
 public class OrderTimeOutCancelTask {
-    private final Logger LOGGER = LoggerFactory.getLogger(OrderTimeOutCancelTask.class);
-    @Autowired
-    private OmsPortalOrderService portalOrderService;
+    private static final Logger LOGGER = LoggerFactory.getLogger(OrderTimeOutCancelTask.class);
+    private final OmsPortalOrderService portalOrderService;
+
+    public OrderTimeOutCancelTask(OmsPortalOrderService portalOrderService) {
+        this.portalOrderService = portalOrderService;
+    }
 
         /**
      * Executes the operation.

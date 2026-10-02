@@ -1,7 +1,6 @@
 package com.nexusengine.core.common.service.impl;
 
 import com.nexusengine.core.common.service.RedisService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import java.util.List;
@@ -14,8 +13,11 @@ import java.util.concurrent.TimeUnit;
  * Provides core functionality and operations for RedisServiceImpl.
  */
 public class RedisServiceImpl implements RedisService {
-    @Autowired
-    private RedisTemplate<String, Object> redisTemplate;
+    private final RedisTemplate<String, Object> redisTemplate;
+
+    public RedisServiceImpl(RedisTemplate<String, Object> redisTemplate) {
+        this.redisTemplate = redisTemplate;
+    }
 
     @Override
     public void set(String key, Object value, long time) {

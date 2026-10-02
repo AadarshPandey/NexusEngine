@@ -7,9 +7,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @DataJpaTest
 class OmsOrderReturnApplyRepositoryTest {
+    private final OmsOrderReturnApplyRepository repository;
 
     @Autowired
-    private OmsOrderReturnApplyRepository repository;
+    OmsOrderReturnApplyRepositoryTest(OmsOrderReturnApplyRepository repository) {
+        this.repository = repository;
+    }
 
     @Test
     void testContextLoads() {

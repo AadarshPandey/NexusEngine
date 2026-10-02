@@ -4,7 +4,7 @@ import { Box, Typography, Button, Grid, Paper, CircularProgress, Divider, Stack,
 import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch, RootState } from '../store';
 import { fetchProductDetail } from '../api/product';
-import type { PmsPortalProductDetail } from '../api/product';
+import type { PmsPortalProductDetail, PmsSkuStock } from '../api/product';
 import { addItemToCart } from '../store/slices/cartSlice';
 import DOMPurify from 'dompurify';
 import { ReviewSection } from '../components/ReviewSection';
@@ -25,7 +25,7 @@ const ProductDetail: React.FC = () => {
   
   // SKU Selection State
   const [selectedAttributes, setSelectedAttributes] = useState<Record<string, string>>({});
-  const [activeSku, setActiveSku] = useState<any>(null);
+  const [activeSku, setActiveSku] = useState<PmsSkuStock | null>(null);
 
   useEffect(() => {
     if (id) {
@@ -60,7 +60,7 @@ const ProductDetail: React.FC = () => {
           const spData = JSON.parse(sku.spData || '[]');
           // Match if the SKU contains ALL of the attributes the user has currently selected
           return Object.keys(newSelections).every(key => 
-            spData.some((sp: any) => sp.key === key && sp.value === newSelections[key])
+            spData.some((sp: {key: string, value: string}) => sp.key === key && sp.value === newSelections[key])
           );
         } catch (e) {
           return false;
@@ -76,7 +76,7 @@ const ProductDetail: React.FC = () => {
         const partialSku = productDetail.skuStockList.find(sku => {
            try {
              const sp = JSON.parse(sku.spData || '[]');
-             return sp.some((s: any) => s.key === 'Color' && s.value === newSelections['Color']);
+             return sp.some((s: {key: string, value: string}) => s.key === 'Color' && s.value === newSelections['Color']);
            } catch(e) { return false; }
         });
         if (partialSku && partialSku.pic) {

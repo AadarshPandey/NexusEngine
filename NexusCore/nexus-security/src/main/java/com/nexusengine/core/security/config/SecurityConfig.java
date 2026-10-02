@@ -4,10 +4,10 @@ import com.nexusengine.core.security.component.DynamicAuthorizationManager;
 import com.nexusengine.core.security.component.JwtAuthenticationTokenFilter;
 import com.nexusengine.core.security.component.RestAuthenticationEntryPoint;
 import com.nexusengine.core.security.component.RestfulAccessDeniedHandler;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.lang.Nullable;
 import org.springframework.security.authorization.AuthenticatedAuthorizationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -37,7 +37,7 @@ public class SecurityConfig {
                           RestfulAccessDeniedHandler restfulAccessDeniedHandler, 
                           RestAuthenticationEntryPoint restAuthenticationEntryPoint, 
                           JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter, 
-                          @Autowired(required = false) DynamicAuthorizationManager dynamicAuthorizationManager) {
+                          @Nullable DynamicAuthorizationManager dynamicAuthorizationManager) {
         this.ignoreUrlsConfig = ignoreUrlsConfig;
         this.restfulAccessDeniedHandler = restfulAccessDeniedHandler;
         this.restAuthenticationEntryPoint = restAuthenticationEntryPoint;

@@ -124,7 +124,7 @@ const Profile: React.FC = () => {
     setRefundReason('');
     try {
       const res = await getReturnReasons();
-      const reasons = (res as any).data || res || [];
+      const reasons = res.data || [];
       setReturnReasonsList(reasons);
       if (reasons.length > 0) {
         setRefundReason(reasons[0].name);
@@ -324,14 +324,14 @@ const Profile: React.FC = () => {
                                   }
 
                                   // 3. Open Razorpay Checkout
-                                  const options = {
+                                  const options: RazorpayOptions = {
                                     key: keyId, 
                                     amount: amount, 
                                     currency: 'INR',
                                     name: 'Nexus Engine',
                                     description: `Payment for Order #${order.orderSn}`,
                                     order_id: razorpayOrderId,
-                                    handler: async function (response: any) {
+                                    handler: async function (response: RazorpayResponse) {
                                       try {
                                         // 4. Verify payment on backend
                                         await verifyRazorpayPayment(
@@ -354,7 +354,7 @@ const Profile: React.FC = () => {
                                     theme: { color: '#3399cc' }
                                   };
                                   const rzp = new window.Razorpay(options);
-                                  rzp.on('payment.failed', function (response: any){
+                                  rzp.on('payment.failed', function (response: RazorpayFailedResponse){
                                     alert(`Payment Failed: ${response.error.description}`);
                                   });
                                   rzp.open();

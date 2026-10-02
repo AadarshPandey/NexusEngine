@@ -3,23 +3,25 @@ package com.nexusengine.core.service.impl;
 import com.nexusengine.core.model.SmsFlashPromotion;
 import com.nexusengine.core.repository.SmsFlashPromotionRepository;
 import com.nexusengine.core.service.SmsFlashPromotionService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
 public class SmsFlashPromotionServiceImpl implements SmsFlashPromotionService {
-    @Autowired
-    private SmsFlashPromotionRepository flashPromotionRepository;
+    private final SmsFlashPromotionRepository flashPromotionRepository;
+
+    public SmsFlashPromotionServiceImpl(SmsFlashPromotionRepository flashPromotionRepository) {
+        this.flashPromotionRepository = flashPromotionRepository;
+    }
 
     @Override
     public int create(SmsFlashPromotion flashPromotion) {
-        flashPromotion.setCreateTime(java.time.LocalDateTime.now());
+        flashPromotion.setCreateTime(LocalDateTime.now());
         flashPromotionRepository.save(flashPromotion);
         return 1;
     }

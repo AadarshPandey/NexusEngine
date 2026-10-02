@@ -33,9 +33,12 @@ class FlywayMigrationTest {
         registry.add("spring.jpa.hibernate.ddl-auto", () -> "validate");
         registry.add("spring.flyway.enabled", () -> "true");
     }
+    private final DataSource dataSource;
 
     @Autowired
-    private DataSource dataSource;
+    FlywayMigrationTest(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 
     @Test
     void testFlywayMigrations() {

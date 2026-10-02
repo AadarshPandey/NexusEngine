@@ -23,11 +23,17 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 @Testcontainers
 public class OutboxEventIntegrationTest {
 
-    @Autowired
-    private OutboxEventRepository outboxEventRepository;
+    private final OutboxEventRepository outboxEventRepository;
+    private final OutboxEventProcessor outboxEventProcessor;
 
     @Autowired
-    private OutboxEventProcessor outboxEventProcessor;
+    OutboxEventIntegrationTest(OutboxEventRepository outboxEventRepository, OutboxEventProcessor outboxEventProcessor) {
+        this.outboxEventRepository = outboxEventRepository;
+        this.outboxEventProcessor = outboxEventProcessor;
+    }
+
+
+
 
     @Test
     void outboxEvent_PendingToSent_PublishesToRabbitMQ() {

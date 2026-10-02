@@ -7,9 +7,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @DataJpaTest
 class AiChatConversationRepositoryTest {
+    private final AiChatConversationRepository repository;
 
     @Autowired
-    private AiChatConversationRepository repository;
+    AiChatConversationRepositoryTest(AiChatConversationRepository repository) {
+        this.repository = repository;
+    }
 
     @Test
     void testContextLoads() {

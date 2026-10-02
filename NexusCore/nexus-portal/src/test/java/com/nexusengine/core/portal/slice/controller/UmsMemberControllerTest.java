@@ -32,8 +32,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 public class UmsMemberControllerTest {
 
+    private final MockMvc mockMvc;
+
     @Autowired
-    private MockMvc mockMvc;
+    UmsMemberControllerTest(MockMvc mockMvc) {
+        this.mockMvc = mockMvc;
+    }
+
+
 
     @MockBean
     private UmsMemberService memberService;

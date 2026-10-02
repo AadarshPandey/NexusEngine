@@ -4,7 +4,6 @@ import com.nexusengine.core.search.service.EsProductService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -14,8 +13,11 @@ import org.springframework.stereotype.Component;
 public class ProductChangeConsumer {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProductChangeConsumer.class);
 
-    @Autowired
-    private EsProductService esProductService;
+    private final EsProductService esProductService;
+
+    public ProductChangeConsumer(EsProductService esProductService) {
+        this.esProductService = esProductService;
+    }
 
     @RabbitListener(queues = "nexuscore.product.sync.queue")
     public void handleProductChange(String message) {

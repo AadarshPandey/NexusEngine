@@ -8,8 +8,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @DataJpaTest
 class SmsCouponHistoryRepositoryTest {
 
+    private final SmsCouponHistoryRepository repository;
+
     @Autowired
-    private SmsCouponHistoryRepository repository;
+    SmsCouponHistoryRepositoryTest(SmsCouponHistoryRepository repository) {
+        this.repository = repository;
+    }
 
     @Test
     void testContextLoads() {

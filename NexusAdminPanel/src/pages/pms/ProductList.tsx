@@ -6,6 +6,29 @@ import http from '@/utils/http';
 import { getBrandListAPI } from '@/apis/brand';
 import { getProductCategoryListWithChildrenAPI } from '@/apis/productCate';
 
+interface PmsProductOperateLog {
+  id?: number;
+  productId?: number;
+  priceOld?: number;
+  priceNew?: number;
+  operateMan?: string;
+  createTime?: string;
+}
+
+interface PmsProductVerifyRecord {
+  id?: number;
+  productId?: number;
+  createTime?: string;
+  reviewerName?: string;
+  status?: number;
+  detail?: string;
+}
+
+interface PmsSpData {
+  key: string;
+  value: string;
+}
+
 const ProductList: React.FC = () => {
   const [products, setProducts] = useState<import('@/types/product').PmsProduct[]>([]);
   const [brands, setBrands] = useState<import('@/types/brand').PmsBrand[]>([]);
@@ -29,11 +52,11 @@ const ProductList: React.FC = () => {
   const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
   const [verifyStatus, setVerifyStatus] = useState<number>(1);
   const [verifyDetail, setVerifyDetail] = useState('');
-  const [operateLogs, setOperateLogs] = useState<any[]>([]);
-  const [verifyRecords, setVerifyRecords] = useState<any[]>([]);
+  const [operateLogs, setOperateLogs] = useState<PmsProductOperateLog[]>([]);
+  const [verifyRecords, setVerifyRecords] = useState<PmsProductVerifyRecord[]>([]);
   const [skuModalOpen, setSkuModalOpen] = useState(false);
-  const [skuList, setSkuList] = useState<any[]>([]);
-  const [editingSkuList, setEditingSkuList] = useState<any[]>([]);
+  const [skuList, setSkuList] = useState<import('@/types/skuStock').PmsSkuStock[]>([]);
+  const [editingSkuList, setEditingSkuList] = useState<import('@/types/skuStock').PmsSkuStock[]>([]);
   const [isEditingSku, setIsEditingSku] = useState(false);
 
   const saveSkuChanges = async () => {
@@ -192,9 +215,9 @@ const ProductList: React.FC = () => {
               <InputLabel>Product Category</InputLabel>
               <Select label="Product Category" value={searchParams.productCategoryId} onChange={(e) => setSearchParams({ ...searchParams, productCategoryId: e.target.value as string })}>
                 <MenuItem value="">Please select</MenuItem>
-                {categories.map((parent: any) => [
+                {categories.map((parent: import('@/types/productCate').PmsProductCategory) => [
                   <ListSubheader key={`header-${parent.id}`}>{parent.name}</ListSubheader>,
-                  ...(parent.children || []).map((child: any) => (
+                  ...((parent as any).children || []).map((child: import('@/types/productCate').PmsProductCategory) => (
                     <MenuItem key={child.id} value={child.id} sx={{ pl: 4 }}>
                       {child.name}
                     </MenuItem>
@@ -364,12 +387,12 @@ const ProductList: React.FC = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {(isEditingSku ? editingSkuList : skuList).map((sku:any, idx:number) => {
+                {(isEditingSku ? editingSkuList : skuList).map((sku: import('@/types/skuStock').PmsSkuStock, idx: number) => {
                   let attrs = '';
                   try {
                     if (sku.spData) {
                       const spData = JSON.parse(sku.spData);
-                      attrs = spData.map((d:any) => `${d.key}: ${d.value}`).join(', ');
+                      attrs = spData.map((d: PmsSpData) => `${d.key}: ${d.value}`).join(', ');
                     }
                   } catch(e) {}
                   return (
@@ -380,7 +403,7 @@ const ProductList: React.FC = () => {
                         {isEditingSku ? (
                           <TextField size="small" type="number" value={sku.price} onChange={e => {
                             const newList = [...editingSkuList];
-                            newList[idx].price = e.target.value;
+                            newList[idx].price = Number(e.target.value);
                             setEditingSkuList(newList);
                           }} />
                         ) : (
@@ -391,7 +414,7 @@ const ProductList: React.FC = () => {
                         {isEditingSku ? (
                           <TextField size="small" type="number" value={sku.stock} onChange={e => {
                             const newList = [...editingSkuList];
-                            newList[idx].stock = e.target.value;
+                            newList[idx].stock = Number(e.target.value);
                             setEditingSkuList(newList);
                           }} />
                         ) : (
@@ -402,7 +425,7 @@ const ProductList: React.FC = () => {
                         {isEditingSku ? (
                           <TextField size="small" type="number" value={sku.lowStock} onChange={e => {
                             const newList = [...editingSkuList];
-                            newList[idx].lowStock = e.target.value;
+                            newList[idx].lowStock = Number(e.target.value);
                             setEditingSkuList(newList);
                           }} />
                         ) : (
@@ -449,7 +472,7 @@ const ProductList: React.FC = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {operateLogs.map((log:any, idx:number) => (
+                {operateLogs.map((log: PmsProductOperateLog, idx: number) => (
                   <TableRow key={idx}>
                     <TableCell>{log.operateMan || 'System'}</TableCell>
                     <TableCell>{log.createTime ? new Date(log.createTime).toLocaleString() : '-'}</TableCell>
@@ -475,7 +498,7 @@ const ProductList: React.FC = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {verifyRecords.map((rec:any, idx:number) => (
+                {verifyRecords.map((rec: PmsProductVerifyRecord, idx: number) => (
                   <TableRow key={idx}>
                     <TableCell>{rec.reviewerName || 'System'}</TableCell>
                     <TableCell>{rec.createTime ? new Date(rec.createTime).toLocaleString() : '-'}</TableCell>

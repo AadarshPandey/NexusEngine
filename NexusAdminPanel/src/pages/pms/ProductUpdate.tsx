@@ -61,7 +61,7 @@ const ProductUpdate: React.FC = () => {
           stock: prodRes.data.stock?.toString() || '',
           productCategoryId: prodRes.data.productCategoryId?.toString() || '',
           brandId: prodRes.data.brandId?.toString() || '',
-          skuStockList: prodRes.data.skuStockList?.length ? prodRes.data.skuStockList.map((sku:any) => ({
+          skuStockList: prodRes.data.skuStockList?.length ? prodRes.data.skuStockList.map((sku: import('@/types/skuStock').PmsSkuStock) => ({
             id: sku.id,
             skuCode: sku.skuCode || '',
             price: sku.price?.toString() || '',
@@ -114,7 +114,7 @@ const ProductUpdate: React.FC = () => {
     try {
       const cleanNumber = (val: string | number) => Number(String(val).replace(/,/g, ''));
       
-      const formattedSkus = formData.skuStockList.map((sku:any) => ({
+      const formattedSkus = formData.skuStockList.map((sku: {id?: number, skuCode: string, price: string, stock: string}) => ({
         id: sku.id,
         skuCode: sku.skuCode,
         price: cleanNumber(sku.price),
@@ -160,10 +160,10 @@ const ProductUpdate: React.FC = () => {
               <FormControl fullWidth required>
                 <InputLabel>Product Category</InputLabel>
                 <Select label="Product Category" value={formData.productCategoryId} onChange={e => setFormData({...formData, productCategoryId: e.target.value as string})}>
-                  {categories.map((parent: any) => [
+                  {categories.map((parent: import('@/types/productCate').PmsProductCategory) => [
                     <ListSubheader key={`header-${parent.id}`}>{parent.name}</ListSubheader>,
-                    ...(parent.children || []).map((child: any) => (
-                      <MenuItem key={child.id} value={child.id.toString()} sx={{ pl: 4 }}>
+                    ...((parent as any).children || []).map((child: import('@/types/productCate').PmsProductCategory) => (
+                      <MenuItem key={child.id} value={child.id?.toString() || ''} sx={{ pl: 4 }}>
                         {child.name}
                       </MenuItem>
                     ))
@@ -175,8 +175,8 @@ const ProductUpdate: React.FC = () => {
               <FormControl fullWidth required>
                 <InputLabel>Brand</InputLabel>
                 <Select label="Brand" value={formData.brandId} onChange={e => setFormData({...formData, brandId: e.target.value as string})}>
-                  {brands.map((b: any) => (
-                    <MenuItem key={b.id} value={b.id.toString()}>{b.name}</MenuItem>
+                  {brands.map((b: import('@/types/brand').PmsBrand) => (
+                    <MenuItem key={b.id} value={b.id?.toString() || ''}>{b.name}</MenuItem>
                   ))}
                 </Select>
               </FormControl>
@@ -200,7 +200,7 @@ const ProductUpdate: React.FC = () => {
             <Grid size={{ xs: 12 }}>
               <Box sx={{ mt: 2, mb: 2 }}>
                 <Typography variant="h6" sx={{ mb: 2 }}>Product SKUs (Variants)</Typography>
-                {formData.skuStockList.map((sku:any, index:number) => (
+                {formData.skuStockList.map((sku: {id?: number, skuCode: string, price: string, stock: string}, index: number) => (
                   <Paper key={index} variant="outlined" sx={{ p: 2, mb: 2 }}>
                     <Grid container spacing={2} alignItems="center">
                       <Grid size={{ xs: 12, md: 3 }}>

@@ -6,8 +6,6 @@ import com.nexusengine.core.portal.domain.CartProduct;
 import com.nexusengine.core.portal.domain.PromotionProduct;
 import com.nexusengine.core.portal.domain.SmsCouponHistoryDetail;
 import com.nexusengine.core.repository.*;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -17,24 +15,35 @@ import java.util.stream.Collectors;
 
 @Repository
 public class PortalProductDao {
-    @Autowired
-    private PmsProductRepository productRepository;
-    @Autowired
-    private PmsProductAttributeRepository productAttributeRepository;
-    @Autowired
-    private PmsSkuStockRepository skuStockRepository;
-    @Autowired
-    private PmsProductLadderRepository productLadderRepository;
-    @Autowired
-    private PmsProductFullReductionRepository productFullReductionRepository;
-    @Autowired
-    private SmsCouponRepository couponRepository;
-    @Autowired
-    private SmsCouponProductRelationRepository couponProductRelationRepository;
-    @Autowired
-    private SmsCouponProductCategoryRelationRepository couponProductCategoryRelationRepository;
-    @Autowired
-    private SmsCouponHistoryRepository couponHistoryRepository;
+    private final PmsProductRepository productRepository;
+    private final PmsProductAttributeRepository productAttributeRepository;
+    private final PmsSkuStockRepository skuStockRepository;
+    private final PmsProductLadderRepository productLadderRepository;
+    private final PmsProductFullReductionRepository productFullReductionRepository;
+    private final SmsCouponRepository couponRepository;
+    private final SmsCouponProductRelationRepository couponProductRelationRepository;
+    private final SmsCouponProductCategoryRelationRepository couponProductCategoryRelationRepository;
+    private final SmsCouponHistoryRepository couponHistoryRepository;
+
+    public PortalProductDao(PmsProductRepository productRepository,
+                            PmsProductAttributeRepository productAttributeRepository,
+                            PmsSkuStockRepository skuStockRepository,
+                            PmsProductLadderRepository productLadderRepository,
+                            PmsProductFullReductionRepository productFullReductionRepository,
+                            SmsCouponRepository couponRepository,
+                            SmsCouponProductRelationRepository couponProductRelationRepository,
+                            SmsCouponProductCategoryRelationRepository couponProductCategoryRelationRepository,
+                            SmsCouponHistoryRepository couponHistoryRepository) {
+        this.productRepository = productRepository;
+        this.productAttributeRepository = productAttributeRepository;
+        this.skuStockRepository = skuStockRepository;
+        this.productLadderRepository = productLadderRepository;
+        this.productFullReductionRepository = productFullReductionRepository;
+        this.couponRepository = couponRepository;
+        this.couponProductRelationRepository = couponProductRelationRepository;
+        this.couponProductCategoryRelationRepository = couponProductCategoryRelationRepository;
+        this.couponHistoryRepository = couponHistoryRepository;
+    }
 
     public CartProduct getCartProduct(Long productId) {
         PmsProduct product = productRepository.findById(productId).orElse(null);

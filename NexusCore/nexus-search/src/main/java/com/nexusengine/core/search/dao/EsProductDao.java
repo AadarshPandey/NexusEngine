@@ -6,10 +6,12 @@ import com.nexusengine.core.repository.PmsProductAttributeValueRepository;
 import com.nexusengine.core.repository.PmsProductRepository;
 import com.nexusengine.core.search.domain.EsProduct;
 import com.nexusengine.core.search.domain.EsProductAttributeValue;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -19,11 +21,16 @@ import java.util.List;
  */
 @Repository
 public class EsProductDao {
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(EsProductDao.class);
-    @Autowired
-    private PmsProductRepository productRepository;
-    @Autowired
-    private PmsProductAttributeValueRepository attributeValueRepository;
+    private static final Logger log = LoggerFactory.getLogger(EsProductDao.class);
+
+    private final PmsProductRepository productRepository;
+    private final PmsProductAttributeValueRepository attributeValueRepository;
+
+    public EsProductDao(PmsProductRepository productRepository,
+                        PmsProductAttributeValueRepository attributeValueRepository) {
+        this.productRepository = productRepository;
+        this.attributeValueRepository = attributeValueRepository;
+    }
 
     /**
      * Get all products formatted for Elasticsearch indexing
@@ -49,7 +56,7 @@ public class EsProductDao {
             esProduct.setName(product.getName());
             esProduct.setSubTitle(product.getSubTitle());
             esProduct.setKeywords(product.getKeywords());
-            esProduct.setPrice(new java.math.BigDecimal(0)); // FAANG Refactor: Delegated to SKU
+            esProduct.setPrice(BigDecimal.ZERO); // FAANG Refactor: Delegated to SKU
             esProduct.setSale(product.getSale());
             esProduct.setNewStatus(product.getNewStatus());
             esProduct.setRecommendStatus(product.getRecommendStatus());
@@ -64,7 +71,7 @@ public class EsProductDao {
             // Use findAll and filter by product for simplicity
             try {
                 attrValues = attributeValueRepository.findAll((root, query, cb) ->
-                        cb.equal(root.get("productId"), product.getId()), org.springframework.data.domain.Pageable.unpaged()).getContent();
+                        cb.equal(root.get("productId"), product.getId()), Pageable.unpaged()).getContent();
             } catch (Exception e) {
                 log.warn("Failed to load attribute values for product {}: {}", product.getId(), e.getMessage());
             }

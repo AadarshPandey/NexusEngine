@@ -32,8 +32,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 public class OmsPortalOrderControllerTest {
 
+    private final MockMvc mockMvc;
+    private final ObjectMapper objectMapper;
+
     @Autowired
-    private MockMvc mockMvc;
+    OmsPortalOrderControllerTest(MockMvc mockMvc, ObjectMapper objectMapper) {
+        this.mockMvc = mockMvc;
+        this.objectMapper = objectMapper;
+    }
+
+
 
     @MockBean
     private OmsPortalOrderService portalOrderService;
@@ -44,8 +52,6 @@ public class OmsPortalOrderControllerTest {
     @MockBean
     private com.nexusengine.core.security.component.DynamicSecurityMetadataSource securityMetadataSource;
 
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @Test
     void generateOrder_Unauthenticated_Returns401() throws Exception {

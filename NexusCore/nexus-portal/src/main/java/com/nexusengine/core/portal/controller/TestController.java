@@ -1,16 +1,18 @@
 package com.nexusengine.core.portal.controller;
 
+import com.nexusengine.core.portal.service.HomeService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.nexusengine.core.portal.service.HomeService;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
 @RequestMapping("/portal/home")
 public class TestController {
+    private static final Logger log = LoggerFactory.getLogger(TestController.class);
+
     private final HomeService homeService;
     private final ObjectMapper objectMapper;
 
@@ -24,13 +26,9 @@ public class TestController {
         try {
             Object result = homeService.recommendProductList(8, 1);
             return objectMapper.writeValueAsString(result);
-        } catch (Throwable t) {
-            try {
-                java.io.PrintWriter pw = new java.io.PrintWriter(new java.io.FileWriter("/tmp/soe.log"));
-                t.printStackTrace(pw);
-                pw.close();
-            } catch (Exception e) {}
-            return "Failed, check /tmp/soe.log";
+        } catch (Exception e) {
+            log.error("Test SOE endpoint failed", e);
+            return "Failed: " + e.getMessage();
         }
     }
 }
