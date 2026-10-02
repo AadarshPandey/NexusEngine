@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, Button, TextField, Rating, List, ListItem, Divider, Avatar, IconButton } from '@mui/material';
+import { Box, Typography, Button, TextField, Rating, List, ListItem, Divider, Avatar, IconButton, Collapse } from '@mui/material';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import request from '../utils/request';
 
@@ -26,6 +26,9 @@ export const ReviewSection: React.FC<{ productId: number }> = ({ productId }) =>
   const [rating, setRating] = useState<number | null>(5);
   const [mediaList, setMediaList] = useState<MediaParam[]>([]);
   
+  const [replyingTo, setReplyingTo] = useState<number | null>(null);
+  const [replyText, setReplyText] = useState('');
+
   useEffect(() => {
     loadReviews();
   }, [productId]);
@@ -33,10 +36,23 @@ export const ReviewSection: React.FC<{ productId: number }> = ({ productId }) =>
   const loadReviews = async () => {
     try {
       const res = await request.get<unknown, { data: { list: Review[] } }>(`/review/product/${productId}`);
-      setReviews(res.data.list || []);
+      const fetchedReviews = res.data.list || [];
+      
+      // Load replies for each review
+      const reviewsWithReplies = await Promise.all(
+        fetchedReviews.map(async (review) => {
+          try {
+            const repliesRes = await request.get<unknown, { data: Review[] }>(`/review/${review.id}/replies`);
+            return { ...review, replies: repliesRes.data || [] };
+          } catch (err) {
+            return { ...review, replies: [] };
+          }
+        })
+      );
+      
+      setReviews(reviewsWithReplies);
     } catch (error) {
       console.error('Failed to load reviews', error);
-    } finally {
     }
   };
 
@@ -53,7 +69,6 @@ export const ReviewSection: React.FC<{ productId: number }> = ({ productId }) =>
         setMediaList([...mediaList, { mediaType: file.type.startsWith('video/') ? 'VIDEO' : 'IMAGE', mediaUrl: res.data.url, sortOrder: mediaList.length }]);
       } catch (err) {
         alert('Upload failed');
-      } finally {
       }
     }
   };
@@ -74,6 +89,24 @@ export const ReviewSection: React.FC<{ productId: number }> = ({ productId }) =>
       loadReviews();
     } catch (e) {
       alert('Failed to post review. Please login.');
+    }
+  };
+
+  const handleReplySubmit = async (parentId: number) => {
+    if (!replyText.trim()) return;
+    try {
+      await request.post('/review/create', {
+        productId,
+        parentId,
+        rating: 5,
+        content: replyText,
+        mediaList: []
+      });
+      setReplyText('');
+      setReplyingTo(null);
+      loadReviews();
+    } catch (e) {
+      alert('Failed to post reply. Please login.');
     }
   };
 
@@ -108,12 +141,16 @@ export const ReviewSection: React.FC<{ productId: number }> = ({ productId }) =>
         {reviews.map(review => (
           <React.Fragment key={review.id}>
             <ListItem alignItems="flex-start" sx={{ flexDirection: 'column' }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1, width: '100%' }}>
                 <Avatar sx={{ width: 32, height: 32 }}>U</Avatar>
                 <Rating value={review.rating} readOnly size="small" />
                 <Typography variant="caption" color="text.secondary">
                   {new Date(review.createdTime).toLocaleDateString()}
                 </Typography>
+                <Box sx={{ flexGrow: 1 }} />
+                <Button size="small" onClick={() => setReplyingTo(replyingTo === review.id ? null : review.id)}>
+                  {replyingTo === review.id ? 'Cancel' : 'Reply'}
+                </Button>
               </Box>
               <Typography variant="body1">{review.content}</Typography>
               {review.mediaList && review.mediaList.map((m, i) => (
@@ -125,6 +162,35 @@ export const ReviewSection: React.FC<{ productId: number }> = ({ productId }) =>
                   )}
                 </Box>
               ))}
+
+              <Collapse in={replyingTo === review.id} timeout="auto" unmountOnExit sx={{ width: '100%', mt: 2 }}>
+                <Box sx={{ display: 'flex', gap: 1 }}>
+                  <TextField 
+                    fullWidth 
+                    size="small" 
+                    placeholder="Write a reply..." 
+                    value={replyText}
+                    onChange={e => setReplyText(e.target.value)}
+                  />
+                  <Button variant="contained" onClick={() => handleReplySubmit(review.id)}>Reply</Button>
+                </Box>
+              </Collapse>
+
+              {review.replies && review.replies.length > 0 && (
+                <List sx={{ width: '100%', ml: 4, mt: 1, bgcolor: '#f9f9f9', borderRadius: 1 }}>
+                  {review.replies.map(reply => (
+                    <ListItem key={reply.id} sx={{ flexDirection: 'column', alignItems: 'flex-start' }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
+                        <Avatar sx={{ width: 24, height: 24 }}>R</Avatar>
+                        <Typography variant="caption" color="text.secondary">
+                          {new Date(reply.createdTime).toLocaleDateString()}
+                        </Typography>
+                      </Box>
+                      <Typography variant="body2">{reply.content}</Typography>
+                    </ListItem>
+                  ))}
+                </List>
+              )}
             </ListItem>
             <Divider variant="inset" component="li" />
           </React.Fragment>
