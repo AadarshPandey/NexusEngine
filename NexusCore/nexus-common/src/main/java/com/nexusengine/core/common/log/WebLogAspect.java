@@ -101,7 +101,15 @@ public class WebLogAspect {
                 paramStr = objectMapper.writeValueAsString(webLog.getParameter());
             } catch (Exception e) {}
             paramStr = paramStr.replaceAll("\"(?i)(.*?password.*?)\":\"[^\"]+\"", "\"$1\":\"***\"");
-            logMap.put("parameter", cn.hutool.json.JSONUtil.parse(paramStr));
+            if (!paramStr.isEmpty()) {
+                try {
+                    logMap.put("parameter", cn.hutool.json.JSONUtil.parse(paramStr));
+                } catch (Exception e) {
+                    logMap.put("parameter", paramStr);
+                }
+            } else {
+                logMap.put("parameter", "Unable to serialize parameters");
+            }
         }
 
         LOGGER.info(Markers.appendEntries(logMap), logJson);

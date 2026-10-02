@@ -177,7 +177,7 @@ export const ReviewSection: React.FC<{ productId: number }> = ({ productId }) =>
               </Collapse>
 
               {review.replies && review.replies.length > 0 && (
-                <List sx={{ width: '100%', ml: 4, mt: 1, bgcolor: '#f9f9f9', borderRadius: 1 }}>
+                <List sx={{ width: '100%', ml: 4, mt: 1, bgcolor: 'action.hover', borderRadius: 1 }}>
                   {review.replies.map(reply => (
                     <ListItem key={reply.id} sx={{ flexDirection: 'column', alignItems: 'flex-start' }}>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
