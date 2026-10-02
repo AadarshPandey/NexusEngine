@@ -89,12 +89,12 @@ const ProductDetail: React.FC = () => {
   };
 
   const currentCartQuantity = cartItems.find(item => item.productId === productDetail?.product.id)?.quantity || 0;
+  const isInCart = currentCartQuantity > 0;
   
   // Display Price & Stock based on SKU selection
   const displayPrice = activeSku ? activeSku.price : productDetail?.product.price;
   const displayStock = activeSku ? Math.max(0, activeSku.stock - (activeSku.lockStock || 0)) : (productDetail ? productDetail.product.stock : 0);
   const isOutOfStock = !displayStock || displayStock <= 0;
-  const isMaxQuantityReached = displayStock ? currentCartQuantity >= displayStock : false;
 
   // Has user selected all required attributes?
   const requiredAttributes = productDetail?.productAttributeList?.filter(a => a.type === 0) || [];
@@ -221,9 +221,9 @@ const ProductDetail: React.FC = () => {
                 color="primary" 
                 fullWidth 
                 onClick={handleAddToCart}
-                disabled={addingToCart || isOutOfStock || isMaxQuantityReached || !isFullySelected}
+                disabled={addingToCart || isOutOfStock || isInCart || !isFullySelected}
               >
-                {addingToCart ? 'Adding...' : !isFullySelected ? 'Select Options' : isMaxQuantityReached ? 'Max Quantity in Cart' : 'Add to Cart'}
+                {addingToCart ? 'Adding...' : isInCart ? 'Item already in cart' : !isFullySelected ? 'Select Options' : 'Add to Cart'}
               </Button>
             </Box>
 
