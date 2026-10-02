@@ -17,6 +17,10 @@ import {
 } from '@mui/material';
 import { getCouponByIdAPI, couponUpdateByIdAPI } from '@/apis/coupon';
 import type { SmsCouponExt } from '@/types/coupon';
+import dayjs from 'dayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 
 const CouponUpdate: React.FC = () => {
   const navigate = useNavigate();
@@ -179,33 +183,32 @@ const CouponUpdate: React.FC = () => {
               </Select>
             </FormControl>
 
-            <TextField
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DateTimePicker
               label="Enable Time"
-              type="datetime-local"
-              InputLabelProps={{ shrink: true }}
-              value={formData.enableTime || ''}
-              onChange={e => setFormData({ ...formData, enableTime: e.target.value })}
-              fullWidth
+              format="DD/MM/YYYY HH:mm"
+              value={formData.enableTime ? dayjs(formData.enableTime) : null}
+              onChange={(newValue) => setFormData({ ...formData, enableTime: newValue ? newValue.format('YYYY-MM-DDTHH:mm') : '' })}
+              slotProps={{ textField: { fullWidth: true, sx: { mb: 2 } } }}
             />
 
-            <Box sx={{ display: 'flex', gap: 2 }}>
-              <TextField
+            <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+              <DateTimePicker
                 label="Start Time"
-                type="datetime-local"
-                InputLabelProps={{ shrink: true }}
-                value={formData.startTime || ''}
-                onChange={e => setFormData({ ...formData, startTime: e.target.value })}
-                fullWidth
+                format="DD/MM/YYYY HH:mm"
+                value={formData.startTime ? dayjs(formData.startTime) : null}
+                onChange={(newValue) => setFormData({ ...formData, startTime: newValue ? newValue.format('YYYY-MM-DDTHH:mm') : '' })}
+                slotProps={{ textField: { fullWidth: true } }}
               />
-              <TextField
+              <DateTimePicker
                 label="End Time"
-                type="datetime-local"
-                InputLabelProps={{ shrink: true }}
-                value={formData.endTime || ''}
-                onChange={e => setFormData({ ...formData, endTime: e.target.value })}
-                fullWidth
+                format="DD/MM/YYYY HH:mm"
+                value={formData.endTime ? dayjs(formData.endTime) : null}
+                onChange={(newValue) => setFormData({ ...formData, endTime: newValue ? newValue.format('YYYY-MM-DDTHH:mm') : '' })}
+                slotProps={{ textField: { fullWidth: true } }}
               />
             </Box>
+          </LocalizationProvider>
 
             <TextField
               label="Note"
