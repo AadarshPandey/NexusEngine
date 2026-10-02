@@ -18,6 +18,7 @@ public record PmsPortalProductDetail(
     @Schema(title = "Sku stock list") List<PmsSkuStock> skuStockList,
     @Schema(title = "Product ladder list") List<PmsProductLadder> productLadderList,
     @Schema(title = "Product full reduction list") List<PmsProductFullReduction> productFullReductionList,
-    @Schema(title = "Coupon list") List<SmsCoupon> couponList
+    @Schema(title = "Coupon list") List<SmsCoupon> couponList,
+    @Schema(title = "Is a flash sale currently active globally?") Boolean flashSaleActive
 ) {
 }

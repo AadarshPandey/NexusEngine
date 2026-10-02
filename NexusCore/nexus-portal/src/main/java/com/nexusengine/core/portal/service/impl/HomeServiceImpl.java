@@ -57,7 +57,8 @@ public class HomeServiceImpl implements HomeService {
             java.time.LocalTime currentTime = java.time.LocalTime.now();
             
             // Find active promotion event today
-            List<SmsFlashPromotion> promotions = flashPromotionRepository.findByStatusAndStartDateLessThanEqualAndEndDateGreaterThanEqual(1, now, now);
+            java.time.LocalDate today = java.time.LocalDate.now();
+            List<SmsFlashPromotion> promotions = flashPromotionRepository.findByStatusAndStartDateLessThanEqualAndEndDateGreaterThanEqual(1, today, today);
             if (!promotions.isEmpty()) {
                 SmsFlashPromotion promotion = promotions.get(0);
                 
@@ -68,7 +69,7 @@ public class HomeServiceImpl implements HomeService {
                     SmsFlashPromotionSession currentSession = currentSessionOpt.get();
                     
                     // Set times based on today + session time
-                    java.time.LocalDate today = java.time.LocalDate.now();
+                    today = java.time.LocalDate.now();
                     hfpStartTime = (java.time.LocalDateTime.of(today, currentSession.getStartTime()));
                     hfpEndTime = (java.time.LocalDateTime.of(today, currentSession.getEndTime()));
                     

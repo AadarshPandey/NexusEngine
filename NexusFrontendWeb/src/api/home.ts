@@ -16,6 +16,7 @@ export interface PmsProduct {
   sale: number;
   price: number;
   promotionPrice: number;
+  promotionType?: number;
   subTitle: string;
   description: string;
   stock: number;

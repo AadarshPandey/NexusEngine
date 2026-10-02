@@ -20,6 +20,7 @@ const mockProduct: PmsProduct = {
   sale: 50,
   price: 999.99,
   promotionPrice: 899.99,
+  promotionType: 1,
   subTitle: 'The ultimate smartphone experience.',
   description: 'Features an edge-to-edge display.',
   stock: 1000,
@@ -35,7 +36,7 @@ describe('ProductCard Component', () => {
 
     expect(screen.getByText('Nexus Phone Pro')).toBeInTheDocument();
     expect(screen.getByText('The ultimate smartphone experience.')).toBeInTheDocument();
-    expect(screen.getByText('₹999.99')).toBeInTheDocument();
+    expect(screen.getByText('₹899.99')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /view details/i })).toHaveAttribute('href', '/product/1');
   });
 });

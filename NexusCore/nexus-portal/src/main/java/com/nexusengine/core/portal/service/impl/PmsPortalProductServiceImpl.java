@@ -33,6 +33,7 @@ public class PmsPortalProductServiceImpl implements PmsPortalProductService {
     private final PmsProductLadderRepository productLadderRepository;
     private final PmsProductFullReductionRepository productFullReductionRepository;
     private final PortalProductDao portalProductDao;
+    private final SmsFlashPromotionRepository flashPromotionRepository;
 
     private void initializeMediaList(List<PmsProduct> products) {
         if (products != null) {
@@ -94,7 +95,7 @@ public class PmsPortalProductServiceImpl implements PmsPortalProductService {
         if (product != null && product.getMediaList() != null) {
             org.hibernate.Hibernate.initialize(product.getMediaList());
         }
-        if (product == null) return new PmsPortalProductDetail(null, null, null, null, null, null, null, null);
+        if (product == null) return new PmsPortalProductDetail(null, null, null, null, null, null, null, null, null);
         
         PmsBrand brand = null;
         if (product.getBrandId() != null) {
@@ -124,7 +125,11 @@ public class PmsPortalProductServiceImpl implements PmsPortalProductService {
         
         List<com.nexusengine.core.model.SmsCoupon> couponList = portalProductDao.getAvailableCouponList(product.getId(), product.getProductCategoryId());
         
-        return new PmsPortalProductDetail(product, brand, productAttributeList, valueList, skuStockList, productLadderList, productFullReductionList, couponList);
+        java.time.LocalDate today = java.time.LocalDate.now();
+        List<SmsFlashPromotion> promotions = flashPromotionRepository.findByStatusAndStartDateLessThanEqualAndEndDateGreaterThanEqual(1, today, today);
+        Boolean flashSaleActive = !promotions.isEmpty();
+        
+        return new PmsPortalProductDetail(product, brand, productAttributeList, valueList, skuStockList, productLadderList, productFullReductionList, couponList, flashSaleActive);
     }
 
     private PmsProductCategoryNode covert(PmsProductCategory item, List<PmsProductCategory> allList) {

@@ -92,7 +92,10 @@ const ProductDetail: React.FC = () => {
   const isInCart = currentCartQuantity > 0;
   
   // Display Price & Stock based on SKU selection
-  const displayPrice = activeSku ? activeSku.price : productDetail?.product.price;
+  const isPromotionActive = productDetail?.product.promotionType === 1 || productDetail?.flashSaleActive;
+  const displayPrice = activeSku 
+    ? (isPromotionActive && activeSku.promotionPrice ? activeSku.promotionPrice : activeSku.price) 
+    : (isPromotionActive && productDetail?.product.promotionPrice ? productDetail.product.promotionPrice : productDetail?.product.price);
   const displayStock = activeSku ? Math.max(0, activeSku.stock - (activeSku.lockStock || 0)) : (productDetail ? productDetail.product.stock : 0);
   const isOutOfStock = !displayStock || displayStock <= 0;
 

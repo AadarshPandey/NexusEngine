@@ -7,5 +7,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface SmsFlashPromotionRepository extends JpaRepository<SmsFlashPromotion, Long> {
-    List<SmsFlashPromotion> findByStatusAndStartDateLessThanEqualAndEndDateGreaterThanEqual(Integer status, LocalDateTime startDate, LocalDateTime endDate);
+    org.springframework.data.domain.Page<SmsFlashPromotion> findByTitleContaining(String title, org.springframework.data.domain.Pageable pageable);
+    List<SmsFlashPromotion> findByStatusAndStartDateLessThanEqualAndEndDateGreaterThanEqual(Integer status, java.time.LocalDate startDate, java.time.LocalDate endDate);
 }

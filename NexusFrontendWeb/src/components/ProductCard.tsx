@@ -25,7 +25,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           {product.subTitle}
         </Typography>
         <Typography variant="h5" color="primary" sx={{ fontWeight: 'bold' }}>
-          ₹{product.price?.toFixed(2)}
+          ₹{(product.promotionType === 1 && product.promotionPrice ? product.promotionPrice : product.price)?.toFixed(2)}
         </Typography>
       </CardContent>
       <CardActions>

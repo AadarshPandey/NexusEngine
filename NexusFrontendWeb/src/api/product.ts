@@ -78,6 +78,7 @@ export interface PmsPortalProductDetail {
   productAttributeValueList: PmsProductAttributeValue[];
   skuStockList: PmsSkuStock[];
   couponList: SmsCoupon[];
+  flashSaleActive: boolean;
 }
 
 export const fetchProductDetail = (id: number) => {
