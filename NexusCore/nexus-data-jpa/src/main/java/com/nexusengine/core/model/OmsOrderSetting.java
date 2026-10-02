@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "oms_order_setting")
+@Table(name = "oms_order_setting", schema = "orders")
 public class OmsOrderSetting implements Serializable {
 
     private static final long serialVersionUID = 1L;

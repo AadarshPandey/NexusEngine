@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
-@Table(name = "oms_payment_transaction")
+@Table(name = "oms_payment_transaction", schema = "orders")
 public class OmsPaymentTransaction implements Serializable {
     
     private static final long serialVersionUID = 1L;
@@ -21,6 +21,7 @@ public class OmsPaymentTransaction implements Serializable {
 
     @Column(name = "order_id", nullable = false)
     private Long orderId;
+    @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "order_id", insertable = false, updatable = false)
     private OmsOrder order;

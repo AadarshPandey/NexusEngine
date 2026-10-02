@@ -28,13 +28,13 @@ public class S3ServiceImpl implements S3Service {
 
     private final S3Presigner s3Presigner;
 
-    @Value("${aws.s3.bucket-name}")
+    @Value("${spring.cloud.aws.s3.bucket-name:nexus-storage}")
     private String bucketName;
-    @Value("${aws.s3.policy.expire:300}")
+    @Value("${spring.cloud.aws.s3.policy.expire:300}")
     private int expireSeconds;
-    @Value("${aws.s3.dir.prefix:nexus/images/}")
+    @Value("${spring.cloud.aws.s3.dir.prefix:nexus/images/}")
     private String dirPrefix;
-    @Value("${aws.s3.endpoint:}")
+    @Value("${spring.cloud.aws.s3.endpoint:}")
     private String endpoint;
 
     @Override

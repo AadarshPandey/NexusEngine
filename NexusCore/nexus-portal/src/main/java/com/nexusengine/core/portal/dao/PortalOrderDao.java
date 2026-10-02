@@ -12,6 +12,7 @@ import com.nexusengine.core.repository.PmsProductRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -22,23 +23,22 @@ import java.util.List;
  * Portal order data access - replaces legacy MyBatis PortalOrderDao
  */
 @Repository
+@RequiredArgsConstructor
 public class PortalOrderDao {
-    @Autowired
-    private OmsOrderRepository orderRepository;
-    @Autowired
-    private OmsOrderItemRepository orderItemRepository;
-    @Autowired
-    private PmsSkuStockRepository skuStockRepository;
+    private final OmsOrderRepository orderRepository;
+    private final OmsOrderItemRepository orderItemRepository;
+    private final PmsSkuStockRepository skuStockRepository;
 
-    @Autowired
-    private PmsProductRepository productRepository;
+    private final PmsProductRepository productRepository;
+    private final com.nexusengine.core.repository.OmsOrderReturnApplyRepository returnApplyRepository;
 
     public OmsOrderDetail getDetail(Long orderId) {
         OmsOrder order = orderRepository.findById(orderId).orElse(null);
         if (order == null) return null;
         
         List<OmsOrderItem> orderItemList = orderItemRepository.findByOrderId(orderId);
-        return new OmsOrderDetail(order, orderItemList);
+        List<com.nexusengine.core.model.OmsOrderReturnApply> applyList = returnApplyRepository.findByOrderIdIn(java.util.Collections.singletonList(orderId));
+        return new OmsOrderDetail(order, orderItemList, applyList);
     }
 
     public List<OmsOrderDetail> getTimeOutOrders(Integer minutes) {
@@ -50,7 +50,8 @@ public class PortalOrderDao {
         for (OmsOrder order : orders) {
             
             List<OmsOrderItem> orderItemList = orderItemRepository.findByOrderId(order.getId());
-            result.add(new OmsOrderDetail(order, orderItemList));
+            List<com.nexusengine.core.model.OmsOrderReturnApply> applyList = returnApplyRepository.findByOrderIdIn(java.util.Collections.singletonList(order.getId()));
+            result.add(new OmsOrderDetail(order, orderItemList, applyList));
         }
         return result;
     }

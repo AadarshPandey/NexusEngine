@@ -48,7 +48,7 @@ const Layout: React.FC = () => {
         <Outlet />
       </Container>
 
-      <Box component="footer" sx={{ py: 3, px: 2, mt: 'auto', backgroundColor: '#f5f5f5' }}>
+      <Box component="footer" sx={{ py: 3, px: 2, mt: 'auto', backgroundColor: 'background.paper' }}>
         <Container maxWidth="sm">
           <Typography variant="body2" color="text.secondary" align="center">
             {'© '} {new Date().getFullYear()} NexusEngine Inc. All rights reserved.

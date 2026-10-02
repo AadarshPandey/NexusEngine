@@ -2,7 +2,12 @@ server:
   port: 8080
 
 spring:
+  docker:
+    compose:
+      enabled: false
   flyway:
+    default-schema: migration
+    schemas: migration,catalog,orders,users,marketing,ai,system,integration
     enabled: true
     baseline-on-migrate: true
     baseline-version: 0
@@ -36,8 +41,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: ${SMTP_USERNAME}
-    password: ${SMTP_PASSWORD}
+    username: ${SMTP_USERNAME:dummy}
+    password: ${SMTP_PASSWORD:dummy}
     properties:
       mail:
         smtp:
@@ -45,8 +50,12 @@ spring:
           starttls:
             enable: true
   ai:
-    google-genai:
-      api-key: ${GEMINI_API_KEY:sk-your-key-here}
+    google:
+      genai:
+        api-key: ${GEMINI_API_KEY:sk-your-key-here}
+        chat:
+          options:
+            model: gemini-2.5-flash
 
 stripe:
   secretKey: ${STRIPE_SECRET_KEY:sk_test_your_key_here}
@@ -56,8 +65,8 @@ stripe:
   cancelUrl: http://localhost:5174/payment/cancel
 
 razorpay:
-  keyId: ${RAZORPAY_KEY_ID}
-  keySecret: ${RAZORPAY_KEY_SECRET}
+  keyId: ${RAZORPAY_KEY_ID:dummy}
+  keySecret: ${RAZORPAY_KEY_SECRET:dummy}
 
 logging:
   level:

@@ -20,7 +20,7 @@ public interface PmsProductAttributeService {
      * @param pageNum the pageNum
      * @return the result of the operation
      */
-    List<PmsProductAttribute> getList(Long cid, Integer type, Integer pageSize, Integer pageNum);
+    org.springframework.data.domain.Page<PmsProductAttribute> getList(Long cid, Integer type, Integer pageSize, Integer pageNum);
 
         /**
      * Executes the operation.

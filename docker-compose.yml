@@ -13,6 +13,7 @@ services:
       - SPRING_PROFILES_ACTIVE=prod
       - RAZORPAY_KEY_ID=${RAZORPAY_KEY_ID}
       - RAZORPAY_KEY_SECRET=${RAZORPAY_KEY_SECRET}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
     depends_on:
       postgres:
         condition: service_healthy
@@ -86,7 +87,7 @@ services:
     ports:
       - "127.0.0.1:5433:5432"
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - ./resource_setup/postgres-data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
@@ -162,7 +163,7 @@ services:
       - "127.0.0.1:9000:9000"
       - "127.0.0.1:9001:9001"
     volumes:
-      - minio-data:/data
+      - ./resource_setup/minio-data:/data
     networks:
       - nexus-network
 
@@ -205,11 +206,9 @@ services:
 # ─── Volumes (Docker-managed, not host-mounted) ───────
 
 volumes:
-  postgres-data:
   redis-data:
   rabbitmq-data:
   elasticsearch-data:
-  minio-data:
   prometheus-data:
   grafana-data:
   nexus-app-logs:

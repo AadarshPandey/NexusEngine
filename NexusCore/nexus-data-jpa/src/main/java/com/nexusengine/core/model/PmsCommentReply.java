@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "pms_comment_reply")
+@Table(name = "pms_comment_reply", schema = "catalog")
 public class PmsCommentReply implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -21,6 +21,7 @@ public class PmsCommentReply implements Serializable {
 
     @Column(name = "comment_id")
     private Long commentId;
+    @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "comment_id", insertable = false, updatable = false)
     private PmsComment comment;

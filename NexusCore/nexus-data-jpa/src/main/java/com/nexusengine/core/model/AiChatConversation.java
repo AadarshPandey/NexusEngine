@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
-@Table(name = "ai_chat_conversation")
+@Table(name = "ai_chat_conversation", schema = "ai")
 public class AiChatConversation implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,6 +18,7 @@ public class AiChatConversation implements Serializable {
 
     @Column(name = "member_id")
     private Long memberId;
+    @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "member_id", insertable = false, updatable = false)
     private UmsMember member;

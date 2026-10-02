@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Paper, Tabs, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Avatar, Divider, CircularProgress, Button, TextField, Dialog, DialogTitle, DialogContent, DialogActions, Chip } from '@mui/material';
+import { Box, Typography, Paper, Tabs, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Avatar, Divider, CircularProgress, Button, TextField, Dialog, DialogTitle, DialogContent, DialogActions, Chip, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { store } from '../store';
 import type { RootState } from '../store';
-import { fetchOrderList, submitReturnApply } from '../api/order';
+import { fetchOrderList, submitReturnApply, getReturnReasons } from '../api/order';
 import type { OmsOrderDetail } from '../api/order';
 import { fetchMemberInfo, fetchAddressList, addAddress, updateProfile } from '../api/member';
 import type { UmsMember, UmsMemberReceiveAddress } from '../api/member';
@@ -67,6 +67,7 @@ const Profile: React.FC = () => {
   const [refundOrder, setRefundOrder] = useState<OmsOrderDetail | null>(null);
   const [selectedRefundItems, setSelectedRefundItems] = useState<(import('../api/order').OmsOrderItem & { returnQuantity: number })[]>([]);
   const [refundReason, setRefundReason] = useState('');
+  const [returnReasonsList, setReturnReasonsList] = useState<{ id: number, name: string }[]>([]);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -117,10 +118,20 @@ const Profile: React.FC = () => {
     }
   };
 
-  const handleOpenRefund = (order: OmsOrderDetail) => {
+  const handleOpenRefund = async (order: OmsOrderDetail) => {
     setRefundOrder(order);
     setSelectedRefundItems([]);
     setRefundReason('');
+    try {
+      const res = await getReturnReasons();
+      const reasons = (res as any).data || res || [];
+      setReturnReasonsList(reasons);
+      if (reasons.length > 0) {
+        setRefundReason(reasons[0].name);
+      }
+    } catch (e) {
+      console.error(e);
+    }
     setOpenRefundDialog(true);
   };
 
@@ -275,6 +286,9 @@ const Profile: React.FC = () => {
                               sx={{ mt: 0.5, fontSize: '0.7rem', height: 20 }} 
                             />
                           )}
+                          <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
+                            Ordered: {totalOrderQty} | Refunded: {totalReturnedQty} | Remaining: {Math.max(0, totalOrderQty - totalReturnedQty)}
+                          </Typography>
                         </TableCell>
                         <TableCell align="right">₹{order.totalAmount?.toFixed(2)}</TableCell>
                         <TableCell align="center">
@@ -489,15 +503,20 @@ const Profile: React.FC = () => {
                 </Paper>
               );
             })}
-            <TextField 
-              label="Reason for Refund" 
-              fullWidth 
-              multiline 
-              rows={3} 
-              value={refundReason} 
-              onChange={e => setRefundReason(e.target.value)} 
-              sx={{ mt: 2 }}
-            />
+            <FormControl fullWidth sx={{ mt: 2 }}>
+              <InputLabel>Reason for Refund</InputLabel>
+              <Select
+                value={refundReason}
+                label="Reason for Refund"
+                onChange={e => setRefundReason(e.target.value)}
+              >
+                {returnReasonsList.map((reason) => (
+                  <MenuItem key={reason.id} value={reason.name}>
+                    {reason.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </Box>
         </DialogContent>
         <DialogActions>

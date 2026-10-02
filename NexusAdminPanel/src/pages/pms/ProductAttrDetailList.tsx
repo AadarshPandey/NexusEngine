@@ -139,7 +139,15 @@ const ProductAttrDetailList: React.FC = () => {
                     <TableCell>
                       {row.inputType === 0 ? 'Manual' : 'Select'}
                     </TableCell>
-                    <TableCell>{row.inputList || '-'}</TableCell>
+                    <TableCell>
+                      {row.inputList ? (
+                        <Select size="small" value={row.inputList.split(',')[0]} sx={{ minWidth: 100 }}>
+                          {row.inputList.split(',').map((opt, idx) => (
+                            <MenuItem key={idx} value={opt}>{opt}</MenuItem>
+                          ))}
+                        </Select>
+                      ) : '-'}
+                    </TableCell>
                     <TableCell>{row.sort}</TableCell>
                     <TableCell align="center">
                       <Button size="small" color="primary" onClick={() => handleOpenDialog(row)}>Edit</Button>

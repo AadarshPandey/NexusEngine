@@ -92,7 +92,7 @@ const ProductDetail: React.FC = () => {
   
   // Display Price & Stock based on SKU selection
   const displayPrice = activeSku ? activeSku.price : productDetail?.product.price;
-  const displayStock = activeSku ? activeSku.stock : productDetail?.product.stock;
+  const displayStock = activeSku ? Math.max(0, activeSku.stock - (activeSku.lockStock || 0)) : (productDetail ? productDetail.product.stock : 0);
   const isOutOfStock = !displayStock || displayStock <= 0;
   const isMaxQuantityReached = displayStock ? currentCartQuantity >= displayStock : false;
 
@@ -119,6 +119,9 @@ const ProductDetail: React.FC = () => {
         price: displayPrice || 0,
         productPic: activeSku?.pic || productDetail.product.pic,
         productName: productDetail.product.name + (activeSku ? ` (${Object.values(selectedAttributes).join(', ')})` : ''),
+        productSkuId: activeSku?.id,
+        productSkuCode: activeSku?.skuCode,
+        productAttr: JSON.stringify(Object.entries(selectedAttributes).map(([key, value]) => ({ key, value }))),
       })).unwrap();
       alert('Item added to cart!');
     } catch (error: unknown) {

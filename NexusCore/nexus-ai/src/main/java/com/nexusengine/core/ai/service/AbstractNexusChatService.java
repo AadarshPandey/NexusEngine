@@ -47,7 +47,7 @@ public abstract class AbstractNexusChatService implements NexusChatService {
                     .call()
                     .content();
         } catch (Exception e) {
-            LOGGER.error("Chatbot error: {}", e.getMessage());
+            LOGGER.error("Chatbot error: ", e);
             return getFallbackMessage();
         }
     }
@@ -83,7 +83,7 @@ public abstract class AbstractNexusChatService implements NexusChatService {
                     .call()
                     .content();
         } catch (Exception e) {
-            LOGGER.error("Chatbot error for session {}: {}", sessionId, e.getMessage());
+            LOGGER.error("Chatbot error for session {}: ", sessionId, e);
             return getFallbackMessage();
         }
     }

@@ -63,9 +63,13 @@ public class DynamicAuthorizationManager implements AuthorizationManager<Request
 
         List<String> needAuthorities = securityDataSource.getConfigAttributesWithPath(path);
         if (CollUtil.isEmpty(needAuthorities)) {
-            // Fix 5: Fail-closed instead of fail-open.
-            // If the endpoint is not explicitly mapped in UmsResource, deny access
-            // instead of blindly allowing any authenticated user (e.g. member) to access it.
+            // If the endpoint is not explicitly mapped in UmsResource, allow access
+            // ONLY if the user is an admin.
+            Authentication currentAuth = authentication.get();
+            if (currentAuth != null && currentAuth.isAuthenticated() &&
+                currentAuth.getPrincipal().getClass().getName().endsWith("AdminUserDetails")) {
+                return new AuthorizationDecision(true);
+            }
             return new AuthorizationDecision(false);
         }
 

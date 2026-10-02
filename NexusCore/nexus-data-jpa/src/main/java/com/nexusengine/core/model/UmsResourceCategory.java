@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "ums_resource_category")
+@Table(name = "ums_resource_category", schema = "users")
 public class UmsResourceCategory implements Serializable {
 
     private static final long serialVersionUID = 1L;

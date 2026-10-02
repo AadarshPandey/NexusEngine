@@ -11,7 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "sms_coupon")
+@Table(name = "sms_coupon", schema = "marketing")
 public class SmsCoupon implements Serializable {
 
     private static final long serialVersionUID = 1L;

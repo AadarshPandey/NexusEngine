@@ -36,6 +36,7 @@ import {
 } from '@mui/icons-material';
 import { getBrandListAPI, brandUpdateShowStatusAPI, brandUpdateFactoryStatusAPI, brandDeleteByIdAPI } from '@/apis/brand';
 import type { PmsBrand } from '@/types/brand';
+import http from '@/utils/http';
 
 const BrandList: React.FC = () => {
   const navigate = useNavigate();
@@ -72,8 +73,12 @@ const BrandList: React.FC = () => {
   
   const handleSortSave = async (id: number) => {
     try {
-      await http.post(`/brand/update/${id}`, { sort: parseInt(editSortValue, 10) });
-      fetchData();
+      await http({
+        url: `/brand/update/${id}`,
+        method: 'post',
+        data: { sort: parseInt(editSortValue, 10) }
+      });
+      fetchList();
       setSnackbar({ open: true, message: 'Sort order updated successfully', severity: 'success' });
       setEditingSortId(null);
     } catch (error) {

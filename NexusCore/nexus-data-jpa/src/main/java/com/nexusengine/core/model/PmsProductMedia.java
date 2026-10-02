@@ -8,7 +8,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @Entity
-@Table(name = "pms_product_media")
+@Table(name = "pms_product_media", schema = "catalog")
 public class PmsProductMedia implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,8 +16,10 @@ public class PmsProductMedia implements Serializable {
 
     @Column(name = "product_id", nullable = false)
     private Long productId;
+    @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "product_id", insertable = false, updatable = false)
+    @com.fasterxml.jackson.annotation.JsonBackReference
     private PmsProduct product;
 
     @Column(name = "media_type", length = 50)

@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "pms_product_verify_record")
+@Table(name = "pms_product_verify_record", schema = "catalog")
 public class PmsProductVerifyRecord implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -21,6 +21,7 @@ public class PmsProductVerifyRecord implements Serializable {
 
     @Column(name = "product_id")
     private Long productId;
+    @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "product_id", insertable = false, updatable = false)
     private PmsProduct product;

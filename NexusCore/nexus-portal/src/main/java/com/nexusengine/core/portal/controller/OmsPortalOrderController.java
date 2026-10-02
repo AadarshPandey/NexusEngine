@@ -107,6 +107,7 @@ public class OmsPortalOrderController {
             return CommonResult.success(result);
         } catch (RuntimeException e) {
             log.error("Failed to create Razorpay order", e);
+            if (e.getMessage() != null) { return CommonResult.failed(e.getMessage()); }
             if (e.getMessage() != null && e.getMessage().contains("Payment service temporarily unavailable")) {
                 return CommonResult.failed("Payment service temporarily unavailable");
             }

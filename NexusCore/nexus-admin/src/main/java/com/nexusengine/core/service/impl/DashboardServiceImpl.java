@@ -25,9 +25,9 @@ public class DashboardServiceImpl implements DashboardService {
     public DashboardInfo getDashboardInfo() {
         LocalDate today = LocalDate.now();
         LocalDate yesterday = today.minusDays(1);
-        LocalDateTime todayStart = LocalDateTime.from(today.atStartOfDay(ZoneId.systemDefault()).toInstant());
-        LocalDateTime yesterdayStart = LocalDateTime.from(yesterday.atStartOfDay(ZoneId.systemDefault()).toInstant());
-        LocalDateTime todayEnd = LocalDateTime.from(today.plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant());
+        LocalDateTime todayStart = today.atStartOfDay();
+        LocalDateTime yesterdayStart = yesterday.atStartOfDay();
+        LocalDateTime todayEnd = today.plusDays(1).atStartOfDay();
 
         // 1. Today's Orders
         Long todayOrders = (Long) entityManager.createQuery("SELECT COUNT(o) FROM OmsOrder o WHERE o.createTime >= :start AND o.createTime < :end AND o.status IN (1,2,3)")
@@ -78,7 +78,7 @@ public class DashboardServiceImpl implements DashboardService {
 
         // User Overview
         LocalDate firstDayOfMonth = today.withDayOfMonth(1);
-        LocalDateTime monthStart = LocalDateTime.from(firstDayOfMonth.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        LocalDateTime monthStart = firstDayOfMonth.atStartOfDay();
         DashboardInfo.UserOverview uOverview = new DashboardInfo.UserOverview(
             (Long) entityManager.createQuery("SELECT COUNT(u) FROM UmsMember u WHERE u.createTime >= :start AND u.createTime < :end").setParameter("start", todayStart).setParameter("end", todayEnd).getSingleResult(),
             (Long) entityManager.createQuery("SELECT COUNT(u) FROM UmsMember u WHERE u.createTime >= :start AND u.createTime < :end").setParameter("start", yesterdayStart).setParameter("end", todayStart).getSingleResult(),
@@ -91,7 +91,7 @@ public class DashboardServiceImpl implements DashboardService {
                 .setParameter("start", monthStart).getSingleResult();
         
         LocalDate firstDayOfWeek = today.minusDays(today.getDayOfWeek().getValue() - 1);
-        LocalDateTime weekStart = LocalDateTime.from(firstDayOfWeek.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        LocalDateTime weekStart = firstDayOfWeek.atStartOfDay();
         Long weekOrders = (Long) entityManager.createQuery("SELECT COUNT(o) FROM OmsOrder o WHERE o.createTime >= :start AND o.status IN (1,2,3)")
                 .setParameter("start", weekStart).getSingleResult();
 
@@ -114,8 +114,8 @@ public class DashboardServiceImpl implements DashboardService {
         List<DashboardInfo.ChartData> chartList = new ArrayList<>();
         for (int i = 14; i >= 0; i--) {
             LocalDate d = today.minusDays(i);
-            LocalDateTime dStart = LocalDateTime.from(d.atStartOfDay(ZoneId.systemDefault()).toInstant());
-            LocalDateTime dEnd = LocalDateTime.from(d.plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant());
+            LocalDateTime dStart = d.atStartOfDay();
+            LocalDateTime dEnd = d.plusDays(1).atStartOfDay();
             
             Long cnt = (Long) entityManager.createQuery("SELECT COUNT(o) FROM OmsOrder o WHERE o.createTime >= :start AND o.createTime < :end AND o.status IN (1,2,3)")
                 .setParameter("start", dStart).setParameter("end", dEnd).getSingleResult();

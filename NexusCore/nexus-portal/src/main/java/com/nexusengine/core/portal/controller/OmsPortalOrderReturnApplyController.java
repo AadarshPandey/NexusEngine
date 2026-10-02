@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @lombok.RequiredArgsConstructor
 public class OmsPortalOrderReturnApplyController {
     private final OmsPortalOrderReturnApplyService returnApplyService;
+    private final com.nexusengine.core.repository.OmsOrderReturnReasonRepository returnReasonRepository;
 
     @Operation(summary = "Create Operation")
     @PostMapping("/create")
@@ -32,5 +33,14 @@ public class OmsPortalOrderReturnApplyController {
             return CommonResult.success(count);
         }
         return CommonResult.failed();
+    }
+
+    @Operation(summary = "List return reasons")
+    @org.springframework.web.bind.annotation.GetMapping("/reasons")
+    public CommonResult<java.util.List<com.nexusengine.core.model.OmsOrderReturnReason>> listReasons() {
+        java.util.List<com.nexusengine.core.model.OmsOrderReturnReason> activeReasons = returnReasonRepository.findAll()
+            .stream().filter(r -> r.getStatus() != null && r.getStatus() == 1)
+            .collect(java.util.stream.Collectors.toList());
+        return CommonResult.success(activeReasons);
     }
 }

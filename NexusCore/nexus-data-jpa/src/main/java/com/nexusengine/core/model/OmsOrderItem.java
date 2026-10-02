@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "oms_order_item")
+@Table(name = "oms_order_item", schema = "orders")
 public class OmsOrderItem implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -22,6 +22,7 @@ public class OmsOrderItem implements Serializable {
     @Column(name = "order_id")
     @Schema(title = "Order id")
     private Long orderId;
+    @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "order_id", insertable = false, updatable = false)
     private OmsOrder order;
@@ -32,6 +33,7 @@ public class OmsOrderItem implements Serializable {
 
     @Column(name = "product_id")
     private Long productId;
+    @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "product_id", insertable = false, updatable = false)
     private PmsProduct product;
@@ -67,6 +69,7 @@ public class OmsOrderItem implements Serializable {
     @Column(name = "product_category_id")
     @Schema(title = "Product category id")
     private Long productCategoryId;
+    @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "product_category_id", insertable = false, updatable = false)
     private PmsProductCategory productCategory;

@@ -11,7 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "oms_order")
+@Table(name = "oms_order", schema = "orders")
 public class OmsOrder implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -23,12 +23,14 @@ public class OmsOrder implements Serializable {
 
     @Column(name = "member_id")
     private Long memberId;
+    @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "member_id", insertable = false, updatable = false)
     private UmsMember member;
 
     @Column(name = "coupon_id")
     private Long couponId;
+    @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "coupon_id", insertable = false, updatable = false)
     private SmsCoupon coupon;

@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "ums_admin_role_relation")
+@Table(name = "ums_admin_role_relation", schema = "users")
 public class UmsAdminRoleRelation implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -19,12 +19,14 @@ public class UmsAdminRoleRelation implements Serializable {
 
     @Column(name = "admin_id")
     private Long adminId;
+    @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "admin_id", insertable = false, updatable = false)
     private UmsAdmin admin;
 
     @Column(name = "role_id")
     private Long roleId;
+    @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "role_id", insertable = false, updatable = false)
     private UmsRole role;

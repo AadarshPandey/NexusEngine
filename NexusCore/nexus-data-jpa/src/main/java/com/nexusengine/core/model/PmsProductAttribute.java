@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "pms_product_attribute")
+@Table(name = "pms_product_attribute", schema = "catalog")
 public class PmsProductAttribute implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -20,6 +20,7 @@ public class PmsProductAttribute implements Serializable {
 
     @Column(name = "product_attribute_category_id")
     private Long productAttributeCategoryId;
+    @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "product_attribute_category_id", insertable = false, updatable = false)
     private PmsProductAttributeCategory productAttributeCategory;

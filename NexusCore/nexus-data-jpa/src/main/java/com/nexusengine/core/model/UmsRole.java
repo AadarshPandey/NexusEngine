@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "ums_role")
+@Table(name = "ums_role", schema = "users")
 public class UmsRole implements Serializable {
 
     private static final long serialVersionUID = 1L;

@@ -21,13 +21,17 @@ import java.util.List;
 @RestController
 @Tag(name = "ChatbotController", description = "AI Customer Support Chatbot")
 @RequestMapping("/portal/chat")
-@RequiredArgsConstructor
 public class ChatbotController {
 
     @Qualifier("portalChatServiceImpl")
     private final NexusChatService chatService;
     
     private final AiChatConversationRepository conversationRepository;
+    @Autowired
+    public ChatbotController(@Qualifier("portalChatServiceImpl") NexusChatService chatService, AiChatConversationRepository conversationRepository) {
+        this.chatService = chatService;
+        this.conversationRepository = conversationRepository;
+    }
 
     @Operation(summary = "Ask the customer support chatbot a question")
     @PostMapping

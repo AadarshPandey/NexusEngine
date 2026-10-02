@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
-@Table(name = "sms_flash_promotion_session")
+@Table(name = "sms_flash_promotion_session", schema = "marketing")
 public class SmsFlashPromotionSession implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

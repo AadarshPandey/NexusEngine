@@ -37,8 +37,17 @@ public class HomeController {
 
     public CommonResult<List<PmsProduct>> recommendProductList(@RequestParam(value = "pageSize", defaultValue = "4") Integer pageSize,
                                                                @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
-        List<PmsProduct> productList = homeService.recommendProductList(pageSize, pageNum);
-        return CommonResult.success(productList);
+        try {
+            List<PmsProduct> productList = homeService.recommendProductList(pageSize, pageNum);
+            return CommonResult.success(productList);
+        } catch (Throwable t) {
+            try {
+                java.io.PrintWriter pw = new java.io.PrintWriter(new java.io.FileWriter("/tmp/soe.log"));
+                t.printStackTrace(pw);
+                pw.close();
+            } catch (Exception e) {}
+            throw t;
+        }
     }
 
     @Operation(summary = "Get product cate list Operation")

@@ -415,7 +415,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
 
         List<OmsOrderDetail> orderDetailList = new ArrayList<>();
         for (OmsOrder omsOrder : orderList) {
-            OmsOrderDetail orderDetail = new OmsOrderDetail(omsOrder, itemMap.getOrDefault(omsOrder.getId(), Collections.emptyList()));
+            OmsOrderDetail orderDetail = new OmsOrderDetail(omsOrder, itemMap.getOrDefault(omsOrder.getId(), Collections.emptyList()), applyMap.getOrDefault(omsOrder.getId(), Collections.emptyList()));
             orderDetailList.add(orderDetail);
         }
         resultPage.setList(orderDetailList);

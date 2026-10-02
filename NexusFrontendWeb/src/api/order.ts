@@ -170,6 +170,10 @@ export const submitReturnApply = (data: unknown) => {
   return request.post<unknown, { data: unknown }>('/returnApply/create', data);
 };
 
+export const getReturnReasons = () => {
+  return request.get<unknown, { data: { id: number, name: string }[] }>('/returnApply/reasons');
+};
+
 export const generateConfirmOrder = (cartIds: number[]) => {
   return request.post<unknown, { data: ConfirmOrderResult }>('/order/generateConfirmOrder', cartIds);
 };

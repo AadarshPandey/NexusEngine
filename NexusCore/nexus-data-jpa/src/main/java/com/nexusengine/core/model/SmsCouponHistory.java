@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "sms_coupon_history")
+@Table(name = "sms_coupon_history", schema = "marketing")
 public class SmsCouponHistory implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -21,12 +21,14 @@ public class SmsCouponHistory implements Serializable {
 
     @Column(name = "coupon_id")
     private Long couponId;
+    @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "coupon_id", insertable = false, updatable = false)
     private SmsCoupon coupon;
 
     @Column(name = "member_id")
     private Long memberId;
+    @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "member_id", insertable = false, updatable = false)
     private UmsMember member;
@@ -56,6 +58,7 @@ public class SmsCouponHistory implements Serializable {
     @Column(name = "order_id")
     @Schema(title = "Order id")
     private Long orderId;
+    @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "order_id", insertable = false, updatable = false)
     private OmsOrder order;

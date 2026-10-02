@@ -72,7 +72,8 @@ public class WebLogAspect {
         webLog.setIp(RequestUtil.getRequestIp(request));
         webLog.setMethod(request.getMethod());
         webLog.setParameter(getParameter(method, joinPoint.getArgs()));
-        webLog.setResult(result);
+        // Don't store the full result — it may contain Hibernate entities with
+        // lazy proxies that trigger StackOverflowError during serialization.
         webLog.setSpendTime((int) (endTime - startTime));
         webLog.setStartTime(startTime);
         webLog.setUri(request.getRequestURI());
@@ -83,14 +84,24 @@ public class WebLogAspect {
         logMap.put("parameter",webLog.getParameter());
         logMap.put("spendTime",webLog.getSpendTime());
         logMap.put("description",webLog.getDescription());
-        String logJson = JSONUtil.parse(webLog).toString();
+        com.fasterxml.jackson.databind.ObjectMapper objectMapper = new com.fasterxml.jackson.databind.ObjectMapper();
+        objectMapper.registerModule(new com.fasterxml.jackson.datatype.jsr310.JavaTimeModule());
+        String logJson = "";
+        try {
+            logJson = objectMapper.writeValueAsString(webLog);
+        } catch (Exception e) {
+            LOGGER.error("Failed to serialize webLog", e);
+        }
         logJson = logJson.replaceAll("\"(?i)(.*?password.*?)\":\"[^\"]+\"", "\"$1\":\"***\"");
         
         // Also mask in the map for structural logging
         if (webLog.getParameter() != null) {
-            String paramStr = JSONUtil.parse(webLog.getParameter()).toString();
+            String paramStr = "";
+            try {
+                paramStr = objectMapper.writeValueAsString(webLog.getParameter());
+            } catch (Exception e) {}
             paramStr = paramStr.replaceAll("\"(?i)(.*?password.*?)\":\"[^\"]+\"", "\"$1\":\"***\"");
-            logMap.put("parameter", JSONUtil.parse(paramStr));
+            logMap.put("parameter", cn.hutool.json.JSONUtil.parse(paramStr));
         }
 
         LOGGER.info(Markers.appendEntries(logMap), logJson);

@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "ums_member_receive_address")
+@Table(name = "ums_member_receive_address", schema = "users")
 public class UmsMemberReceiveAddress implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -20,6 +20,7 @@ public class UmsMemberReceiveAddress implements Serializable {
 
     @Column(name = "member_id")
     private Long memberId;
+    @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "member_id", insertable = false, updatable = false)
     private UmsMember member;

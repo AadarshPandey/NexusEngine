@@ -11,7 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "pms_review")
+@Table(name = "pms_review", schema = "catalog")
 public class PmsReview implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -22,12 +22,14 @@ public class PmsReview implements Serializable {
 
     @Column(name = "product_id")
     private Long productId;
+    @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "product_id", insertable = false, updatable = false)
     private PmsProduct product;
 
     @Column(name = "member_id")
     private Long memberId;
+    @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "member_id", insertable = false, updatable = false)
     private UmsMember member;

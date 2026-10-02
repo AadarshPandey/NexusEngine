@@ -16,13 +16,13 @@ import java.net.URI;
  */
 @Configuration
 public class S3Config {
-    @Value("${aws.s3.endpoint:}")
+    @Value("${spring.cloud.aws.s3.endpoint:}")
     private String endpoint;
-    @Value("${aws.s3.access-key}")
+    @Value("${spring.cloud.aws.credentials.access-key:minioadmin}")
     private String accessKey;
-    @Value("${aws.s3.secret-key}")
+    @Value("${spring.cloud.aws.credentials.secret-key:minioadmin}")
     private String secretKey;
-    @Value("${aws.s3.region:us-east-1}")
+    @Value("${spring.cloud.aws.region.static:us-east-1}")
     private String region;
 
     @Bean

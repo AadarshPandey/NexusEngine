@@ -107,8 +107,8 @@ const ReturnApplyDetail: React.FC = () => {
               fullWidth 
               label="Refund Amount (₹)" 
               type="number"
-              value={returnAmount} 
-              onChange={e => setReturnAmount(parseFloat(e.target.value))}
+              value={Number.isNaN(returnAmount) ? '' : returnAmount} 
+              onChange={e => setReturnAmount(e.target.value ? parseFloat(e.target.value) : 0)}
               disabled={detail.status !== 0}
             />
           </Grid>

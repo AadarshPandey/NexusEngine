@@ -3,13 +3,15 @@ server:
 
 spring:
   flyway:
+    default-schema: migration
+    schemas: migration,catalog,orders,users,marketing,ai,system,integration
     enabled: true
     baseline-on-migrate: true
     baseline-version: 1
   datasource:
     url: jdbc:postgresql://postgres:5432/nexuscore
     username: postgres
-    password: ${DB_PASSWORD}
+    password: ${DB_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
     hikari:
       minimum-idle: 5
@@ -31,10 +33,17 @@ spring:
     port: 5672
     virtual-host: /nexuscore
     username: ${RABBITMQ_USERNAME:guest}
-    password: ${RABBITMQ_PASSWORD}
+    password: ${RABBITMQ_PASSWORD:guest}
   ai:
-    google-genai:
-      api-key: ${GEMINI_API_KEY:sk-your-key-here}
+    google:
+      genai:
+        api-key: ${GEMINI_API_KEY:sk-your-key-here}
+        chat:
+          options:
+            model: gemini-2.5-flash
+    vectorstore:
+      pgvector:
+        initialize-schema: true
 
 stripe:
   secretKey: ${STRIPE_SECRET_KEY:sk_test_your_key_here}

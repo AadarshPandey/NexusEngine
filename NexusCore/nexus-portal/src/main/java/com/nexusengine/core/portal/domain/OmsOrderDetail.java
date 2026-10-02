@@ -14,6 +14,7 @@ import com.fasterxml.jackson.annotation.JsonUnwrapped;
  */
 public record OmsOrderDetail(
     @JsonUnwrapped OmsOrder omsOrder,
-    @Schema(title = "Order item list") List<OmsOrderItem> orderItemList
+    @Schema(title = "Order item list") List<OmsOrderItem> orderItemList,
+    @Schema(title = "Return apply list") List<com.nexusengine.core.model.OmsOrderReturnApply> returnApplyList
 ) {
 }

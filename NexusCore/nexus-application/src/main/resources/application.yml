@@ -1,5 +1,10 @@
 spring:
+  autoconfigure:
+    exclude:
+      - io.awspring.cloud.autoconfigure.s3.S3AutoConfiguration
   flyway:
+    default-schema: migration
+    schemas: migration,catalog,orders,users,marketing,ai,system,integration
     enabled: true
     baseline-on-migrate: true
     baseline-version: 0
@@ -17,8 +22,9 @@ spring:
     name: nexus-monolith
   profiles:
     active: dev
+  jackson:
+    default-property-inclusion: non_null
   mvc:
-    pathmatch:
   jpa:
     open-in-view: false
     hibernate:
@@ -28,8 +34,15 @@ spring:
         format_sql: true
     show-sql: false
   ai:
-    google-genai:
-      api-key: ${GEMINI_API_KEY:demo-key}
+    google:
+      genai:
+        api-key: ${GEMINI_API_KEY:demo-key}
+        chat:
+          options:
+            model: gemini-2.5-flash
+    vectorstore:
+      pgvector:
+        initialize-schema: true
 jwt:
   tokenHeader: Authorization
   secret: ${JWT_SECRET:local-development-jwt-secret-key-needs-32-bytes}
@@ -58,6 +71,7 @@ secure:
     - /portal/stripe/**
     - /portal/review/product/**
     - /portal/review/*/replies
+    - /portal/chat/**
     - /uploads/**
     - /admin/login
     - /admin/info

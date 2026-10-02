@@ -14,7 +14,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "pms_product")
+@Table(name = "pms_product", schema = "catalog")
 public class PmsProduct implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -24,18 +24,21 @@ public class PmsProduct implements Serializable {
     private Long id;
     @Column(name = "brand_id")
     private Long brandId;
+    @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "brand_id", insertable = false, updatable = false)
     private PmsBrand brand;
 
     @Column(name = "product_category_id")
     private Long productCategoryId;
+    @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "product_category_id", insertable = false, updatable = false)
     private PmsProductCategory productCategory;
 
     @Column(name = "product_attribute_category_id")
     private Long productAttributeCategoryId;
+    @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "product_attribute_category_id", insertable = false, updatable = false)
     private PmsProductAttributeCategory productAttributeCategory;
@@ -98,6 +101,7 @@ public class PmsProduct implements Serializable {
     private String note;
     @OneToMany(fetch = jakarta.persistence.FetchType.EAGER)
     @JoinColumn(name = "product_id")
+    @com.fasterxml.jackson.annotation.JsonManagedReference
     private List<PmsProductMedia> mediaList;
 
 
@@ -139,13 +143,13 @@ public class PmsProduct implements Serializable {
     @Schema(title = "Vendor ID")
     private Long vendorId;
 
-    @org.hibernate.annotations.Formula("(SELECT COALESCE(MIN(s.price), 0) FROM pms_sku_stock s WHERE s.product_id = id)")
+    @org.hibernate.annotations.Formula("(SELECT COALESCE(MIN(s.price), 0) FROM catalog.pms_sku_stock s WHERE s.product_id = id)")
     private BigDecimal price;
 
-    @org.hibernate.annotations.Formula("(SELECT COALESCE(MIN(s.price), 0) FROM pms_sku_stock s WHERE s.product_id = id)")
+    @org.hibernate.annotations.Formula("(SELECT COALESCE(MIN(s.price), 0) FROM catalog.pms_sku_stock s WHERE s.product_id = id)")
     private BigDecimal originalPrice;
 
-    @org.hibernate.annotations.Formula("(SELECT COALESCE(SUM(s.stock), 0) FROM pms_sku_stock s WHERE s.product_id = id)")
+    @org.hibernate.annotations.Formula("(SELECT COALESCE(SUM(s.stock), 0) FROM catalog.pms_sku_stock s WHERE s.product_id = id)")
     private Integer stock;
 
 }

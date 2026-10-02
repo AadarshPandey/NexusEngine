@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "oms_order_operate_history")
+@Table(name = "oms_order_operate_history", schema = "orders")
 public class OmsOrderOperateHistory implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -22,6 +22,7 @@ public class OmsOrderOperateHistory implements Serializable {
     @Column(name = "order_id")
     @Schema(title = "Order id")
     private Long orderId;
+    @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "order_id", insertable = false, updatable = false)
     private OmsOrder order;

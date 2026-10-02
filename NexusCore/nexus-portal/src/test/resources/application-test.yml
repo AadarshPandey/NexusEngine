@@ -6,6 +6,8 @@ spring:
       ddl-auto: create-drop
     show-sql: true
   flyway:
+    default-schema: migration
+    schemas: migration,catalog,orders,users,marketing,ai,system,integration
     enabled: false
   ai:
     openai:

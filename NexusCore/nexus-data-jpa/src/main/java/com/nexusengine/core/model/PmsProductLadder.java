@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "pms_product_ladder")
+@Table(name = "pms_product_ladder", schema = "catalog")
 public class PmsProductLadder implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -21,6 +21,7 @@ public class PmsProductLadder implements Serializable {
 
     @Column(name = "product_id")
     private Long productId;
+    @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "product_id", insertable = false, updatable = false)
     private PmsProduct product;
