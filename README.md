@@ -114,7 +114,7 @@ flowchart TD
 ```
 
 ### Backend Stack
-- **Framework**: Java 21, Spring Boot 3.x, Spring Data JPA
+- **Framework**: Java 25, Spring Boot 4.x, Spring Data JPA
 - **Security**: Spring Security 6 with strict fail-closed dynamic RBAC
 - **Database**: PostgreSQL with pgvector for AI semantic search capabilities
 - **Cache & Message Broker**: Redis (Lua-scripted Rate Limiting), RabbitMQ (Async Dead-Letter Queues)
@@ -137,7 +137,7 @@ flowchart TD
 ### Prerequisites
 - Docker and Docker Compose
 - Node.js >= 20
-- Java 21 (if running outside Docker)
+- Java 25 (if running outside Docker)
 - Maven 3.9+
 
 ### Running with Docker Compose
@@ -153,7 +153,6 @@ Services will be available at:
 - **Admin Panel**: http://localhost:5173
 - **Backend API**: http://localhost:8080
 - **Backend API Swagger UI**: http://localhost:8080/swagger-ui.html
-- **Search API**: http://localhost:8081
 - **Search API Swagger UI**: http://localhost:8081/swagger-ui.html
 - **Grafana (Monitoring)**: http://localhost:3000 (admin/admin)
 - **MinIO Console**: http://localhost:9001 (minioadmin/minioadmin)

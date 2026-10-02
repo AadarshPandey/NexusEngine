@@ -19,7 +19,7 @@ public class ProductChangeConsumer {
         this.esProductService = esProductService;
     }
 
-    @RabbitListener(queues = "nexuscore.product.sync.queue")
+    @RabbitListener(queuesToDeclare = @org.springframework.amqp.rabbit.annotation.Queue("nexuscore.product.sync.queue"))
     public void handleProductChange(String message) {
         LOGGER.info("Received product sync event: {}", message);
         try {

@@ -131,7 +131,7 @@ services:
       - nexus-network
 
   elasticsearch:
-    image: elasticsearch:8.19.22
+    image: elasticsearch:9.4.5
     container_name: elasticsearch
     restart: always
     environment:
