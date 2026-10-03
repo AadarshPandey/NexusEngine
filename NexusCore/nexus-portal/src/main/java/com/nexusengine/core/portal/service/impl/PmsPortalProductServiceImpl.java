@@ -30,16 +30,16 @@ public class PmsPortalProductServiceImpl implements PmsPortalProductService {
     private final PmsProductAttributeRepository productAttributeRepository;
     private final PmsProductAttributeValueRepository productAttributeValueRepository;
     private final PmsSkuStockRepository skuStockRepository;
-    private final PmsProductLadderRepository productLadderRepository;
-    private final PmsProductFullReductionRepository productFullReductionRepository;
+    private final PmsProductVolumeDiscountRepository productVolumeDiscountRepository;
+    private final PmsProductSpendDiscountRepository productSpendDiscountRepository;
     private final PortalProductDao portalProductDao;
     private final SmsFlashPromotionRepository flashPromotionRepository;
 
     private void initializeMediaList(List<PmsProduct> products) {
         if (products != null) {
             products.forEach(p -> {
-                if (p.getMediaList() != null) {
-                    org.hibernate.Hibernate.initialize(p.getMediaList());
+                if (p.getGalleryList() != null) {
+                    org.hibernate.Hibernate.initialize(p.getGalleryList());
                 }
             });
         }
@@ -94,8 +94,8 @@ public class PmsPortalProductServiceImpl implements PmsPortalProductService {
     @Override
     public PmsPortalProductDetail detail(Long id) {
         PmsProduct product = productRepository.findById(id).orElse(null);
-        if (product != null && product.getMediaList() != null) {
-            org.hibernate.Hibernate.initialize(product.getMediaList());
+        if (product != null && product.getGalleryList() != null) {
+            org.hibernate.Hibernate.initialize(product.getGalleryList());
         }
         if (product == null) return new PmsPortalProductDetail(null, null, null, null, null, null, null, null, null);
         
@@ -115,14 +115,14 @@ public class PmsPortalProductServiceImpl implements PmsPortalProductService {
         
         List<PmsSkuStock> skuStockList = skuStockRepository.findByProductId(product.getId());
         
-        List<PmsProductLadder> productLadderList = null;
+        List<PmsProductVolumeDiscount> productVolumeDiscountList = null;
         if (product.getPromotionType() != null && product.getPromotionType() == 3) {
-            productLadderList = productLadderRepository.findByProductId(product.getId());
+            productVolumeDiscountList = productVolumeDiscountRepository.findByProductId(product.getId());
         }
         
-        List<PmsProductFullReduction> productFullReductionList = null;
+        List<PmsProductSpendDiscount> productSpendDiscountList = null;
         if (product.getPromotionType() != null && product.getPromotionType() == 4) {
-            productFullReductionList = productFullReductionRepository.findByProductId(product.getId());
+            productSpendDiscountList = productSpendDiscountRepository.findByProductId(product.getId());
         }
         
         List<com.nexusengine.core.model.SmsCoupon> couponList = portalProductDao.getAvailableCouponList(product.getId(), product.getProductCategoryId());
@@ -131,7 +131,7 @@ public class PmsPortalProductServiceImpl implements PmsPortalProductService {
         List<SmsFlashPromotion> promotions = flashPromotionRepository.findByStatusAndStartDateLessThanEqualAndEndDateGreaterThanEqual(1, today, today);
         Boolean flashSaleActive = !promotions.isEmpty();
         
-        return new PmsPortalProductDetail(product, brand, productAttributeList, valueList, skuStockList, productLadderList, productFullReductionList, couponList, flashSaleActive);
+        return new PmsPortalProductDetail(product, brand, productAttributeList, valueList, skuStockList, productVolumeDiscountList, productSpendDiscountList, couponList, flashSaleActive);
     }
 
     private PmsProductCategoryNode covert(PmsProductCategory item, List<PmsProductCategory> allList) {

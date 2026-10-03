@@ -152,15 +152,15 @@ public class PmsProductController {
     }
 
     @Operation(summary = "Get operate logs")
-    @GetMapping("/operateLog/{id}")
-    public CommonResult<List<com.nexusengine.core.model.PmsProductOperateLog>> getOperateLog(@PathVariable Long id) {
-        return CommonResult.success(productService.getOperateLog(id));
+    @GetMapping("/auditLog/{id}")
+    public CommonResult<List<com.nexusengine.core.model.PmsProductAuditLog>> getAuditLog(@PathVariable Long id) {
+        return CommonResult.success(productService.getAuditLog(id));
     }
 
     @Operation(summary = "Get verify records")
-    @GetMapping("/verifyRecord/{id}")
-    public CommonResult<List<com.nexusengine.core.model.PmsProductVerifyRecord>> getVerifyRecord(@PathVariable Long id) {
-        return CommonResult.success(productService.getVerifyRecord(id));
+    @GetMapping("/approvalHistory/{id}")
+    public CommonResult<List<com.nexusengine.core.model.PmsProductApprovalHistory>> getApprovalHistory(@PathVariable Long id) {
+        return CommonResult.success(productService.getApprovalHistory(id));
     }
 
 }

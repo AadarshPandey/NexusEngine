@@ -9,8 +9,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "pms_product_full_reduction", schema = "catalog")
-public class PmsProductFullReduction implements Serializable {
+@Table(name = "pms_product_spend_discount", schema = "catalog")
+public class PmsProductSpendDiscount implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

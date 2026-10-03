@@ -2,13 +2,13 @@ package com.nexusengine.core.portal.service.impl;
 
 import com.nexusengine.core.common.api.CommonPage;
 import com.nexusengine.core.model.PmsReview;
-import com.nexusengine.core.model.PmsReviewMedia;
+import com.nexusengine.core.model.PmsReviewAttachment;
 import com.nexusengine.core.model.PmsProduct;
 import com.nexusengine.core.model.PmsBrand;
 import com.nexusengine.core.portal.domain.ReviewParam;
 import com.nexusengine.core.portal.service.PmsPortalReviewService;
 import com.nexusengine.core.portal.service.UmsMemberService;
-import com.nexusengine.core.repository.PmsReviewMediaRepository;
+import com.nexusengine.core.repository.PmsReviewAttachmentRepository;
 import com.nexusengine.core.repository.PmsReviewRepository;
 import com.nexusengine.core.repository.PmsProductRepository;
 import com.nexusengine.core.repository.PmsBrandRepository;
@@ -27,7 +27,7 @@ import java.util.*;
 @lombok.RequiredArgsConstructor
 public class PmsPortalReviewServiceImpl implements PmsPortalReviewService {
     private final PmsReviewRepository reviewRepository;
-    private final PmsReviewMediaRepository reviewMediaRepository;
+    private final PmsReviewAttachmentRepository reviewMediaRepository;
     private final UmsMemberService memberService;
     private final PmsProductRepository productRepository;
     private final PmsBrandRepository brandRepository;
@@ -89,8 +89,8 @@ public class PmsPortalReviewServiceImpl implements PmsPortalReviewService {
         PmsReview saved = reviewRepository.save(review);
         
         String pics = "";
-        if (param.mediaList() != null && !param.mediaList().isEmpty()) {
-            List<PmsReviewMedia> mediaList = new ArrayList<>();
+        if (param.attachmentList() != null && !param.attachmentList().isEmpty()) {
+            List<PmsReviewAttachment> attachmentList = new ArrayList<>();
             List<String> picUrls = new ArrayList<>();
             
             io.minio.MinioClient minioClient = io.minio.MinioClient.builder()
@@ -98,7 +98,7 @@ public class PmsPortalReviewServiceImpl implements PmsPortalReviewService {
                     .credentials("minioadmin", "minioadmin")
                     .build();
                     
-            for (var m : param.mediaList()) {
+            for (var m : param.attachmentList()) {
                 String mediaUrl = m.mediaUrl();
                 // Move from temp folder to final folder if it's a new upload
                 if (mediaUrl.contains("public/users/comments/temp_" + member.getId())) {
@@ -124,16 +124,16 @@ public class PmsPortalReviewServiceImpl implements PmsPortalReviewService {
                     }
                 }
                 
-                PmsReviewMedia media = new PmsReviewMedia();
+                PmsReviewAttachment media = new PmsReviewAttachment();
                 media.setReviewId(saved.getId());
                 media.setMediaType(m.mediaType());
                 media.setMediaUrl(mediaUrl);
                 media.setSortOrder(m.sortOrder());
-                mediaList.add(media);
+                attachmentList.add(media);
                 picUrls.add(mediaUrl);
             }
-            reviewMediaRepository.saveAll(mediaList);
-            saved.setMediaList(mediaList);
+            reviewMediaRepository.saveAll(attachmentList);
+            saved.setAttachmentList(attachmentList);
             pics = String.join(",", picUrls);
         }
         

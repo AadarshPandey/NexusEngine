@@ -78,7 +78,7 @@ public class PmsProduct implements Serializable {
     @OneToMany(fetch = jakarta.persistence.FetchType.EAGER)
     @JoinColumn(name = "product_id")
     @com.fasterxml.jackson.annotation.JsonManagedReference
-    private List<PmsProductMedia> mediaList;
+    private List<PmsProductGallery> galleryList;
 
 
 

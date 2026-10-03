@@ -1,8 +1,8 @@
 package com.nexusengine.core.portal.service.impl;
 
 import com.nexusengine.core.model.OmsCartItem;
-import com.nexusengine.core.model.PmsProductFullReduction;
-import com.nexusengine.core.model.PmsProductLadder;
+import com.nexusengine.core.model.PmsProductSpendDiscount;
+import com.nexusengine.core.model.PmsProductVolumeDiscount;
 import com.nexusengine.core.model.PmsSkuStock;
 import com.nexusengine.core.portal.dao.PortalProductDao;
 import com.nexusengine.core.portal.domain.CartPromotionItem;
@@ -61,7 +61,7 @@ public class OmsPromotionServiceImpl implements OmsPromotionService {
                 }
             } else if (promotionType == 3) {
                 int count = getCartItemCount(itemList);
-                PmsProductLadder ladder = getProductLadder(count, promotionProduct.productLadderList());
+                PmsProductVolumeDiscount ladder = getProductLadder(count, promotionProduct.productVolumeDiscountList());
                 if (ladder != null) {
                     for (OmsCartItem item : itemList) {
                         String promotionMessage = "Ladder discount: buy " + ladder.getCount() + " get " + ladder.getDiscount().multiply(new BigDecimal(10)) + "% off";
@@ -82,7 +82,7 @@ public class OmsPromotionServiceImpl implements OmsPromotionService {
                 }
             } else if (promotionType == 4) {
                 BigDecimal totalAmount = getCartItemAmount(itemList, promotionProductList);
-                PmsProductFullReduction fullReduction = getProductFullReduction(totalAmount, promotionProduct.productFullReductionList());
+                PmsProductSpendDiscount fullReduction = getProductFullReduction(totalAmount, promotionProduct.productSpendDiscountList());
                 if (fullReduction != null) {
                     for (OmsCartItem item : itemList) {
                         String promotionMessage = "Full reduction: spend " + fullReduction.getFullPrice() + " save " + fullReduction.getReducePrice();
@@ -141,10 +141,10 @@ public class OmsPromotionServiceImpl implements OmsPromotionService {
         }
     }
 
-    private PmsProductFullReduction getProductFullReduction(BigDecimal totalAmount, List<PmsProductFullReduction> fullReductionList) {
+    private PmsProductSpendDiscount getProductFullReduction(BigDecimal totalAmount, List<PmsProductSpendDiscount> fullReductionList) {
         if (fullReductionList == null || fullReductionList.isEmpty()) return null;
         fullReductionList.sort((o1, o2) -> o2.getFullPrice().subtract(o1.getFullPrice()).intValue());
-        for (PmsProductFullReduction fullReduction : fullReductionList) {
+        for (PmsProductSpendDiscount fullReduction : fullReductionList) {
             if (totalAmount.subtract(fullReduction.getFullPrice()).intValue() >= 0) {
                 return fullReduction;
             }
@@ -152,12 +152,12 @@ public class OmsPromotionServiceImpl implements OmsPromotionService {
         return null;
     }
 
-    private PmsProductLadder getProductLadder(int count, List<PmsProductLadder> productLadderList) {
-        if (productLadderList == null || productLadderList.isEmpty()) return null;
-        productLadderList.sort((o1, o2) -> o2.getCount() - o1.getCount());
-        for (PmsProductLadder productLadder : productLadderList) {
-            if (count >= productLadder.getCount()) {
-                return productLadder;
+    private PmsProductVolumeDiscount getProductLadder(int count, List<PmsProductVolumeDiscount> productVolumeDiscountList) {
+        if (productVolumeDiscountList == null || productVolumeDiscountList.isEmpty()) return null;
+        productVolumeDiscountList.sort((o1, o2) -> o2.getCount() - o1.getCount());
+        for (PmsProductVolumeDiscount productVolumeDiscount : productVolumeDiscountList) {
+            if (count >= productVolumeDiscount.getCount()) {
+                return productVolumeDiscount;
             }
         }
         return null;

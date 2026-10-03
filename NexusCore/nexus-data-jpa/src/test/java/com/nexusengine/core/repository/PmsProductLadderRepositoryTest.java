@@ -6,12 +6,12 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @DataJpaTest
-class PmsProductLadderRepositoryTest {
+class PmsProductVolumeDiscountRepositoryTest {
 
-    private final PmsProductLadderRepository repository;
+    private final PmsProductVolumeDiscountRepository repository;
 
     @Autowired
-    PmsProductLadderRepositoryTest(PmsProductLadderRepository repository) {
+    PmsProductVolumeDiscountRepositoryTest(PmsProductVolumeDiscountRepository repository) {
         this.repository = repository;
     }
 

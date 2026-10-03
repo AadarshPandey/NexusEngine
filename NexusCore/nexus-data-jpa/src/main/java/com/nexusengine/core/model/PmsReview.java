@@ -58,7 +58,7 @@ public class PmsReview implements Serializable {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "review_id")
-    private List<PmsReviewMedia> mediaList;
+    private List<PmsReviewAttachment> attachmentList;
 
     @Transient
     private Boolean userLiked;

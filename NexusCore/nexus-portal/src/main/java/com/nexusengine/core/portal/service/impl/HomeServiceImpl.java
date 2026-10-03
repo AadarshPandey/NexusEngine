@@ -31,8 +31,8 @@ public class HomeServiceImpl implements HomeService {
     private void initializeMediaList(List<PmsProduct> products) {
         if (products != null) {
             products.forEach(p -> {
-                if (p.getMediaList() != null) {
-                    org.hibernate.Hibernate.initialize(p.getMediaList());
+                if (p.getGalleryList() != null) {
+                    org.hibernate.Hibernate.initialize(p.getGalleryList());
                 }
             });
         }

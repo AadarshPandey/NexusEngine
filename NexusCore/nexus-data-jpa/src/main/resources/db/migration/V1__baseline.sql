@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS pms_product (
     vendor_id BIGINT
 );
 
-CREATE TABLE IF NOT EXISTS pms_product_media (
+CREATE TABLE IF NOT EXISTS pms_product_gallery (
     id BIGSERIAL PRIMARY KEY,
     product_id BIGINT NOT NULL,
     media_type VARCHAR(50),
@@ -109,14 +109,14 @@ CREATE TABLE IF NOT EXISTS pms_product_embedding (
     embedding vector(1536)
 );
 
-CREATE TABLE IF NOT EXISTS pms_product_full_reduction (
+CREATE TABLE IF NOT EXISTS pms_product_spend_discount (
     id BIGSERIAL PRIMARY KEY,
     product_id BIGINT,
     full_price NUMERIC(19,2),
     reduce_price NUMERIC(19,2)
 );
 
-CREATE TABLE IF NOT EXISTS pms_product_ladder (
+CREATE TABLE IF NOT EXISTS pms_product_volume_discount (
     id BIGSERIAL PRIMARY KEY,
     product_id BIGINT,
     count INTEGER,
@@ -124,7 +124,7 @@ CREATE TABLE IF NOT EXISTS pms_product_ladder (
     price NUMERIC(19,2)
 );
 
-CREATE TABLE IF NOT EXISTS pms_product_operate_log (
+CREATE TABLE IF NOT EXISTS pms_product_audit_log (
     id BIGSERIAL PRIMARY KEY,
     product_id BIGINT,
     price_old NUMERIC(19,2),
@@ -135,7 +135,7 @@ CREATE TABLE IF NOT EXISTS pms_product_operate_log (
     create_time TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS pms_product_verify_record (
+CREATE TABLE IF NOT EXISTS pms_product_approval_history (
     id BIGSERIAL PRIMARY KEY,
     product_id BIGINT,
     create_time TIMESTAMP,
@@ -174,7 +174,7 @@ CREATE TABLE IF NOT EXISTS pms_review (
     created_time TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS pms_review_media (
+CREATE TABLE IF NOT EXISTS pms_review_attachments (
     id BIGSERIAL PRIMARY KEY,
     review_id BIGINT,
     media_type VARCHAR(255),

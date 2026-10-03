@@ -14,8 +14,8 @@ import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
 public record PmsProductParam(
     @JsonUnwrapped PmsProduct pmsProduct,
-    @Schema(title = "Product ladder list") List<PmsProductLadder> productLadderList,
-    @Schema(title = "Product full reduction list") List<PmsProductFullReduction> productFullReductionList,
+    @Schema(title = "Product ladder list") List<PmsProductVolumeDiscount> productVolumeDiscountList,
+    @Schema(title = "Product full reduction list") List<PmsProductSpendDiscount> productSpendDiscountList,
     @Schema(title = "Sku stock list") List<PmsSkuStock> skuStockList,
     @Schema(title = "Product attribute value list") List<PmsProductAttributeValue> productAttributeValueList
 ) {

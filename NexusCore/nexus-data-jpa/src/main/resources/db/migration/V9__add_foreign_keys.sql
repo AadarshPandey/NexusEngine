@@ -2,14 +2,14 @@
 
 ALTER TABLE ums_admin_role_relation ADD CONSTRAINT fk_ums_admin_role_relation_admin_id FOREIGN KEY (admin_id) REFERENCES ums_admin(id);
 ALTER TABLE ums_admin_role_relation ADD CONSTRAINT fk_ums_admin_role_relation_role_id FOREIGN KEY (role_id) REFERENCES ums_role(id);
-ALTER TABLE pms_product_media ADD CONSTRAINT fk_pms_product_media_product_id FOREIGN KEY (product_id) REFERENCES pms_product(id);
-ALTER TABLE pms_product_verify_record ADD CONSTRAINT fk_pms_product_verify_record_product_id FOREIGN KEY (product_id) REFERENCES pms_product(id);
+ALTER TABLE pms_product_gallery ADD CONSTRAINT fk_pms_product_gallery_product_id FOREIGN KEY (product_id) REFERENCES pms_product(id);
+ALTER TABLE pms_product_approval_history ADD CONSTRAINT fk_pms_product_approval_history_product_id FOREIGN KEY (product_id) REFERENCES pms_product(id);
 ALTER TABLE ums_member_receive_address ADD CONSTRAINT fk_ums_member_receive_address_member_id FOREIGN KEY (member_id) REFERENCES ums_member(id);
 ALTER TABLE pms_product ADD CONSTRAINT fk_pms_product_brand_id FOREIGN KEY (brand_id) REFERENCES pms_brand(id);
 ALTER TABLE pms_product ADD CONSTRAINT fk_pms_product_product_category_id FOREIGN KEY (product_category_id) REFERENCES pms_product_category(id);
 ALTER TABLE pms_product ADD CONSTRAINT fk_pms_product_product_attribute_category_id FOREIGN KEY (product_attribute_category_id) REFERENCES pms_product_attribute_category(id);
-ALTER TABLE pms_product_full_reduction ADD CONSTRAINT fk_pms_product_full_reduction_product_id FOREIGN KEY (product_id) REFERENCES pms_product(id);
-ALTER TABLE pms_review_media ADD CONSTRAINT fk_pms_review_media_review_id FOREIGN KEY (review_id) REFERENCES pms_review(id);
+ALTER TABLE pms_product_spend_discount ADD CONSTRAINT fk_pms_product_spend_discount_product_id FOREIGN KEY (product_id) REFERENCES pms_product(id);
+ALTER TABLE pms_review_attachments ADD CONSTRAINT fk_pms_review_attachments_review_id FOREIGN KEY (review_id) REFERENCES pms_review(id);
 ALTER TABLE ums_role_menu_relation ADD CONSTRAINT fk_ums_role_menu_relation_role_id FOREIGN KEY (role_id) REFERENCES ums_role(id);
 ALTER TABLE ums_role_menu_relation ADD CONSTRAINT fk_ums_role_menu_relation_menu_id FOREIGN KEY (menu_id) REFERENCES ums_menu(id);
 ALTER TABLE sms_coupon_product_relation ADD CONSTRAINT fk_sms_coupon_product_relation_coupon_id FOREIGN KEY (coupon_id) REFERENCES sms_coupon(id);
@@ -57,5 +57,5 @@ ALTER TABLE oms_cart_item ADD CONSTRAINT fk_oms_cart_item_member_id FOREIGN KEY 
 ALTER TABLE oms_cart_item ADD CONSTRAINT fk_oms_cart_item_product_category_id FOREIGN KEY (product_category_id) REFERENCES pms_product_category(id);
 ALTER TABLE pms_sku_stock ADD CONSTRAINT fk_pms_sku_stock_product_id FOREIGN KEY (product_id) REFERENCES pms_product(id);
 ALTER TABLE pms_product_attribute ADD CONSTRAINT fk_pms_product_attribute_product_attribute_category_id FOREIGN KEY (product_attribute_category_id) REFERENCES pms_product_attribute_category(id);
-ALTER TABLE pms_product_operate_log ADD CONSTRAINT fk_pms_product_operate_log_product_id FOREIGN KEY (product_id) REFERENCES pms_product(id);
-ALTER TABLE pms_product_ladder ADD CONSTRAINT fk_pms_product_ladder_product_id FOREIGN KEY (product_id) REFERENCES pms_product(id);
+ALTER TABLE pms_product_audit_log ADD CONSTRAINT fk_pms_product_audit_log_product_id FOREIGN KEY (product_id) REFERENCES pms_product(id);
+ALTER TABLE pms_product_volume_discount ADD CONSTRAINT fk_pms_product_volume_discount_product_id FOREIGN KEY (product_id) REFERENCES pms_product(id);

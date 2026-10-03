@@ -6,7 +6,7 @@ import http from '@/utils/http';
 import { getBrandListAPI } from '@/apis/brand';
 import { getProductCategoryListWithChildrenAPI } from '@/apis/productCate';
 
-interface PmsProductOperateLog {
+interface PmsProductAuditLog {
   id?: number;
   productId?: number;
   priceOld?: number;
@@ -15,7 +15,7 @@ interface PmsProductOperateLog {
   createTime?: string;
 }
 
-interface PmsProductVerifyRecord {
+interface PmsProductApprovalHistory {
   id?: number;
   productId?: number;
   createTime?: string;
@@ -52,8 +52,8 @@ const ProductList: React.FC = () => {
   const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
   const [verifyStatus, setVerifyStatus] = useState<number>(1);
   const [verifyDetail, setVerifyDetail] = useState('');
-  const [operateLogs, setOperateLogs] = useState<PmsProductOperateLog[]>([]);
-  const [verifyRecords, setVerifyRecords] = useState<PmsProductVerifyRecord[]>([]);
+  const [auditLogs, setAuditLogs] = useState<PmsProductAuditLog[]>([]);
+  const [approvalHistorys, setApprovalHistorys] = useState<PmsProductApprovalHistory[]>([]);
   const [skuModalOpen, setSkuModalOpen] = useState(false);
   const [skuList, setSkuList] = useState<import('@/types/skuStock').PmsSkuStock[]>([]);
   const [editingSkuList, setEditingSkuList] = useState<import('@/types/skuStock').PmsSkuStock[]>([]);
@@ -108,10 +108,10 @@ const ProductList: React.FC = () => {
   const openLogModal = async (id: number) => {
     setSelectedProductId(id);
     try {
-      const resOperate = await http.get('/product/operateLog/' + id);
-      setOperateLogs(resOperate.data || []);
-      const resVerify = await http.get('/product/verifyRecord/' + id);
-      setVerifyRecords(resVerify.data || []);
+      const resOperate = await http.get('/product/auditLog/' + id);
+      setAuditLogs(resOperate.data || []);
+      const resVerify = await http.get('/product/approvalHistory/' + id);
+      setApprovalHistorys(resVerify.data || []);
       setLogModalOpen(true);
     } catch (e) {
       alert('Failed to fetch logs');
@@ -459,7 +459,7 @@ const ProductList: React.FC = () => {
         <DialogTitle>Audit Logs</DialogTitle>
         <DialogContent dividers>
           <Typography variant="h6" sx={{ mb: 1 }}>SKU Price Changes</Typography>
-          {operateLogs.length === 0 ? (
+          {auditLogs.length === 0 ? (
             <Typography color="text.secondary" sx={{ mb: 3 }}>No price changes found.</Typography>
           ) : (
             <Table size="small" sx={{ mb: 3 }}>
@@ -472,7 +472,7 @@ const ProductList: React.FC = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {operateLogs.map((log: PmsProductOperateLog, idx: number) => (
+                {auditLogs.map((log: PmsProductAuditLog, idx: number) => (
                   <TableRow key={idx}>
                     <TableCell>{log.operateMan || 'System'}</TableCell>
                     <TableCell>{log.createTime ? new Date(log.createTime).toLocaleString() : '-'}</TableCell>
@@ -485,7 +485,7 @@ const ProductList: React.FC = () => {
           )}
 
           <Typography variant="h6" sx={{ mb: 1 }}>Verification History</Typography>
-          {verifyRecords.length === 0 ? (
+          {approvalHistorys.length === 0 ? (
             <Typography color="text.secondary">No verification history found.</Typography>
           ) : (
             <Table size="small">
@@ -498,7 +498,7 @@ const ProductList: React.FC = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {verifyRecords.map((rec: PmsProductVerifyRecord, idx: number) => (
+                {approvalHistorys.map((rec: PmsProductApprovalHistory, idx: number) => (
                   <TableRow key={idx}>
                     <TableCell>{rec.reviewerName || 'System'}</TableCell>
                     <TableCell>{rec.createTime ? new Date(rec.createTime).toLocaleString() : '-'}</TableCell>

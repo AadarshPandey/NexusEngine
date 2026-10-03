@@ -1,8 +1,8 @@
 package com.nexusengine.core.portal.domain;
 
 import com.nexusengine.core.model.PmsProduct;
-import com.nexusengine.core.model.PmsProductFullReduction;
-import com.nexusengine.core.model.PmsProductLadder;
+import com.nexusengine.core.model.PmsProductSpendDiscount;
+import com.nexusengine.core.model.PmsProductVolumeDiscount;
 import com.nexusengine.core.model.PmsSkuStock;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +16,7 @@ import com.fasterxml.jackson.annotation.JsonUnwrapped;
 public record PromotionProduct(
     @JsonUnwrapped PmsProduct pmsProduct,
     List<PmsSkuStock> skuStockList,
-    List<PmsProductLadder> productLadderList,
-    List<PmsProductFullReduction> productFullReductionList
+    List<PmsProductVolumeDiscount> productVolumeDiscountList,
+    List<PmsProductSpendDiscount> productSpendDiscountList
 ) {
 }

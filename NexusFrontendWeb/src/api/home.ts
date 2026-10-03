@@ -20,7 +20,7 @@ export interface PmsProduct {
   subTitle: string;
   description: string;
   stock: number;
-  mediaList?: { mediaUrl: string; sortOrder: number }[];
+  galleryList?: { mediaUrl: string; sortOrder: number }[];
 }
 
 

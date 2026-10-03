@@ -674,10 +674,10 @@ ALTER SEQUENCE catalog.pms_product_category_id_seq OWNED BY catalog.pms_product_
 
 
 --
--- Name: pms_product_full_reduction; Type: TABLE; Schema: catalog; Owner: postgres
+-- Name: pms_product_spend_discount; Type: TABLE; Schema: catalog; Owner: postgres
 --
 
-CREATE TABLE catalog.pms_product_full_reduction (
+CREATE TABLE catalog.pms_product_spend_discount (
     id bigint NOT NULL,
     product_id bigint,
     full_price numeric(19,2),
@@ -685,13 +685,13 @@ CREATE TABLE catalog.pms_product_full_reduction (
 );
 
 
-ALTER TABLE catalog.pms_product_full_reduction OWNER TO postgres;
+ALTER TABLE catalog.pms_product_spend_discount OWNER TO postgres;
 
 --
--- Name: pms_product_full_reduction_id_seq; Type: SEQUENCE; Schema: catalog; Owner: postgres
+-- Name: pms_product_spend_discount_id_seq; Type: SEQUENCE; Schema: catalog; Owner: postgres
 --
 
-CREATE SEQUENCE catalog.pms_product_full_reduction_id_seq
+CREATE SEQUENCE catalog.pms_product_spend_discount_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -699,13 +699,13 @@ CREATE SEQUENCE catalog.pms_product_full_reduction_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE catalog.pms_product_full_reduction_id_seq OWNER TO postgres;
+ALTER SEQUENCE catalog.pms_product_spend_discount_id_seq OWNER TO postgres;
 
 --
--- Name: pms_product_full_reduction_id_seq; Type: SEQUENCE OWNED BY; Schema: catalog; Owner: postgres
+-- Name: pms_product_spend_discount_id_seq; Type: SEQUENCE OWNED BY; Schema: catalog; Owner: postgres
 --
 
-ALTER SEQUENCE catalog.pms_product_full_reduction_id_seq OWNED BY catalog.pms_product_full_reduction.id;
+ALTER SEQUENCE catalog.pms_product_spend_discount_id_seq OWNED BY catalog.pms_product_spend_discount.id;
 
 
 --
@@ -730,10 +730,10 @@ ALTER SEQUENCE catalog.pms_product_id_seq OWNED BY catalog.pms_product.id;
 
 
 --
--- Name: pms_product_ladder; Type: TABLE; Schema: catalog; Owner: postgres
+-- Name: pms_product_volume_discount; Type: TABLE; Schema: catalog; Owner: postgres
 --
 
-CREATE TABLE catalog.pms_product_ladder (
+CREATE TABLE catalog.pms_product_volume_discount (
     id bigint NOT NULL,
     product_id bigint,
     count integer,
@@ -742,13 +742,13 @@ CREATE TABLE catalog.pms_product_ladder (
 );
 
 
-ALTER TABLE catalog.pms_product_ladder OWNER TO postgres;
+ALTER TABLE catalog.pms_product_volume_discount OWNER TO postgres;
 
 --
--- Name: pms_product_ladder_id_seq; Type: SEQUENCE; Schema: catalog; Owner: postgres
+-- Name: pms_product_volume_discount_id_seq; Type: SEQUENCE; Schema: catalog; Owner: postgres
 --
 
-CREATE SEQUENCE catalog.pms_product_ladder_id_seq
+CREATE SEQUENCE catalog.pms_product_volume_discount_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -756,20 +756,20 @@ CREATE SEQUENCE catalog.pms_product_ladder_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE catalog.pms_product_ladder_id_seq OWNER TO postgres;
+ALTER SEQUENCE catalog.pms_product_volume_discount_id_seq OWNER TO postgres;
 
 --
--- Name: pms_product_ladder_id_seq; Type: SEQUENCE OWNED BY; Schema: catalog; Owner: postgres
+-- Name: pms_product_volume_discount_id_seq; Type: SEQUENCE OWNED BY; Schema: catalog; Owner: postgres
 --
 
-ALTER SEQUENCE catalog.pms_product_ladder_id_seq OWNED BY catalog.pms_product_ladder.id;
+ALTER SEQUENCE catalog.pms_product_volume_discount_id_seq OWNED BY catalog.pms_product_volume_discount.id;
 
 
 --
--- Name: pms_product_media; Type: TABLE; Schema: catalog; Owner: postgres
+-- Name: pms_product_gallery; Type: TABLE; Schema: catalog; Owner: postgres
 --
 
-CREATE TABLE catalog.pms_product_media (
+CREATE TABLE catalog.pms_product_gallery (
     id bigint NOT NULL,
     product_id bigint NOT NULL,
     media_type character varying(50),
@@ -778,13 +778,13 @@ CREATE TABLE catalog.pms_product_media (
 );
 
 
-ALTER TABLE catalog.pms_product_media OWNER TO postgres;
+ALTER TABLE catalog.pms_product_gallery OWNER TO postgres;
 
 --
--- Name: pms_product_media_id_seq; Type: SEQUENCE; Schema: catalog; Owner: postgres
+-- Name: pms_product_gallery_id_seq; Type: SEQUENCE; Schema: catalog; Owner: postgres
 --
 
-CREATE SEQUENCE catalog.pms_product_media_id_seq
+CREATE SEQUENCE catalog.pms_product_gallery_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -792,20 +792,20 @@ CREATE SEQUENCE catalog.pms_product_media_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE catalog.pms_product_media_id_seq OWNER TO postgres;
+ALTER SEQUENCE catalog.pms_product_gallery_id_seq OWNER TO postgres;
 
 --
--- Name: pms_product_media_id_seq; Type: SEQUENCE OWNED BY; Schema: catalog; Owner: postgres
+-- Name: pms_product_gallery_id_seq; Type: SEQUENCE OWNED BY; Schema: catalog; Owner: postgres
 --
 
-ALTER SEQUENCE catalog.pms_product_media_id_seq OWNED BY catalog.pms_product_media.id;
+ALTER SEQUENCE catalog.pms_product_gallery_id_seq OWNED BY catalog.pms_product_gallery.id;
 
 
 --
--- Name: pms_product_operate_log; Type: TABLE; Schema: catalog; Owner: postgres
+-- Name: pms_product_audit_log; Type: TABLE; Schema: catalog; Owner: postgres
 --
 
-CREATE TABLE catalog.pms_product_operate_log (
+CREATE TABLE catalog.pms_product_audit_log (
     id bigint NOT NULL,
     product_id bigint,
     price_old numeric(19,2),
@@ -817,13 +817,13 @@ CREATE TABLE catalog.pms_product_operate_log (
 );
 
 
-ALTER TABLE catalog.pms_product_operate_log OWNER TO postgres;
+ALTER TABLE catalog.pms_product_audit_log OWNER TO postgres;
 
 --
--- Name: pms_product_operate_log_id_seq; Type: SEQUENCE; Schema: catalog; Owner: postgres
+-- Name: pms_product_audit_log_id_seq; Type: SEQUENCE; Schema: catalog; Owner: postgres
 --
 
-CREATE SEQUENCE catalog.pms_product_operate_log_id_seq
+CREATE SEQUENCE catalog.pms_product_audit_log_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -831,20 +831,20 @@ CREATE SEQUENCE catalog.pms_product_operate_log_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE catalog.pms_product_operate_log_id_seq OWNER TO postgres;
+ALTER SEQUENCE catalog.pms_product_audit_log_id_seq OWNER TO postgres;
 
 --
--- Name: pms_product_operate_log_id_seq; Type: SEQUENCE OWNED BY; Schema: catalog; Owner: postgres
+-- Name: pms_product_audit_log_id_seq; Type: SEQUENCE OWNED BY; Schema: catalog; Owner: postgres
 --
 
-ALTER SEQUENCE catalog.pms_product_operate_log_id_seq OWNED BY catalog.pms_product_operate_log.id;
+ALTER SEQUENCE catalog.pms_product_audit_log_id_seq OWNED BY catalog.pms_product_audit_log.id;
 
 
 --
--- Name: pms_product_verify_record; Type: TABLE; Schema: catalog; Owner: postgres
+-- Name: pms_product_approval_history; Type: TABLE; Schema: catalog; Owner: postgres
 --
 
-CREATE TABLE catalog.pms_product_verify_record (
+CREATE TABLE catalog.pms_product_approval_history (
     id bigint NOT NULL,
     product_id bigint,
     create_time timestamp without time zone,
@@ -854,13 +854,13 @@ CREATE TABLE catalog.pms_product_verify_record (
 );
 
 
-ALTER TABLE catalog.pms_product_verify_record OWNER TO postgres;
+ALTER TABLE catalog.pms_product_approval_history OWNER TO postgres;
 
 --
--- Name: pms_product_verify_record_id_seq; Type: SEQUENCE; Schema: catalog; Owner: postgres
+-- Name: pms_product_approval_history_id_seq; Type: SEQUENCE; Schema: catalog; Owner: postgres
 --
 
-CREATE SEQUENCE catalog.pms_product_verify_record_id_seq
+CREATE SEQUENCE catalog.pms_product_approval_history_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -868,13 +868,13 @@ CREATE SEQUENCE catalog.pms_product_verify_record_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE catalog.pms_product_verify_record_id_seq OWNER TO postgres;
+ALTER SEQUENCE catalog.pms_product_approval_history_id_seq OWNER TO postgres;
 
 --
--- Name: pms_product_verify_record_id_seq; Type: SEQUENCE OWNED BY; Schema: catalog; Owner: postgres
+-- Name: pms_product_approval_history_id_seq; Type: SEQUENCE OWNED BY; Schema: catalog; Owner: postgres
 --
 
-ALTER SEQUENCE catalog.pms_product_verify_record_id_seq OWNED BY catalog.pms_product_verify_record.id;
+ALTER SEQUENCE catalog.pms_product_approval_history_id_seq OWNED BY catalog.pms_product_approval_history.id;
 
 
 --
@@ -919,10 +919,10 @@ ALTER SEQUENCE catalog.pms_review_id_seq OWNED BY catalog.pms_review.id;
 
 
 --
--- Name: pms_review_media; Type: TABLE; Schema: catalog; Owner: postgres
+-- Name: pms_review_attachments; Type: TABLE; Schema: catalog; Owner: postgres
 --
 
-CREATE TABLE catalog.pms_review_media (
+CREATE TABLE catalog.pms_review_attachments (
     id bigint NOT NULL,
     review_id bigint,
     media_type character varying(255),
@@ -932,13 +932,13 @@ CREATE TABLE catalog.pms_review_media (
 );
 
 
-ALTER TABLE catalog.pms_review_media OWNER TO postgres;
+ALTER TABLE catalog.pms_review_attachments OWNER TO postgres;
 
 --
--- Name: pms_review_media_id_seq; Type: SEQUENCE; Schema: catalog; Owner: postgres
+-- Name: pms_review_attachments_id_seq; Type: SEQUENCE; Schema: catalog; Owner: postgres
 --
 
-CREATE SEQUENCE catalog.pms_review_media_id_seq
+CREATE SEQUENCE catalog.pms_review_attachments_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -946,13 +946,13 @@ CREATE SEQUENCE catalog.pms_review_media_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE catalog.pms_review_media_id_seq OWNER TO postgres;
+ALTER SEQUENCE catalog.pms_review_attachments_id_seq OWNER TO postgres;
 
 --
--- Name: pms_review_media_id_seq; Type: SEQUENCE OWNED BY; Schema: catalog; Owner: postgres
+-- Name: pms_review_attachments_id_seq; Type: SEQUENCE OWNED BY; Schema: catalog; Owner: postgres
 --
 
-ALTER SEQUENCE catalog.pms_review_media_id_seq OWNED BY catalog.pms_review_media.id;
+ALTER SEQUENCE catalog.pms_review_attachments_id_seq OWNED BY catalog.pms_review_attachments.id;
 
 
 --
@@ -2699,10 +2699,10 @@ CREATE TABLE public.pms_product_embedding (
 ALTER TABLE public.pms_product_embedding OWNER TO postgres;
 
 --
--- Name: pms_product_full_reduction; Type: TABLE; Schema: public; Owner: postgres
+-- Name: pms_product_spend_discount; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE public.pms_product_full_reduction (
+CREATE TABLE public.pms_product_spend_discount (
     id bigint NOT NULL,
     product_id bigint,
     full_price numeric(19,2),
@@ -2710,13 +2710,13 @@ CREATE TABLE public.pms_product_full_reduction (
 );
 
 
-ALTER TABLE public.pms_product_full_reduction OWNER TO postgres;
+ALTER TABLE public.pms_product_spend_discount OWNER TO postgres;
 
 --
--- Name: pms_product_full_reduction_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: pms_product_spend_discount_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE public.pms_product_full_reduction_id_seq
+CREATE SEQUENCE public.pms_product_spend_discount_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2724,13 +2724,13 @@ CREATE SEQUENCE public.pms_product_full_reduction_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.pms_product_full_reduction_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.pms_product_spend_discount_id_seq OWNER TO postgres;
 
 --
--- Name: pms_product_full_reduction_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+-- Name: pms_product_spend_discount_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
-ALTER SEQUENCE public.pms_product_full_reduction_id_seq OWNED BY public.pms_product_full_reduction.id;
+ALTER SEQUENCE public.pms_product_spend_discount_id_seq OWNED BY public.pms_product_spend_discount.id;
 
 
 --
@@ -2755,10 +2755,10 @@ ALTER SEQUENCE public.pms_product_id_seq OWNED BY public.pms_product.id;
 
 
 --
--- Name: pms_product_ladder; Type: TABLE; Schema: public; Owner: postgres
+-- Name: pms_product_volume_discount; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE public.pms_product_ladder (
+CREATE TABLE public.pms_product_volume_discount (
     id bigint NOT NULL,
     product_id bigint,
     count integer,
@@ -2767,13 +2767,13 @@ CREATE TABLE public.pms_product_ladder (
 );
 
 
-ALTER TABLE public.pms_product_ladder OWNER TO postgres;
+ALTER TABLE public.pms_product_volume_discount OWNER TO postgres;
 
 --
--- Name: pms_product_ladder_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: pms_product_volume_discount_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE public.pms_product_ladder_id_seq
+CREATE SEQUENCE public.pms_product_volume_discount_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2781,20 +2781,20 @@ CREATE SEQUENCE public.pms_product_ladder_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.pms_product_ladder_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.pms_product_volume_discount_id_seq OWNER TO postgres;
 
 --
--- Name: pms_product_ladder_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+-- Name: pms_product_volume_discount_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
-ALTER SEQUENCE public.pms_product_ladder_id_seq OWNED BY public.pms_product_ladder.id;
+ALTER SEQUENCE public.pms_product_volume_discount_id_seq OWNED BY public.pms_product_volume_discount.id;
 
 
 --
--- Name: pms_product_media; Type: TABLE; Schema: public; Owner: postgres
+-- Name: pms_product_gallery; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE public.pms_product_media (
+CREATE TABLE public.pms_product_gallery (
     id bigint NOT NULL,
     product_id bigint NOT NULL,
     media_type character varying(50),
@@ -2803,13 +2803,13 @@ CREATE TABLE public.pms_product_media (
 );
 
 
-ALTER TABLE public.pms_product_media OWNER TO postgres;
+ALTER TABLE public.pms_product_gallery OWNER TO postgres;
 
 --
--- Name: pms_product_media_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: pms_product_gallery_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE public.pms_product_media_id_seq
+CREATE SEQUENCE public.pms_product_gallery_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2817,20 +2817,20 @@ CREATE SEQUENCE public.pms_product_media_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.pms_product_media_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.pms_product_gallery_id_seq OWNER TO postgres;
 
 --
--- Name: pms_product_media_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+-- Name: pms_product_gallery_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
-ALTER SEQUENCE public.pms_product_media_id_seq OWNED BY public.pms_product_media.id;
+ALTER SEQUENCE public.pms_product_gallery_id_seq OWNED BY public.pms_product_gallery.id;
 
 
 --
--- Name: pms_product_operate_log; Type: TABLE; Schema: public; Owner: postgres
+-- Name: pms_product_audit_log; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE public.pms_product_operate_log (
+CREATE TABLE public.pms_product_audit_log (
     id bigint NOT NULL,
     product_id bigint,
     price_old numeric(19,2),
@@ -2842,13 +2842,13 @@ CREATE TABLE public.pms_product_operate_log (
 );
 
 
-ALTER TABLE public.pms_product_operate_log OWNER TO postgres;
+ALTER TABLE public.pms_product_audit_log OWNER TO postgres;
 
 --
--- Name: pms_product_operate_log_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: pms_product_audit_log_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE public.pms_product_operate_log_id_seq
+CREATE SEQUENCE public.pms_product_audit_log_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2856,20 +2856,20 @@ CREATE SEQUENCE public.pms_product_operate_log_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.pms_product_operate_log_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.pms_product_audit_log_id_seq OWNER TO postgres;
 
 --
--- Name: pms_product_operate_log_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+-- Name: pms_product_audit_log_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
-ALTER SEQUENCE public.pms_product_operate_log_id_seq OWNED BY public.pms_product_operate_log.id;
+ALTER SEQUENCE public.pms_product_audit_log_id_seq OWNED BY public.pms_product_audit_log.id;
 
 
 --
--- Name: pms_product_verify_record; Type: TABLE; Schema: public; Owner: postgres
+-- Name: pms_product_approval_history; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE public.pms_product_verify_record (
+CREATE TABLE public.pms_product_approval_history (
     id bigint NOT NULL,
     product_id bigint,
     create_time timestamp without time zone,
@@ -2879,13 +2879,13 @@ CREATE TABLE public.pms_product_verify_record (
 );
 
 
-ALTER TABLE public.pms_product_verify_record OWNER TO postgres;
+ALTER TABLE public.pms_product_approval_history OWNER TO postgres;
 
 --
--- Name: pms_product_verify_record_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: pms_product_approval_history_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE public.pms_product_verify_record_id_seq
+CREATE SEQUENCE public.pms_product_approval_history_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2893,13 +2893,13 @@ CREATE SEQUENCE public.pms_product_verify_record_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.pms_product_verify_record_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.pms_product_approval_history_id_seq OWNER TO postgres;
 
 --
--- Name: pms_product_verify_record_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+-- Name: pms_product_approval_history_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
-ALTER SEQUENCE public.pms_product_verify_record_id_seq OWNED BY public.pms_product_verify_record.id;
+ALTER SEQUENCE public.pms_product_approval_history_id_seq OWNED BY public.pms_product_approval_history.id;
 
 
 --
@@ -2944,10 +2944,10 @@ ALTER SEQUENCE public.pms_review_id_seq OWNED BY public.pms_review.id;
 
 
 --
--- Name: pms_review_media; Type: TABLE; Schema: public; Owner: postgres
+-- Name: pms_review_attachments; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE public.pms_review_media (
+CREATE TABLE public.pms_review_attachments (
     id bigint NOT NULL,
     review_id bigint,
     media_type character varying(255),
@@ -2957,13 +2957,13 @@ CREATE TABLE public.pms_review_media (
 );
 
 
-ALTER TABLE public.pms_review_media OWNER TO postgres;
+ALTER TABLE public.pms_review_attachments OWNER TO postgres;
 
 --
--- Name: pms_review_media_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: pms_review_attachments_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE public.pms_review_media_id_seq
+CREATE SEQUENCE public.pms_review_attachments_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -2971,13 +2971,13 @@ CREATE SEQUENCE public.pms_review_media_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.pms_review_media_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.pms_review_attachments_id_seq OWNER TO postgres;
 
 --
--- Name: pms_review_media_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+-- Name: pms_review_attachments_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
-ALTER SEQUENCE public.pms_review_media_id_seq OWNED BY public.pms_review_media.id;
+ALTER SEQUENCE public.pms_review_attachments_id_seq OWNED BY public.pms_review_attachments.id;
 
 
 --
@@ -4592,38 +4592,38 @@ ALTER TABLE ONLY catalog.pms_product_category_attribute_relation ALTER COLUMN id
 
 
 --
--- Name: pms_product_full_reduction id; Type: DEFAULT; Schema: catalog; Owner: postgres
+-- Name: pms_product_spend_discount id; Type: DEFAULT; Schema: catalog; Owner: postgres
 --
 
-ALTER TABLE ONLY catalog.pms_product_full_reduction ALTER COLUMN id SET DEFAULT nextval('catalog.pms_product_full_reduction_id_seq'::regclass);
-
-
---
--- Name: pms_product_ladder id; Type: DEFAULT; Schema: catalog; Owner: postgres
---
-
-ALTER TABLE ONLY catalog.pms_product_ladder ALTER COLUMN id SET DEFAULT nextval('catalog.pms_product_ladder_id_seq'::regclass);
+ALTER TABLE ONLY catalog.pms_product_spend_discount ALTER COLUMN id SET DEFAULT nextval('catalog.pms_product_spend_discount_id_seq'::regclass);
 
 
 --
--- Name: pms_product_media id; Type: DEFAULT; Schema: catalog; Owner: postgres
+-- Name: pms_product_volume_discount id; Type: DEFAULT; Schema: catalog; Owner: postgres
 --
 
-ALTER TABLE ONLY catalog.pms_product_media ALTER COLUMN id SET DEFAULT nextval('catalog.pms_product_media_id_seq'::regclass);
-
-
---
--- Name: pms_product_operate_log id; Type: DEFAULT; Schema: catalog; Owner: postgres
---
-
-ALTER TABLE ONLY catalog.pms_product_operate_log ALTER COLUMN id SET DEFAULT nextval('catalog.pms_product_operate_log_id_seq'::regclass);
+ALTER TABLE ONLY catalog.pms_product_volume_discount ALTER COLUMN id SET DEFAULT nextval('catalog.pms_product_volume_discount_id_seq'::regclass);
 
 
 --
--- Name: pms_product_verify_record id; Type: DEFAULT; Schema: catalog; Owner: postgres
+-- Name: pms_product_gallery id; Type: DEFAULT; Schema: catalog; Owner: postgres
 --
 
-ALTER TABLE ONLY catalog.pms_product_verify_record ALTER COLUMN id SET DEFAULT nextval('catalog.pms_product_verify_record_id_seq'::regclass);
+ALTER TABLE ONLY catalog.pms_product_gallery ALTER COLUMN id SET DEFAULT nextval('catalog.pms_product_gallery_id_seq'::regclass);
+
+
+--
+-- Name: pms_product_audit_log id; Type: DEFAULT; Schema: catalog; Owner: postgres
+--
+
+ALTER TABLE ONLY catalog.pms_product_audit_log ALTER COLUMN id SET DEFAULT nextval('catalog.pms_product_audit_log_id_seq'::regclass);
+
+
+--
+-- Name: pms_product_approval_history id; Type: DEFAULT; Schema: catalog; Owner: postgres
+--
+
+ALTER TABLE ONLY catalog.pms_product_approval_history ALTER COLUMN id SET DEFAULT nextval('catalog.pms_product_approval_history_id_seq'::regclass);
 
 
 --
@@ -4634,10 +4634,10 @@ ALTER TABLE ONLY catalog.pms_review ALTER COLUMN id SET DEFAULT nextval('catalog
 
 
 --
--- Name: pms_review_media id; Type: DEFAULT; Schema: catalog; Owner: postgres
+-- Name: pms_review_attachments id; Type: DEFAULT; Schema: catalog; Owner: postgres
 --
 
-ALTER TABLE ONLY catalog.pms_review_media ALTER COLUMN id SET DEFAULT nextval('catalog.pms_review_media_id_seq'::regclass);
+ALTER TABLE ONLY catalog.pms_review_attachments ALTER COLUMN id SET DEFAULT nextval('catalog.pms_review_attachments_id_seq'::regclass);
 
 
 --
@@ -4907,38 +4907,38 @@ ALTER TABLE ONLY public.pms_product_category_attribute_relation ALTER COLUMN id 
 
 
 --
--- Name: pms_product_full_reduction id; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: pms_product_spend_discount id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.pms_product_full_reduction ALTER COLUMN id SET DEFAULT nextval('public.pms_product_full_reduction_id_seq'::regclass);
-
-
---
--- Name: pms_product_ladder id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.pms_product_ladder ALTER COLUMN id SET DEFAULT nextval('public.pms_product_ladder_id_seq'::regclass);
+ALTER TABLE ONLY public.pms_product_spend_discount ALTER COLUMN id SET DEFAULT nextval('public.pms_product_spend_discount_id_seq'::regclass);
 
 
 --
--- Name: pms_product_media id; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: pms_product_volume_discount id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.pms_product_media ALTER COLUMN id SET DEFAULT nextval('public.pms_product_media_id_seq'::regclass);
-
-
---
--- Name: pms_product_operate_log id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.pms_product_operate_log ALTER COLUMN id SET DEFAULT nextval('public.pms_product_operate_log_id_seq'::regclass);
+ALTER TABLE ONLY public.pms_product_volume_discount ALTER COLUMN id SET DEFAULT nextval('public.pms_product_volume_discount_id_seq'::regclass);
 
 
 --
--- Name: pms_product_verify_record id; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: pms_product_gallery id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.pms_product_verify_record ALTER COLUMN id SET DEFAULT nextval('public.pms_product_verify_record_id_seq'::regclass);
+ALTER TABLE ONLY public.pms_product_gallery ALTER COLUMN id SET DEFAULT nextval('public.pms_product_gallery_id_seq'::regclass);
+
+
+--
+-- Name: pms_product_audit_log id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.pms_product_audit_log ALTER COLUMN id SET DEFAULT nextval('public.pms_product_audit_log_id_seq'::regclass);
+
+
+--
+-- Name: pms_product_approval_history id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.pms_product_approval_history ALTER COLUMN id SET DEFAULT nextval('public.pms_product_approval_history_id_seq'::regclass);
 
 
 --
@@ -4949,10 +4949,10 @@ ALTER TABLE ONLY public.pms_review ALTER COLUMN id SET DEFAULT nextval('public.p
 
 
 --
--- Name: pms_review_media id; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: pms_review_attachments id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.pms_review_media ALTER COLUMN id SET DEFAULT nextval('public.pms_review_media_id_seq'::regclass);
+ALTER TABLE ONLY public.pms_review_attachments ALTER COLUMN id SET DEFAULT nextval('public.pms_review_attachments_id_seq'::regclass);
 
 
 --
@@ -7164,26 +7164,26 @@ COPY catalog.pms_product_category_attribute_relation (id, product_category_id, p
 
 
 --
--- Data for Name: pms_product_full_reduction; Type: TABLE DATA; Schema: catalog; Owner: postgres
+-- Data for Name: pms_product_spend_discount; Type: TABLE DATA; Schema: catalog; Owner: postgres
 --
 
-COPY catalog.pms_product_full_reduction (id, product_id, full_price, reduce_price) FROM stdin;
+COPY catalog.pms_product_spend_discount (id, product_id, full_price, reduce_price) FROM stdin;
 \.
 
 
 --
--- Data for Name: pms_product_ladder; Type: TABLE DATA; Schema: catalog; Owner: postgres
+-- Data for Name: pms_product_volume_discount; Type: TABLE DATA; Schema: catalog; Owner: postgres
 --
 
-COPY catalog.pms_product_ladder (id, product_id, count, discount, price) FROM stdin;
+COPY catalog.pms_product_volume_discount (id, product_id, count, discount, price) FROM stdin;
 \.
 
 
 --
--- Data for Name: pms_product_media; Type: TABLE DATA; Schema: catalog; Owner: postgres
+-- Data for Name: pms_product_gallery; Type: TABLE DATA; Schema: catalog; Owner: postgres
 --
 
-COPY catalog.pms_product_media (id, product_id, media_type, media_url, sort_order) FROM stdin;
+COPY catalog.pms_product_gallery (id, product_id, media_type, media_url, sort_order) FROM stdin;
 1	1	image	http://localhost:9000/nexus-media/public/catalog/products/1-iphone-17/main.webp	0
 
 2	2	image	http://localhost:9000/nexus-media/public/catalog/products/2-galaxy-s25/main.webp	0
@@ -7208,18 +7208,18 @@ COPY catalog.pms_product_media (id, product_id, media_type, media_url, sort_orde
 
 
 --
--- Data for Name: pms_product_operate_log; Type: TABLE DATA; Schema: catalog; Owner: postgres
+-- Data for Name: pms_product_audit_log; Type: TABLE DATA; Schema: catalog; Owner: postgres
 --
 
-COPY catalog.pms_product_operate_log (id, product_id, price_old, price_new, sale_price_old, sale_price_new, operate_man, create_time) FROM stdin;
+COPY catalog.pms_product_audit_log (id, product_id, price_old, price_new, sale_price_old, sale_price_new, operate_man, create_time) FROM stdin;
 \.
 
 
 --
--- Data for Name: pms_product_verify_record; Type: TABLE DATA; Schema: catalog; Owner: postgres
+-- Data for Name: pms_product_approval_history; Type: TABLE DATA; Schema: catalog; Owner: postgres
 --
 
-COPY catalog.pms_product_verify_record (id, product_id, create_time, reviewer_name, status, detail) FROM stdin;
+COPY catalog.pms_product_approval_history (id, product_id, create_time, reviewer_name, status, detail) FROM stdin;
 \.
 
 
@@ -7232,10 +7232,10 @@ COPY catalog.pms_review (id, product_id, member_id, parent_id, rating, content, 
 
 
 --
--- Data for Name: pms_review_media; Type: TABLE DATA; Schema: catalog; Owner: postgres
+-- Data for Name: pms_review_attachments; Type: TABLE DATA; Schema: catalog; Owner: postgres
 --
 
-COPY catalog.pms_review_media (id, review_id, media_type, media_url, thumbnail_url, sort_order) FROM stdin;
+COPY catalog.pms_review_attachments (id, review_id, media_type, media_url, thumbnail_url, sort_order) FROM stdin;
 \.
 
 
@@ -8855,26 +8855,26 @@ COPY public.pms_product_embedding (product_id, embedding) FROM stdin;
 
 
 --
--- Data for Name: pms_product_full_reduction; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: pms_product_spend_discount; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.pms_product_full_reduction (id, product_id, full_price, reduce_price) FROM stdin;
+COPY public.pms_product_spend_discount (id, product_id, full_price, reduce_price) FROM stdin;
 \.
 
 
 --
--- Data for Name: pms_product_ladder; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: pms_product_volume_discount; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.pms_product_ladder (id, product_id, count, discount, price) FROM stdin;
+COPY public.pms_product_volume_discount (id, product_id, count, discount, price) FROM stdin;
 \.
 
 
 --
--- Data for Name: pms_product_media; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: pms_product_gallery; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.pms_product_media (id, product_id, media_type, media_url, sort_order) FROM stdin;
+COPY public.pms_product_gallery (id, product_id, media_type, media_url, sort_order) FROM stdin;
 1	1	image	http://localhost:9000/nexus-media/public/catalog/products/1-iphone-17/main.webp	0
 
 2	2	image	http://localhost:9000/nexus-media/public/catalog/products/2-galaxy-s25/main.webp	0
@@ -8899,18 +8899,18 @@ COPY public.pms_product_media (id, product_id, media_type, media_url, sort_order
 
 
 --
--- Data for Name: pms_product_operate_log; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: pms_product_audit_log; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.pms_product_operate_log (id, product_id, price_old, price_new, sale_price_old, sale_price_new, operate_man, create_time) FROM stdin;
+COPY public.pms_product_audit_log (id, product_id, price_old, price_new, sale_price_old, sale_price_new, operate_man, create_time) FROM stdin;
 \.
 
 
 --
--- Data for Name: pms_product_verify_record; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: pms_product_approval_history; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.pms_product_verify_record (id, product_id, create_time, reviewer_name, status, detail) FROM stdin;
+COPY public.pms_product_approval_history (id, product_id, create_time, reviewer_name, status, detail) FROM stdin;
 \.
 
 
@@ -8923,10 +8923,10 @@ COPY public.pms_review (id, product_id, member_id, parent_id, rating, content, l
 
 
 --
--- Data for Name: pms_review_media; Type: TABLE DATA; Schema: public; Owner: postgres
+-- Data for Name: pms_review_attachments; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.pms_review_media (id, review_id, media_type, media_url, thumbnail_url, sort_order) FROM stdin;
+COPY public.pms_review_attachments (id, review_id, media_type, media_url, thumbnail_url, sort_order) FROM stdin;
 \.
 
 
@@ -9456,10 +9456,10 @@ SELECT pg_catalog.setval('catalog.pms_product_category_id_seq', 44, true);
 
 
 --
--- Name: pms_product_full_reduction_id_seq; Type: SEQUENCE SET; Schema: catalog; Owner: postgres
+-- Name: pms_product_spend_discount_id_seq; Type: SEQUENCE SET; Schema: catalog; Owner: postgres
 --
 
-SELECT pg_catalog.setval('catalog.pms_product_full_reduction_id_seq', 1, false);
+SELECT pg_catalog.setval('catalog.pms_product_spend_discount_id_seq', 1, false);
 
 
 --
@@ -9470,31 +9470,31 @@ SELECT pg_catalog.setval('catalog.pms_product_id_seq', 11, true);
 
 
 --
--- Name: pms_product_ladder_id_seq; Type: SEQUENCE SET; Schema: catalog; Owner: postgres
+-- Name: pms_product_volume_discount_id_seq; Type: SEQUENCE SET; Schema: catalog; Owner: postgres
 --
 
-SELECT pg_catalog.setval('catalog.pms_product_ladder_id_seq', 1, false);
-
-
---
--- Name: pms_product_media_id_seq; Type: SEQUENCE SET; Schema: catalog; Owner: postgres
---
-
-SELECT pg_catalog.setval('catalog.pms_product_media_id_seq', 11, true);
+SELECT pg_catalog.setval('catalog.pms_product_volume_discount_id_seq', 1, false);
 
 
 --
--- Name: pms_product_operate_log_id_seq; Type: SEQUENCE SET; Schema: catalog; Owner: postgres
+-- Name: pms_product_gallery_id_seq; Type: SEQUENCE SET; Schema: catalog; Owner: postgres
 --
 
-SELECT pg_catalog.setval('catalog.pms_product_operate_log_id_seq', 1, false);
+SELECT pg_catalog.setval('catalog.pms_product_gallery_id_seq', 11, true);
 
 
 --
--- Name: pms_product_verify_record_id_seq; Type: SEQUENCE SET; Schema: catalog; Owner: postgres
+-- Name: pms_product_audit_log_id_seq; Type: SEQUENCE SET; Schema: catalog; Owner: postgres
 --
 
-SELECT pg_catalog.setval('catalog.pms_product_verify_record_id_seq', 1, false);
+SELECT pg_catalog.setval('catalog.pms_product_audit_log_id_seq', 1, false);
+
+
+--
+-- Name: pms_product_approval_history_id_seq; Type: SEQUENCE SET; Schema: catalog; Owner: postgres
+--
+
+SELECT pg_catalog.setval('catalog.pms_product_approval_history_id_seq', 1, false);
 
 
 --
@@ -9505,10 +9505,10 @@ SELECT pg_catalog.setval('catalog.pms_review_id_seq', 1, false);
 
 
 --
--- Name: pms_review_media_id_seq; Type: SEQUENCE SET; Schema: catalog; Owner: postgres
+-- Name: pms_review_attachments_id_seq; Type: SEQUENCE SET; Schema: catalog; Owner: postgres
 --
 
-SELECT pg_catalog.setval('catalog.pms_review_media_id_seq', 1, false);
+SELECT pg_catalog.setval('catalog.pms_review_attachments_id_seq', 1, false);
 
 
 --
@@ -9785,10 +9785,10 @@ SELECT pg_catalog.setval('public.pms_product_category_id_seq', 44, true);
 
 
 --
--- Name: pms_product_full_reduction_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+-- Name: pms_product_spend_discount_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.pms_product_full_reduction_id_seq', 1, false);
+SELECT pg_catalog.setval('public.pms_product_spend_discount_id_seq', 1, false);
 
 
 --
@@ -9799,31 +9799,31 @@ SELECT pg_catalog.setval('public.pms_product_id_seq', 11, true);
 
 
 --
--- Name: pms_product_ladder_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+-- Name: pms_product_volume_discount_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.pms_product_ladder_id_seq', 1, false);
-
-
---
--- Name: pms_product_media_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public.pms_product_media_id_seq', 11, true);
+SELECT pg_catalog.setval('public.pms_product_volume_discount_id_seq', 1, false);
 
 
 --
--- Name: pms_product_operate_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+-- Name: pms_product_gallery_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.pms_product_operate_log_id_seq', 1, false);
+SELECT pg_catalog.setval('public.pms_product_gallery_id_seq', 11, true);
 
 
 --
--- Name: pms_product_verify_record_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+-- Name: pms_product_audit_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.pms_product_verify_record_id_seq', 1, false);
+SELECT pg_catalog.setval('public.pms_product_audit_log_id_seq', 1, false);
+
+
+--
+-- Name: pms_product_approval_history_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.pms_product_approval_history_id_seq', 1, false);
 
 
 --
@@ -9834,10 +9834,10 @@ SELECT pg_catalog.setval('public.pms_review_id_seq', 1, false);
 
 
 --
--- Name: pms_review_media_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+-- Name: pms_review_attachments_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.pms_review_media_id_seq', 1, false);
+SELECT pg_catalog.setval('public.pms_review_attachments_id_seq', 1, false);
 
 
 --
@@ -10195,35 +10195,35 @@ ALTER TABLE ONLY catalog.pms_product_category
 
 
 --
--- Name: pms_product_full_reduction pms_product_full_reduction_pkey; Type: CONSTRAINT; Schema: catalog; Owner: postgres
+-- Name: pms_product_spend_discount pms_product_spend_discount_pkey; Type: CONSTRAINT; Schema: catalog; Owner: postgres
 --
 
-ALTER TABLE ONLY catalog.pms_product_full_reduction
-    ADD CONSTRAINT pms_product_full_reduction_pkey PRIMARY KEY (id);
-
-
---
--- Name: pms_product_ladder pms_product_ladder_pkey; Type: CONSTRAINT; Schema: catalog; Owner: postgres
---
-
-ALTER TABLE ONLY catalog.pms_product_ladder
-    ADD CONSTRAINT pms_product_ladder_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY catalog.pms_product_spend_discount
+    ADD CONSTRAINT pms_product_spend_discount_pkey PRIMARY KEY (id);
 
 
 --
--- Name: pms_product_media pms_product_media_pkey; Type: CONSTRAINT; Schema: catalog; Owner: postgres
+-- Name: pms_product_volume_discount pms_product_volume_discount_pkey; Type: CONSTRAINT; Schema: catalog; Owner: postgres
 --
 
-ALTER TABLE ONLY catalog.pms_product_media
-    ADD CONSTRAINT pms_product_media_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY catalog.pms_product_volume_discount
+    ADD CONSTRAINT pms_product_volume_discount_pkey PRIMARY KEY (id);
 
 
 --
--- Name: pms_product_operate_log pms_product_operate_log_pkey; Type: CONSTRAINT; Schema: catalog; Owner: postgres
+-- Name: pms_product_gallery pms_product_gallery_pkey; Type: CONSTRAINT; Schema: catalog; Owner: postgres
 --
 
-ALTER TABLE ONLY catalog.pms_product_operate_log
-    ADD CONSTRAINT pms_product_operate_log_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY catalog.pms_product_gallery
+    ADD CONSTRAINT pms_product_gallery_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: pms_product_audit_log pms_product_audit_log_pkey; Type: CONSTRAINT; Schema: catalog; Owner: postgres
+--
+
+ALTER TABLE ONLY catalog.pms_product_audit_log
+    ADD CONSTRAINT pms_product_audit_log_pkey PRIMARY KEY (id);
 
 
 --
@@ -10235,19 +10235,19 @@ ALTER TABLE ONLY catalog.pms_product
 
 
 --
--- Name: pms_product_verify_record pms_product_verify_record_pkey; Type: CONSTRAINT; Schema: catalog; Owner: postgres
+-- Name: pms_product_approval_history pms_product_approval_history_pkey; Type: CONSTRAINT; Schema: catalog; Owner: postgres
 --
 
-ALTER TABLE ONLY catalog.pms_product_verify_record
-    ADD CONSTRAINT pms_product_verify_record_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY catalog.pms_product_approval_history
+    ADD CONSTRAINT pms_product_approval_history_pkey PRIMARY KEY (id);
 
 
 --
--- Name: pms_review_media pms_review_media_pkey; Type: CONSTRAINT; Schema: catalog; Owner: postgres
+-- Name: pms_review_attachments pms_review_attachments_pkey; Type: CONSTRAINT; Schema: catalog; Owner: postgres
 --
 
-ALTER TABLE ONLY catalog.pms_review_media
-    ADD CONSTRAINT pms_review_media_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY catalog.pms_review_attachments
+    ADD CONSTRAINT pms_review_attachments_pkey PRIMARY KEY (id);
 
 
 --
@@ -10611,35 +10611,35 @@ ALTER TABLE ONLY public.pms_product_embedding
 
 
 --
--- Name: pms_product_full_reduction pms_product_full_reduction_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: pms_product_spend_discount pms_product_spend_discount_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.pms_product_full_reduction
-    ADD CONSTRAINT pms_product_full_reduction_pkey PRIMARY KEY (id);
-
-
---
--- Name: pms_product_ladder pms_product_ladder_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.pms_product_ladder
-    ADD CONSTRAINT pms_product_ladder_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.pms_product_spend_discount
+    ADD CONSTRAINT pms_product_spend_discount_pkey PRIMARY KEY (id);
 
 
 --
--- Name: pms_product_media pms_product_media_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: pms_product_volume_discount pms_product_volume_discount_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.pms_product_media
-    ADD CONSTRAINT pms_product_media_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.pms_product_volume_discount
+    ADD CONSTRAINT pms_product_volume_discount_pkey PRIMARY KEY (id);
 
 
 --
--- Name: pms_product_operate_log pms_product_operate_log_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: pms_product_gallery pms_product_gallery_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.pms_product_operate_log
-    ADD CONSTRAINT pms_product_operate_log_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.pms_product_gallery
+    ADD CONSTRAINT pms_product_gallery_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: pms_product_audit_log pms_product_audit_log_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.pms_product_audit_log
+    ADD CONSTRAINT pms_product_audit_log_pkey PRIMARY KEY (id);
 
 
 --
@@ -10651,19 +10651,19 @@ ALTER TABLE ONLY public.pms_product
 
 
 --
--- Name: pms_product_verify_record pms_product_verify_record_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: pms_product_approval_history pms_product_approval_history_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.pms_product_verify_record
-    ADD CONSTRAINT pms_product_verify_record_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.pms_product_approval_history
+    ADD CONSTRAINT pms_product_approval_history_pkey PRIMARY KEY (id);
 
 
 --
--- Name: pms_review_media pms_review_media_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: pms_review_attachments pms_review_attachments_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.pms_review_media
-    ADD CONSTRAINT pms_review_media_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.pms_review_attachments
+    ADD CONSTRAINT pms_review_attachments_pkey PRIMARY KEY (id);
 
 
 --
@@ -11278,35 +11278,35 @@ ALTER TABLE ONLY catalog.pms_product_category_attribute_relation
 
 
 --
--- Name: pms_product_full_reduction fk_pms_product_full_reduction_product_id; Type: FK CONSTRAINT; Schema: catalog; Owner: postgres
+-- Name: pms_product_spend_discount fk_pms_product_spend_discount_product_id; Type: FK CONSTRAINT; Schema: catalog; Owner: postgres
 --
 
-ALTER TABLE ONLY catalog.pms_product_full_reduction
-    ADD CONSTRAINT fk_pms_product_full_reduction_product_id FOREIGN KEY (product_id) REFERENCES catalog.pms_product(id);
-
-
---
--- Name: pms_product_ladder fk_pms_product_ladder_product_id; Type: FK CONSTRAINT; Schema: catalog; Owner: postgres
---
-
-ALTER TABLE ONLY catalog.pms_product_ladder
-    ADD CONSTRAINT fk_pms_product_ladder_product_id FOREIGN KEY (product_id) REFERENCES catalog.pms_product(id);
+ALTER TABLE ONLY catalog.pms_product_spend_discount
+    ADD CONSTRAINT fk_pms_product_spend_discount_product_id FOREIGN KEY (product_id) REFERENCES catalog.pms_product(id);
 
 
 --
--- Name: pms_product_media fk_pms_product_media_product_id; Type: FK CONSTRAINT; Schema: catalog; Owner: postgres
+-- Name: pms_product_volume_discount fk_pms_product_volume_discount_product_id; Type: FK CONSTRAINT; Schema: catalog; Owner: postgres
 --
 
-ALTER TABLE ONLY catalog.pms_product_media
-    ADD CONSTRAINT fk_pms_product_media_product_id FOREIGN KEY (product_id) REFERENCES catalog.pms_product(id);
+ALTER TABLE ONLY catalog.pms_product_volume_discount
+    ADD CONSTRAINT fk_pms_product_volume_discount_product_id FOREIGN KEY (product_id) REFERENCES catalog.pms_product(id);
 
 
 --
--- Name: pms_product_operate_log fk_pms_product_operate_log_product_id; Type: FK CONSTRAINT; Schema: catalog; Owner: postgres
+-- Name: pms_product_gallery fk_pms_product_gallery_product_id; Type: FK CONSTRAINT; Schema: catalog; Owner: postgres
 --
 
-ALTER TABLE ONLY catalog.pms_product_operate_log
-    ADD CONSTRAINT fk_pms_product_operate_log_product_id FOREIGN KEY (product_id) REFERENCES catalog.pms_product(id);
+ALTER TABLE ONLY catalog.pms_product_gallery
+    ADD CONSTRAINT fk_pms_product_gallery_product_id FOREIGN KEY (product_id) REFERENCES catalog.pms_product(id);
+
+
+--
+-- Name: pms_product_audit_log fk_pms_product_audit_log_product_id; Type: FK CONSTRAINT; Schema: catalog; Owner: postgres
+--
+
+ALTER TABLE ONLY catalog.pms_product_audit_log
+    ADD CONSTRAINT fk_pms_product_audit_log_product_id FOREIGN KEY (product_id) REFERENCES catalog.pms_product(id);
 
 
 --
@@ -11318,19 +11318,19 @@ ALTER TABLE ONLY catalog.pms_product
 
 
 --
--- Name: pms_product_verify_record fk_pms_product_verify_record_product_id; Type: FK CONSTRAINT; Schema: catalog; Owner: postgres
+-- Name: pms_product_approval_history fk_pms_product_approval_history_product_id; Type: FK CONSTRAINT; Schema: catalog; Owner: postgres
 --
 
-ALTER TABLE ONLY catalog.pms_product_verify_record
-    ADD CONSTRAINT fk_pms_product_verify_record_product_id FOREIGN KEY (product_id) REFERENCES catalog.pms_product(id);
+ALTER TABLE ONLY catalog.pms_product_approval_history
+    ADD CONSTRAINT fk_pms_product_approval_history_product_id FOREIGN KEY (product_id) REFERENCES catalog.pms_product(id);
 
 
 --
--- Name: pms_review_media fk_pms_review_media_review_id; Type: FK CONSTRAINT; Schema: catalog; Owner: postgres
+-- Name: pms_review_attachments fk_pms_review_attachments_review_id; Type: FK CONSTRAINT; Schema: catalog; Owner: postgres
 --
 
-ALTER TABLE ONLY catalog.pms_review_media
-    ADD CONSTRAINT fk_pms_review_media_review_id FOREIGN KEY (review_id) REFERENCES catalog.pms_review(id);
+ALTER TABLE ONLY catalog.pms_review_attachments
+    ADD CONSTRAINT fk_pms_review_attachments_review_id FOREIGN KEY (review_id) REFERENCES catalog.pms_review(id);
 
 
 --

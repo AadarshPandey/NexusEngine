@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @lombok.RequiredArgsConstructor
 public class PmsSkuStockServiceImpl implements PmsSkuStockService {
     private final PmsSkuStockRepository skuStockRepository;
-    private final com.nexusengine.core.repository.PmsProductOperateLogRepository productOperateLogRepository;
+    private final com.nexusengine.core.repository.PmsProductAuditLogRepository productAuditLogRepository;
 
     @Override
     public List<PmsSkuStock> getList(Long pid, String keyword) {
@@ -45,13 +45,13 @@ public class PmsSkuStockServiceImpl implements PmsSkuStockService {
         for (PmsSkuStock newSku : filterSkuList) {
             PmsSkuStock oldSku = oldSkus.stream().filter(o -> o.getId().equals(newSku.getId())).findFirst().orElse(null);
             if (oldSku != null && newSku.getPrice() != null && oldSku.getPrice() != null && newSku.getPrice().compareTo(oldSku.getPrice()) != 0) {
-                com.nexusengine.core.model.PmsProductOperateLog log = new com.nexusengine.core.model.PmsProductOperateLog();
+                com.nexusengine.core.model.PmsProductAuditLog log = new com.nexusengine.core.model.PmsProductAuditLog();
                 log.setProductId(pid);
                 log.setCreateTime(java.time.LocalDateTime.now());
                 log.setOperateMan(username);
                 log.setPriceOld(oldSku.getPrice());
                 log.setPriceNew(newSku.getPrice());
-                productOperateLogRepository.save(log);
+                productAuditLogRepository.save(log);
             }
         }
         

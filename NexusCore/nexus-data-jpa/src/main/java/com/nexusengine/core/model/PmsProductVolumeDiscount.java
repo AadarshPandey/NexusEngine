@@ -1,33 +1,37 @@
 package com.nexusengine.core.model;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
+import java.io.Serializable;
+import java.math.BigDecimal;
 import lombok.Getter;
 import lombok.Setter;
-import java.io.Serializable;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "pms_product_media", schema = "catalog")
-public class PmsProductMedia implements Serializable {
+@Table(name = "pms_product_volume_discount", schema = "catalog")
+public class PmsProductVolumeDiscount implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "product_id", nullable = false)
+    @Column(name = "product_id")
     private Long productId;
     @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "product_id", insertable = false, updatable = false)
-    @com.fasterxml.jackson.annotation.JsonBackReference
     private PmsProduct product;
 
-    @Column(name = "media_type", length = 50)
-    private String mediaType;
+    @Schema(title = "Count")
+    private Integer count;
 
-    @Column(name = "media_url", nullable = false)
-    private String mediaUrl;
+    @Schema(title = "Discount")
+    private BigDecimal discount;
 
-    @Column(name = "sort_order")
-    private Integer sortOrder;
+    @Schema(title = "Price")
+    private BigDecimal price;
 }

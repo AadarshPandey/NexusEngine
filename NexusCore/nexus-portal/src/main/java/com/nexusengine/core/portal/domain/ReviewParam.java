@@ -7,7 +7,7 @@ public record ReviewParam(
     Long parentId,
     Integer rating,
     String content,
-    List<ReviewMediaParam> mediaList
+    List<ReviewMediaParam> attachmentList
 ) {
 
 }

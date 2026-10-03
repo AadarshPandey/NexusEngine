@@ -3,7 +3,6 @@ package com.nexusengine.core.model;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,8 +10,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "pms_product_operate_log", schema = "catalog")
-public class PmsProductOperateLog implements Serializable {
+@Table(name = "pms_product_approval_history", schema = "catalog")
+public class PmsProductApprovalHistory implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -27,26 +26,15 @@ public class PmsProductOperateLog implements Serializable {
     @jakarta.persistence.JoinColumn(name = "product_id", insertable = false, updatable = false)
     private PmsProduct product;
 
-    @Column(name = "price_old")
-    private BigDecimal priceOld;
-
-    @Column(name = "price_new")
-    private BigDecimal priceNew;
-
-    @Column(name = "sale_price_old")
-    private BigDecimal salePriceOld;
-
-    @Column(name = "sale_price_new")
-    private BigDecimal salePriceNew;
-
-
-
-
-
-    @Column(name = "operate_man")
-    @Schema(title = "Operate man")
-    private String operateMan;
-
     @Column(name = "create_time")
     private LocalDateTime createTime;
+
+    @Column(name = "reviewer_name")
+    @Schema(title = "Vertify man")
+    private String reviewerName;
+
+    private Integer status;
+
+    @Schema(title = "Detail")
+    private String detail;
 }

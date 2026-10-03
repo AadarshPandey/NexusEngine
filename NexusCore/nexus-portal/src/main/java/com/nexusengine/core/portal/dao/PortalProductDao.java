@@ -18,8 +18,8 @@ public class PortalProductDao {
     private final PmsProductRepository productRepository;
     private final PmsProductAttributeRepository productAttributeRepository;
     private final PmsSkuStockRepository skuStockRepository;
-    private final PmsProductLadderRepository productLadderRepository;
-    private final PmsProductFullReductionRepository productFullReductionRepository;
+    private final PmsProductVolumeDiscountRepository productVolumeDiscountRepository;
+    private final PmsProductSpendDiscountRepository productSpendDiscountRepository;
     private final SmsCouponRepository couponRepository;
     private final SmsCouponProductRelationRepository couponProductRelationRepository;
     private final SmsCouponProductCategoryRelationRepository couponProductCategoryRelationRepository;
@@ -28,8 +28,8 @@ public class PortalProductDao {
     public PortalProductDao(PmsProductRepository productRepository,
                             PmsProductAttributeRepository productAttributeRepository,
                             PmsSkuStockRepository skuStockRepository,
-                            PmsProductLadderRepository productLadderRepository,
-                            PmsProductFullReductionRepository productFullReductionRepository,
+                            PmsProductVolumeDiscountRepository productVolumeDiscountRepository,
+                            PmsProductSpendDiscountRepository productSpendDiscountRepository,
                             SmsCouponRepository couponRepository,
                             SmsCouponProductRelationRepository couponProductRelationRepository,
                             SmsCouponProductCategoryRelationRepository couponProductCategoryRelationRepository,
@@ -37,8 +37,8 @@ public class PortalProductDao {
         this.productRepository = productRepository;
         this.productAttributeRepository = productAttributeRepository;
         this.skuStockRepository = skuStockRepository;
-        this.productLadderRepository = productLadderRepository;
-        this.productFullReductionRepository = productFullReductionRepository;
+        this.productVolumeDiscountRepository = productVolumeDiscountRepository;
+        this.productSpendDiscountRepository = productSpendDiscountRepository;
         this.couponRepository = couponRepository;
         this.couponProductRelationRepository = couponProductRelationRepository;
         this.couponProductCategoryRelationRepository = couponProductCategoryRelationRepository;
@@ -62,9 +62,9 @@ public class PortalProductDao {
         List<PromotionProduct> result = new ArrayList<>();
         for (PmsProduct product : products) {
             List<PmsSkuStock> skuStockList = skuStockRepository.findByProductId(product.getId());
-            List<PmsProductLadder> productLadderList = productLadderRepository.findByProductId(product.getId());
-            List<PmsProductFullReduction> productFullReductionList = productFullReductionRepository.findByProductId(product.getId());
-            result.add(new PromotionProduct(product, skuStockList, productLadderList, productFullReductionList));
+            List<PmsProductVolumeDiscount> productVolumeDiscountList = productVolumeDiscountRepository.findByProductId(product.getId());
+            List<PmsProductSpendDiscount> productSpendDiscountList = productSpendDiscountRepository.findByProductId(product.getId());
+            result.add(new PromotionProduct(product, skuStockList, productVolumeDiscountList, productSpendDiscountList));
         }
         return result;
     }

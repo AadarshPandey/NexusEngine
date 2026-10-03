@@ -7,7 +7,7 @@ import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import request from '../utils/request';
 
-interface MediaParam {
+interface AttachmentParam {
   mediaType: string;
   mediaUrl: string;
   sortOrder: number;
@@ -24,7 +24,7 @@ interface Review {
   dislikeCount?: number;
   userLiked?: boolean;
   userDisliked?: boolean;
-  mediaList?: MediaParam[];
+  attachmentList?: AttachmentParam[];
   replies?: Review[];
 }
 
@@ -32,11 +32,11 @@ export const ReviewSection: React.FC<{ productId: number }> = ({ productId }) =>
   const [reviews, setReviews] = useState<Review[]>([]);
   const [newReviewText, setNewReviewText] = useState('');
   const [rating, setRating] = useState<number | null>(5);
-  const [mediaList, setMediaList] = useState<MediaParam[]>([]);
+  const [attachmentList, setAttachmentList] = useState<AttachmentParam[]>([]);
   
   const [replyingTo, setReplyingTo] = useState<number | null>(null);
   const [replyText, setReplyText] = useState('');
-  const [replyMediaList, setReplyMediaList] = useState<MediaParam[]>([]);
+  const [replyAttachmentList, setReplyMediaList] = useState<AttachmentParam[]>([]);
 
   useEffect(() => {
     loadReviews();
@@ -74,11 +74,11 @@ export const ReviewSection: React.FC<{ productId: number }> = ({ productId }) =>
         const res = await request.post<unknown, { data: { url: string } }>('/review/upload', formData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
-        const newMedia = { mediaType: file.type.startsWith('video/') ? 'VIDEO' : 'IMAGE', mediaUrl: res.data.url, sortOrder: isReply ? replyMediaList.length : mediaList.length };
+        const newMedia = { mediaType: file.type.startsWith('video/') ? 'VIDEO' : 'IMAGE', mediaUrl: res.data.url, sortOrder: isReply ? replyAttachmentList.length : attachmentList.length };
         if (isReply) {
-          setReplyMediaList([...replyMediaList, newMedia]);
+          setReplyMediaList([...replyAttachmentList, newMedia]);
         } else {
-          setMediaList([...mediaList, newMedia]);
+          setAttachmentList([...attachmentList, newMedia]);
         }
       } catch (err) {
         alert('Upload failed');
@@ -112,11 +112,11 @@ export const ReviewSection: React.FC<{ productId: number }> = ({ productId }) =>
         parentId: null,
         rating,
         content: newReviewText,
-        mediaList
+        attachmentList
       });
       setNewReviewText('');
       setRating(5);
-      setMediaList([]);
+      setAttachmentList([]);
       loadReviews();
     } catch (e) {
       alert('Failed to post review. Please login.');
@@ -131,7 +131,7 @@ export const ReviewSection: React.FC<{ productId: number }> = ({ productId }) =>
         parentId,
         rating: 5,
         content: replyText,
-        mediaList: replyMediaList
+        attachmentList: replyAttachmentList
       });
       setReplyText('');
       setReplyingTo(null);
@@ -163,7 +163,7 @@ export const ReviewSection: React.FC<{ productId: number }> = ({ productId }) =>
             <input hidden accept="image/*,video/*" type="file" onChange={(e) => handleUpload(e, false)} />
             <PhotoCamera />
           </IconButton>
-          {mediaList.map((_m, i) => (
+          {attachmentList.map((_m, i) => (
             <Typography key={i} variant="caption">Media {i + 1}</Typography>
           ))}
         </Box>
@@ -197,7 +197,7 @@ export const ReviewSection: React.FC<{ productId: number }> = ({ productId }) =>
               </Box>
               <Typography variant="body1">{review.content}</Typography>
               <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mt: 1 }}>
-                {review.mediaList && review.mediaList.map((m, i) => (
+                {review.attachmentList && review.attachmentList.map((m, i) => (
                   <Box key={i}>
                     {m.mediaType === 'IMAGE' ? (
                       <img src={m.mediaUrl.startsWith('http') ? m.mediaUrl : (import.meta.env.VITE_API_BASE_URL || '/api') + m.mediaUrl} alt="review" style={{ maxWidth: 200 }} />
@@ -223,7 +223,7 @@ export const ReviewSection: React.FC<{ productId: number }> = ({ productId }) =>
                   </IconButton>
                   <Button variant="contained" onClick={() => handleReplySubmit(review.id)}>Reply</Button>
                 </Box>
-                {replyMediaList.map((_m, i) => (
+                {replyAttachmentList.map((_m, i) => (
                   <Typography key={i} variant="caption" sx={{ display: 'block', mt: 0.5 }}>Reply Media {i + 1} Attached</Typography>
                 ))}
               </Collapse>
@@ -254,7 +254,7 @@ export const ReviewSection: React.FC<{ productId: number }> = ({ productId }) =>
                       </Box>
                       <Typography variant="body2">{reply.content}</Typography>
                       <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mt: 1 }}>
-                        {reply.mediaList && reply.mediaList.map((m, i) => (
+                        {reply.attachmentList && reply.attachmentList.map((m, i) => (
                           <Box key={i}>
                             {m.mediaType === 'IMAGE' ? (
                               <img src={m.mediaUrl.startsWith('http') ? m.mediaUrl : (import.meta.env.VITE_API_BASE_URL || '/api') + m.mediaUrl} alt="reply" style={{ maxWidth: 150 }} />
@@ -280,7 +280,7 @@ export const ReviewSection: React.FC<{ productId: number }> = ({ productId }) =>
                           </IconButton>
                           <Button variant="contained" onClick={() => handleReplySubmit(reply.id)}>Reply</Button>
                         </Box>
-                        {replyMediaList.map((_m, i) => (
+                        {replyAttachmentList.map((_m, i) => (
                           <Typography key={i} variant="caption" sx={{ display: 'block', mt: 0.5 }}>Reply Media {i + 1} Attached</Typography>
                         ))}
                       </Collapse>

@@ -281,9 +281,9 @@ DO $$
 BEGIN
     IF EXISTS (
         SELECT 1 FROM information_schema.tables 
-        WHERE table_schema='public' AND table_name='pms_product_full_reduction'
+        WHERE table_schema='public' AND table_name='pms_product_spend_discount'
     ) THEN
-        ALTER TABLE public.pms_product_full_reduction SET SCHEMA catalog;
+        ALTER TABLE public.pms_product_spend_discount SET SCHEMA catalog;
     END IF;
 END $$;
 
@@ -299,7 +299,7 @@ BEGIN
         JOIN pg_class t ON d.refobjid = t.oid
         JOIN pg_namespace n ON n.oid = t.relnamespace
         WHERE s.relkind = 'S' 
-          AND t.relname = 'pms_product_full_reduction' 
+          AND t.relname = 'pms_product_spend_discount' 
           AND n.nspname = 'catalog' -- because table is already moved
     LOOP
         EXECUTE 'ALTER SEQUENCE ' || seq_record.sequence_name || ' SET SCHEMA catalog';
@@ -311,9 +311,9 @@ DO $$
 BEGIN
     IF EXISTS (
         SELECT 1 FROM information_schema.tables 
-        WHERE table_schema='public' AND table_name='pms_product_ladder'
+        WHERE table_schema='public' AND table_name='pms_product_volume_discount'
     ) THEN
-        ALTER TABLE public.pms_product_ladder SET SCHEMA catalog;
+        ALTER TABLE public.pms_product_volume_discount SET SCHEMA catalog;
     END IF;
 END $$;
 
@@ -329,7 +329,7 @@ BEGIN
         JOIN pg_class t ON d.refobjid = t.oid
         JOIN pg_namespace n ON n.oid = t.relnamespace
         WHERE s.relkind = 'S' 
-          AND t.relname = 'pms_product_ladder' 
+          AND t.relname = 'pms_product_volume_discount' 
           AND n.nspname = 'catalog' -- because table is already moved
     LOOP
         EXECUTE 'ALTER SEQUENCE ' || seq_record.sequence_name || ' SET SCHEMA catalog';
@@ -341,9 +341,9 @@ DO $$
 BEGIN
     IF EXISTS (
         SELECT 1 FROM information_schema.tables 
-        WHERE table_schema='public' AND table_name='pms_product_media'
+        WHERE table_schema='public' AND table_name='pms_product_gallery'
     ) THEN
-        ALTER TABLE public.pms_product_media SET SCHEMA catalog;
+        ALTER TABLE public.pms_product_gallery SET SCHEMA catalog;
     END IF;
 END $$;
 
@@ -359,7 +359,7 @@ BEGIN
         JOIN pg_class t ON d.refobjid = t.oid
         JOIN pg_namespace n ON n.oid = t.relnamespace
         WHERE s.relkind = 'S' 
-          AND t.relname = 'pms_product_media' 
+          AND t.relname = 'pms_product_gallery' 
           AND n.nspname = 'catalog' -- because table is already moved
     LOOP
         EXECUTE 'ALTER SEQUENCE ' || seq_record.sequence_name || ' SET SCHEMA catalog';
@@ -371,9 +371,9 @@ DO $$
 BEGIN
     IF EXISTS (
         SELECT 1 FROM information_schema.tables 
-        WHERE table_schema='public' AND table_name='pms_product_operate_log'
+        WHERE table_schema='public' AND table_name='pms_product_audit_log'
     ) THEN
-        ALTER TABLE public.pms_product_operate_log SET SCHEMA catalog;
+        ALTER TABLE public.pms_product_audit_log SET SCHEMA catalog;
     END IF;
 END $$;
 
@@ -389,7 +389,7 @@ BEGIN
         JOIN pg_class t ON d.refobjid = t.oid
         JOIN pg_namespace n ON n.oid = t.relnamespace
         WHERE s.relkind = 'S' 
-          AND t.relname = 'pms_product_operate_log' 
+          AND t.relname = 'pms_product_audit_log' 
           AND n.nspname = 'catalog' -- because table is already moved
     LOOP
         EXECUTE 'ALTER SEQUENCE ' || seq_record.sequence_name || ' SET SCHEMA catalog';
@@ -401,9 +401,9 @@ DO $$
 BEGIN
     IF EXISTS (
         SELECT 1 FROM information_schema.tables 
-        WHERE table_schema='public' AND table_name='pms_product_verify_record'
+        WHERE table_schema='public' AND table_name='pms_product_approval_history'
     ) THEN
-        ALTER TABLE public.pms_product_verify_record SET SCHEMA catalog;
+        ALTER TABLE public.pms_product_approval_history SET SCHEMA catalog;
     END IF;
 END $$;
 
@@ -419,7 +419,7 @@ BEGIN
         JOIN pg_class t ON d.refobjid = t.oid
         JOIN pg_namespace n ON n.oid = t.relnamespace
         WHERE s.relkind = 'S' 
-          AND t.relname = 'pms_product_verify_record' 
+          AND t.relname = 'pms_product_approval_history' 
           AND n.nspname = 'catalog' -- because table is already moved
     LOOP
         EXECUTE 'ALTER SEQUENCE ' || seq_record.sequence_name || ' SET SCHEMA catalog';
@@ -461,9 +461,9 @@ DO $$
 BEGIN
     IF EXISTS (
         SELECT 1 FROM information_schema.tables 
-        WHERE table_schema='public' AND table_name='pms_review_media'
+        WHERE table_schema='public' AND table_name='pms_review_attachments'
     ) THEN
-        ALTER TABLE public.pms_review_media SET SCHEMA catalog;
+        ALTER TABLE public.pms_review_attachments SET SCHEMA catalog;
     END IF;
 END $$;
 
@@ -479,7 +479,7 @@ BEGIN
         JOIN pg_class t ON d.refobjid = t.oid
         JOIN pg_namespace n ON n.oid = t.relnamespace
         WHERE s.relkind = 'S' 
-          AND t.relname = 'pms_review_media' 
+          AND t.relname = 'pms_review_attachments' 
           AND n.nspname = 'catalog' -- because table is already moved
     LOOP
         EXECUTE 'ALTER SEQUENCE ' || seq_record.sequence_name || ' SET SCHEMA catalog';

@@ -420,9 +420,9 @@ END $$;
 DO $$
 BEGIN
     IF NOT EXISTS (
-        SELECT 1 FROM information_schema.key_column_usage WHERE constraint_name = 'fk_pms_product_full_reduction_product_id'
+        SELECT 1 FROM information_schema.key_column_usage WHERE constraint_name = 'fk_pms_product_spend_discount_product_id'
     ) THEN
-        ALTER TABLE pms_product_full_reduction ADD CONSTRAINT fk_pms_product_full_reduction_product_id FOREIGN KEY (product_id) REFERENCES pms_product(id);
+        ALTER TABLE pms_product_spend_discount ADD CONSTRAINT fk_pms_product_spend_discount_product_id FOREIGN KEY (product_id) REFERENCES pms_product(id);
     END IF;
 EXCEPTION WHEN OTHERS THEN
     -- Ignore errors (e.g. invalid data)
@@ -475,9 +475,9 @@ END $$;
 DO $$
 BEGIN
     IF NOT EXISTS (
-        SELECT 1 FROM information_schema.key_column_usage WHERE constraint_name = 'fk_pms_product_ladder_product_id'
+        SELECT 1 FROM information_schema.key_column_usage WHERE constraint_name = 'fk_pms_product_volume_discount_product_id'
     ) THEN
-        ALTER TABLE pms_product_ladder ADD CONSTRAINT fk_pms_product_ladder_product_id FOREIGN KEY (product_id) REFERENCES pms_product(id);
+        ALTER TABLE pms_product_volume_discount ADD CONSTRAINT fk_pms_product_volume_discount_product_id FOREIGN KEY (product_id) REFERENCES pms_product(id);
     END IF;
 EXCEPTION WHEN OTHERS THEN
     -- Ignore errors (e.g. invalid data)
@@ -486,9 +486,9 @@ END $$;
 DO $$
 BEGIN
     IF NOT EXISTS (
-        SELECT 1 FROM information_schema.key_column_usage WHERE constraint_name = 'fk_pms_product_media_product_id'
+        SELECT 1 FROM information_schema.key_column_usage WHERE constraint_name = 'fk_pms_product_gallery_product_id'
     ) THEN
-        ALTER TABLE pms_product_media ADD CONSTRAINT fk_pms_product_media_product_id FOREIGN KEY (product_id) REFERENCES pms_product(id);
+        ALTER TABLE pms_product_gallery ADD CONSTRAINT fk_pms_product_gallery_product_id FOREIGN KEY (product_id) REFERENCES pms_product(id);
     END IF;
 EXCEPTION WHEN OTHERS THEN
     -- Ignore errors (e.g. invalid data)
@@ -497,9 +497,9 @@ END $$;
 DO $$
 BEGIN
     IF NOT EXISTS (
-        SELECT 1 FROM information_schema.key_column_usage WHERE constraint_name = 'fk_pms_product_operate_log_product_id'
+        SELECT 1 FROM information_schema.key_column_usage WHERE constraint_name = 'fk_pms_product_audit_log_product_id'
     ) THEN
-        ALTER TABLE pms_product_operate_log ADD CONSTRAINT fk_pms_product_operate_log_product_id FOREIGN KEY (product_id) REFERENCES pms_product(id);
+        ALTER TABLE pms_product_audit_log ADD CONSTRAINT fk_pms_product_audit_log_product_id FOREIGN KEY (product_id) REFERENCES pms_product(id);
     END IF;
 EXCEPTION WHEN OTHERS THEN
     -- Ignore errors (e.g. invalid data)
@@ -508,9 +508,9 @@ END $$;
 DO $$
 BEGIN
     IF NOT EXISTS (
-        SELECT 1 FROM information_schema.key_column_usage WHERE constraint_name = 'fk_pms_product_verify_record_product_id'
+        SELECT 1 FROM information_schema.key_column_usage WHERE constraint_name = 'fk_pms_product_approval_history_product_id'
     ) THEN
-        ALTER TABLE pms_product_verify_record ADD CONSTRAINT fk_pms_product_verify_record_product_id FOREIGN KEY (product_id) REFERENCES pms_product(id);
+        ALTER TABLE pms_product_approval_history ADD CONSTRAINT fk_pms_product_approval_history_product_id FOREIGN KEY (product_id) REFERENCES pms_product(id);
     END IF;
 EXCEPTION WHEN OTHERS THEN
     -- Ignore errors (e.g. invalid data)
@@ -552,9 +552,9 @@ END $$;
 DO $$
 BEGIN
     IF NOT EXISTS (
-        SELECT 1 FROM information_schema.key_column_usage WHERE constraint_name = 'fk_pms_review_media_review_id'
+        SELECT 1 FROM information_schema.key_column_usage WHERE constraint_name = 'fk_pms_review_attachments_review_id'
     ) THEN
-        ALTER TABLE pms_review_media ADD CONSTRAINT fk_pms_review_media_review_id FOREIGN KEY (review_id) REFERENCES pms_review(id);
+        ALTER TABLE pms_review_attachments ADD CONSTRAINT fk_pms_review_attachments_review_id FOREIGN KEY (review_id) REFERENCES pms_review(id);
     END IF;
 EXCEPTION WHEN OTHERS THEN
     -- Ignore errors (e.g. invalid data)

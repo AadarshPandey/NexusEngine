@@ -39,8 +39,8 @@ export type ProductQueryParam = PageParam & {
 }
 
 export type PmsProductParam = PmsProduct & {
-  productLadderList?: PmsProductLadder[]
-  productFullReductionList?: PmsProductFullReduction[]
+  productVolumeDiscountList?: PmsProductVolumeDiscount[]
+  productSpendDiscountList?: PmsProductSpendDiscount[]
   memberPriceList?: PmsMemberPrice[]
   skuStockList?: PmsSkuStock[]
   productAttributeValueList?: PmsProductAttributeValue[]
@@ -53,7 +53,7 @@ export type PmsProductParam = PmsProduct & {
   flashPromotionSort: number
 }
 
-export type PmsProductLadder = {
+export type PmsProductVolumeDiscount = {
   /** ID */
   id?: number
   productId?: number
@@ -62,7 +62,7 @@ export type PmsProductLadder = {
   price?: number
 }
 
-export type PmsProductFullReduction = {
+export type PmsProductSpendDiscount = {
   /** ID */
   id?: number
   productId?: number

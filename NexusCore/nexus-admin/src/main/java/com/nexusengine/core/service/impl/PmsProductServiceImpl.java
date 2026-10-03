@@ -32,14 +32,14 @@ import java.util.stream.Collectors;
 public class PmsProductServiceImpl implements PmsProductService {
     private static final Logger LOGGER = LoggerFactory.getLogger(PmsProductServiceImpl.class);
     private final PmsProductRepository productRepository;
-    private final PmsProductLadderRepository productLadderRepository;
-    private final PmsProductFullReductionRepository productFullReductionRepository;
+    private final PmsProductVolumeDiscountRepository productVolumeDiscountRepository;
+    private final PmsProductSpendDiscountRepository productSpendDiscountRepository;
     private final PmsSkuStockRepository skuStockRepository;
     private final PmsProductAttributeValueRepository productAttributeValueRepository;
     
     
-    private final PmsProductVerifyRecordRepository productVerifyRecordRepository;
-    private final com.nexusengine.core.repository.PmsProductOperateLogRepository productOperateLogRepository;
+    private final PmsProductApprovalHistoryRepository productApprovalHistoryRepository;
+    private final com.nexusengine.core.repository.PmsProductAuditLogRepository productAuditLogRepository;
 
     @Override
     @org.springframework.transaction.annotation.Transactional(rollbackFor = Exception.class)
@@ -49,8 +49,8 @@ public class PmsProductServiceImpl implements PmsProductService {
         product.setId(null);
         productRepository.save(product);
         Long productId = product.getId();
-        saveProductLadderList(productParam.productLadderList(), productId);
-        saveProductFullReductionList(productParam.productFullReductionList(), productId);
+        saveProductLadderList(productParam.productVolumeDiscountList(), productId);
+        saveProductFullReductionList(productParam.productSpendDiscountList(), productId);
         handleSkuStockCode(productParam.skuStockList(), productId);
         if (CollUtil.isEmpty(productParam.skuStockList())) {
             PmsSkuStock defaultSku = new PmsSkuStock();
@@ -87,7 +87,7 @@ public class PmsProductServiceImpl implements PmsProductService {
     public PmsProductResult getUpdateInfo(Long id) {
         PmsProduct product = productRepository.findById(id).orElse(null);
         if (product == null) return null;
-        return new PmsProductResult(new PmsProductParam(product, productLadderRepository.findByProductId(id), productFullReductionRepository.findByProductId(id), skuStockRepository.findByProductId(id), productAttributeValueRepository.findByProductId(id)), null);
+        return new PmsProductResult(new PmsProductParam(product, productVolumeDiscountRepository.findByProductId(id), productSpendDiscountRepository.findByProductId(id), skuStockRepository.findByProductId(id), productAttributeValueRepository.findByProductId(id)), null);
     }
 
     @Override
@@ -97,10 +97,10 @@ public class PmsProductServiceImpl implements PmsProductService {
         BeanUtils.copyProperties(productParam, product);
         product.setId(id);
         productRepository.save(product);
-        productLadderRepository.deleteByProductId(id);
-        saveProductLadderList(productParam.productLadderList(), id);
-        productFullReductionRepository.deleteByProductId(id);
-        saveProductFullReductionList(productParam.productFullReductionList(), id);
+        productVolumeDiscountRepository.deleteByProductId(id);
+        saveProductLadderList(productParam.productVolumeDiscountList(), id);
+        productSpendDiscountRepository.deleteByProductId(id);
+        saveProductFullReductionList(productParam.productSpendDiscountList(), id);
         handleUpdateSkuStockList(id, productParam);
         productAttributeValueRepository.deleteByProductId(id);
         saveProductAttributeValueList(productParam.productAttributeValueList(), id);
@@ -195,9 +195,9 @@ public class PmsProductServiceImpl implements PmsProductService {
             product.setVerifyStatus(verifyStatus);
             productRepository.save(product);
         }
-        List<PmsProductVerifyRecord> records = new ArrayList<>();
+        List<PmsProductApprovalHistory> records = new ArrayList<>();
         for (Long id : ids) {
-            PmsProductVerifyRecord record = new PmsProductVerifyRecord();
+            PmsProductApprovalHistory record = new PmsProductApprovalHistory();
             record.setProductId(id);
             record.setCreateTime(java.time.LocalDateTime.now());
             record.setDetail(detail);
@@ -211,7 +211,7 @@ public class PmsProductServiceImpl implements PmsProductService {
             record.setReviewerName(username);
             records.add(record);
         }
-        productVerifyRecordRepository.saveAll(records);
+        productApprovalHistoryRepository.saveAll(records);
         return products.size();
     }
 
@@ -261,22 +261,22 @@ public class PmsProductServiceImpl implements PmsProductService {
     }
 
 
-    private void saveProductLadderList(List<PmsProductLadder> dataList, Long productId) {
+    private void saveProductLadderList(List<PmsProductVolumeDiscount> dataList, Long productId) {
         if (CollectionUtils.isEmpty(dataList)) return;
-        for (PmsProductLadder item : dataList) {
+        for (PmsProductVolumeDiscount item : dataList) {
             item.setId(null);
             item.setProductId(productId);
         }
-        productLadderRepository.saveAll(dataList);
+        productVolumeDiscountRepository.saveAll(dataList);
     }
 
-    private void saveProductFullReductionList(List<PmsProductFullReduction> dataList, Long productId) {
+    private void saveProductFullReductionList(List<PmsProductSpendDiscount> dataList, Long productId) {
         if (CollectionUtils.isEmpty(dataList)) return;
-        for (PmsProductFullReduction item : dataList) {
+        for (PmsProductSpendDiscount item : dataList) {
             item.setId(null);
             item.setProductId(productId);
         }
-        productFullReductionRepository.saveAll(dataList);
+        productSpendDiscountRepository.saveAll(dataList);
     }
 
     private void saveSkuStockList(List<PmsSkuStock> dataList, Long productId) {
@@ -299,13 +299,13 @@ public class PmsProductServiceImpl implements PmsProductService {
 
 
     @Override
-    public java.util.List<com.nexusengine.core.model.PmsProductOperateLog> getOperateLog(Long id) {
-        return productOperateLogRepository.findByProductId(id);
+    public java.util.List<com.nexusengine.core.model.PmsProductAuditLog> getAuditLog(Long id) {
+        return productAuditLogRepository.findByProductId(id);
     }
 
     @Override
-    public java.util.List<com.nexusengine.core.model.PmsProductVerifyRecord> getVerifyRecord(Long id) {
-        return productVerifyRecordRepository.findByProductId(id);
+    public java.util.List<com.nexusengine.core.model.PmsProductApprovalHistory> getApprovalHistory(Long id) {
+        return productApprovalHistoryRepository.findByProductId(id);
     }
 
 }
