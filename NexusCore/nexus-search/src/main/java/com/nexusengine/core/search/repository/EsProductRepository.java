@@ -13,6 +13,6 @@ public interface EsProductRepository extends ElasticsearchRepository<EsProduct, 
     /**
      *
      */
-    Page<EsProduct> findByNameOrSubTitleOrKeywords(String name, String subTitle, String keywords,Pageable page);
+    Page<EsProduct> findByNameOrKeywords(String name, String keywords, Pageable page);
 
 }
