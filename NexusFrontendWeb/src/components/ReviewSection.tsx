@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Typography, Button, TextField, Rating, List, ListItem, Divider, Avatar, IconButton, Collapse } from '@mui/material';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
+import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
 import request from '../utils/request';
 
 interface MediaParam {
@@ -16,6 +17,7 @@ interface Review {
   rating: number;
   content: string;
   createdTime: string;
+  likeCount?: number;
   mediaList?: MediaParam[];
   replies?: Review[];
 }
@@ -28,6 +30,7 @@ export const ReviewSection: React.FC<{ productId: number }> = ({ productId }) =>
   
   const [replyingTo, setReplyingTo] = useState<number | null>(null);
   const [replyText, setReplyText] = useState('');
+  const [replyMediaList, setReplyMediaList] = useState<MediaParam[]>([]);
 
   useEffect(() => {
     loadReviews();
@@ -38,7 +41,6 @@ export const ReviewSection: React.FC<{ productId: number }> = ({ productId }) =>
       const res = await request.get<unknown, { data: { list: Review[] } }>(`/review/product/${productId}`);
       const fetchedReviews = res.data.list || [];
       
-      // Load replies for each review
       const reviewsWithReplies = await Promise.all(
         fetchedReviews.map(async (review) => {
           try {
@@ -56,7 +58,7 @@ export const ReviewSection: React.FC<{ productId: number }> = ({ productId }) =>
     }
   };
 
-  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>, isReply: boolean = false) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       const formData = new FormData();
@@ -66,10 +68,24 @@ export const ReviewSection: React.FC<{ productId: number }> = ({ productId }) =>
         const res = await request.post<unknown, { data: { url: string } }>('/review/upload', formData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
-        setMediaList([...mediaList, { mediaType: file.type.startsWith('video/') ? 'VIDEO' : 'IMAGE', mediaUrl: res.data.url, sortOrder: mediaList.length }]);
+        const newMedia = { mediaType: file.type.startsWith('video/') ? 'VIDEO' : 'IMAGE', mediaUrl: res.data.url, sortOrder: isReply ? replyMediaList.length : mediaList.length };
+        if (isReply) {
+          setReplyMediaList([...replyMediaList, newMedia]);
+        } else {
+          setMediaList([...mediaList, newMedia]);
+        }
       } catch (err) {
         alert('Upload failed');
       }
+    }
+  };
+
+  const handleLike = async (id: number) => {
+    try {
+      await request.post(`/review/${id}/like`);
+      loadReviews(); // Reload to get updated likes
+    } catch (e) {
+      alert('Failed to like review.');
     }
   };
 
@@ -100,10 +116,11 @@ export const ReviewSection: React.FC<{ productId: number }> = ({ productId }) =>
         parentId,
         rating: 5,
         content: replyText,
-        mediaList: []
+        mediaList: replyMediaList
       });
       setReplyText('');
       setReplyingTo(null);
+      setReplyMediaList([]);
       loadReviews();
     } catch (e) {
       alert('Failed to post reply. Please login.');
@@ -128,11 +145,11 @@ export const ReviewSection: React.FC<{ productId: number }> = ({ productId }) =>
         <Box sx={{ mt: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
           <Button variant="contained" onClick={handleSubmit}>Submit Review</Button>
           <IconButton color="primary" component="label">
-            <input hidden accept="image/*,video/*" type="file" onChange={handleUpload} />
+            <input hidden accept="image/*,video/*" type="file" onChange={(e) => handleUpload(e, false)} />
             <PhotoCamera />
           </IconButton>
           {mediaList.map((_m, i) => (
-            <Typography key={i} variant="caption">Uploaded Media {i + 1}</Typography>
+            <Typography key={i} variant="caption">Media {i + 1}</Typography>
           ))}
         </Box>
       </Box>
@@ -148,23 +165,31 @@ export const ReviewSection: React.FC<{ productId: number }> = ({ productId }) =>
                   {new Date(review.createdTime).toLocaleDateString()}
                 </Typography>
                 <Box sx={{ flexGrow: 1 }} />
-                <Button size="small" onClick={() => setReplyingTo(replyingTo === review.id ? null : review.id)}>
+                
+                <IconButton size="small" onClick={() => handleLike(review.id)}>
+                  <ThumbUpOutlinedIcon fontSize="small" />
+                </IconButton>
+                <Typography variant="caption">{review.likeCount || 0}</Typography>
+                
+                <Button size="small" sx={{ ml: 1 }} onClick={() => { setReplyingTo(replyingTo === review.id ? null : review.id); setReplyMediaList([]); }}>
                   {replyingTo === review.id ? 'Cancel' : 'Reply'}
                 </Button>
               </Box>
               <Typography variant="body1">{review.content}</Typography>
-              {review.mediaList && review.mediaList.map((m, i) => (
-                <Box key={i} sx={{ mt: 1 }}>
-                  {m.mediaType === 'IMAGE' ? (
-                    <img src={m.mediaUrl.startsWith('http') ? m.mediaUrl : (import.meta.env.VITE_API_BASE_URL || '/api') + m.mediaUrl} alt="review" style={{ maxWidth: 200 }} />
-                  ) : (
-                    <video src={m.mediaUrl.startsWith('http') ? m.mediaUrl : (import.meta.env.VITE_API_BASE_URL || '/api') + m.mediaUrl} controls style={{ maxWidth: 300 }} />
-                  )}
-                </Box>
-              ))}
+              <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mt: 1 }}>
+                {review.mediaList && review.mediaList.map((m, i) => (
+                  <Box key={i}>
+                    {m.mediaType === 'IMAGE' ? (
+                      <img src={m.mediaUrl.startsWith('http') ? m.mediaUrl : (import.meta.env.VITE_API_BASE_URL || '/api') + m.mediaUrl} alt="review" style={{ maxWidth: 200 }} />
+                    ) : (
+                      <video src={m.mediaUrl.startsWith('http') ? m.mediaUrl : (import.meta.env.VITE_API_BASE_URL || '/api') + m.mediaUrl} controls style={{ maxWidth: 300 }} />
+                    )}
+                  </Box>
+                ))}
+              </Box>
 
               <Collapse in={replyingTo === review.id} timeout="auto" unmountOnExit sx={{ width: '100%', mt: 2 }}>
-                <Box sx={{ display: 'flex', gap: 1 }}>
+                <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
                   <TextField 
                     fullWidth 
                     size="small" 
@@ -172,21 +197,68 @@ export const ReviewSection: React.FC<{ productId: number }> = ({ productId }) =>
                     value={replyText}
                     onChange={e => setReplyText(e.target.value)}
                   />
+                  <IconButton color="primary" component="label" size="small">
+                    <input hidden accept="image/*,video/*" type="file" onChange={(e) => handleUpload(e, true)} />
+                    <PhotoCamera fontSize="small" />
+                  </IconButton>
                   <Button variant="contained" onClick={() => handleReplySubmit(review.id)}>Reply</Button>
                 </Box>
+                {replyMediaList.map((_m, i) => (
+                  <Typography key={i} variant="caption" sx={{ display: 'block', mt: 0.5 }}>Reply Media {i + 1} Attached</Typography>
+                ))}
               </Collapse>
 
               {review.replies && review.replies.length > 0 && (
                 <List sx={{ width: '100%', ml: 4, mt: 1, bgcolor: 'action.hover', borderRadius: 1 }}>
                   {review.replies.map(reply => (
                     <ListItem key={reply.id} sx={{ flexDirection: 'column', alignItems: 'flex-start' }}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5, width: '100%' }}>
                         <Avatar sx={{ width: 24, height: 24 }}>R</Avatar>
                         <Typography variant="caption" color="text.secondary">
                           {new Date(reply.createdTime).toLocaleDateString()}
                         </Typography>
+                        <Box sx={{ flexGrow: 1 }} />
+                        <IconButton size="small" onClick={() => handleLike(reply.id)}>
+                          <ThumbUpOutlinedIcon fontSize="small" sx={{ fontSize: 16 }} />
+                        </IconButton>
+                        <Typography variant="caption">{reply.likeCount || 0}</Typography>
+                        
+                        <Button size="small" sx={{ ml: 1 }} onClick={() => { setReplyingTo(replyingTo === reply.id ? null : reply.id); setReplyMediaList([]); }}>
+                          {replyingTo === reply.id ? 'Cancel' : 'Reply'}
+                        </Button>
                       </Box>
                       <Typography variant="body2">{reply.content}</Typography>
+                      <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mt: 1 }}>
+                        {reply.mediaList && reply.mediaList.map((m, i) => (
+                          <Box key={i}>
+                            {m.mediaType === 'IMAGE' ? (
+                              <img src={m.mediaUrl.startsWith('http') ? m.mediaUrl : (import.meta.env.VITE_API_BASE_URL || '/api') + m.mediaUrl} alt="reply" style={{ maxWidth: 150 }} />
+                            ) : (
+                              <video src={m.mediaUrl.startsWith('http') ? m.mediaUrl : (import.meta.env.VITE_API_BASE_URL || '/api') + m.mediaUrl} controls style={{ maxWidth: 200 }} />
+                            )}
+                          </Box>
+                        ))}
+                      </Box>
+                      
+                      <Collapse in={replyingTo === reply.id} timeout="auto" unmountOnExit sx={{ width: '100%', mt: 2 }}>
+                        <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+                          <TextField 
+                            fullWidth 
+                            size="small" 
+                            placeholder="Write a reply..." 
+                            value={replyText}
+                            onChange={e => setReplyText(e.target.value)}
+                          />
+                          <IconButton color="primary" component="label" size="small">
+                            <input hidden accept="image/*,video/*" type="file" onChange={(e) => handleUpload(e, true)} />
+                            <PhotoCamera fontSize="small" />
+                          </IconButton>
+                          <Button variant="contained" onClick={() => handleReplySubmit(reply.id)}>Reply</Button>
+                        </Box>
+                        {replyMediaList.map((_m, i) => (
+                          <Typography key={i} variant="caption" sx={{ display: 'block', mt: 0.5 }}>Reply Media {i + 1} Attached</Typography>
+                        ))}
+                      </Collapse>
                     </ListItem>
                   ))}
                 </List>

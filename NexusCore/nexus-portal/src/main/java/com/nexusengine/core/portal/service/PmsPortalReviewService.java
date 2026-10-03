@@ -12,4 +12,5 @@ public interface PmsPortalReviewService {
     List<PmsReview> listReplies(Long parentId);
     PmsReview create(ReviewParam param);
     Map<String, String> uploadMedia(MultipartFile file);
+    Integer like(Long id);
 }

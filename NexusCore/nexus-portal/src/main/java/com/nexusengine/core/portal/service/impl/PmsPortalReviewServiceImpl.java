@@ -37,6 +37,7 @@ public class PmsPortalReviewServiceImpl implements PmsPortalReviewService {
     private final PmsProductRepository productRepository;
     private final PmsBrandRepository brandRepository;
     private final PmsCommentReplyRepository commentReplyRepository;
+    private final com.nexusengine.core.common.service.RedisService redisService;
 
     @Override
     public CommonPage<PmsReview> list(Long productId, Integer pageNum, Integer pageSize) {
@@ -47,7 +48,19 @@ public class PmsPortalReviewServiceImpl implements PmsPortalReviewService {
 
     @Override
     public List<PmsReview> listReplies(Long parentId) {
-        return reviewRepository.findByParentIdAndStatus(parentId, 1);
+        List<PmsReview> allDescendants = new ArrayList<>();
+        collectDescendants(parentId, allDescendants);
+        return allDescendants;
+    }
+
+    private void collectDescendants(Long parentId, List<PmsReview> allDescendants) {
+        List<PmsReview> children = reviewRepository.findByParentIdAndStatus(parentId, 1);
+        if (children != null && !children.isEmpty()) {
+            allDescendants.addAll(children);
+            for (PmsReview child : children) {
+                collectDescendants(child.getId(), allDescendants);
+            }
+        }
     }
 
     @Override
@@ -82,8 +95,9 @@ public class PmsPortalReviewServiceImpl implements PmsPortalReviewService {
                     try {
                         String oldObjectName = mediaUrl.substring(mediaUrl.indexOf("public/users/comments/temp_"));
                         String uuidAndExt = oldObjectName.substring(oldObjectName.lastIndexOf("/") + 1);
-                        String newObjectName = "public/users/comments/" + member.getId() + "/" + saved.getId() + "/" + uuidAndExt;
+                        String newObjectName = "public/users/comments/" + member.getId() + "/" + param.productId() + "/" + saved.getId() + "_" + uuidAndExt;
                         
+                        // Just copy for now, temp folder can be cleaned by a cron job or we can delete it directly
                         minioClient.copyObject(
                                 io.minio.CopyObjectArgs.builder()
                                         .bucket("nexus-media")
@@ -113,8 +127,9 @@ public class PmsPortalReviewServiceImpl implements PmsPortalReviewService {
             pics = String.join(",", picUrls);
         }
         
+        // Sync to PmsComment
         if (param.parentId() == null) {
-            // Also save to PmsComment for backward compatibility
+            // It's a root comment
             PmsComment comment = new PmsComment();
             comment.setProductId(param.productId());
             comment.setMemberNickName(member.getNickname());
@@ -135,18 +150,35 @@ public class PmsPortalReviewServiceImpl implements PmsPortalReviewService {
             }
             commentRepository.save(comment);
         } else {
-            // It's a reply! Save to PmsCommentReply
+            // It's a reply! Save the child comment in PmsComment first
             PmsReview parentReview = reviewRepository.findById(param.parentId()).orElse(null);
             if (parentReview != null) {
                 PmsComment parentComment = commentRepository.findFirstByProductIdAndContentOrderByIdDesc(parentReview.getProductId(), parentReview.getContent());
                 if (parentComment != null) {
+                    // 1. Create the new child comment
+                    PmsComment childComment = new PmsComment();
+                    childComment.setProductId(parentReview.getProductId());
+                    childComment.setMemberNickName(member.getNickname());
+                    childComment.setMemberIcon(member.getIcon());
+                    childComment.setMemberIp("127.0.0.1");
+                    childComment.setContent(param.content());
+                    childComment.setCreateTime(java.time.LocalDateTime.now());
+                    childComment.setShowStatus(1);
+                    childComment.setStar(param.rating() == null ? 5 : param.rating());
+                    childComment.setReadCount(0);
+                    childComment.setLikesCount(0);
+                    childComment.setReplyCount(0);
+                    PmsProduct product = productRepository.findById(param.productId()).orElse(null);
+                    if (product != null) {
+                        childComment.setProductName(product.getName());
+                        childComment.setProductAttribute(product.getSubTitle());
+                    }
+                    childComment = commentRepository.save(childComment);
+
+                    // 2. Create the relationship link
                     PmsCommentReply reply = new PmsCommentReply();
                     reply.setCommentId(parentComment.getId()); 
-                    reply.setMemberNickName(member.getNickname());
-                    reply.setMemberIcon(member.getIcon());
-                    reply.setContent(param.content());
-                    reply.setCreateTime(java.time.LocalDateTime.now());
-                    reply.setType(0); // 0->Member Reply
+                    reply.setReplyCommentId(childComment.getId());
                     commentReplyRepository.save(reply);
                     
                     // Increment reply_count on the parent comment
@@ -197,5 +229,44 @@ public class PmsPortalReviewServiceImpl implements PmsPortalReviewService {
         } catch (Exception e) {
             throw new RuntimeException("Upload failed", e);
         }
+    }
+
+    @Override
+    public Integer like(Long id) {
+        var member = memberService.getCurrentMember();
+        if (member == null) {
+            throw new RuntimeException("Must be logged in to like");
+        }
+        
+        String redisKey = "review:like:" + id;
+        Long userId = member.getId();
+        
+        // Check if already liked
+        if (redisService.sIsMember(redisKey, userId)) {
+            // Already liked, just return current count or maybe we can implement unlike here.
+            // For now, just return current count.
+            PmsReview review = reviewRepository.findById(id).orElse(null);
+            return review != null && review.getLikeCount() != null ? review.getLikeCount() : 0;
+        }
+
+        // Add to set
+        redisService.sAdd(redisKey, (Object) userId);
+
+        PmsReview review = reviewRepository.findById(id).orElse(null);
+        if (review != null) {
+            Integer currentLikes = review.getLikeCount() == null ? 0 : review.getLikeCount();
+            review.setLikeCount(currentLikes + 1);
+            reviewRepository.save(review);
+            
+            // Also update PmsComment if needed
+            PmsComment comment = commentRepository.findFirstByProductIdAndContentOrderByIdDesc(review.getProductId(), review.getContent());
+            if (comment != null) {
+                Integer commentLikes = comment.getLikesCount() == null ? 0 : comment.getLikesCount();
+                comment.setLikesCount(commentLikes + 1);
+                commentRepository.save(comment);
+            }
+            return review.getLikeCount();
+        }
+        return 0;
     }
 }

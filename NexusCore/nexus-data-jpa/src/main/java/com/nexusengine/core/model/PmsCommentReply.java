@@ -3,7 +3,6 @@ package com.nexusengine.core.model;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,22 +20,16 @@ public class PmsCommentReply implements Serializable {
 
     @Column(name = "comment_id")
     private Long commentId;
+
     @com.fasterxml.jackson.annotation.JsonIgnore
-    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
-    @jakarta.persistence.JoinColumn(name = "comment_id", insertable = false, updatable = false)
-    private PmsComment comment;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "comment_id", insertable = false, updatable = false)
+    private PmsComment parentComment;
 
-    @Column(name = "member_nick_name")
-    private String memberNickName;
+    @Column(name = "reply_comment_id")
+    private Long replyCommentId;
 
-    @Column(name = "member_icon")
-    private String memberIcon;
-
-    private String content;
-
-    @Column(name = "create_time")
-    private LocalDateTime createTime;
-
-    @Schema(title = "Type")
-    private Integer type;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "reply_comment_id", insertable = false, updatable = false)
+    private PmsComment childComment;
 }

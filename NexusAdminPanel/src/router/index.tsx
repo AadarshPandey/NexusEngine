@@ -48,6 +48,7 @@ const HomeSubject = lazy(() => import('@/pages/sms/HomeSubject'));
 const AdvertiseList = lazy(() => import('@/pages/sms/AdvertiseList'));
 const AdvertiseAdd = lazy(() => import('@/pages/sms/AdvertiseAdd'));
 const AdvertiseUpdate = lazy(() => import('@/pages/sms/AdvertiseUpdate'));
+const SelectSession = lazy(() => import("@/pages/sms/SelectSession"));
 
 // UMS
 const AdminList = lazy(() => import('@/pages/ums/AdminList'));
@@ -116,6 +117,7 @@ const router = createHashRouter([
       // SMS
       { path: 'sms/flash', element: withSuspense(FlashList) },
       { path: 'sms/flashSession', element: withSuspense(FlashSessionList) },
+      { path: "sms/selectSession", element: withSuspense(SelectSession) },
       { path: 'sms/flashProductRelation', element: withSuspense(FlashProductRelation) },
       { path: 'sms/coupon', element: withSuspense(CouponList) },
       { path: 'sms/addCoupon', element: withSuspense(CouponAdd) },

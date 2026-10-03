@@ -47,4 +47,10 @@ public class PmsPortalReviewController {
     public CommonResult<Map<String, String>> upload(@RequestParam("file") MultipartFile file) {
         return CommonResult.success(reviewService.uploadMedia(file));
     }
+
+    @Operation(summary = "Like a review or reply")
+    @PostMapping("/{id}/like")
+    public CommonResult<Integer> like(@PathVariable Long id) {
+        return CommonResult.success(reviewService.like(id));
+    }
 }
