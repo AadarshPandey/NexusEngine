@@ -9,9 +9,7 @@ export interface OmsCartItem {
   price: number;
   productPic: string;
   productName: string;
-  productSubTitle: string;
   productSkuCode: string;
-  memberNickname: string;
   createDate: string;
   modifyDate: string;
   deleteStatus: number;

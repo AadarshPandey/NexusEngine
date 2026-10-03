@@ -51,17 +51,9 @@ public class OmsCartItem implements Serializable {
     @Schema(title = "Product name")
     private String productName;
 
-    @Column(name = "product_sub_title")
-    @Schema(title = "Product sub title")
-    private String productSubTitle;
-
     @Column(name = "product_sku_code")
     @Schema(title = "Product sku code")
     private String productSkuCode;
-
-    @Column(name = "member_nickname")
-    @Schema(title = "Member nickname")
-    private String memberNickname;
 
     @Column(name = "create_date")
     @Schema(title = "Create date")

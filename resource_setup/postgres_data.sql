@@ -8103,7 +8103,7 @@ COPY migration.flyway_schema_history (installed_rank, version, description, type
 -- Data for Name: oms_cart_item; Type: TABLE DATA; Schema: orders; Owner: postgres
 --
 
-COPY orders.oms_cart_item (id, product_id, product_sku_id, member_id, quantity, price, product_pic, product_name, product_sub_title, product_sku_code, member_nickname, create_date, modify_date, delete_status, product_category_id, product_brand, product_sn, product_attr) FROM stdin;
+COPY orders.oms_cart_item (id, product_id, product_sku_id, member_id, quantity, price, product_pic, product_name, product_sku_code, create_date, modify_date, delete_status, product_category_id, product_brand, product_sn, product_attr) FROM stdin;
 19	1	2	1	1	56570.00	http://localhost:9000/nexus-media/public/pms/skus/APPLE-IP17-BLK-256/main.svg	iPhone 17 (Black, 256GB)	\N	APPLE-IP17-BLK-256	Customer One	2026-09-27 13:23:30.71045	1	\N
 21	1	3	1	1	53430.00	http://localhost:9000/nexus-media/public/pms/skus/APPLE-IP17-SLV-128/main.svg	iPhone 17 (Silver, 128GB)	\N	APPLE-IP17-SLV-128	Customer One	2026-09-27 13:23:37.33667	1	\N
 4	150	\N	1	97	4640.00	http://localhost:9000/nexus-media/public/pms/products/150/main.svg	Portable Tyre Inflator	\N	\N	Customer One	2026-09-25 14:24:42.129	1	\N
