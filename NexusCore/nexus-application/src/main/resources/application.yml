@@ -46,6 +46,7 @@ spring:
             model: gemini-2.5-flash
     vectorstore:
       pgvector:
+        schema-name: ai
         initialize-schema: true
 jwt:
   tokenHeader: Authorization
