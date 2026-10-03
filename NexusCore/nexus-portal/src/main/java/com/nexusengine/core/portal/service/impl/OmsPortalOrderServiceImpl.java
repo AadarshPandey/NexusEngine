@@ -225,7 +225,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
         }
         orderItemRepository.saveAll(orderItemList);
         if (orderParam.couponId() != null) {
-            updateCouponStatus(orderParam.couponId(), currentMember.getId(), 1);
+            updateCouponStatus(orderParam.couponId(), currentMember.getId(), 1, order);
         }
         if (orderParam.usePoints() != null) {
             order.setUsedPoints(orderParam.usePoints());
@@ -305,7 +305,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
                 portalOrderDao.updateOrderStatus(ids, 4);
                 for (OmsOrderDetail timeOutOrder : timeOutOrders) {
                     portalOrderDao.releaseSkuStockLock(timeOutOrder.orderItemList());
-                    updateCouponStatus(timeOutOrder.omsOrder().getCouponId(), timeOutOrder.omsOrder().getMemberId(), 0);
+                    updateCouponStatus(timeOutOrder.omsOrder().getCouponId(), timeOutOrder.omsOrder().getMemberId(), 0, null);
                     if (timeOutOrder.omsOrder().getUsedPoints() != null) {
                         UmsMember member = memberService.getById(timeOutOrder.omsOrder().getMemberId());
                         memberService.updatePoints(timeOutOrder.omsOrder().getMemberId(), member.getPoints() + timeOutOrder.omsOrder().getUsedPoints());
@@ -341,7 +341,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
         if (!CollectionUtils.isEmpty(orderItemList)) {
             portalOrderDao.releaseSkuStockLock(orderItemList);
         }
-        updateCouponStatus(cancelOrder.getCouponId(), cancelOrder.getMemberId(), 0);
+        updateCouponStatus(cancelOrder.getCouponId(), cancelOrder.getMemberId(), 0, null);
         if (cancelOrder.getUsedPoints() != null) {
             UmsMember member = memberService.getById(cancelOrder.getMemberId());
             memberService.updatePoints(cancelOrder.getMemberId(), member.getPoints() + cancelOrder.getUsedPoints());
@@ -481,15 +481,22 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
         return sum;
     }
 
-    private void updateCouponStatus(Long couponId, Long memberId, Integer useStatus) {
+    private void updateCouponStatus(Long couponId, Long memberId, Integer useStatus, OmsOrder order) {
         if (couponId == null) return;
         List<SmsCouponHistory> histories = couponHistoryRepository.findByMemberIdAndUseStatus(memberId, useStatus == 0 ? 1 : 0);
         List<SmsCouponHistory> filtered = histories.stream()
                 .filter(h -> h.getCouponId().equals(couponId)).collect(Collectors.toList());
         if (!CollectionUtils.isEmpty(filtered)) {
             SmsCouponHistory couponHistory = filtered.get(0);
-            couponHistory.setUseTime(java.time.LocalDateTime.now());
+            couponHistory.setUseTime(useStatus == 1 ? java.time.LocalDateTime.now() : null);
             couponHistory.setUseStatus(useStatus);
+            if (useStatus == 1 && order != null) {
+                couponHistory.setOrderId(order.getId());
+                couponHistory.setOrderSn(order.getOrderSn());
+            } else if (useStatus == 0) {
+                couponHistory.setOrderId(null);
+                couponHistory.setOrderSn(null);
+            }
             couponHistoryRepository.save(couponHistory);
         }
     }
