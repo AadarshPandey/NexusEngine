@@ -81,7 +81,7 @@ export const fetchProductDetail = (id: number) => {
 };
 
 export const searchProducts = (keyword: string, pageNum: number = 1, pageSize: number = 20) => {
-  return request.get<unknown, { data: { list: PmsProduct[] } }>('/product/search', {
+  return request.get<unknown, { data: { list: PmsProduct[] } }>('/portal/product/search', {
     params: { keyword, pageNum, pageSize }
   });
 };

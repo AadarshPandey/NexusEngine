@@ -45,7 +45,7 @@ const Checkout: React.FC = () => {
     }
 
     // Minimum point/amount not met for the applicable items
-    if (applicableAmount < coupon.minPoint) {
+    if (applicableAmount < coupon.minOrderAmount) {
       return 0; 
     }
 

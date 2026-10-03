@@ -65,7 +65,6 @@ public class PmsPortalProductServiceImpl implements PmsPortalProductService {
                 predicates.add(cb.or(
                     cb.like(cb.lower(root.get("name")), likeKeyword),
                     cb.like(cb.lower(root.get("keywords")), likeKeyword),
-                    cb.like(cb.lower(root.get("subTitle")), likeKeyword),
                     cb.like(cb.lower(root.get("brandName")), likeKeyword),
                     cb.like(cb.lower(root.get("productSn")), likeKeyword)
                 ));
