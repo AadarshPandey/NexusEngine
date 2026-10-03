@@ -1,9 +1,9 @@
 package com.nexusengine.core.service.impl;
 
 import cn.hutool.core.util.StrUtil;
-import com.nexusengine.core.repository.SmsHomeAdvertiseRepository;
-import com.nexusengine.core.model.SmsHomeAdvertise;
-import com.nexusengine.core.service.SmsHomeAdvertiseService;
+import com.nexusengine.core.repository.PromotionalBannerRepository;
+import com.nexusengine.core.model.PromotionalBanner;
+import com.nexusengine.core.service.PromotionalBannerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -13,11 +13,11 @@ import java.util.List;
 
 @Service
 @lombok.RequiredArgsConstructor
-public class SmsHomeAdvertiseServiceImpl implements SmsHomeAdvertiseService {
-    private final SmsHomeAdvertiseRepository advertiseRepository;
+public class PromotionalBannerServiceImpl implements PromotionalBannerService {
+    private final PromotionalBannerRepository advertiseRepository;
 
     @Override
-    public int create(SmsHomeAdvertise advertise) {
+    public int create(PromotionalBanner advertise) {
         advertise.setClickCount(0);
         advertise.setOrderCount(0);
         advertiseRepository.save(advertise);
@@ -32,7 +32,7 @@ public class SmsHomeAdvertiseServiceImpl implements SmsHomeAdvertiseService {
 
     @Override
     public int updateStatus(Long id, Integer status) {
-        SmsHomeAdvertise record = advertiseRepository.findById(id).orElse(new SmsHomeAdvertise());
+        PromotionalBanner record = advertiseRepository.findById(id).orElse(new PromotionalBanner());
         record.setId(id);
         record.setStatus(status);
         advertiseRepository.save(record);
@@ -40,19 +40,19 @@ public class SmsHomeAdvertiseServiceImpl implements SmsHomeAdvertiseService {
     }
 
     @Override
-    public SmsHomeAdvertise getItem(Long id) {
+    public PromotionalBanner getItem(Long id) {
         return advertiseRepository.findById(id).orElse(null);
     }
 
     @Override
-    public int update(Long id, SmsHomeAdvertise advertise) {
+    public int update(Long id, PromotionalBanner advertise) {
         advertise.setId(id);
         advertiseRepository.save(advertise);
         return 1;
     }
 
     @Override
-    public List<SmsHomeAdvertise> list(String name, Integer type, String endTime, Integer pageSize, Integer pageNum) {
+    public List<PromotionalBanner> list(String name, Integer type, String endTime, Integer pageSize, Integer pageNum) {
         return advertiseRepository.findAll(PageRequest.of(pageNum > 0 ? pageNum - 1 : 0, pageSize, Sort.by(Sort.Direction.DESC, "sort"))).getContent();
     }
 }

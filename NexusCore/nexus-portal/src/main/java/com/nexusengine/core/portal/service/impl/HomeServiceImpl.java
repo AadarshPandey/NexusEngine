@@ -19,7 +19,7 @@ import java.util.List;
 @lombok.RequiredArgsConstructor
 @org.springframework.transaction.annotation.Transactional(readOnly = true)
 public class HomeServiceImpl implements HomeService {
-    private final SmsHomeAdvertiseRepository advertiseRepository;
+    private final PromotionalBannerRepository advertiseRepository;
     private final HomeDao homeDao;
     private final PmsProductRepository productRepository;
     private final PmsProductCategoryRepository productCategoryRepository;
@@ -41,7 +41,7 @@ public class HomeServiceImpl implements HomeService {
     @org.springframework.transaction.annotation.Transactional(readOnly = true)
     @Override
     public HomeContentResult content() {
-        java.util.List<com.nexusengine.core.model.SmsHomeAdvertise> resAdvertiseList = null; java.util.List<com.nexusengine.core.model.PmsBrand> resBrandList = null; java.util.List<com.nexusengine.core.model.PmsProduct> resNewProductList = null; java.util.List<com.nexusengine.core.model.PmsProduct> resHotProductList = null; java.util.List<com.nexusengine.core.model.PmsProduct> resAiRecommendProductList = new java.util.ArrayList<>();
+        java.util.List<com.nexusengine.core.model.PromotionalBanner> resAdvertiseList = null; java.util.List<com.nexusengine.core.model.PmsBrand> resBrandList = null; java.util.List<com.nexusengine.core.model.PmsProduct> resNewProductList = null; java.util.List<com.nexusengine.core.model.PmsProduct> resHotProductList = null; java.util.List<com.nexusengine.core.model.PmsProduct> resAiRecommendProductList = new java.util.ArrayList<>();
         resAdvertiseList = (getHomeAdvertiseList());
         resBrandList = (homeDao.getRecommendBrandList(0, 6));
         resNewProductList = (homeDao.getNewProductList(0, 4));
@@ -130,7 +130,7 @@ public class HomeServiceImpl implements HomeService {
         return list;
     }
 
-    private List<SmsHomeAdvertise> getHomeAdvertiseList() {
+    private List<PromotionalBanner> getHomeAdvertiseList() {
         return advertiseRepository.findByStatusOrderBySortDesc(1);
     }
 }

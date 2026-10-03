@@ -1,20 +1,20 @@
 package com.nexusengine.core.service;
 
-import com.nexusengine.core.model.SmsHomeAdvertise;
+import com.nexusengine.core.model.PromotionalBanner;
 
 import java.util.List;
 
 /**
- * Represents the SmsHomeAdvertiseService component.
- * Provides core functionality and operations for SmsHomeAdvertiseService.
+ * Represents the PromotionalBannerService component.
+ * Provides core functionality and operations for PromotionalBannerService.
  */
-public interface SmsHomeAdvertiseService {
+public interface PromotionalBannerService {
         /**
      * Executes the operation.
      * @param advertise the advertise
      * @return the result of the operation
      */
-    int create(SmsHomeAdvertise advertise);
+    int create(PromotionalBanner advertise);
 
         /**
      * Executes the operation.
@@ -36,7 +36,7 @@ public interface SmsHomeAdvertiseService {
      * @param id the id
      * @return the result of the operation
      */
-    SmsHomeAdvertise getItem(Long id);
+    PromotionalBanner getItem(Long id);
 
         /**
      * Executes the operation.
@@ -44,7 +44,7 @@ public interface SmsHomeAdvertiseService {
      * @param advertise the advertise
      * @return the result of the operation
      */
-    int update(Long id, SmsHomeAdvertise advertise);
+    int update(Long id, PromotionalBanner advertise);
 
         /**
      * Executes the operation.
@@ -55,5 +55,5 @@ public interface SmsHomeAdvertiseService {
      * @param pageNum the pageNum
      * @return the result of the operation
      */
-    List<SmsHomeAdvertise> list(String name, Integer type, String endTime, Integer pageSize, Integer pageNum);
+    List<PromotionalBanner> list(String name, Integer type, String endTime, Integer pageSize, Integer pageNum);
 }

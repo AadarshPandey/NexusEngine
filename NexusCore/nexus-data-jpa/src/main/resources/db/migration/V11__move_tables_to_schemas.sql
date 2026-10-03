@@ -1541,9 +1541,9 @@ DO $$
 BEGIN
     IF EXISTS (
         SELECT 1 FROM information_schema.tables 
-        WHERE table_schema='public' AND table_name='sys_banner'
+        WHERE table_schema='public' AND table_name='promotional_banner'
     ) THEN
-        ALTER TABLE public.sys_banner SET SCHEMA system;
+        ALTER TABLE public.promotional_banner SET SCHEMA marketing;
     END IF;
 END $$;
 
@@ -1559,10 +1559,10 @@ BEGIN
         JOIN pg_class t ON d.refobjid = t.oid
         JOIN pg_namespace n ON n.oid = t.relnamespace
         WHERE s.relkind = 'S' 
-          AND t.relname = 'sys_banner' 
-          AND n.nspname = 'system' -- because table is already moved
+          AND t.relname = 'promotional_banner' 
+          AND n.nspname = 'marketing' -- because table is already moved
     LOOP
-        EXECUTE 'ALTER SEQUENCE ' || seq_record.sequence_name || ' SET SCHEMA system';
+        EXECUTE 'ALTER SEQUENCE ' || seq_record.sequence_name || ' SET SCHEMA marketing';
     END LOOP;
 END $$;
 

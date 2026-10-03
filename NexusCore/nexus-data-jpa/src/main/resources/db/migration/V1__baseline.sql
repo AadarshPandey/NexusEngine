@@ -546,7 +546,7 @@ CREATE TABLE IF NOT EXISTS sms_coupon_product_relation (
     product_sn VARCHAR(255)
 );
 
-CREATE TABLE IF NOT EXISTS sys_banner (
+CREATE TABLE IF NOT EXISTS promotional_banner (
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(255),
     type INTEGER,

@@ -7,10 +7,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(MockitoExtension.class)
-class SmsHomeAdvertiseControllerTest {
+class PromotionalBannerControllerTest {
 
     @InjectMocks
-    private SmsHomeAdvertiseController controller;
+    private PromotionalBannerController controller;
 
     @Test
     void testContextLoads() {

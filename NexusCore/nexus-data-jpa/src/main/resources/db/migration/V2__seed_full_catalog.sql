@@ -324,7 +324,7 @@ SELECT setval('pms_sku_stock_id_seq', 41);
 SELECT setval('pms_product_attribute_value_id_seq', 74);
 SELECT setval('pms_product_gallery_id_seq', 11);
 -- Banners
-INSERT INTO sys_banner (id, name, type, pic, start_time, end_time, status, click_count, order_count, url, note, sort) VALUES (1, 'Electronics Summer Sale', 1, 'http://localhost:9000/nexus-media/public/marketing/banners/electronics-sale.webp', '2024-01-01 00:00:00', '2026-12-31 23:59:59', 1, 0, 0, '/category/electronics', 'Electronics Banner', 0) ON CONFLICT DO NOTHING;
-INSERT INTO sys_banner (id, name, type, pic, start_time, end_time, status, click_count, order_count, url, note, sort) VALUES (2, 'Fashion Week', 1, 'http://localhost:9000/nexus-media/public/marketing/banners/fashion-week.webp', '2024-01-01 00:00:00', '2026-12-31 23:59:59', 1, 0, 0, '/category/fashion', 'Fashion Banner', 1) ON CONFLICT DO NOTHING;
+INSERT INTO promotional_banner (id, name, type, pic, start_time, end_time, status, click_count, order_count, url, note, sort) VALUES (1, 'Electronics Summer Sale', 1, 'http://localhost:9000/nexus-media/public/marketing/banners/electronics-sale.webp', '2024-01-01 00:00:00', '2026-12-31 23:59:59', 1, 0, 0, '/category/electronics', 'Electronics Banner', 0) ON CONFLICT DO NOTHING;
+INSERT INTO promotional_banner (id, name, type, pic, start_time, end_time, status, click_count, order_count, url, note, sort) VALUES (2, 'Fashion Week', 1, 'http://localhost:9000/nexus-media/public/marketing/banners/fashion-week.webp', '2024-01-01 00:00:00', '2026-12-31 23:59:59', 1, 0, 0, '/category/fashion', 'Fashion Banner', 1) ON CONFLICT DO NOTHING;
 
-SELECT setval('sys_banner_id_seq', 3);
+SELECT setval('promotional_banner_id_seq', 3);
