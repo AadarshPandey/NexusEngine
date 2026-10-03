@@ -93,13 +93,13 @@ public class PmsProduct implements Serializable {
     @Schema(title = "Description")
     private String description;
 
-    @org.hibernate.annotations.Formula("(SELECT COALESCE(MIN(s.price), 0) FROM catalog.pms_sku_stock s WHERE s.product_id = id)")
+    @org.hibernate.annotations.Formula("(SELECT COALESCE(MIN(s.price), 0) FROM pms.pms_sku_stock s WHERE s.product_id = id)")
     private BigDecimal price;
 
-    @org.hibernate.annotations.Formula("(SELECT COALESCE(MIN(s.price), 0) FROM catalog.pms_sku_stock s WHERE s.product_id = id)")
+    @org.hibernate.annotations.Formula("(SELECT COALESCE(MIN(s.price), 0) FROM pms.pms_sku_stock s WHERE s.product_id = id)")
     private BigDecimal originalPrice;
 
-    @org.hibernate.annotations.Formula("(SELECT COALESCE(SUM(s.stock), 0) FROM catalog.pms_sku_stock s WHERE s.product_id = id)")
+    @org.hibernate.annotations.Formula("(SELECT COALESCE(SUM(s.stock), 0) FROM pms.pms_sku_stock s WHERE s.product_id = id)")
     private Integer stock;
 
 }
