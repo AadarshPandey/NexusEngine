@@ -80,7 +80,23 @@ public class EsProductServiceImpl implements EsProductService {
     @Override
     public Page<EsProduct> search(String keyword, Integer pageNum, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNum, pageSize);
-        return productRepository.findByNameOrSubTitleOrKeywords(keyword, keyword, keyword, pageable);
+        NativeQueryBuilder nativeQueryBuilder = new NativeQueryBuilder();
+        nativeQueryBuilder.withPageable(pageable);
+        if (StrUtil.isEmpty(keyword)) {
+            nativeQueryBuilder.withQuery(QueryBuilders.matchAll(builder -> builder));
+        } else {
+            nativeQueryBuilder.withQuery(QueryBuilders.multiMatch(builder -> builder
+                    .query(keyword)
+                    .fields("name^10", "subTitle^5", "keywords^2", "brandName^5", "productSn^5")
+            ));
+        }
+        NativeQuery nativeQuery = nativeQueryBuilder.build();
+        SearchHits<EsProduct> searchHits = elasticsearchTemplate.search(nativeQuery, EsProduct.class);
+        if (searchHits.getTotalHits() <= 0) {
+            return new PageImpl<>(ListUtil.empty(), pageable, 0);
+        }
+        List<EsProduct> searchProductList = searchHits.stream().map(SearchHit::getContent).collect(Collectors.toList());
+        return new PageImpl<>(searchProductList, pageable, searchHits.getTotalHits());
     }
 
     @Override
@@ -113,6 +129,12 @@ public class EsProductServiceImpl implements EsProductService {
             functionScoreList.add(new FunctionScore.Builder()
                     .filter(QueryBuilders.match(builder -> builder.field("keywords").query(keyword)))
                     .weight(2.0).build());
+            functionScoreList.add(new FunctionScore.Builder()
+                    .filter(QueryBuilders.match(builder -> builder.field("brandName").query(keyword)))
+                    .weight(5.0).build());
+            functionScoreList.add(new FunctionScore.Builder()
+                    .filter(QueryBuilders.match(builder -> builder.field("productSn").query(keyword)))
+                    .weight(5.0).build());
             FunctionScoreQuery.Builder functionScoreQueryBuilder = QueryBuilders.functionScore()
                     .functions(functionScoreList).scoreMode(FunctionScoreMode.Sum).minScore(2.0);
             nativeQueryBuilder.withQuery(builder -> builder.functionScore(functionScoreQueryBuilder.build()));

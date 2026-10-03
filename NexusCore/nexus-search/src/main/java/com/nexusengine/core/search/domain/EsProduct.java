@@ -24,10 +24,10 @@ public class EsProduct implements Serializable {
     private static final long serialVersionUID = -1L;
     @Id
     private Long id;
-    @Field(type = FieldType.Keyword)
+    @Field(analyzer = "ik_max_word",type = FieldType.Text)
     private String productSn;
     private Long brandId;
-    @Field(type = FieldType.Keyword)
+    @Field(analyzer = "ik_max_word",type = FieldType.Text)
     private String brandName;
     private Long productCategoryId;
     @Field(type = FieldType.Keyword)
