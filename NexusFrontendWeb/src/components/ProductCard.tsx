@@ -22,7 +22,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           {product.name}
         </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 2, height: 40, overflow: 'hidden' }}>
-          {product.subTitle}
         </Typography>
         <Typography variant="h5" color="primary" sx={{ fontWeight: 'bold' }}>
           ₹{(product.promotionType === 1 && product.promotionPrice ? product.promotionPrice : product.price)?.toFixed(2)}

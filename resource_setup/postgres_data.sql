@@ -329,15 +329,8 @@ ALTER TABLE ai.vector_store OWNER TO postgres;
 CREATE TABLE catalog.pms_brand (
     id bigint NOT NULL,
     name character varying(255),
-    first_letter character varying(255),
-    sort integer,
-    factory_status integer,
     show_status integer,
-    product_count integer,
-    product_comment_count integer,
-    logo character varying(255),
-    big_pic character varying(255),
-    brand_story text
+    logo character varying(255)
 );
 
 
@@ -377,9 +370,10 @@ CREATE TABLE catalog.pms_comment (
     member_ip character varying(255),
     create_time timestamp without time zone,
     show_status integer,
-    product_attribute character varying(255),
+    
     likes_count integer,
-    read_count integer,
+    dislike_count integer,
+    dislike_count integer,
     pics character varying(255),
     member_icon character varying(255),
     reply_count integer,
@@ -895,6 +889,7 @@ CREATE TABLE catalog.pms_review (
     rating integer,
     content character varying(255),
     like_count integer,
+    dislike_count integer,
     status integer,
     created_time timestamp without time zone
 );
@@ -2424,15 +2419,8 @@ ALTER SEQUENCE public.outbox_event_id_seq OWNED BY public.outbox_event.id;
 CREATE TABLE public.pms_brand (
     id bigint NOT NULL,
     name character varying(255),
-    first_letter character varying(255),
-    sort integer,
-    factory_status integer,
     show_status integer,
-    product_count integer,
-    product_comment_count integer,
-    logo character varying(255),
-    big_pic character varying(255),
-    brand_story text
+    logo character varying(255)
 );
 
 
@@ -2472,9 +2460,10 @@ CREATE TABLE public.pms_comment (
     member_ip character varying(255),
     create_time timestamp without time zone,
     show_status integer,
-    product_attribute character varying(255),
+    
     likes_count integer,
-    read_count integer,
+    dislike_count integer,
+    dislike_count integer,
     pics character varying(255),
     member_icon character varying(255),
     reply_count integer,
@@ -2560,24 +2549,10 @@ CREATE TABLE public.pms_product (
     new_status integer,
     recommend_status integer,
     verify_status integer,
-    sort integer,
-    sale integer,
-    sub_title character varying(255),
-    unit character varying(255),
-    weight numeric(19,2),
-    service_ids character varying(255),
+    sale integer,2),
     keywords character varying(255),
-    note character varying(255),
-    promotion_start_time timestamp without time zone,
-    promotion_end_time timestamp without time zone,
-    promotion_per_limit integer,
-    promotion_type integer,
     brand_name character varying(255),
-    product_category_name character varying(255),
     description text,
-    detail_html text,
-    detail_title character varying(255),
-    detail_desc text,
     vendor_id bigint
 );
 
@@ -3002,6 +2977,7 @@ CREATE TABLE public.pms_review (
     rating integer,
     content character varying(255),
     like_count integer,
+    dislike_count integer,
     status integer,
     created_time timestamp without time zone
 );
@@ -5340,111 +5316,111 @@ COPY ai.vector_store (id, content, metadata, embedding) FROM stdin;
 -- Data for Name: pms_brand; Type: TABLE DATA; Schema: catalog; Owner: postgres
 --
 
-COPY catalog.pms_brand (id, name, first_letter, sort, factory_status, show_status, product_count, product_comment_count, logo, big_pic, brand_story) FROM stdin;
-3	Aashirvaad	A	3	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/3/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/3/banner.svg	\N
-5	Allen Solly	A	5	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/5/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/5/banner.svg	\N
-7	Amul	A	7	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/7/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/7/banner.svg	\N
-8	Apollo Tyres	A	8	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/8/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/8/banner.svg	\N
-10	Arihant	A	10	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/10/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/10/banner.svg	\N
-11	Bajaj	B	11	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/11/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/11/banner.svg	\N
-13	Bosch	B	13	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/13/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/13/banner.svg	\N
-15	Britannia	B	15	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/15/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/15/banner.svg	\N
-16	Butterfly	B	16	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/16/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/16/banner.svg	\N
-18	Castrol	C	18	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/18/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/18/banner.svg	\N
-20	Coca-Cola	C	20	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/20/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/20/banner.svg	\N
-21	Cosco	C	21	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/21/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/21/banner.svg	\N
-23	Crossword	C	23	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/23/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/23/banner.svg	\N
-25	Decathlon	D	25	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/25/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/25/banner.svg	\N
-26	Dell	D	26	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/26/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/26/banner.svg	\N
-28	Dyson	D	28	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/28/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/28/banner.svg	\N
-30	Forest Essentials	F	30	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/30/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/30/banner.svg	\N
-32	Google	G	32	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/32/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/32/banner.svg	\N
-33	Gulf Oil	G	33	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/33/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/33/banner.svg	\N
-35	Havells	H	35	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/35/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/35/banner.svg	\N
-37	IKEA	I	37	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/37/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/37/banner.svg	\N
-38	ITC	I	38	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/38/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/38/banner.svg	\N
-40	Kellogg's	K	40	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/40/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/40/banner.svg	\N
-42	LG	L	42	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/42/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/42/banner.svg	\N
-44	Lava	L	44	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/44/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/44/banner.svg	\N
-45	Lenovo	L	45	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/45/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/45/banner.svg	\N
-47	Logitech	L	47	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/47/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/47/banner.svg	\N
-49	MTR	M	49	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/49/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/49/banner.svg	\N
-51	Manyavar	M	51	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/51/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/51/banner.svg	\N
-52	Maybelline	M	52	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/52/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/52/banner.svg	\N
-54	Michelin	M	54	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/54/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/54/banner.svg	\N
-56	Minimalist	M	56	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/56/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/56/banner.svg	\N
-57	Moleskine	M	57	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/57/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/57/banner.svg	\N
-59	Motul	M	59	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/59/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/59/banner.svg	\N
-61	Neutrogena	N	61	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/61/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/61/banner.svg	\N
-62	Nike	N	62	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/62/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/62/banner.svg	\N
-1	3M	3	1	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/1/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/1/banner.svg	\N
-2	ASUS	A	2	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/2/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/2/banner.svg	\N
-4	Adidas	A	4	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/4/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/4/banner.svg	\N
-6	Amar Chitra Katha	A	6	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/6/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/6/banner.svg	\N
-9	Apple	A	9	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/9/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/9/banner.svg	\N
-12	Biotique	B	12	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/12/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/12/banner.svg	\N
-14	Bosch India	B	14	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/14/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/14/banner.svg	\N
-17	CEAT	C	17	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/17/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/17/banner.svg	\N
-19	Clinique	C	19	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/19/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/19/banner.svg	\N
-22	Crompton	C	22	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/22/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/22/banner.svg	\N
-24	Dabur	D	24	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/24/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/24/banner.svg	\N
-27	Dove	D	27	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/27/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/27/banner.svg	\N
-65	Noise	N	65	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/65/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/65/banner.svg	\N
-66	Nothing	N	66	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/66/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/66/banner.svg	\N
-68	O'Reilly	O	68	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/68/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/68/banner.svg	\N
-70	Parle	P	70	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/70/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/70/banner.svg	\N
-71	Patanjali	P	71	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/71/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/71/banner.svg	\N
-73	Penguin Random House	P	73	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/73/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/73/banner.svg	\N
-75	Philips	P	75	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/75/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/75/banner.svg	\N
-76	Plum	P	76	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/76/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/76/banner.svg	\N
-78	Prestige	P	78	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/78/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/78/banner.svg	\N
-80	Ray-Ban	R	80	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/80/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/80/banner.svg	\N
-81	Raymond	R	81	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/81/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/81/banner.svg	\N
-83	S. Chand	S	83	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/83/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/83/banner.svg	\N
-85	SS (Sareen Sports)	S	85	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/85/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/85/banner.svg	\N
-86	Samsung	S	86	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/86/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/86/banner.svg	\N
-88	TVS	T	88	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/88/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/88/banner.svg	\N
-89	Tata	T	89	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/89/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/89/banner.svg	\N
-91	The Ordinary	T	91	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/91/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/91/banner.svg	\N
-93	Unilever	U	93	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/93/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/93/banner.svg	\N
-94	Uniqlo	U	94	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/94/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/94/banner.svg	\N
-96	Van Heusen	V	96	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/96/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/96/banner.svg	\N
-98	W for Woman	W	98	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/98/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/98/banner.svg	\N
-99	Wilson	W	99	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/99/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/99/banner.svg	\N
-101	Yonex	Y	101	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/101/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/101/banner.svg	\N
-103	Zebronics	Z	103	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/103/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/103/banner.svg	\N
-29	FabIndia	F	29	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/29/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/29/banner.svg	\N
-31	Fortune	F	31	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/31/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/31/banner.svg	\N
-34	H&M	H	34	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/34/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/34/banner.svg	\N
-36	Hawkins	H	36	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/36/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/36/banner.svg	\N
-39	KENT	K	39	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/39/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/39/banner.svg	\N
-41	L'Oréal	L	41	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/41/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/41/banner.svg	\N
-43	Lakmé	L	43	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/43/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/43/banner.svg	\N
-46	Levi's	L	46	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/46/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/46/banner.svg	\N
-48	MRF	M	48	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/48/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/48/banner.svg	\N
-50	Mamaearth	M	50	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/50/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/50/banner.svg	\N
-53	McGraw Hill	M	53	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/53/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/53/banner.svg	\N
-55	Micromax	M	55	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/55/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/55/banner.svg	\N
-58	Mother Dairy	M	58	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/58/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/58/banner.svg	\N
-60	Nestlé	N	60	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/60/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/60/banner.svg	\N
-63	Nivea	N	63	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/63/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/63/banner.svg	\N
-64	Nivia	N	64	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/64/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/64/banner.svg	\N
-67	Nykaa	N	67	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/67/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/67/banner.svg	\N
-69	OnePlus	O	69	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/69/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/69/banner.svg	\N
-72	Pearson	P	72	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/72/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/72/banner.svg	\N
-74	Peter England	P	74	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/74/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/74/banner.svg	\N
-77	Portronics	P	77	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/77/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/77/banner.svg	\N
-79	Puma	P	79	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/79/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/79/banner.svg	\N
-82	Rupa Publications	R	82	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/82/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/82/banner.svg	\N
-84	SG (Sanspareils Greenlands)	S	84	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/84/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/84/banner.svg	\N
-87	Sony	S	87	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/87/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/87/banner.svg	\N
-90	The North Face	T	90	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/90/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/90/banner.svg	\N
-92	Under Armour	U	92	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/92/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/92/banner.svg	\N
-95	Usha	U	95	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/95/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/95/banner.svg	\N
-97	Vector X	V	97	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/97/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/97/banner.svg	\N
-100	Wonderchef	W	100	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/100/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/100/banner.svg	\N
-102	Zara	Z	102	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/102/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/102/banner.svg	\N
-104	boAt	B	104	1	1	10	\N	http://localhost:9000/nexus-media/public/catalog/brands/104/logo.svg	http://localhost:9000/nexus-media/public/catalog/brands/104/banner.svg	\N
+COPY catalog.pms_brand (id, name, show_status, logo) FROM stdin;
+3	Aashirvaad	1	http://localhost:9000/nexus-media/public/catalog/brands/3/logo.svg
+5	Allen Solly	1	http://localhost:9000/nexus-media/public/catalog/brands/5/logo.svg
+7	Amul	1	http://localhost:9000/nexus-media/public/catalog/brands/7/logo.svg
+8	Apollo Tyres	1	http://localhost:9000/nexus-media/public/catalog/brands/8/logo.svg
+10	Arihant	1	http://localhost:9000/nexus-media/public/catalog/brands/10/logo.svg
+11	Bajaj	1	http://localhost:9000/nexus-media/public/catalog/brands/11/logo.svg
+13	Bosch	1	http://localhost:9000/nexus-media/public/catalog/brands/13/logo.svg
+15	Britannia	1	http://localhost:9000/nexus-media/public/catalog/brands/15/logo.svg
+16	Butterfly	1	http://localhost:9000/nexus-media/public/catalog/brands/16/logo.svg
+18	Castrol	1	http://localhost:9000/nexus-media/public/catalog/brands/18/logo.svg
+20	Coca-Cola	1	http://localhost:9000/nexus-media/public/catalog/brands/20/logo.svg
+21	Cosco	1	http://localhost:9000/nexus-media/public/catalog/brands/21/logo.svg
+23	Crossword	1	http://localhost:9000/nexus-media/public/catalog/brands/23/logo.svg
+25	Decathlon	1	http://localhost:9000/nexus-media/public/catalog/brands/25/logo.svg
+26	Dell	1	http://localhost:9000/nexus-media/public/catalog/brands/26/logo.svg
+28	Dyson	1	http://localhost:9000/nexus-media/public/catalog/brands/28/logo.svg
+30	Forest Essentials	1	http://localhost:9000/nexus-media/public/catalog/brands/30/logo.svg
+32	Google	1	http://localhost:9000/nexus-media/public/catalog/brands/32/logo.svg
+33	Gulf Oil	1	http://localhost:9000/nexus-media/public/catalog/brands/33/logo.svg
+35	Havells	1	http://localhost:9000/nexus-media/public/catalog/brands/35/logo.svg
+37	IKEA	1	http://localhost:9000/nexus-media/public/catalog/brands/37/logo.svg
+38	ITC	1	http://localhost:9000/nexus-media/public/catalog/brands/38/logo.svg
+40	Kellogg's	1	http://localhost:9000/nexus-media/public/catalog/brands/40/logo.svg
+42	LG	1	http://localhost:9000/nexus-media/public/catalog/brands/42/logo.svg
+44	Lava	1	http://localhost:9000/nexus-media/public/catalog/brands/44/logo.svg
+45	Lenovo	1	http://localhost:9000/nexus-media/public/catalog/brands/45/logo.svg
+47	Logitech	1	http://localhost:9000/nexus-media/public/catalog/brands/47/logo.svg
+49	MTR	1	http://localhost:9000/nexus-media/public/catalog/brands/49/logo.svg
+51	Manyavar	1	http://localhost:9000/nexus-media/public/catalog/brands/51/logo.svg
+52	Maybelline	1	http://localhost:9000/nexus-media/public/catalog/brands/52/logo.svg
+54	Michelin	1	http://localhost:9000/nexus-media/public/catalog/brands/54/logo.svg
+56	Minimalist	1	http://localhost:9000/nexus-media/public/catalog/brands/56/logo.svg
+57	Moleskine	1	http://localhost:9000/nexus-media/public/catalog/brands/57/logo.svg
+59	Motul	1	http://localhost:9000/nexus-media/public/catalog/brands/59/logo.svg
+61	Neutrogena	1	http://localhost:9000/nexus-media/public/catalog/brands/61/logo.svg
+62	Nike	1	http://localhost:9000/nexus-media/public/catalog/brands/62/logo.svg
+1	3M	1	http://localhost:9000/nexus-media/public/catalog/brands/1/logo.svg
+2	ASUS	1	http://localhost:9000/nexus-media/public/catalog/brands/2/logo.svg
+4	Adidas	1	http://localhost:9000/nexus-media/public/catalog/brands/4/logo.svg
+6	Amar Chitra Katha	1	http://localhost:9000/nexus-media/public/catalog/brands/6/logo.svg
+9	Apple	1	http://localhost:9000/nexus-media/public/catalog/brands/9/logo.svg
+12	Biotique	1	http://localhost:9000/nexus-media/public/catalog/brands/12/logo.svg
+14	Bosch India	1	http://localhost:9000/nexus-media/public/catalog/brands/14/logo.svg
+17	CEAT	1	http://localhost:9000/nexus-media/public/catalog/brands/17/logo.svg
+19	Clinique	1	http://localhost:9000/nexus-media/public/catalog/brands/19/logo.svg
+22	Crompton	1	http://localhost:9000/nexus-media/public/catalog/brands/22/logo.svg
+24	Dabur	1	http://localhost:9000/nexus-media/public/catalog/brands/24/logo.svg
+27	Dove	1	http://localhost:9000/nexus-media/public/catalog/brands/27/logo.svg
+65	Noise	1	http://localhost:9000/nexus-media/public/catalog/brands/65/logo.svg
+66	Nothing	1	http://localhost:9000/nexus-media/public/catalog/brands/66/logo.svg
+68	O'Reilly	1	http://localhost:9000/nexus-media/public/catalog/brands/68/logo.svg
+70	Parle	1	http://localhost:9000/nexus-media/public/catalog/brands/70/logo.svg
+71	Patanjali	1	http://localhost:9000/nexus-media/public/catalog/brands/71/logo.svg
+73	Penguin Random House	1	http://localhost:9000/nexus-media/public/catalog/brands/73/logo.svg
+75	Philips	1	http://localhost:9000/nexus-media/public/catalog/brands/75/logo.svg
+76	Plum	1	http://localhost:9000/nexus-media/public/catalog/brands/76/logo.svg
+78	Prestige	1	http://localhost:9000/nexus-media/public/catalog/brands/78/logo.svg
+80	Ray-Ban	1	http://localhost:9000/nexus-media/public/catalog/brands/80/logo.svg
+81	Raymond	1	http://localhost:9000/nexus-media/public/catalog/brands/81/logo.svg
+83	S. Chand	1	http://localhost:9000/nexus-media/public/catalog/brands/83/logo.svg
+85	SS (Sareen Sports)	1	http://localhost:9000/nexus-media/public/catalog/brands/85/logo.svg
+86	Samsung	1	http://localhost:9000/nexus-media/public/catalog/brands/86/logo.svg
+88	TVS	1	http://localhost:9000/nexus-media/public/catalog/brands/88/logo.svg
+89	Tata	1	http://localhost:9000/nexus-media/public/catalog/brands/89/logo.svg
+91	The Ordinary	1	http://localhost:9000/nexus-media/public/catalog/brands/91/logo.svg
+93	Unilever	1	http://localhost:9000/nexus-media/public/catalog/brands/93/logo.svg
+94	Uniqlo	1	http://localhost:9000/nexus-media/public/catalog/brands/94/logo.svg
+96	Van Heusen	1	http://localhost:9000/nexus-media/public/catalog/brands/96/logo.svg
+98	W for Woman	1	http://localhost:9000/nexus-media/public/catalog/brands/98/logo.svg
+99	Wilson	1	http://localhost:9000/nexus-media/public/catalog/brands/99/logo.svg
+101	Yonex	1	http://localhost:9000/nexus-media/public/catalog/brands/101/logo.svg
+103	Zebronics	1	http://localhost:9000/nexus-media/public/catalog/brands/103/logo.svg
+29	FabIndia	1	http://localhost:9000/nexus-media/public/catalog/brands/29/logo.svg
+31	Fortune	1	http://localhost:9000/nexus-media/public/catalog/brands/31/logo.svg
+34	H&M	1	http://localhost:9000/nexus-media/public/catalog/brands/34/logo.svg
+36	Hawkins	1	http://localhost:9000/nexus-media/public/catalog/brands/36/logo.svg
+39	KENT	1	http://localhost:9000/nexus-media/public/catalog/brands/39/logo.svg
+41	L'Oréal	1	http://localhost:9000/nexus-media/public/catalog/brands/41/logo.svg
+43	Lakmé	1	http://localhost:9000/nexus-media/public/catalog/brands/43/logo.svg
+46	Levi's	1	http://localhost:9000/nexus-media/public/catalog/brands/46/logo.svg
+48	MRF	1	http://localhost:9000/nexus-media/public/catalog/brands/48/logo.svg
+50	Mamaearth	1	http://localhost:9000/nexus-media/public/catalog/brands/50/logo.svg
+53	McGraw Hill	1	http://localhost:9000/nexus-media/public/catalog/brands/53/logo.svg
+55	Micromax	1	http://localhost:9000/nexus-media/public/catalog/brands/55/logo.svg
+58	Mother Dairy	1	http://localhost:9000/nexus-media/public/catalog/brands/58/logo.svg
+60	Nestlé	1	http://localhost:9000/nexus-media/public/catalog/brands/60/logo.svg
+63	Nivea	1	http://localhost:9000/nexus-media/public/catalog/brands/63/logo.svg
+64	Nivia	1	http://localhost:9000/nexus-media/public/catalog/brands/64/logo.svg
+67	Nykaa	1	http://localhost:9000/nexus-media/public/catalog/brands/67/logo.svg
+69	OnePlus	1	http://localhost:9000/nexus-media/public/catalog/brands/69/logo.svg
+72	Pearson	1	http://localhost:9000/nexus-media/public/catalog/brands/72/logo.svg
+74	Peter England	1	http://localhost:9000/nexus-media/public/catalog/brands/74/logo.svg
+77	Portronics	1	http://localhost:9000/nexus-media/public/catalog/brands/77/logo.svg
+79	Puma	1	http://localhost:9000/nexus-media/public/catalog/brands/79/logo.svg
+82	Rupa Publications	1	http://localhost:9000/nexus-media/public/catalog/brands/82/logo.svg
+84	SG (Sanspareils Greenlands)	1	http://localhost:9000/nexus-media/public/catalog/brands/84/logo.svg
+87	Sony	1	http://localhost:9000/nexus-media/public/catalog/brands/87/logo.svg
+90	The North Face	1	http://localhost:9000/nexus-media/public/catalog/brands/90/logo.svg
+92	Under Armour	1	http://localhost:9000/nexus-media/public/catalog/brands/92/logo.svg
+95	Usha	1	http://localhost:9000/nexus-media/public/catalog/brands/95/logo.svg
+97	Vector X	1	http://localhost:9000/nexus-media/public/catalog/brands/97/logo.svg
+100	Wonderchef	1	http://localhost:9000/nexus-media/public/catalog/brands/100/logo.svg
+102	Zara	1	http://localhost:9000/nexus-media/public/catalog/brands/102/logo.svg
+104	boAt	1	http://localhost:9000/nexus-media/public/catalog/brands/104/logo.svg
 \.
 
 
@@ -5452,7 +5428,7 @@ COPY catalog.pms_brand (id, name, first_letter, sort, factory_status, show_statu
 -- Data for Name: pms_comment; Type: TABLE DATA; Schema: catalog; Owner: postgres
 --
 
-COPY catalog.pms_comment (id, product_id, member_nick_name, product_name, star, member_ip, create_time, show_status, product_attribute, likes_count, read_count, pics, member_icon, reply_count, content) FROM stdin;
+COPY catalog.pms_comment (id, product_id, member_nick_name, product_name, star, member_ip, create_time, show_status, likes_count, dislike_count, pics, member_icon, reply_count, content) FROM stdin;
 \.
 
 
@@ -5469,158 +5445,158 @@ COPY catalog.pms_comment_reply (id, comment_id, member_nick_name, member_icon, c
 --
 
 COPY catalog.pms_product (id, brand_id, product_category_id, product_attribute_category_id, name, pic, product_sn, delete_status, publish_status, new_status, recommend_status, verify_status, sort, sale, sub_title, unit, weight, service_ids, keywords, note, promotion_start_time, promotion_end_time, promotion_per_limit, promotion_type, brand_name, product_category_name, description, detail_html, vendor_id, detail_title, detail_desc) FROM stdin;
-4	44	4	8	Tab Pro 11	http://localhost:9000/nexus-media/public/catalog/products/4/main.svg	P004	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Lava	Tablets	\N	\N	1	\N	\N
-150	88	43	41	Portable Tyre Inflator	http://localhost:9000/nexus-media/public/catalog/products/150/main.svg	P150	0	1	1	1	1	100	97	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	TVS	Car Accessories	\N	\N	1	\N	\N
-10	69	4	8	Pad 3	http://localhost:9000/nexus-media/public/catalog/products/10/main.svg	P010	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	OnePlus	Tablets	\N	\N	1	\N	\N
-7	26	5	3	Inspiron 16 Plus	http://localhost:9000/nexus-media/public/catalog/products/7/main.svg	P007	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Dell	Laptops	\N	\N	1	\N	\N
-8	45	5	3	ThinkPad E16	http://localhost:9000/nexus-media/public/catalog/products/8/main.svg	P008	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Lenovo	Laptops	\N	\N	1	\N	\N
-9	2	5	3	Vivobook S 16	http://localhost:9000/nexus-media/public/catalog/products/9/main.svg	P009	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	ASUS	Laptops	\N	\N	1	\N	\N
-15	47	6	4	MX Brio Webcam	http://localhost:9000/nexus-media/public/catalog/products/15/main.svg	P015	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Logitech	Cameras	\N	\N	1	\N	\N
-14	104	7	2	Lunar Pro Smartwatch	http://localhost:9000/nexus-media/public/catalog/products/14/main.svg	P014	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	boAt	Smartwatches	\N	\N	1	\N	\N
-17	42	8	5	UltraGear 27GS60F	http://localhost:9000/nexus-media/public/catalog/products/17/main.svg	P017	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	LG	Monitors	\N	\N	1	\N	\N
-18	86	8	5	Odyssey G6 27	http://localhost:9000/nexus-media/public/catalog/products/18/main.svg	P018	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Samsung	Monitors	\N	\N	1	\N	\N
-2	86	3	6	Galaxy S26	http://localhost:9000/nexus-media/public/catalog/products/2/main.svg	P002	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Samsung	Smartphones	\N	\N	1	\N	\N
-3	32	3	6	Pixel 11	http://localhost:9000/nexus-media/public/catalog/products/3/main.svg	P003	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Google	Smartphones	\N	\N	1	\N	\N
-19	103	9	9	Transformer Wireless Keyboard	http://localhost:9000/nexus-media/public/catalog/products/19/main.svg	P019	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Zebronics	Keyboards & Mice	\N	\N	1	\N	\N
-20	46	11	12	511 Slim Jeans	http://localhost:9000/nexus-media/public/catalog/products/20/main.svg	P020	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Levi's	Men's Clothing	\N	\N	1	\N	\N
-5	69	3	6	OnePlus 14	http://localhost:9000/nexus-media/public/catalog/products/5/main.svg	P005	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	OnePlus	Smartphones	\N	\N	1	\N	\N
-22	74	11	12	Regular Formal Shirt	http://localhost:9000/nexus-media/public/catalog/products/22/main.svg	P022	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Peter England	Men's Clothing	\N	\N	1	\N	\N
-23	81	11	12	Classic Formal Trousers	http://localhost:9000/nexus-media/public/catalog/products/23/main.svg	P023	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Raymond	Men's Clothing	\N	\N	1	\N	\N
-24	94	12	11	Supima Cotton T-Shirt	http://localhost:9000/nexus-media/public/catalog/products/24/main.svg	P024	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Uniqlo	Women's Clothing	\N	\N	1	\N	\N
-25	102	12	11	Relaxed Fit Blouse	http://localhost:9000/nexus-media/public/catalog/products/25/main.svg	P025	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Zara	Women's Clothing	\N	\N	1	\N	\N
-26	34	12	11	Ribbed Midi Dress	http://localhost:9000/nexus-media/public/catalog/products/26/main.svg	P026	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	H&M	Women's Clothing	\N	\N	1	\N	\N
-34	80	13	13	Aviator Classic	http://localhost:9000/nexus-media/public/catalog/products/34/main.svg	P034	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Ray-Ban	Accessories	\N	\N	1	\N	\N
-35	96	13	13	Leather Finish Belt	http://localhost:9000/nexus-media/public/catalog/products/35/main.svg	P035	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Van Heusen	Accessories	\N	\N	1	\N	\N
-36	94	13	13	Round Mini Shoulder Bag	http://localhost:9000/nexus-media/public/catalog/products/36/main.svg	P036	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Uniqlo	Accessories	\N	\N	1	\N	\N
-37	62	13	13	Heritage Backpack	http://localhost:9000/nexus-media/public/catalog/products/37/main.svg	P037	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Nike	Accessories	\N	\N	1	\N	\N
-38	4	13	13	Classic 3S Cap	http://localhost:9000/nexus-media/public/catalog/products/38/main.svg	P038	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Adidas	Accessories	\N	\N	1	\N	\N
-30	62	14	14	Air Max 270	http://localhost:9000/nexus-media/public/catalog/products/30/main.svg	P030	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Nike	Footwear	\N	\N	1	\N	\N
-32	79	14	14	Velocity Nitro 3	http://localhost:9000/nexus-media/public/catalog/products/32/main.svg	P032	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Puma	Footwear	\N	\N	1	\N	\N
-39	37	18	17	MALM 6-Drawer Chest	http://localhost:9000/nexus-media/public/catalog/products/39/main.svg	P039	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	IKEA	Furniture	\N	\N	1	\N	\N
-41	37	18	17	BILLY Bookcase	http://localhost:9000/nexus-media/public/catalog/products/41/main.svg	P041	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	IKEA	Furniture	\N	\N	1	\N	\N
-33	90	14	14	VECTIV Enduris	http://localhost:9000/nexus-media/public/catalog/products/33/main.svg	P033	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	The North Face	Footwear	\N	\N	1	\N	\N
-12	66	2	7	Ear (3)	http://localhost:9000/nexus-media/public/catalog/products/12/main.svg	P012	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Nothing	Headphones & Earbuds	\N	\N	1	\N	\N
-75	67	21	22	ManGlow Beard Wash	http://localhost:9000/nexus-media/public/catalog/products/75/main.svg	P075	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Nykaa	Grooming	\N	\N	1	\N	\N
-43	28	19	18	V15 Detect	http://localhost:9000/nexus-media/public/catalog/products/43/main.svg	P043	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Dyson	Home Appliances	\N	\N	1	\N	\N
-48	42	19	18	6.5kg Front Load Washer	http://localhost:9000/nexus-media/public/catalog/products/48/main.svg	P048	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	LG	Home Appliances	\N	\N	1	\N	\N
-49	13	19	18	8kg Front Load Washer	http://localhost:9000/nexus-media/public/catalog/products/49/main.svg	P049	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Bosch	Home Appliances	\N	\N	1	\N	\N
-76	76	21	22	Green Tea Shave Gel	http://localhost:9000/nexus-media/public/catalog/products/76/main.svg	P076	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Plum	Grooming	\N	\N	1	\N	\N
-66	41	22	23	True Match Foundation	http://localhost:9000/nexus-media/public/catalog/products/66/main.svg	P066	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	L'Oréal	Makeup	\N	\N	1	\N	\N
-67	52	22	23	Fit Me Foundation	http://localhost:9000/nexus-media/public/catalog/products/67/main.svg	P067	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Maybelline	Makeup	\N	\N	1	\N	\N
-68	43	22	23	9to5 Primer + Matte Lip Color	http://localhost:9000/nexus-media/public/catalog/products/68/main.svg	P068	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Lakmé	Makeup	\N	\N	1	\N	\N
-69	67	22	23	SkinGenius Foundation	http://localhost:9000/nexus-media/public/catalog/products/69/main.svg	P069	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Nykaa	Makeup	\N	\N	1	\N	\N
-45	78	17	19	Air Fryer Pro	http://localhost:9000/nexus-media/public/catalog/products/45/main.svg	P045	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Prestige	Kitchen Appliances	\N	\N	1	\N	\N
-46	36	17	19	Contura Pressure Cooker	http://localhost:9000/nexus-media/public/catalog/products/46/main.svg	P046	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Hawkins	Kitchen Appliances	\N	\N	1	\N	\N
-47	39	17	19	Grand RO Water Purifier	http://localhost:9000/nexus-media/public/catalog/products/47/main.svg	P047	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	KENT	Kitchen Appliances	\N	\N	1	\N	\N
-71	27	23	24	Intense Repair Shampoo	http://localhost:9000/nexus-media/public/catalog/products/71/main.svg	P071	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Dove	Hair Care	\N	\N	1	\N	\N
-81	25	26	26	500 Adjustable Dumbbell	http://localhost:9000/nexus-media/public/catalog/products/81/main.svg	P081	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Decathlon	Gym Equipment	\N	\N	1	\N	\N
-82	64	26	26	Hex Dumbbell 10kg	http://localhost:9000/nexus-media/public/catalog/products/82/main.svg	P082	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Nivia	Gym Equipment	\N	\N	1	\N	\N
-77	92	29	28	Charged Assert 10	http://localhost:9000/nexus-media/public/catalog/products/77/main.svg	P077	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Under Armour	Running	\N	\N	1	\N	\N
-78	25	29	28	Kalenji Run Comfort	http://localhost:9000/nexus-media/public/catalog/products/78/main.svg	P078	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Decathlon	Running	\N	\N	1	\N	\N
-79	64	29	28	Running Shoes Racer	http://localhost:9000/nexus-media/public/catalog/products/79/main.svg	P079	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Nivia	Running	\N	\N	1	\N	\N
-80	97	29	28	Sprint Running Shoes	http://localhost:9000/nexus-media/public/catalog/products/80/main.svg	P080	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Vector X	Running	\N	\N	1	\N	\N
-72	41	23	24	Absolut Repair Shampoo	http://localhost:9000/nexus-media/public/catalog/products/72/main.svg	P072	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	L'Oréal	Hair Care	\N	\N	1	\N	\N
-73	50	23	24	Onion Hair Oil	http://localhost:9000/nexus-media/public/catalog/products/73/main.svg	P073	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Mamaearth	Hair Care	\N	\N	1	\N	\N
-58	91	24	21	Niacinamide 10% + Zinc 1%	http://localhost:9000/nexus-media/public/catalog/products/58/main.svg	P058	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	The Ordinary	Skincare	\N	\N	1	\N	\N
-59	63	24	21	Soft Moisturizing Cream	http://localhost:9000/nexus-media/public/catalog/products/59/main.svg	P059	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Nivea	Skincare	\N	\N	1	\N	\N
-60	19	24	21	Moisture Surge 100H	http://localhost:9000/nexus-media/public/catalog/products/60/main.svg	P060	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Clinique	Skincare	\N	\N	1	\N	\N
-61	61	24	21	Hydro Boost Water Gel	http://localhost:9000/nexus-media/public/catalog/products/61/main.svg	P061	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Neutrogena	Skincare	\N	\N	1	\N	\N
-53	16	16	16	Rapid 3 Burner Gas Stove	http://localhost:9000/nexus-media/public/catalog/products/53/main.svg	P053	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Butterfly	Kitchenware	\N	\N	1	\N	\N
-85	25	27	27	Basic Yoga Mat	http://localhost:9000/nexus-media/public/catalog/products/85/main.svg	P085	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Decathlon	Yoga	\N	\N	1	\N	\N
-88	99	28	29	Pro Staff 97 Tennis Racket	http://localhost:9000/nexus-media/public/catalog/products/88/main.svg	P088	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Wilson	Outdoor	\N	\N	1	\N	\N
-89	101	28	29	Astrox 100ZZ	http://localhost:9000/nexus-media/public/catalog/products/89/main.svg	P089	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Yonex	Outdoor	\N	\N	1	\N	\N
-90	85	28	29	Skyer Cricket Bat	http://localhost:9000/nexus-media/public/catalog/products/90/main.svg	P090	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	SS (Sareen Sports)	Outdoor	\N	\N	1	\N	\N
-96	73	31	34	The Midnight Library	http://localhost:9000/nexus-media/public/catalog/products/96/main.svg	P096	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Penguin Random House	Fiction	\N	\N	1	\N	\N
-97	73	31	34	1984	http://localhost:9000/nexus-media/public/catalog/products/97/main.svg	P097	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Penguin Random House	Fiction	\N	\N	1	\N	\N
-98	82	31	34	The Silent Patient	http://localhost:9000/nexus-media/public/catalog/products/98/main.svg	P098	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Rupa Publications	Fiction	\N	\N	1	\N	\N
-99	6	31	34	Mahabharata	http://localhost:9000/nexus-media/public/catalog/products/99/main.svg	P099	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Amar Chitra Katha	Fiction	\N	\N	1	\N	\N
-109	57	32	33	Classic Notebook Large	http://localhost:9000/nexus-media/public/catalog/products/109/main.svg	P109	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Moleskine	Notebooks & Supplies	\N	\N	1	\N	\N
-110	23	32	33	Premium Ruled Notebook	http://localhost:9000/nexus-media/public/catalog/products/110/main.svg	P110	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Crossword	Notebooks & Supplies	\N	\N	1	\N	\N
-112	83	32	33	Graph Paper Notebook	http://localhost:9000/nexus-media/public/catalog/products/112/main.svg	P112	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	S. Chand	Notebooks & Supplies	\N	\N	1	\N	\N
-113	10	32	33	Exam Planner Notebook	http://localhost:9000/nexus-media/public/catalog/products/113/main.svg	P113	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Arihant	Notebooks & Supplies	\N	\N	1	\N	\N
-114	73	32	33	Reading Journal	http://localhost:9000/nexus-media/public/catalog/products/114/main.svg	P114	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Penguin Random House	Notebooks & Supplies	\N	\N	1	\N	\N
-100	73	33	31	Atomic Habits	http://localhost:9000/nexus-media/public/catalog/products/100/main.svg	P100	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Penguin Random House	Non-Fiction	\N	\N	1	\N	\N
-101	53	33	31	The Lean Startup	http://localhost:9000/nexus-media/public/catalog/products/101/main.svg	P101	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	McGraw Hill	Non-Fiction	\N	\N	1	\N	\N
-120	15	36	38	Good Day Cashew Cookies	http://localhost:9000/nexus-media/public/catalog/products/120/main.svg	P120	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Britannia	Snacks	\N	\N	1	\N	\N
-121	70	36	38	Hide & Seek Biscuits	http://localhost:9000/nexus-media/public/catalog/products/121/main.svg	P121	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Parle	Snacks	\N	\N	1	\N	\N
-122	38	36	38	Sunfeast Dark Fantasy	http://localhost:9000/nexus-media/public/catalog/products/122/main.svg	P122	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	ITC	Snacks	\N	\N	1	\N	\N
-115	60	38	37	Nescafé Classic Coffee	http://localhost:9000/nexus-media/public/catalog/products/115/main.svg	P115	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Nestlé	Beverages	\N	\N	1	\N	\N
-116	20	38	37	Coca-Cola Original	http://localhost:9000/nexus-media/public/catalog/products/116/main.svg	P116	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Coca-Cola	Beverages	\N	\N	1	\N	\N
-117	7	38	37	Amul Taaza Milk	http://localhost:9000/nexus-media/public/catalog/products/117/main.svg	P117	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Amul	Beverages	\N	\N	1	\N	\N
-118	89	38	37	Tata Tea Gold	http://localhost:9000/nexus-media/public/catalog/products/118/main.svg	P118	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Tata	Beverages	\N	\N	1	\N	\N
-119	58	38	37	Toned Milk	http://localhost:9000/nexus-media/public/catalog/products/119/main.svg	P119	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Mother Dairy	Beverages	\N	\N	1	\N	\N
-102	72	33	31	Sapiens Study Guide	http://localhost:9000/nexus-media/public/catalog/products/102/main.svg	P102	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Pearson	Non-Fiction	\N	\N	1	\N	\N
-104	68	34	32	Designing Data-Intensive Applications	http://localhost:9000/nexus-media/public/catalog/products/104/main.svg	P104	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	O'Reilly	Technology	\N	\N	1	\N	\N
-105	53	34	32	Cracking the Coding Interview	http://localhost:9000/nexus-media/public/catalog/products/105/main.svg	P105	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	McGraw Hill	Technology	\N	\N	1	\N	\N
-106	72	34	32	Java Programming Complete	http://localhost:9000/nexus-media/public/catalog/products/106/main.svg	P106	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Pearson	Technology	\N	\N	1	\N	\N
-125	40	37	39	Corn Flakes	http://localhost:9000/nexus-media/public/catalog/products/125/main.svg	P125	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Kellogg's	Breakfast	\N	\N	1	\N	\N
-129	31	39	36	Sunflower Oil	http://localhost:9000/nexus-media/public/catalog/products/129/main.svg	P129	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Fortune	Pantry	\N	\N	1	\N	\N
-130	71	39	36	Dalia	http://localhost:9000/nexus-media/public/catalog/products/130/main.svg	P130	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Patanjali	Pantry	\N	\N	1	\N	\N
-132	7	39	36	Pure Ghee	http://localhost:9000/nexus-media/public/catalog/products/132/main.svg	P132	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Amul	Pantry	\N	\N	1	\N	\N
-138	18	41	43	Magnatec 5W-30	http://localhost:9000/nexus-media/public/catalog/products/138/main.svg	P138	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Castrol	Car Care	\N	\N	1	\N	\N
-139	59	41	43	8100 X-Cess 5W-40	http://localhost:9000/nexus-media/public/catalog/products/139/main.svg	P139	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Motul	Car Care	\N	\N	1	\N	\N
-141	1	41	43	Perfect-It Rubbing Compound	http://localhost:9000/nexus-media/public/catalog/products/141/main.svg	P141	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	3M	Car Care	\N	\N	1	\N	\N
-151	18	41	43	Engine Flush	http://localhost:9000/nexus-media/public/catalog/products/151/main.svg	P151	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Castrol	Car Care	\N	\N	1	\N	\N
-142	54	42	42	Energy XM2+ Tyre	http://localhost:9000/nexus-media/public/catalog/products/142/main.svg	P142	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Michelin	Replacement Parts	\N	\N	1	\N	\N
-143	48	42	42	Perfinza Tyre	http://localhost:9000/nexus-media/public/catalog/products/143/main.svg	P143	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	MRF	Replacement Parts	\N	\N	1	\N	\N
-144	8	42	42	Alnac 4G Tyre	http://localhost:9000/nexus-media/public/catalog/products/144/main.svg	P144	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Apollo Tyres	Replacement Parts	\N	\N	1	\N	\N
-145	17	42	42	Milaze Tyre	http://localhost:9000/nexus-media/public/catalog/products/145/main.svg	P145	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	CEAT	Replacement Parts	\N	\N	1	\N	\N
-134	1	43	41	Car Care Microfiber Cloth	http://localhost:9000/nexus-media/public/catalog/products/134/main.svg	P134	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	3M	Car Accessories	\N	\N	1	\N	\N
-135	14	43	41	Car Air Filter	http://localhost:9000/nexus-media/public/catalog/products/135/main.svg	P135	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Bosch India	Car Accessories	\N	\N	1	\N	\N
-136	88	43	41	Car Battery Charger	http://localhost:9000/nexus-media/public/catalog/products/136/main.svg	P136	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	TVS	Car Accessories	\N	\N	1	\N	\N
-137	17	43	41	Tubeless Valve Kit	http://localhost:9000/nexus-media/public/catalog/products/137/main.svg	P137	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	CEAT	Car Accessories	\N	\N	1	\N	\N
-146	88	42	42	Eco Grip 2W Tyre	http://localhost:9000/nexus-media/public/catalog/products/146/main.svg	P146	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	TVS	Replacement Parts	\N	\N	1	\N	\N
-11	77	2	7	Muffs M2 Wireless Headphones	http://localhost:9000/nexus-media/public/catalog/products/11/main.svg	P011	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Portronics	Headphones & Earbuds	\N	\N	1	\N	\N
-21	5	11	12	Slim Fit Oxford Shirt	http://localhost:9000/nexus-media/public/catalog/products/21/main.svg	P021	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Allen Solly	Men's Clothing	\N	\N	1	\N	\N
-31	4	14	14	Ultraboost Light	http://localhost:9000/nexus-media/public/catalog/products/31/main.svg	P031	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Adidas	Footwear	\N	\N	1	\N	\N
-54	22	16	16	Steel Essential Kettle	http://localhost:9000/nexus-media/public/catalog/products/54/main.svg	P054	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Crompton	Kitchenware	\N	\N	1	\N	\N
-42	75	17	19	Airfryer 3000 Series	http://localhost:9000/nexus-media/public/catalog/products/42/main.svg	P042	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Philips	Kitchen Appliances	\N	\N	1	\N	\N
-40	37	18	17	LACK Coffee Table	http://localhost:9000/nexus-media/public/catalog/products/40/main.svg	P040	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	IKEA	Furniture	\N	\N	1	\N	\N
-74	63	21	22	Men Sensitive Shaving Gel	http://localhost:9000/nexus-media/public/catalog/products/74/main.svg	P074	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Nivea	Grooming	\N	\N	1	\N	\N
-64	30	24	21	Facial Tonic Mist	http://localhost:9000/nexus-media/public/catalog/products/64/main.svg	P064	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Forest Essentials	Skincare	\N	\N	1	\N	\N
-124	24	36	38	Real Fruit Drink	http://localhost:9000/nexus-media/public/catalog/products/124/main.svg	P124	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Dabur	Snacks	\N	\N	1	\N	\N
-128	89	37	39	Sampann Poha	http://localhost:9000/nexus-media/public/catalog/products/128/main.svg	P128	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Tata	Breakfast	\N	\N	1	\N	\N
-13	65	2	7	Buds X Prime	http://localhost:9000/nexus-media/public/catalog/products/13/main.svg	P013	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Noise	Headphones & Earbuds	\N	\N	1	\N	\N
-16	87	2	7	WH-1000XM6	http://localhost:9000/nexus-media/public/catalog/products/16/main.svg	P016	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Sony	Headphones & Earbuds	\N	\N	1	\N	\N
-6	55	3	6	IN Note 3	http://localhost:9000/nexus-media/public/catalog/products/6/main.svg	P006	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Micromax	Smartphones	\N	\N	1	\N	\N
-27	29	12	11	Cotton Kurta	http://localhost:9000/nexus-media/public/catalog/products/27/main.svg	P027	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	FabIndia	Women's Clothing	\N	\N	1	\N	\N
-28	51	12	11	Embroidered Kurta	http://localhost:9000/nexus-media/public/catalog/products/28/main.svg	P028	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Manyavar	Women's Clothing	\N	\N	1	\N	\N
-29	98	12	11	Straight Kurta Set	http://localhost:9000/nexus-media/public/catalog/products/29/main.svg	P029	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	W for Woman	Women's Clothing	\N	\N	1	\N	\N
-55	100	16	16	Granite Fry Pan	http://localhost:9000/nexus-media/public/catalog/products/55/main.svg	P055	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Wonderchef	Kitchenware	\N	\N	1	\N	\N
-56	78	16	16	Omega Deluxe Pan	http://localhost:9000/nexus-media/public/catalog/products/56/main.svg	P056	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Prestige	Kitchenware	\N	\N	1	\N	\N
-57	36	16	16	Futura Nonstick Tawa	http://localhost:9000/nexus-media/public/catalog/products/57/main.svg	P057	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Hawkins	Kitchenware	\N	\N	1	\N	\N
-44	13	17	19	Serie 4 Dishwasher	http://localhost:9000/nexus-media/public/catalog/products/44/main.svg	P044	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Bosch	Kitchen Appliances	\N	\N	1	\N	\N
-50	11	19	18	Maharaja Tower Fan	http://localhost:9000/nexus-media/public/catalog/products/50/main.svg	P050	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Bajaj	Home Appliances	\N	\N	1	\N	\N
-51	35	19	18	Aqua Plus Water Heater	http://localhost:9000/nexus-media/public/catalog/products/51/main.svg	P051	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Havells	Home Appliances	\N	\N	1	\N	\N
-52	95	19	18	Mist Air Icy Fan	http://localhost:9000/nexus-media/public/catalog/products/52/main.svg	P052	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Usha	Home Appliances	\N	\N	1	\N	\N
-70	12	22	23	Bio Coconut Whitening Cream	http://localhost:9000/nexus-media/public/catalog/products/70/main.svg	P070	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Biotique	Makeup	\N	\N	1	\N	\N
-62	50	24	21	Vitamin C Face Serum	http://localhost:9000/nexus-media/public/catalog/products/62/main.svg	P062	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Mamaearth	Skincare	\N	\N	1	\N	\N
-63	56	24	21	2% Salicylic Acid Serum	http://localhost:9000/nexus-media/public/catalog/products/63/main.svg	P063	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Minimalist	Skincare	\N	\N	1	\N	\N
-65	76	24	21	Green Tea Face Wash	http://localhost:9000/nexus-media/public/catalog/products/65/main.svg	P065	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Plum	Skincare	\N	\N	1	\N	\N
-84	97	26	26	Power Training Gloves	http://localhost:9000/nexus-media/public/catalog/products/84/main.svg	P084	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Vector X	Gym Equipment	\N	\N	1	\N	\N
-83	21	26	26	Resistance Tube Set	http://localhost:9000/nexus-media/public/catalog/products/83/main.svg	P083	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Cosco	Gym Equipment	\N	\N	1	\N	\N
-86	64	27	27	TPE Yoga Mat	http://localhost:9000/nexus-media/public/catalog/products/86/main.svg	P086	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Nivia	Yoga	\N	\N	1	\N	\N
-87	21	27	27	Yoga Block Pair	http://localhost:9000/nexus-media/public/catalog/products/87/main.svg	P087	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Cosco	Yoga	\N	\N	1	\N	\N
-92	25	28	29	Quechua Hiking Backpack 40L	http://localhost:9000/nexus-media/public/catalog/products/92/main.svg	P092	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Decathlon	Outdoor	\N	\N	1	\N	\N
-1	9	3	6	iPhone 17	http://localhost:9000/nexus-media/public/catalog/products/1/main.svg	P001	0	1	1	1	1	100	14	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Apple	Smartphones	\N	\N	1	\N	\N
-93	64	28	29	Storm Football	http://localhost:9000/nexus-media/public/catalog/products/93/main.svg	P093	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Nivia	Outdoor	\N	\N	1	\N	\N
-94	21	28	29	Club Volleyball	http://localhost:9000/nexus-media/public/catalog/products/94/main.svg	P094	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Cosco	Outdoor	\N	\N	1	\N	\N
-95	99	28	29	NBA Official Basketball	http://localhost:9000/nexus-media/public/catalog/products/95/main.svg	P095	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Wilson	Outdoor	\N	\N	1	\N	\N
-91	84	28	29	Players English Willow Bat	http://localhost:9000/nexus-media/public/catalog/products/91/main.svg	P091	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	SG (Sanspareils Greenlands)	Outdoor	\N	\N	1	\N	\N
-111	82	32	33	Executive Journal	http://localhost:9000/nexus-media/public/catalog/products/111/main.svg	P111	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Rupa Publications	Notebooks & Supplies	\N	\N	1	\N	\N
-107	83	34	32	Data Structures in C	http://localhost:9000/nexus-media/public/catalog/products/107/main.svg	P107	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	S. Chand	Technology	\N	\N	1	\N	\N
-108	10	34	32	Python for Competitive Programming	http://localhost:9000/nexus-media/public/catalog/products/108/main.svg	P108	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Arihant	Technology	\N	\N	1	\N	\N
-103	68	34	32	Clean Code	http://localhost:9000/nexus-media/public/catalog/products/103/main.svg	P103	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	O'Reilly	Technology	\N	\N	1	\N	\N
-123	60	36	38	Munch Chocolate Bar	http://localhost:9000/nexus-media/public/catalog/products/123/main.svg	P123	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Nestlé	Snacks	\N	\N	1	\N	\N
-126	49	37	39	3 Minute Breakfast Poha	http://localhost:9000/nexus-media/public/catalog/products/126/main.svg	P126	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	MTR	Breakfast	\N	\N	1	\N	\N
-131	93	39	36	Kissan Tomato Ketchup	http://localhost:9000/nexus-media/public/catalog/products/131/main.svg	P131	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Unilever	Pantry	\N	\N	1	\N	\N
-140	33	41	43	Formula G 5W-30	http://localhost:9000/nexus-media/public/catalog/products/140/main.svg	P140	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Gulf Oil	Car Care	\N	\N	1	\N	\N
-149	1	43	41	12V Car Vacuum Cleaner	http://localhost:9000/nexus-media/public/catalog/products/149/main.svg	P149	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	3M	Car Accessories	\N	\N	1	\N	\N
-127	3	37	39	Multigrain Atta	http://localhost:9000/nexus-media/public/catalog/products/127/main.svg	P127	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Aashirvaad	Breakfast	\N	\N	1	\N	\N
-133	58	39	36	Paneer Fresh	http://localhost:9000/nexus-media/public/catalog/products/133/main.svg	P133	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Mother Dairy	Pantry	\N	\N	1	\N	\N
-147	14	42	42	Platinum Spark Plug	http://localhost:9000/nexus-media/public/catalog/products/147/main.svg	P147	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Bosch India	Replacement Parts	\N	\N	1	\N	\N
-148	17	42	42	Car Brake Pad Set	http://localhost:9000/nexus-media/public/catalog/products/148/main.svg	P148	0	1	1	1	1	100	0	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	CEAT	Replacement Parts	\N	\N	1	\N	\N
-152	59	41	43	Chain Clean	http://localhost:9000/nexus-media/public/catalog/products/152/main.svg	P152	0	1	1	1	1	100	1	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Motul	Car Care	\N	\N	1	\N	\N
+4	44	4	8	Tab Pro 11	http://localhost:9000/nexus-media/public/catalog/products/4/main.svg	P004	0	1	1	1	1	0	\N
+150	88	43	41	Portable Tyre Inflator	http://localhost:9000/nexus-media/public/catalog/products/150/main.svg	P150	0	1	1	1	1	97	\N
+10	69	4	8	Pad 3	http://localhost:9000/nexus-media/public/catalog/products/10/main.svg	P010	0	1	1	1	1	0	\N
+7	26	5	3	Inspiron 16 Plus	http://localhost:9000/nexus-media/public/catalog/products/7/main.svg	P007	0	1	1	1	1	0	\N
+8	45	5	3	ThinkPad E16	http://localhost:9000/nexus-media/public/catalog/products/8/main.svg	P008	0	1	1	1	1	0	\N
+9	2	5	3	Vivobook S 16	http://localhost:9000/nexus-media/public/catalog/products/9/main.svg	P009	0	1	1	1	1	0	\N
+15	47	6	4	MX Brio Webcam	http://localhost:9000/nexus-media/public/catalog/products/15/main.svg	P015	0	1	1	1	1	0	\N
+14	104	7	2	Lunar Pro Smartwatch	http://localhost:9000/nexus-media/public/catalog/products/14/main.svg	P014	0	1	1	1	1	0	\N
+17	42	8	5	UltraGear 27GS60F	http://localhost:9000/nexus-media/public/catalog/products/17/main.svg	P017	0	1	1	1	1	0	\N
+18	86	8	5	Odyssey G6 27	http://localhost:9000/nexus-media/public/catalog/products/18/main.svg	P018	0	1	1	1	1	0	\N
+2	86	3	6	Galaxy S26	http://localhost:9000/nexus-media/public/catalog/products/2/main.svg	P002	0	1	1	1	1	0	\N
+3	32	3	6	Pixel 11	http://localhost:9000/nexus-media/public/catalog/products/3/main.svg	P003	0	1	1	1	1	0	\N
+19	103	9	9	Transformer Wireless Keyboard	http://localhost:9000/nexus-media/public/catalog/products/19/main.svg	P019	0	1	1	1	1	0	\N
+20	46	11	12	511 Slim Jeans	http://localhost:9000/nexus-media/public/catalog/products/20/main.svg	P020	0	1	1	1	1	0	\N
+5	69	3	6	OnePlus 14	http://localhost:9000/nexus-media/public/catalog/products/5/main.svg	P005	0	1	1	1	1	0	\N
+22	74	11	12	Regular Formal Shirt	http://localhost:9000/nexus-media/public/catalog/products/22/main.svg	P022	0	1	1	1	1	0	\N
+23	81	11	12	Classic Formal Trousers	http://localhost:9000/nexus-media/public/catalog/products/23/main.svg	P023	0	1	1	1	1	0	\N
+24	94	12	11	Supima Cotton T-Shirt	http://localhost:9000/nexus-media/public/catalog/products/24/main.svg	P024	0	1	1	1	1	0	\N
+25	102	12	11	Relaxed Fit Blouse	http://localhost:9000/nexus-media/public/catalog/products/25/main.svg	P025	0	1	1	1	1	0	\N
+26	34	12	11	Ribbed Midi Dress	http://localhost:9000/nexus-media/public/catalog/products/26/main.svg	P026	0	1	1	1	1	0	\N
+34	80	13	13	Aviator Classic	http://localhost:9000/nexus-media/public/catalog/products/34/main.svg	P034	0	1	1	1	1	0	\N
+35	96	13	13	Leather Finish Belt	http://localhost:9000/nexus-media/public/catalog/products/35/main.svg	P035	0	1	1	1	1	0	\N
+36	94	13	13	Round Mini Shoulder Bag	http://localhost:9000/nexus-media/public/catalog/products/36/main.svg	P036	0	1	1	1	1	0	\N
+37	62	13	13	Heritage Backpack	http://localhost:9000/nexus-media/public/catalog/products/37/main.svg	P037	0	1	1	1	1	0	\N
+38	4	13	13	Classic 3S Cap	http://localhost:9000/nexus-media/public/catalog/products/38/main.svg	P038	0	1	1	1	1	0	\N
+30	62	14	14	Air Max 270	http://localhost:9000/nexus-media/public/catalog/products/30/main.svg	P030	0	1	1	1	1	0	\N
+32	79	14	14	Velocity Nitro 3	http://localhost:9000/nexus-media/public/catalog/products/32/main.svg	P032	0	1	1	1	1	0	\N
+39	37	18	17	MALM 6-Drawer Chest	http://localhost:9000/nexus-media/public/catalog/products/39/main.svg	P039	0	1	1	1	1	0	\N
+41	37	18	17	BILLY Bookcase	http://localhost:9000/nexus-media/public/catalog/products/41/main.svg	P041	0	1	1	1	1	0	\N
+33	90	14	14	VECTIV Enduris	http://localhost:9000/nexus-media/public/catalog/products/33/main.svg	P033	0	1	1	1	1	0	\N
+12	66	2	7	Ear (3)	http://localhost:9000/nexus-media/public/catalog/products/12/main.svg	P012	0	1	1	1	1	0	\N
+75	67	21	22	ManGlow Beard Wash	http://localhost:9000/nexus-media/public/catalog/products/75/main.svg	P075	0	1	1	1	1	0	\N
+43	28	19	18	V15 Detect	http://localhost:9000/nexus-media/public/catalog/products/43/main.svg	P043	0	1	1	1	1	0	\N
+48	42	19	18	6.5kg Front Load Washer	http://localhost:9000/nexus-media/public/catalog/products/48/main.svg	P048	0	1	1	1	1	0	\N
+49	13	19	18	8kg Front Load Washer	http://localhost:9000/nexus-media/public/catalog/products/49/main.svg	P049	0	1	1	1	1	0	\N
+76	76	21	22	Green Tea Shave Gel	http://localhost:9000/nexus-media/public/catalog/products/76/main.svg	P076	0	1	1	1	1	0	\N
+66	41	22	23	True Match Foundation	http://localhost:9000/nexus-media/public/catalog/products/66/main.svg	P066	0	1	1	1	1	0	\N
+67	52	22	23	Fit Me Foundation	http://localhost:9000/nexus-media/public/catalog/products/67/main.svg	P067	0	1	1	1	1	0	\N
+68	43	22	23	9to5 Primer + Matte Lip Color	http://localhost:9000/nexus-media/public/catalog/products/68/main.svg	P068	0	1	1	1	1	0	\N
+69	67	22	23	SkinGenius Foundation	http://localhost:9000/nexus-media/public/catalog/products/69/main.svg	P069	0	1	1	1	1	0	\N
+45	78	17	19	Air Fryer Pro	http://localhost:9000/nexus-media/public/catalog/products/45/main.svg	P045	0	1	1	1	1	0	\N
+46	36	17	19	Contura Pressure Cooker	http://localhost:9000/nexus-media/public/catalog/products/46/main.svg	P046	0	1	1	1	1	0	\N
+47	39	17	19	Grand RO Water Purifier	http://localhost:9000/nexus-media/public/catalog/products/47/main.svg	P047	0	1	1	1	1	0	\N
+71	27	23	24	Intense Repair Shampoo	http://localhost:9000/nexus-media/public/catalog/products/71/main.svg	P071	0	1	1	1	1	0	\N
+81	25	26	26	500 Adjustable Dumbbell	http://localhost:9000/nexus-media/public/catalog/products/81/main.svg	P081	0	1	1	1	1	0	\N
+82	64	26	26	Hex Dumbbell 10kg	http://localhost:9000/nexus-media/public/catalog/products/82/main.svg	P082	0	1	1	1	1	0	\N
+77	92	29	28	Charged Assert 10	http://localhost:9000/nexus-media/public/catalog/products/77/main.svg	P077	0	1	1	1	1	0	\N
+78	25	29	28	Kalenji Run Comfort	http://localhost:9000/nexus-media/public/catalog/products/78/main.svg	P078	0	1	1	1	1	0	\N
+79	64	29	28	Running Shoes Racer	http://localhost:9000/nexus-media/public/catalog/products/79/main.svg	P079	0	1	1	1	1	0	\N
+80	97	29	28	Sprint Running Shoes	http://localhost:9000/nexus-media/public/catalog/products/80/main.svg	P080	0	1	1	1	1	0	\N
+72	41	23	24	Absolut Repair Shampoo	http://localhost:9000/nexus-media/public/catalog/products/72/main.svg	P072	0	1	1	1	1	0	\N
+73	50	23	24	Onion Hair Oil	http://localhost:9000/nexus-media/public/catalog/products/73/main.svg	P073	0	1	1	1	1	0	\N
+58	91	24	21	Niacinamide 10% + Zinc 1%	http://localhost:9000/nexus-media/public/catalog/products/58/main.svg	P058	0	1	1	1	1	0	\N
+59	63	24	21	Soft Moisturizing Cream	http://localhost:9000/nexus-media/public/catalog/products/59/main.svg	P059	0	1	1	1	1	0	\N
+60	19	24	21	Moisture Surge 100H	http://localhost:9000/nexus-media/public/catalog/products/60/main.svg	P060	0	1	1	1	1	0	\N
+61	61	24	21	Hydro Boost Water Gel	http://localhost:9000/nexus-media/public/catalog/products/61/main.svg	P061	0	1	1	1	1	0	\N
+53	16	16	16	Rapid 3 Burner Gas Stove	http://localhost:9000/nexus-media/public/catalog/products/53/main.svg	P053	0	1	1	1	1	0	\N
+85	25	27	27	Basic Yoga Mat	http://localhost:9000/nexus-media/public/catalog/products/85/main.svg	P085	0	1	1	1	1	0	\N
+88	99	28	29	Pro Staff 97 Tennis Racket	http://localhost:9000/nexus-media/public/catalog/products/88/main.svg	P088	0	1	1	1	1	0	\N
+89	101	28	29	Astrox 100ZZ	http://localhost:9000/nexus-media/public/catalog/products/89/main.svg	P089	0	1	1	1	1	0	\N
+90	85	28	29	Skyer Cricket Bat	http://localhost:9000/nexus-media/public/catalog/products/90/main.svg	P090	0	1	1	1	1	0	\N
+96	73	31	34	The Midnight Library	http://localhost:9000/nexus-media/public/catalog/products/96/main.svg	P096	0	1	1	1	1	0	\N
+97	73	31	34	1984	http://localhost:9000/nexus-media/public/catalog/products/97/main.svg	P097	0	1	1	1	1	0	\N
+98	82	31	34	The Silent Patient	http://localhost:9000/nexus-media/public/catalog/products/98/main.svg	P098	0	1	1	1	1	0	\N
+99	6	31	34	Mahabharata	http://localhost:9000/nexus-media/public/catalog/products/99/main.svg	P099	0	1	1	1	1	0	\N
+109	57	32	33	Classic Notebook Large	http://localhost:9000/nexus-media/public/catalog/products/109/main.svg	P109	0	1	1	1	1	0	\N
+110	23	32	33	Premium Ruled Notebook	http://localhost:9000/nexus-media/public/catalog/products/110/main.svg	P110	0	1	1	1	1	0	\N
+112	83	32	33	Graph Paper Notebook	http://localhost:9000/nexus-media/public/catalog/products/112/main.svg	P112	0	1	1	1	1	0	\N
+113	10	32	33	Exam Planner Notebook	http://localhost:9000/nexus-media/public/catalog/products/113/main.svg	P113	0	1	1	1	1	0	\N
+114	73	32	33	Reading Journal	http://localhost:9000/nexus-media/public/catalog/products/114/main.svg	P114	0	1	1	1	1	0	\N
+100	73	33	31	Atomic Habits	http://localhost:9000/nexus-media/public/catalog/products/100/main.svg	P100	0	1	1	1	1	0	\N
+101	53	33	31	The Lean Startup	http://localhost:9000/nexus-media/public/catalog/products/101/main.svg	P101	0	1	1	1	1	0	\N
+120	15	36	38	Good Day Cashew Cookies	http://localhost:9000/nexus-media/public/catalog/products/120/main.svg	P120	0	1	1	1	1	0	\N
+121	70	36	38	Hide & Seek Biscuits	http://localhost:9000/nexus-media/public/catalog/products/121/main.svg	P121	0	1	1	1	1	0	\N
+122	38	36	38	Sunfeast Dark Fantasy	http://localhost:9000/nexus-media/public/catalog/products/122/main.svg	P122	0	1	1	1	1	0	\N
+115	60	38	37	Nescafé Classic Coffee	http://localhost:9000/nexus-media/public/catalog/products/115/main.svg	P115	0	1	1	1	1	0	\N
+116	20	38	37	Coca-Cola Original	http://localhost:9000/nexus-media/public/catalog/products/116/main.svg	P116	0	1	1	1	1	0	\N
+117	7	38	37	Amul Taaza Milk	http://localhost:9000/nexus-media/public/catalog/products/117/main.svg	P117	0	1	1	1	1	0	\N
+118	89	38	37	Tata Tea Gold	http://localhost:9000/nexus-media/public/catalog/products/118/main.svg	P118	0	1	1	1	1	0	\N
+119	58	38	37	Toned Milk	http://localhost:9000/nexus-media/public/catalog/products/119/main.svg	P119	0	1	1	1	1	0	\N
+102	72	33	31	Sapiens Study Guide	http://localhost:9000/nexus-media/public/catalog/products/102/main.svg	P102	0	1	1	1	1	0	\N
+104	68	34	32	Designing Data-Intensive Applications	http://localhost:9000/nexus-media/public/catalog/products/104/main.svg	P104	0	1	1	1	1	0	\N
+105	53	34	32	Cracking the Coding Interview	http://localhost:9000/nexus-media/public/catalog/products/105/main.svg	P105	0	1	1	1	1	0	\N
+106	72	34	32	Java Programming Complete	http://localhost:9000/nexus-media/public/catalog/products/106/main.svg	P106	0	1	1	1	1	0	\N
+125	40	37	39	Corn Flakes	http://localhost:9000/nexus-media/public/catalog/products/125/main.svg	P125	0	1	1	1	1	0	\N
+129	31	39	36	Sunflower Oil	http://localhost:9000/nexus-media/public/catalog/products/129/main.svg	P129	0	1	1	1	1	0	\N
+130	71	39	36	Dalia	http://localhost:9000/nexus-media/public/catalog/products/130/main.svg	P130	0	1	1	1	1	0	\N
+132	7	39	36	Pure Ghee	http://localhost:9000/nexus-media/public/catalog/products/132/main.svg	P132	0	1	1	1	1	0	\N
+138	18	41	43	Magnatec 5W-30	http://localhost:9000/nexus-media/public/catalog/products/138/main.svg	P138	0	1	1	1	1	0	\N
+139	59	41	43	8100 X-Cess 5W-40	http://localhost:9000/nexus-media/public/catalog/products/139/main.svg	P139	0	1	1	1	1	0	\N
+141	1	41	43	Perfect-It Rubbing Compound	http://localhost:9000/nexus-media/public/catalog/products/141/main.svg	P141	0	1	1	1	1	0	\N
+151	18	41	43	Engine Flush	http://localhost:9000/nexus-media/public/catalog/products/151/main.svg	P151	0	1	1	1	1	0	\N
+142	54	42	42	Energy XM2+ Tyre	http://localhost:9000/nexus-media/public/catalog/products/142/main.svg	P142	0	1	1	1	1	0	\N
+143	48	42	42	Perfinza Tyre	http://localhost:9000/nexus-media/public/catalog/products/143/main.svg	P143	0	1	1	1	1	0	\N
+144	8	42	42	Alnac 4G Tyre	http://localhost:9000/nexus-media/public/catalog/products/144/main.svg	P144	0	1	1	1	1	0	\N
+145	17	42	42	Milaze Tyre	http://localhost:9000/nexus-media/public/catalog/products/145/main.svg	P145	0	1	1	1	1	0	\N
+134	1	43	41	Car Care Microfiber Cloth	http://localhost:9000/nexus-media/public/catalog/products/134/main.svg	P134	0	1	1	1	1	0	\N
+135	14	43	41	Car Air Filter	http://localhost:9000/nexus-media/public/catalog/products/135/main.svg	P135	0	1	1	1	1	0	\N
+136	88	43	41	Car Battery Charger	http://localhost:9000/nexus-media/public/catalog/products/136/main.svg	P136	0	1	1	1	1	0	\N
+137	17	43	41	Tubeless Valve Kit	http://localhost:9000/nexus-media/public/catalog/products/137/main.svg	P137	0	1	1	1	1	0	\N
+146	88	42	42	Eco Grip 2W Tyre	http://localhost:9000/nexus-media/public/catalog/products/146/main.svg	P146	0	1	1	1	1	0	\N
+11	77	2	7	Muffs M2 Wireless Headphones	http://localhost:9000/nexus-media/public/catalog/products/11/main.svg	P011	0	1	1	1	1	0	\N
+21	5	11	12	Slim Fit Oxford Shirt	http://localhost:9000/nexus-media/public/catalog/products/21/main.svg	P021	0	1	1	1	1	0	\N
+31	4	14	14	Ultraboost Light	http://localhost:9000/nexus-media/public/catalog/products/31/main.svg	P031	0	1	1	1	1	0	\N
+54	22	16	16	Steel Essential Kettle	http://localhost:9000/nexus-media/public/catalog/products/54/main.svg	P054	0	1	1	1	1	0	\N
+42	75	17	19	Airfryer 3000 Series	http://localhost:9000/nexus-media/public/catalog/products/42/main.svg	P042	0	1	1	1	1	0	\N
+40	37	18	17	LACK Coffee Table	http://localhost:9000/nexus-media/public/catalog/products/40/main.svg	P040	0	1	1	1	1	0	\N
+74	63	21	22	Men Sensitive Shaving Gel	http://localhost:9000/nexus-media/public/catalog/products/74/main.svg	P074	0	1	1	1	1	0	\N
+64	30	24	21	Facial Tonic Mist	http://localhost:9000/nexus-media/public/catalog/products/64/main.svg	P064	0	1	1	1	1	0	\N
+124	24	36	38	Real Fruit Drink	http://localhost:9000/nexus-media/public/catalog/products/124/main.svg	P124	0	1	1	1	1	0	\N
+128	89	37	39	Sampann Poha	http://localhost:9000/nexus-media/public/catalog/products/128/main.svg	P128	0	1	1	1	1	0	\N
+13	65	2	7	Buds X Prime	http://localhost:9000/nexus-media/public/catalog/products/13/main.svg	P013	0	1	1	1	1	0	\N
+16	87	2	7	WH-1000XM6	http://localhost:9000/nexus-media/public/catalog/products/16/main.svg	P016	0	1	1	1	1	0	\N
+6	55	3	6	IN Note 3	http://localhost:9000/nexus-media/public/catalog/products/6/main.svg	P006	0	1	1	1	1	0	\N
+27	29	12	11	Cotton Kurta	http://localhost:9000/nexus-media/public/catalog/products/27/main.svg	P027	0	1	1	1	1	0	\N
+28	51	12	11	Embroidered Kurta	http://localhost:9000/nexus-media/public/catalog/products/28/main.svg	P028	0	1	1	1	1	0	\N
+29	98	12	11	Straight Kurta Set	http://localhost:9000/nexus-media/public/catalog/products/29/main.svg	P029	0	1	1	1	1	0	\N
+55	100	16	16	Granite Fry Pan	http://localhost:9000/nexus-media/public/catalog/products/55/main.svg	P055	0	1	1	1	1	0	\N
+56	78	16	16	Omega Deluxe Pan	http://localhost:9000/nexus-media/public/catalog/products/56/main.svg	P056	0	1	1	1	1	0	\N
+57	36	16	16	Futura Nonstick Tawa	http://localhost:9000/nexus-media/public/catalog/products/57/main.svg	P057	0	1	1	1	1	0	\N
+44	13	17	19	Serie 4 Dishwasher	http://localhost:9000/nexus-media/public/catalog/products/44/main.svg	P044	0	1	1	1	1	0	\N
+50	11	19	18	Maharaja Tower Fan	http://localhost:9000/nexus-media/public/catalog/products/50/main.svg	P050	0	1	1	1	1	0	\N
+51	35	19	18	Aqua Plus Water Heater	http://localhost:9000/nexus-media/public/catalog/products/51/main.svg	P051	0	1	1	1	1	0	\N
+52	95	19	18	Mist Air Icy Fan	http://localhost:9000/nexus-media/public/catalog/products/52/main.svg	P052	0	1	1	1	1	0	\N
+70	12	22	23	Bio Coconut Whitening Cream	http://localhost:9000/nexus-media/public/catalog/products/70/main.svg	P070	0	1	1	1	1	0	\N
+62	50	24	21	Vitamin C Face Serum	http://localhost:9000/nexus-media/public/catalog/products/62/main.svg	P062	0	1	1	1	1	0	\N
+63	56	24	21	2% Salicylic Acid Serum	http://localhost:9000/nexus-media/public/catalog/products/63/main.svg	P063	0	1	1	1	1	0	\N
+65	76	24	21	Green Tea Face Wash	http://localhost:9000/nexus-media/public/catalog/products/65/main.svg	P065	0	1	1	1	1	0	\N
+84	97	26	26	Power Training Gloves	http://localhost:9000/nexus-media/public/catalog/products/84/main.svg	P084	0	1	1	1	1	0	\N
+83	21	26	26	Resistance Tube Set	http://localhost:9000/nexus-media/public/catalog/products/83/main.svg	P083	0	1	1	1	1	0	\N
+86	64	27	27	TPE Yoga Mat	http://localhost:9000/nexus-media/public/catalog/products/86/main.svg	P086	0	1	1	1	1	0	\N
+87	21	27	27	Yoga Block Pair	http://localhost:9000/nexus-media/public/catalog/products/87/main.svg	P087	0	1	1	1	1	0	\N
+92	25	28	29	Quechua Hiking Backpack 40L	http://localhost:9000/nexus-media/public/catalog/products/92/main.svg	P092	0	1	1	1	1	0	\N
+1	9	3	6	iPhone 17	http://localhost:9000/nexus-media/public/catalog/products/1/main.svg	P001	0	1	1	1	1	14	\N
+93	64	28	29	Storm Football	http://localhost:9000/nexus-media/public/catalog/products/93/main.svg	P093	0	1	1	1	1	0	\N
+94	21	28	29	Club Volleyball	http://localhost:9000/nexus-media/public/catalog/products/94/main.svg	P094	0	1	1	1	1	0	\N
+95	99	28	29	NBA Official Basketball	http://localhost:9000/nexus-media/public/catalog/products/95/main.svg	P095	0	1	1	1	1	0	\N
+91	84	28	29	Players English Willow Bat	http://localhost:9000/nexus-media/public/catalog/products/91/main.svg	P091	0	1	1	1	1	0	\N
+111	82	32	33	Executive Journal	http://localhost:9000/nexus-media/public/catalog/products/111/main.svg	P111	0	1	1	1	1	0	\N
+107	83	34	32	Data Structures in C	http://localhost:9000/nexus-media/public/catalog/products/107/main.svg	P107	0	1	1	1	1	0	\N
+108	10	34	32	Python for Competitive Programming	http://localhost:9000/nexus-media/public/catalog/products/108/main.svg	P108	0	1	1	1	1	0	\N
+103	68	34	32	Clean Code	http://localhost:9000/nexus-media/public/catalog/products/103/main.svg	P103	0	1	1	1	1	0	\N
+123	60	36	38	Munch Chocolate Bar	http://localhost:9000/nexus-media/public/catalog/products/123/main.svg	P123	0	1	1	1	1	0	\N
+126	49	37	39	3 Minute Breakfast Poha	http://localhost:9000/nexus-media/public/catalog/products/126/main.svg	P126	0	1	1	1	1	0	\N
+131	93	39	36	Kissan Tomato Ketchup	http://localhost:9000/nexus-media/public/catalog/products/131/main.svg	P131	0	1	1	1	1	0	\N
+140	33	41	43	Formula G 5W-30	http://localhost:9000/nexus-media/public/catalog/products/140/main.svg	P140	0	1	1	1	1	0	\N
+149	1	43	41	12V Car Vacuum Cleaner	http://localhost:9000/nexus-media/public/catalog/products/149/main.svg	P149	0	1	1	1	1	0	\N
+127	3	37	39	Multigrain Atta	http://localhost:9000/nexus-media/public/catalog/products/127/main.svg	P127	0	1	1	1	1	0	\N
+133	58	39	36	Paneer Fresh	http://localhost:9000/nexus-media/public/catalog/products/133/main.svg	P133	0	1	1	1	1	0	\N
+147	14	42	42	Platinum Spark Plug	http://localhost:9000/nexus-media/public/catalog/products/147/main.svg	P147	0	1	1	1	1	0	\N
+148	17	42	42	Car Brake Pad Set	http://localhost:9000/nexus-media/public/catalog/products/148/main.svg	P148	0	1	1	1	1	0	\N
+152	59	41	43	Chain Clean	http://localhost:9000/nexus-media/public/catalog/products/152/main.svg	P152	0	1	1	1	1	1	\N
 \.
 
 
@@ -5630,137 +5606,269 @@ COPY catalog.pms_product (id, brand_id, product_category_id, product_attribute_c
 
 COPY catalog.pms_product_attribute (id, product_attribute_category_id, name, select_type, input_type, input_list, sort, filter_type, search_type, related_status, hand_add_status, type) FROM stdin;
 34	9	Layout	0	1	Standard	0	0	0	0	0	1
+
 35	9	Switch Type	0	1	Premium Material	0	0	0	0	0	1
+
 36	11	Size	0	1	L,M,S,XL,L,M,XL	0	0	0	0	0	0
+
 37	11	Color	0	1	Black,Standard	0	0	0	0	0	0
+
 38	11	Material	0	1	Premium Material	0	0	0	0	0	1
+
 39	11	Fit	0	1	Standard	0	0	0	0	0	1
+
 40	12	Size	0	1	L,M,S,XL	0	0	0	0	0	0
+
 41	12	Color	0	1	Black	0	0	0	0	0	0
+
 42	12	Material	0	1	Premium Material	0	0	0	0	0	1
+
 43	12	Fit	0	1	Standard	0	0	0	0	0	1
+
 44	13	Color	0	1	Black,Silver,Standard	0	0	0	0	0	0
+
 45	13	Size	0	1	L,M,S,L,M,XL,Standard	0	0	0	0	0	0
+
 46	13	Material	0	1	Premium Material	0	0	0	0	0	1
+
 47	14	Size (US)	0	1	Standard	0	0	0	0	0	0
+
 48	14	Color	0	1	Black,White	0	0	0	0	0	0
+
 49	14	Material	0	1	Premium Material	0	0	0	0	0	1
+
 50	14	Shoe Type	0	1	Premium Material	0	0	0	0	0	1
+
 51	16	Size	0	1	24cm,26cm,28cm,Standard	0	0	0	0	0	0
+
 52	16	Capacity	0	1	1.5L,2L,Standard	0	0	0	0	0	0
+
 53	16	Material	0	1	Premium Material	0	0	0	0	0	1
+
 54	16	Color	0	1	Standard	0	0	0	0	0	1
+
 55	17	Color	0	1	Black,Black,Silver	0	0	0	0	0	0
+
 56	17	Material	0	1	Premium Material	0	0	0	0	0	1
+
 57	17	Dimensions	0	1	Standard Size	0	0	0	0	0	1
+
 58	18	Capacity	0	1	10L,15L,6.5kg,8kg,Standard	0	0	0	0	0	0
+
 59	18	Color	0	1	Black,Silver,Standard	0	0	0	0	0	0
+
 60	18	Power Consumption	0	1	Standard	0	0	0	0	0	1
+
 61	19	Capacity	0	1	12-place,14-place,3L,5L,4L,6L,Standard	0	0	0	0	0	0
+
 62	19	Color	0	1	Black,Standard	0	0	0	0	0	0
+
 63	19	Power Consumption	0	1	Standard	0	0	0	0	0	1
+
 64	21	Skin Type	0	1	Premium Material	0	0	0	0	0	1
+
 65	21	Ingredient	0	1	Premium Material	0	0	0	0	0	1
+
 66	21	Pack Size	0	1	Standard	0	0	0	0	0	0
+
 67	21	SPF	0	1	Standard	0	0	0	0	0	1
+
 68	22	Pack Size	0	1	Standard	0	0	0	0	0	0
+
 69	22	Skin Type	0	1	Premium Material	0	0	0	0	0	1
+
 70	22	Ingredient	0	1	Premium Material	0	0	0	0	0	1
+
 71	23	Shade	0	1	110 Porcelain,120 Classic Ivory,130 Buff Beige,220 Natural Beige,Standard	0	0	0	0	0	0
+
 72	23	Finish	0	1	Matte Finish	0	0	0	0	0	1
+
 73	23	Skin Type	0	1	Premium Material	0	0	0	0	0	1
+
 74	24	Pack Size	0	1	Standard	0	0	0	0	0	0
+
 75	24	Hair Type	0	1	Premium Material	0	0	0	0	0	1
+
 76	24	Ingredient	0	1	Premium Material	0	0	0	0	0	1
+
 77	26	Weight	0	1	Standard	0	0	0	0	0	1
+
 78	26	Material	0	1	Premium Material	0	0	0	0	0	1
+
 79	26	Size	0	1	Standard Size	0	0	0	0	0	1
+
 80	26	Color	0	1	Standard	0	0	0	0	0	1
+
 81	27	Color	0	1	Black,Silver	0	0	0	0	0	0
+
 82	27	Material	0	1	Premium Material	0	0	0	0	0	1
+
 83	27	Size	0	1	Standard Size	0	0	0	0	0	1
+
 84	28	Size (US)	0	1	Standard	0	0	0	0	0	0
+
 85	28	Color	0	1	Black,White	0	0	0	0	0	0
+
 86	28	Cushioning	0	1	Standard	0	0	0	0	0	1
+
 87	28	Shoe Type	0	1	Premium Material	0	0	0	0	0	1
+
 88	29	Size	0	1	10,8,9,L,M,XL,Standard	0	0	0	0	0	0
+
 89	29	Material	0	1	Premium Material	0	0	0	0	0	1
+
 90	29	Color	0	1	Black,Black,Silver,Standard	0	0	0	0	0	0
+
 91	29	Sport Type	0	1	Premium Material	0	0	0	0	0	1
+
 92	31	Format	0	1	Hardcover,Kindle,Paperback	0	0	0	0	0	0
+
 93	31	Language	0	1	Standard	0	0	0	0	0	1
+
 94	31	Publication Year	0	1	Standard	0	0	0	0	0	1
+
 95	31	Author	0	1	Standard	0	0	0	0	0	1
+
 96	32	Format	0	1	Hardcover,Kindle,Paperback	0	0	0	0	0	0
+
 97	32	Language	0	1	Standard	0	0	0	0	0	1
+
 98	32	Publication Year	0	1	Standard	0	0	0	0	0	1
+
 99	32	Author	0	1	Standard	0	0	0	0	0	1
+
 100	33	Size	0	1	A5,A6,Standard	0	0	0	0	0	0
+
 101	33	Color	0	1	Black,Black,Silver,Standard	0	0	0	0	0	0
+
 102	33	Paper Type	0	1	Premium Material	0	0	0	0	0	1
+
 103	33	Page Count	0	1	Standard	0	0	0	0	0	1
+
 1	2	Color	0	1	Black,Silver	0	0	0	0	0	0
+
 2	2	Strap Size	0	1	Standard Size	0	0	0	0	0	1
+
 3	2	Display Size	0	1	Standard Size	0	0	0	0	0	1
+
 4	2	GPS	0	1	Yes	0	0	0	0	0	1
+
 5	2	Water Resistance	0	1	Yes	0	0	0	0	0	1
+
 6	3	RAM	0	1	16GB,32GB	0	0	0	0	0	0
+
 7	3	Storage	0	1	1TB,512GB	0	0	0	0	0	0
+
 8	3	Color	0	1	Black,Silver	0	0	0	0	0	0
+
 9	3	Processor	0	1	Latest Gen Processor	0	0	0	0	0	1
+
 10	3	Screen Size	0	1	Standard Size	0	0	0	0	0	1
+
 11	4	Color	0	1	Black	0	0	0	0	0	0
+
 12	4	Resolution	0	1	4K UHD	0	0	0	0	0	1
+
 13	4	Sensor Type	0	1	Premium Material	0	0	0	0	0	1
+
 14	4	Connectivity	0	1	Standard	0	0	0	0	0	1
+
 15	5	Size (inches)	0	1	Standard	0	0	0	0	0	0
+
 16	5	Resolution	0	1	2560x1440,3840x2160	0	0	0	0	0	0
+
 17	5	Refresh Rate	0	1	Standard	0	0	0	0	0	1
+
 18	5	Panel Type	0	1	Premium Material	0	0	0	0	0	1
+
 19	6	Color	0	1	Black,Silver	0	0	0	0	0	0
+
 20	6	Storage	0	1	128GB,256GB	0	0	0	0	0	0
+
 21	6	RAM	0	1	Standard	0	0	0	0	0	1
+
 22	6	Screen Size	0	1	Standard Size	0	0	0	0	0	1
+
 23	6	Camera	0	1	Advanced Dual Camera	0	0	0	0	0	1
+
 24	7	Color	0	1	Black,Black,Silver	0	0	0	0	0	0
+
 25	7	Connectivity	0	1	Standard	0	0	0	0	0	1
+
 26	7	ANC	0	1	Yes	0	0	0	0	0	1
+
 27	7	Battery Life	0	1	24 Hours	0	0	0	0	0	1
+
 28	8	Color	0	1	Black,Silver	0	0	0	0	0	0
+
 29	8	Storage	0	1	128GB,256GB	0	0	0	0	0	0
+
 30	8	RAM	0	1	Standard	0	0	0	0	0	1
+
 31	8	Screen Size	0	1	Standard Size	0	0	0	0	0	1
+
 32	9	Color	0	1	Black,Silver	0	0	0	0	0	0
+
 33	9	Connectivity	0	1	Standard	0	0	0	0	0	1
+
 130	1	Color	1	1	Black,White	0	1	1	1	0	0
+
 131	1	Storage	1	1	64GB,128GB	0	1	1	1	0	1
+
 104	34	Format	0	1	Hardcover,Kindle,Paperback	0	0	0	0	0	0
+
 105	34	Language	0	1	Standard	0	0	0	0	0	1
+
 106	34	Publication Year	0	1	Standard	0	0	0	0	0	1
+
 107	34	Author	0	1	Standard	0	0	0	0	0	1
+
 108	36	Pack Size	0	1	Standard	0	0	0	0	0	0
+
 109	36	Vegetarian	0	1	Standard	0	0	0	0	0	1
+
 110	36	Brand Origin	0	1	Standard	0	0	0	0	0	1
+
 111	37	Pack Size	0	1	Standard	0	0	0	0	0	0
+
 112	37	Beverage Type	0	1	Premium Material	0	0	0	0	0	1
+
 113	37	Flavor	0	1	Standard	0	0	0	0	0	1
+
 114	38	Pack Size	0	1	Standard	0	0	0	0	0	0
+
 115	38	Flavor	0	1	Standard	0	0	0	0	0	1
+
 116	38	Vegetarian	0	1	Standard	0	0	0	0	0	1
+
 117	39	Pack Size	0	1	Standard	0	0	0	0	0	0
+
 118	39	Ingredients	0	1	Premium Material	0	0	0	0	0	1
+
 119	39	Vegetarian	0	1	Standard	0	0	0	0	0	1
+
 120	41	Color	0	1	Black,Black,Silver,Standard	0	0	0	0	0	0
+
 121	41	Size	0	1	100ml,30ml,50ml,Standard	0	0	0	0	0	0
+
 122	41	Material	0	1	Premium Material	0	0	0	0	0	1
+
 123	41	Compatibility	0	1	Standard	0	0	0	0	0	1
+
 124	42	Size	0	1	195/65 R15,205/55 R16,215/60 R17,Standard	0	0	0	0	0	0
+
 125	42	Vehicle Compatibility	0	1	Standard	0	0	0	0	0	1
+
 126	42	Part Type	0	1	Premium Material	0	0	0	0	0	1
+
 127	43	Pack Size	0	1	Standard	0	0	0	0	0	0
+
 128	43	Product Type	0	1	Premium Material	0	0	0	0	0	1
+
 129	43	Suitable For	0	1	Standard	0	0	0	0	0	1
+
 132	1	TestAttr	0	1	\N	0	0	0	0	0	0
+
 \.
 
 
@@ -5788,557 +5896,1109 @@ COPY catalog.pms_product_attribute_category (id, name, attribute_count, param_co
 
 COPY catalog.pms_product_attribute_value (id, product_id, product_attribute_id, value) FROM stdin;
 1	4	28	Black,Silver
+
 2	4	29	128GB,256GB
+
 3	4	30	Standard
+
 4	4	31	Standard Size
+
 5	10	28	Black,Silver
+
 6	10	29	128GB,256GB
+
 7	10	30	Standard
+
 8	10	31	Standard Size
+
 9	20	40	L,M,S,XL
+
 10	20	41	Black
+
 11	20	42	Premium Material
+
 12	20	43	Standard
+
 13	19	32	Black,Silver
+
 14	19	33	Standard
+
 15	19	34	Standard
+
 16	19	35	Premium Material
+
 17	24	36	L,M,XL
+
 18	24	37	Standard
+
 19	24	38	Premium Material
+
 20	24	39	Standard
+
 21	17	15	Standard
+
 22	17	16	2560x1440,3840x2160
+
 23	17	17	Standard
+
 24	17	18	Premium Material
+
 25	2	19	Black,Silver
+
 26	2	20	128GB,256GB
+
 27	2	21	Standard
+
 28	2	22	Standard Size
+
 29	2	23	Advanced Dual Camera
+
 30	3	19	Black,Silver
+
 31	3	20	128GB,256GB
+
 32	3	21	Standard
+
 33	3	22	Standard Size
+
 34	3	23	Advanced Dual Camera
+
 35	30	47	Standard
+
 36	30	48	Black,White
+
 37	30	49	Premium Material
+
 38	30	50	Premium Material
+
 39	25	36	L,M,S,XL
+
 40	25	37	Black
+
 41	25	38	Premium Material
+
 42	25	39	Standard
+
 43	32	47	Standard
+
 44	32	48	Black,White
+
 45	32	49	Premium Material
+
 46	32	50	Premium Material
+
 47	18	15	Standard
+
 48	18	16	2560x1440,3840x2160
+
 49	18	17	Standard
+
 50	18	18	Premium Material
+
 51	12	24	Black,Silver
+
 52	12	25	Standard
+
 53	12	26	Yes
+
 54	12	27	24 Hours
+
 55	33	47	Standard
+
 56	33	48	Black,White
+
 57	33	49	Premium Material
+
 58	33	50	Premium Material
+
 59	13	24	Black
+
 60	13	25	Standard
+
 61	13	26	Yes
+
 62	13	27	24 Hours
+
 63	16	24	Black,Silver
+
 64	16	25	Standard
+
 65	16	26	Yes
+
 66	16	27	24 Hours
+
 67	39	55	Black
+
 68	39	56	Premium Material
+
 69	39	57	Standard Size
+
 70	41	55	Black,Silver
+
 71	41	56	Premium Material
+
 72	41	57	Standard Size
+
 73	22	40	L,M,S,XL
+
 74	22	41	Black
+
 75	22	42	Premium Material
+
 76	22	43	Standard
+
 77	23	40	L,M,S,XL
+
 78	23	41	Black
+
 79	23	42	Premium Material
+
 80	23	43	Standard
+
 81	34	44	Black,Silver
+
 82	34	45	Standard
+
 83	34	46	Premium Material
+
 84	35	44	Standard
+
 85	35	45	L,M,S
+
 86	35	46	Premium Material
+
 87	36	44	Black,Silver
+
 88	36	45	Standard
+
 89	36	46	Premium Material
+
 90	14	1	Black,Silver
+
 91	14	2	Standard Size
+
 92	14	3	Standard Size
+
 93	14	4	Yes
+
 94	14	5	Yes
+
 95	7	6	16GB,32GB
+
 96	7	7	1TB,512GB
+
 97	7	8	Black,Silver
+
 98	7	9	Latest Gen Processor
+
 99	7	10	Standard Size
+
 100	15	11	Black
+
 101	15	12	4K UHD
+
 102	15	13	Premium Material
+
 103	15	14	Standard
+
 104	5	19	Black,Silver
+
 105	5	20	128GB,256GB
+
 106	5	21	Standard
+
 107	5	22	Standard Size
+
 108	5	23	Advanced Dual Camera
+
 109	26	36	L,M,S,XL
+
 110	26	37	Black
+
 111	26	38	Premium Material
+
 112	26	39	Standard
+
 113	27	36	L,M,S,XL
+
 114	27	37	Black
+
 115	27	38	Premium Material
+
 116	27	39	Standard
+
 117	58	64	Premium Material
+
 118	58	65	Premium Material
+
 119	58	66	Standard
+
 120	58	67	Standard
+
 121	75	68	Standard
+
 122	75	69	Premium Material
+
 123	75	70	Premium Material
+
 124	76	68	Standard
+
 125	76	69	Premium Material
+
 126	76	70	Premium Material
+
 127	66	71	110 Porcelain,120 Classic Ivory,130 Buff Beige,220 Natural Beige
+
 128	66	72	Matte Finish
+
 129	66	73	Premium Material
+
 130	59	64	Premium Material
+
 131	59	65	Premium Material
+
 132	59	66	Standard
+
 133	59	67	Standard
+
 134	60	64	Premium Material
+
 135	60	65	Premium Material
+
 136	60	66	Standard
+
 137	60	67	Standard
+
 138	67	71	110 Porcelain,120 Classic Ivory,130 Buff Beige,220 Natural Beige
+
 139	67	72	Matte Finish
+
 140	67	73	Premium Material
+
 141	68	71	110 Porcelain,120 Classic Ivory,130 Buff Beige,220 Natural Beige
+
 142	68	72	Matte Finish
+
 143	68	73	Premium Material
+
 144	69	71	110 Porcelain,120 Classic Ivory,130 Buff Beige,220 Natural Beige
+
 145	69	72	Matte Finish
+
 146	69	73	Premium Material
+
 147	45	61	4L,6L
+
 148	45	62	Standard
+
 149	45	63	Standard
+
 150	46	61	3L,5L
+
 151	46	62	Standard
+
 152	46	63	Standard
+
 153	47	61	Standard
+
 154	47	62	Black
+
 155	47	63	Standard
+
 156	71	74	Standard
+
 157	71	75	Premium Material
+
 158	71	76	Premium Material
+
 159	72	74	Standard
+
 160	72	75	Premium Material
+
 161	72	76	Premium Material
+
 162	73	74	Standard
+
 163	73	75	Premium Material
+
 164	73	76	Premium Material
+
 165	81	77	Standard
+
 166	81	78	Premium Material
+
 167	81	79	Standard Size
+
 168	81	80	Standard
+
 169	82	77	Standard
+
 170	82	78	Premium Material
+
 171	82	79	Standard Size
+
 172	82	80	Standard
+
 173	77	84	Standard
+
 174	77	85	Black,White
+
 175	77	86	Standard
+
 176	77	87	Premium Material
+
 177	78	84	Standard
+
 178	78	85	Black,White
+
 179	78	86	Standard
+
 180	78	87	Premium Material
+
 181	79	84	Standard
+
 182	79	85	Black,White
+
 183	79	86	Standard
+
 184	79	87	Premium Material
+
 185	80	84	Standard
+
 186	80	85	Black,White
+
 187	80	86	Standard
+
 188	80	87	Premium Material
+
 189	53	51	Standard
+
 190	53	52	Standard
+
 191	53	53	Premium Material
+
 192	53	54	Standard
+
 193	43	58	Standard
+
 194	43	59	Standard
+
 195	43	60	Standard
+
 196	48	58	6.5kg,8kg
+
 197	48	59	Standard
+
 198	48	60	Standard
+
 199	49	58	6.5kg,8kg
+
 200	49	59	Standard
+
 201	49	60	Standard
+
 202	61	64	Premium Material
+
 203	61	65	Premium Material
+
 204	61	66	Standard
+
 205	61	67	Standard
+
 206	62	64	Premium Material
+
 207	62	65	Premium Material
+
 208	62	66	Standard
+
 209	62	67	Standard
+
 210	63	64	Premium Material
+
 211	63	65	Premium Material
+
 212	63	66	Standard
+
 213	63	67	Standard
+
 214	100	92	Hardcover,Kindle,Paperback
+
 215	100	93	Standard
+
 216	100	94	Standard
+
 217	100	95	Standard
+
 218	104	96	Hardcover,Kindle,Paperback
+
 219	104	97	Standard
+
 220	104	98	Standard
+
 221	104	99	Standard
+
 222	105	96	Hardcover,Kindle,Paperback
+
 223	105	97	Standard
+
 224	105	98	Standard
+
 225	105	99	Standard
+
 226	106	96	Hardcover,Kindle,Paperback
+
 227	106	97	Standard
+
 228	106	98	Standard
+
 229	106	99	Standard
+
 230	109	100	Standard
+
 231	109	101	Black
+
 232	109	102	Premium Material
+
 233	109	103	Standard
+
 234	110	100	Standard
+
 235	110	101	Black,Silver
+
 236	110	102	Premium Material
+
 237	110	103	Standard
+
 238	112	100	Standard
+
 239	112	101	Black
+
 240	112	102	Premium Material
+
 241	112	103	Standard
+
 242	96	104	Hardcover,Kindle,Paperback
+
 243	96	105	Standard
+
 244	96	106	Standard
+
 245	96	107	Standard
+
 246	97	104	Hardcover,Kindle,Paperback
+
 247	97	105	Standard
+
 248	97	106	Standard
+
 249	97	107	Standard
+
 250	98	104	Hardcover,Kindle,Paperback
+
 251	98	105	Standard
+
 252	98	106	Standard
+
 253	98	107	Standard
+
 254	99	104	Hardcover,Kindle,Paperback
+
 255	99	105	Standard
+
 256	99	106	Standard
+
 257	99	107	Standard
+
 258	85	81	Black,Silver
+
 259	85	82	Premium Material
+
 260	85	83	Standard Size
+
 261	115	111	Standard
+
 262	115	112	Premium Material
+
 263	115	113	Standard
+
 264	116	111	Standard
+
 265	116	112	Premium Material
+
 266	116	113	Standard
+
 267	117	111	Standard
+
 268	117	112	Premium Material
+
 269	117	113	Standard
+
 270	118	111	Standard
+
 271	118	112	Premium Material
+
 272	118	113	Standard
+
 273	120	114	Standard
+
 274	120	115	Standard
+
 275	120	116	Standard
+
 276	121	114	Standard
+
 277	121	115	Standard
+
 278	121	116	Standard
+
 279	122	114	Standard
+
 280	122	115	Standard
+
 281	122	116	Standard
+
 282	88	88	Standard
+
 283	88	89	Premium Material
+
 284	88	90	Black
+
 285	88	91	Premium Material
+
 286	89	88	Standard
+
 287	89	89	Premium Material
+
 288	89	90	Black
+
 289	89	91	Premium Material
+
 290	90	88	10,8,9
+
 291	90	89	Premium Material
+
 292	90	90	Standard
+
 293	90	91	Premium Material
+
 294	101	92	Hardcover,Kindle,Paperback
+
 295	101	93	Standard
+
 296	101	94	Standard
+
 297	101	95	Standard
+
 298	102	92	Hardcover,Kindle,Paperback
+
 299	102	93	Standard
+
 300	102	94	Standard
+
 301	102	95	Standard
+
 302	113	100	A5,A6
+
 303	113	101	Standard
+
 304	113	102	Premium Material
+
 305	113	103	Standard
+
 306	114	100	Standard
+
 307	114	101	Black
+
 308	114	102	Premium Material
+
 309	114	103	Standard
+
 310	142	124	195/65 R15,205/55 R16,215/60 R17
+
 311	142	125	Standard
+
 312	142	126	Premium Material
+
 313	143	124	195/65 R15,205/55 R16,215/60 R17
+
 314	143	125	Standard
+
 315	143	126	Premium Material
+
 316	144	124	195/65 R15,205/55 R16,215/60 R17
+
 317	144	125	Standard
+
 318	144	126	Premium Material
+
 319	145	124	195/65 R15,205/55 R16,215/60 R17
+
 320	145	125	Standard
+
 321	145	126	Premium Material
+
 322	146	124	195/65 R15,205/55 R16,215/60 R17
+
 323	146	125	Standard
+
 324	146	126	Premium Material
+
 325	125	117	Standard
+
 326	125	118	Premium Material
+
 327	125	119	Standard
+
 328	138	127	Standard
+
 329	138	128	Premium Material
+
 330	138	129	Standard
+
 331	139	127	Standard
+
 332	139	128	Premium Material
+
 333	139	129	Standard
+
 334	141	127	Standard
+
 335	141	128	Premium Material
+
 336	141	129	Standard
+
 337	151	127	Standard
+
 338	151	128	Premium Material
+
 339	151	129	Standard
+
 340	152	127	Standard
+
 341	152	128	Premium Material
+
 342	152	129	Standard
+
 343	1	19	Black,Silver
+
 344	1	20	128GB,256GB
+
 345	1	21	Standard
+
 346	1	22	Standard Size
+
 347	1	23	Advanced Dual Camera
+
 348	11	24	Black,Silver
+
 349	11	25	Standard
+
 350	11	26	Yes
+
 351	11	27	24 Hours
+
 352	21	40	L,M,S,XL
+
 353	21	41	Black
+
 354	21	42	Premium Material
+
 355	21	43	Standard
+
 356	31	47	Standard
+
 357	31	48	Black,White
+
 358	31	49	Premium Material
+
 359	31	50	Premium Material
+
 360	54	51	Standard
+
 361	54	52	1.5L,2L
+
 362	54	53	Premium Material
+
 363	54	54	Standard
+
 364	40	55	Black,Silver
+
 365	40	56	Premium Material
+
 366	40	57	Standard Size
+
 367	42	61	4L,6L
+
 368	42	62	Standard
+
 369	42	63	Standard
+
 370	64	64	Premium Material
+
 371	64	65	Premium Material
+
 372	64	66	Standard
+
 373	64	67	Standard
+
 374	74	68	Standard
+
 375	74	69	Premium Material
+
 376	74	70	Premium Material
+
 377	129	108	Standard
+
 378	129	109	Standard
+
 379	129	110	Standard
+
 380	130	108	Standard
+
 381	130	109	Standard
+
 382	130	110	Standard
+
 383	124	114	Standard
+
 384	124	115	Standard
+
 385	124	116	Standard
+
 386	126	117	Standard
+
 387	126	118	Premium Material
+
 388	126	119	Standard
+
 389	127	117	Standard
+
 390	127	118	Premium Material
+
 391	127	119	Standard
+
 392	134	120	Standard
+
 393	134	121	100ml,30ml,50ml
+
 394	134	122	Premium Material
+
 395	134	123	Standard
+
 396	135	120	Black
+
 397	135	121	Standard
+
 398	135	122	Premium Material
+
 399	135	123	Standard
+
 400	136	120	Black
+
 401	136	121	Standard
+
 402	136	122	Premium Material
+
 403	136	123	Standard
+
 404	137	120	Black
+
 405	137	121	Standard
+
 406	137	122	Premium Material
+
 407	137	123	Standard
+
 408	86	81	Black,Silver
+
 409	86	82	Premium Material
+
 410	86	83	Standard Size
+
 411	107	96	Hardcover,Kindle,Paperback
+
 412	107	97	Standard
+
 413	107	98	Standard
+
 414	107	99	Standard
+
 415	111	100	Standard
+
 416	111	101	Black,Silver
+
 417	111	102	Premium Material
+
 418	111	103	Standard
+
 419	119	111	Standard
+
 420	119	112	Premium Material
+
 421	119	113	Standard
+
 422	123	114	Standard
+
 423	123	115	Standard
+
 424	123	116	Standard
+
 425	128	117	Standard
+
 426	128	118	Premium Material
+
 427	128	119	Standard
+
 428	140	127	Standard
+
 429	140	128	Premium Material
+
 430	140	129	Standard
+
 431	8	6	16GB,32GB
+
 432	8	7	1TB,512GB
+
 433	8	8	Black,Silver
+
 434	8	9	Latest Gen Processor
+
 435	8	10	Standard Size
+
 436	6	19	Black,Silver
+
 437	6	20	128GB,256GB
+
 438	6	21	Standard
+
 439	6	22	Standard Size
+
 440	6	23	Advanced Dual Camera
+
 441	37	44	Black,Silver
+
 442	37	45	Standard
+
 443	37	46	Premium Material
+
 444	38	44	Standard
+
 445	38	45	L,M,XL
+
 446	38	46	Premium Material
+
 447	55	51	24cm,26cm,28cm
+
 448	55	52	Standard
+
 449	55	53	Premium Material
+
 450	55	54	Standard
+
 451	56	51	24cm,26cm,28cm
+
 452	56	52	Standard
+
 453	56	53	Premium Material
+
 454	56	54	Standard
+
 455	50	58	Standard
+
 456	50	59	Black,Silver
+
 457	50	60	Standard
+
 458	51	58	10L,15L
+
 459	51	59	Standard
+
 460	51	60	Standard
+
 461	52	58	Standard
+
 462	52	59	Black,Silver
+
 463	52	60	Standard
+
 464	44	61	12-place,14-place
+
 465	44	62	Standard
+
 466	44	63	Standard
+
 467	65	64	Premium Material
+
 468	65	65	Premium Material
+
 469	65	66	Standard
+
 470	65	67	Standard
+
 471	84	77	Standard
+
 472	84	78	Premium Material
+
 473	84	79	Standard Size
+
 474	84	80	Standard
+
 475	83	77	Standard
+
 476	83	78	Premium Material
+
 477	83	79	Standard Size
+
 478	83	80	Standard
+
 479	87	81	Black,Silver
+
 480	87	82	Premium Material
+
 481	87	83	Standard Size
+
 482	92	88	Standard
+
 483	92	89	Premium Material
+
 484	92	90	Black,Silver
+
 485	92	91	Premium Material
+
 486	93	88	Standard
+
 487	93	89	Premium Material
+
 488	93	90	Black
+
 489	93	91	Premium Material
+
 490	94	88	Standard
+
 491	94	89	Premium Material
+
 492	94	90	Black
+
 493	94	91	Premium Material
+
 494	108	96	Hardcover,Kindle,Paperback
+
 495	108	97	Standard
+
 496	108	98	Standard
+
 497	108	99	Standard
+
 498	103	96	Hardcover,Kindle,Paperback
+
 499	103	97	Standard
+
 500	103	98	Standard
+
 501	103	99	Standard
+
 502	132	108	Standard
+
 503	132	109	Standard
+
 504	132	110	Standard
+
 505	133	108	Standard
+
 506	133	109	Standard
+
 507	133	110	Standard
+
 508	131	108	Standard
+
 509	131	109	Standard
+
 510	131	110	Standard
+
 511	150	120	Black
+
 512	150	121	Standard
+
 513	150	122	Premium Material
+
 514	150	123	Standard
+
 515	149	120	Black,Silver
+
 516	149	121	Standard
+
 517	149	122	Premium Material
+
 518	149	123	Standard
+
 519	9	6	16GB,32GB
+
 520	9	7	1TB,512GB
+
 521	9	8	Black,Silver
+
 522	9	9	Latest Gen Processor
+
 523	9	10	Standard Size
+
 524	28	36	L,M,S,XL
+
 525	28	37	Black
+
 526	28	38	Premium Material
+
 527	28	39	Standard
+
 528	29	36	L,M,S,XL
+
 529	29	37	Black
+
 530	29	38	Premium Material
+
 531	29	39	Standard
+
 532	57	51	24cm,26cm,28cm
+
 533	57	52	Standard
+
 534	57	53	Premium Material
+
 535	57	54	Standard
+
 536	70	71	Standard
+
 537	70	72	Matte Finish
+
 538	70	73	Premium Material
+
 539	95	88	L,M,XL
+
 540	95	89	Premium Material
+
 541	95	90	Standard
+
 542	95	91	Premium Material
+
 543	91	88	10,8,9
+
 544	91	89	Premium Material
+
 545	91	90	Standard
+
 546	91	91	Premium Material
+
 547	147	124	Standard
+
 548	147	125	Standard
+
 549	147	126	Premium Material
+
 550	148	124	Standard
+
 551	148	125	Standard
+
 552	148	126	Premium Material
+
 \.
 
 
@@ -6348,48 +7008,91 @@ COPY catalog.pms_product_attribute_value (id, product_id, product_attribute_id, 
 
 COPY catalog.pms_product_category (id, parent_id, name, level, product_count, product_unit, nav_status, show_status, sort, icon, keywords, description) FROM stdin;
 1	0	Electronics	0	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/1/icon.svg	\N	\N
+
 2	1	Headphones & Earbuds	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/1/subcategories/2/icon.svg	\N	\N
+
 3	1	Smartphones	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/1/subcategories/3/icon.svg	\N	\N
+
 4	1	Tablets	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/1/subcategories/4/icon.svg	\N	\N
+
 5	1	Laptops	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/1/subcategories/5/icon.svg	\N	\N
+
 6	1	Cameras	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/1/subcategories/6/icon.svg	\N	\N
+
 7	1	Smartwatches	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/1/subcategories/7/icon.svg	\N	\N
+
 8	1	Monitors	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/1/subcategories/8/icon.svg	\N	\N
+
 9	1	Keyboards & Mice	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/1/subcategories/9/icon.svg	\N	\N
+
 10	0	Fashion	0	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/10/icon.svg	\N	\N
+
 11	10	Men's Clothing	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/10/subcategories/11/icon.svg	\N	\N
+
 12	10	Women's Clothing	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/10/subcategories/12/icon.svg	\N	\N
+
 13	10	Accessories	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/10/subcategories/13/icon.svg	\N	\N
+
 14	10	Footwear	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/10/subcategories/14/icon.svg	\N	\N
+
 15	0	Home & Kitchen	0	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/15/icon.svg	\N	\N
+
 16	15	Kitchenware	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/15/subcategories/16/icon.svg	\N	\N
+
 17	15	Kitchen Appliances	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/15/subcategories/17/icon.svg	\N	\N
+
 18	15	Furniture	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/15/subcategories/18/icon.svg	\N	\N
+
 19	15	Home Appliances	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/15/subcategories/19/icon.svg	\N	\N
+
 20	0	Beauty & Personal Care	0	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/20/icon.svg	\N	\N
+
 21	20	Grooming	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/20/subcategories/21/icon.svg	\N	\N
+
 22	20	Makeup	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/20/subcategories/22/icon.svg	\N	\N
+
 23	20	Hair Care	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/20/subcategories/23/icon.svg	\N	\N
+
 24	20	Skincare	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/20/subcategories/24/icon.svg	\N	\N
+
 25	0	Sports & Fitness	0	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/25/icon.svg	\N	\N
+
 26	25	Gym Equipment	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/25/subcategories/26/icon.svg	\N	\N
+
 27	25	Yoga	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/25/subcategories/27/icon.svg	\N	\N
+
 28	25	Outdoor	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/25/subcategories/28/icon.svg	\N	\N
+
 29	25	Running	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/25/subcategories/29/icon.svg	\N	\N
+
 30	0	Books & Stationery	0	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/30/icon.svg	\N	\N
+
 31	30	Fiction	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/30/subcategories/31/icon.svg	\N	\N
+
 32	30	Notebooks & Supplies	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/30/subcategories/32/icon.svg	\N	\N
+
 33	30	Non-Fiction	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/30/subcategories/33/icon.svg	\N	\N
+
 34	30	Technology	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/30/subcategories/34/icon.svg	\N	\N
+
 35	0	Grocery	0	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/35/icon.svg	\N	\N
+
 36	35	Snacks	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/35/subcategories/36/icon.svg	\N	\N
+
 37	35	Breakfast	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/35/subcategories/37/icon.svg	\N	\N
+
 38	35	Beverages	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/35/subcategories/38/icon.svg	\N	\N
+
 39	35	Pantry	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/35/subcategories/39/icon.svg	\N	\N
+
 40	0	Automotive	0	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/40/icon.svg	\N	\N
+
 41	40	Car Care	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/40/subcategories/41/icon.svg	\N	\N
+
 42	40	Replacement Parts	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/40/subcategories/42/icon.svg	\N	\N
+
 43	40	Car Accessories	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/40/subcategories/43/icon.svg	\N	\N
+
 \.
 
 
@@ -6399,134 +7102,263 @@ COPY catalog.pms_product_category (id, parent_id, name, level, product_count, pr
 
 COPY catalog.pms_product_category_attribute_relation (id, product_category_id, product_attribute_id) FROM stdin;
 1	2	1
+
 2	2	2
+
 3	2	3
+
 4	2	4
+
 5	2	5
+
 6	3	6
+
 7	3	7
+
 8	3	8
+
 9	3	9
+
 10	3	10
+
 11	4	11
+
 12	4	12
+
 13	4	13
+
 14	4	14
+
 15	5	15
+
 16	5	16
+
 17	5	17
+
 18	5	18
+
 19	6	19
+
 20	6	20
+
 21	6	21
+
 22	6	22
+
 23	6	23
+
 24	7	24
+
 25	7	25
+
 26	7	26
+
 27	7	27
+
 28	8	28
+
 29	8	29
+
 30	8	30
+
 31	8	31
+
 32	9	32
+
 33	9	33
+
 34	9	34
+
 35	9	35
+
 36	11	36
+
 37	11	37
+
 38	11	38
+
 39	11	39
+
 40	12	40
+
 41	12	41
+
 42	12	42
+
 43	12	43
+
 44	13	44
+
 45	13	45
+
 46	13	46
+
 47	14	47
+
 48	14	48
+
 49	14	49
+
 50	14	50
+
 51	16	51
+
 52	16	52
+
 53	16	53
+
 54	16	54
+
 55	17	55
+
 56	17	56
+
 57	17	57
+
 58	18	58
+
 59	18	59
+
 60	18	60
+
 61	19	61
+
 62	19	62
+
 63	19	63
+
 64	21	64
+
 65	21	65
+
 66	21	66
+
 67	21	67
+
 68	22	68
+
 69	22	69
+
 70	22	70
+
 71	23	71
+
 72	23	72
+
 73	23	73
+
 74	24	74
+
 75	24	75
+
 76	24	76
+
 77	26	77
+
 78	26	78
+
 79	26	79
+
 80	26	80
+
 81	27	81
+
 82	27	82
+
 83	27	83
+
 84	28	84
+
 85	28	85
+
 86	28	86
+
 87	28	87
+
 88	29	88
+
 89	29	89
+
 90	29	90
+
 91	29	91
+
 92	31	92
+
 93	31	93
+
 94	31	94
+
 95	31	95
+
 96	32	96
+
 97	32	97
+
 98	32	98
+
 99	32	99
+
 100	33	100
+
 101	33	101
+
 102	33	102
+
 103	33	103
+
 104	34	104
+
 105	34	105
+
 106	34	106
+
 107	34	107
+
 108	36	108
+
 109	36	109
+
 110	36	110
+
 111	37	111
+
 112	37	112
+
 113	37	113
+
 114	38	114
+
 115	38	115
+
 116	38	116
+
 117	39	117
+
 118	39	118
+
 119	39	119
+
 120	41	120
+
 121	41	121
+
 122	41	122
+
 123	41	123
+
 124	42	124
+
 125	42	125
+
 126	42	126
+
 127	43	127
+
 128	43	128
+
 129	43	129
+
 \.
 
 
@@ -6552,15 +7384,25 @@ COPY catalog.pms_product_ladder (id, product_id, count, discount, price) FROM st
 
 COPY catalog.pms_product_media (id, product_id, media_type, media_url, sort_order) FROM stdin;
 1	1	image	http://localhost:9000/nexus-media/public/catalog/products/1-iphone-17/main.webp	0
+
 2	2	image	http://localhost:9000/nexus-media/public/catalog/products/2-galaxy-s25/main.webp	0
+
 3	3	image	http://localhost:9000/nexus-media/public/catalog/products/3-macbook-pro-m5/main.webp	0
+
 4	4	image	http://localhost:9000/nexus-media/public/catalog/products/4-air-max-2026/main.webp	0
+
 5	5	image	http://localhost:9000/nexus-media/public/catalog/products/5-ultraboost-26/main.webp	0
+
 6	6	image	http://localhost:9000/nexus-media/public/catalog/products/6-clean-code/main.webp	0
+
 7	7	image	http://localhost:9000/nexus-media/public/catalog/products/7-coca-cola-zero/main.webp	0
+
 8	8	image	http://localhost:9000/nexus-media/public/catalog/products/8-supima-cotton-t-shirt/main.webp	0
+
 9	9	image	http://localhost:9000/nexus-media/public/catalog/products/9-wh-1000xm6/main.webp	0
+
 10	10	image	http://localhost:9000/nexus-media/public/catalog/products/10-v15-detect-absolute/main.webp	0
+
 \.
 
 
@@ -6584,7 +7426,7 @@ COPY catalog.pms_product_verify_record (id, product_id, create_time, reviewer_na
 -- Data for Name: pms_review; Type: TABLE DATA; Schema: catalog; Owner: postgres
 --
 
-COPY catalog.pms_review (id, product_id, member_id, parent_id, rating, content, like_count, status, created_time) FROM stdin;
+COPY catalog.pms_review (id, product_id, member_id, parent_id, rating, content, like_count, dislike_count, status, created_time) FROM stdin;
 \.
 
 
@@ -6602,405 +7444,805 @@ COPY catalog.pms_review_media (id, review_id, media_type, media_url, thumbnail_u
 
 COPY catalog.pms_sku_stock (id, product_id, sku_code, price, stock, low_stock, pic, sale, promotion_price, lock_stock, sku_attributes) FROM stdin;
 2	1	APPLE-IP17-BLK-256	56570.00	19	10	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-BLK-256/main.svg	0	\N	12	[{"key": "Color", "value": "Black"}, {"key": "Storage", "value": "256GB"}]
+
 1	1	APPLE-IP17-BLK-128	52380.00	114	10	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-BLK-128/main.svg	0	\N	1	[{"key": "Color", "value": "Black"}, {"key": "Storage", "value": "128GB"}]
+
 394	150	TVS-PTI-STD	4640.00	6	10	http://localhost:9000/nexus-media/public/catalog/skus/TVS-PTI-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+
 41	11	PORT-MUFFM2-BLK	18160.00	75	10	http://localhost:9000/nexus-media/public/catalog/skus/PORT-MUFFM2-BLK/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+
 226	79	NIVIA-RACER-WHT-9	6930.00	60	10	http://localhost:9000/nexus-media/public/catalog/skus/NIVIA-RACER-WHT-9/main.svg	0	\N	0	[{"key": "Color", "value": "White"}, {"key": "Size (US)", "value": "9"}]
+
 23	6	MICRO-INN3-SLV-128	36600.00	42	10	http://localhost:9000/nexus-media/public/catalog/skus/MICRO-INN3-SLV-128/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "128GB"}]
+
 24	6	MICRO-INN3-SLV-256	39470.00	35	10	http://localhost:9000/nexus-media/public/catalog/skus/MICRO-INN3-SLV-256/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "256GB"}]
+
 25	7	DELL-IN16P-16-512-BLK	110200.00	92	10	http://localhost:9000/nexus-media/public/catalog/skus/DELL-IN16P-16-512-BLK/main.svg	0	\N	0	[{"key": "RAM", "value": "16GB"}, {"key": "Color", "value": "Black"}, {"key": "Storage", "value": "512GB"}]
+
 43	12	NOTHING-EAR3-BLK	6790.00	38	10	http://localhost:9000/nexus-media/public/catalog/skus/NOTHING-EAR3-BLK/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+
 26	7	DELL-IN16P-16-1TB-SLV	127830.00	40	10	http://localhost:9000/nexus-media/public/catalog/skus/DELL-IN16P-16-1TB-SLV/main.svg	0	\N	0	[{"key": "RAM", "value": "16GB"}, {"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "1TB"}]
+
 28	7	DELL-IN16P-32-1TB-SLV	138850.00	90	10	http://localhost:9000/nexus-media/public/catalog/skus/DELL-IN16P-32-1TB-SLV/main.svg	0	\N	0	[{"key": "RAM", "value": "32GB"}, {"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "1TB"}]
+
 29	8	LENOVO-TPE16-16-512-BLK	109820.00	69	10	http://localhost:9000/nexus-media/public/catalog/skus/LENOVO-TPE16-16-512-BLK/main.svg	0	\N	0	[{"key": "RAM", "value": "16GB"}, {"key": "Color", "value": "Black"}, {"key": "Storage", "value": "512GB"}]
+
 30	8	LENOVO-TPE16-16-1TB-SLV	127390.00	13	10	http://localhost:9000/nexus-media/public/catalog/skus/LENOVO-TPE16-16-1TB-SLV/main.svg	0	\N	0	[{"key": "RAM", "value": "16GB"}, {"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "1TB"}]
+
 31	8	LENOVO-TPE16-32-1TB-BLK	136180.00	76	10	http://localhost:9000/nexus-media/public/catalog/skus/LENOVO-TPE16-32-1TB-BLK/main.svg	0	122560.00	0	[{"key": "RAM", "value": "32GB"}, {"key": "Color", "value": "Black"}, {"key": "Storage", "value": "1TB"}]
+
 32	8	LENOVO-TPE16-32-1TB-SLV	138370.00	30	10	http://localhost:9000/nexus-media/public/catalog/skus/LENOVO-TPE16-32-1TB-SLV/main.svg	0	\N	0	[{"key": "RAM", "value": "32GB"}, {"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "1TB"}]
+
 34	9	ASUS-VBS16-16-1TB-SLV	71830.00	87	10	http://localhost:9000/nexus-media/public/catalog/skus/ASUS-VBS16-16-1TB-SLV/main.svg	0	\N	0	[{"key": "RAM", "value": "16GB"}, {"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "1TB"}]
+
 35	9	ASUS-VBS16-32-1TB-BLK	76780.00	81	10	http://localhost:9000/nexus-media/public/catalog/skus/ASUS-VBS16-32-1TB-BLK/main.svg	0	\N	0	[{"key": "RAM", "value": "32GB"}, {"key": "Color", "value": "Black"}, {"key": "Storage", "value": "1TB"}]
+
 36	9	ASUS-VBS16-32-1TB-SLV	78020.00	25	10	http://localhost:9000/nexus-media/public/catalog/skus/ASUS-VBS16-32-1TB-SLV/main.svg	0	71780.00	0	[{"key": "RAM", "value": "32GB"}, {"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "1TB"}]
+
 37	10	ONEPLUS-OPPAD3-BLK-128	42770.00	38	10	http://localhost:9000/nexus-media/public/catalog/skus/ONEPLUS-OPPAD3-BLK-128/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Storage", "value": "128GB"}]
+
 38	10	ONEPLUS-OPPAD3-BLK-256	46190.00	58	10	http://localhost:9000/nexus-media/public/catalog/skus/ONEPLUS-OPPAD3-BLK-256/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Storage", "value": "256GB"}]
+
 40	10	ONEPLUS-OPPAD3-SLV-256	47050.00	12	10	http://localhost:9000/nexus-media/public/catalog/skus/ONEPLUS-OPPAD3-SLV-256/main.svg	0	41400.00	0	[{"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "256GB"}]
+
 45	13	NOISE-BXPR-BLK	31000.00	76	10	http://localhost:9000/nexus-media/public/catalog/skus/NOISE-BXPR-BLK/main.svg	0	25420.00	0	[{"key": "Color", "value": "Black"}]
+
 46	14	BOAT-LUNPRO-BLK	19420.00	26	10	http://localhost:9000/nexus-media/public/catalog/skus/BOAT-LUNPRO-BLK/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+
 47	14	BOAT-LUNPRO-SLV	19810.00	101	10	http://localhost:9000/nexus-media/public/catalog/skus/BOAT-LUNPRO-SLV/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}]
+
 48	15	LOGI-MXBRIO-STD	9150.00	22	10	http://localhost:9000/nexus-media/public/catalog/skus/LOGI-MXBRIO-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+
 50	16	SONY-WH6-SLV	35490.00	101	10	http://localhost:9000/nexus-media/public/catalog/skus/SONY-WH6-SLV/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}]
+
 51	17	LG-27GS6-27-QHD	42180.00	97	10	http://localhost:9000/nexus-media/public/catalog/skus/LG-27GS6-27-QHD/main.svg	0	\N	0	[{"key": "Resolution", "value": "2560x1440"}, {"key": "Size (inches)", "value": "27"}]
+
 52	17	LG-27GS6-32-4K	52300.00	12	10	http://localhost:9000/nexus-media/public/catalog/skus/LG-27GS6-32-4K/main.svg	0	\N	0	[{"key": "Resolution", "value": "3840x2160"}, {"key": "Size (inches)", "value": "32"}]
+
 54	18	SAMSUNG-ODG6-32-4K	13650.00	19	10	http://localhost:9000/nexus-media/public/catalog/skus/SAMSUNG-ODG6-32-4K/main.svg	0	11190.00	0	[{"key": "Resolution", "value": "3840x2160"}, {"key": "Size (inches)", "value": "32"}]
+
 55	19	ZEBRO-TWK-BLK	6440.00	85	10	http://localhost:9000/nexus-media/public/catalog/skus/ZEBRO-TWK-BLK/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+
 56	19	ZEBRO-TWK-SLV	6560.00	43	10	http://localhost:9000/nexus-media/public/catalog/skus/ZEBRO-TWK-SLV/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}]
+
 57	20	LEVIS-511SL-S-BLK	4570.00	67	10	http://localhost:9000/nexus-media/public/catalog/skus/LEVIS-511SL-S-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "S"}, {"key": "Color", "value": "Black"}]
+
 58	20	LEVIS-511SL-M-BLK	4570.00	35	10	http://localhost:9000/nexus-media/public/catalog/skus/LEVIS-511SL-M-BLK/main.svg	0	3880.00	0	[{"key": "Size", "value": "M"}, {"key": "Color", "value": "Black"}]
+
 59	20	LEVIS-511SL-L-BLK	4570.00	85	10	http://localhost:9000/nexus-media/public/catalog/skus/LEVIS-511SL-L-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "L"}, {"key": "Color", "value": "Black"}]
+
 61	21	ALLENS-ASOXR-S-BLK	1220.00	67	10	http://localhost:9000/nexus-media/public/catalog/skus/ALLENS-ASOXR-S-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "S"}, {"key": "Color", "value": "Black"}]
+
 62	21	ALLENS-ASOXR-M-BLK	1220.00	116	10	http://localhost:9000/nexus-media/public/catalog/skus/ALLENS-ASOXR-M-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "M"}, {"key": "Color", "value": "Black"}]
+
 63	21	ALLENS-ASOXR-L-BLK	1220.00	121	10	http://localhost:9000/nexus-media/public/catalog/skus/ALLENS-ASOXR-L-BLK/main.svg	0	1040.00	0	[{"key": "Size", "value": "L"}, {"key": "Color", "value": "Black"}]
+
 64	21	ALLENS-ASOXR-XL-BLK	1220.00	14	10	http://localhost:9000/nexus-media/public/catalog/skus/ALLENS-ASOXR-XL-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "XL"}, {"key": "Color", "value": "Black"}]
+
 66	22	PETEREN-PEFSH-M-BLK	2580.00	58	10	http://localhost:9000/nexus-media/public/catalog/skus/PETEREN-PEFSH-M-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "M"}, {"key": "Color", "value": "Black"}]
+
 67	22	PETEREN-PEFSH-L-BLK	2580.00	5	10	http://localhost:9000/nexus-media/public/catalog/skus/PETEREN-PEFSH-L-BLK/main.svg	0	2190.00	0	[{"key": "Size", "value": "L"}, {"key": "Color", "value": "Black"}]
+
 68	22	PETEREN-PEFSH-XL-BLK	2580.00	98	10	http://localhost:9000/nexus-media/public/catalog/skus/PETEREN-PEFSH-XL-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "XL"}, {"key": "Color", "value": "Black"}]
+
 69	23	RAYMOND-RFT-S-BLK	6050.00	99	10	http://localhost:9000/nexus-media/public/catalog/skus/RAYMOND-RFT-S-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "S"}, {"key": "Color", "value": "Black"}]
+
 71	23	RAYMOND-RFT-L-BLK	6050.00	137	10	http://localhost:9000/nexus-media/public/catalog/skus/RAYMOND-RFT-L-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "L"}, {"key": "Color", "value": "Black"}]
+
 72	23	RAYMOND-RFT-XL-BLK	6050.00	133	10	http://localhost:9000/nexus-media/public/catalog/skus/RAYMOND-RFT-XL-BLK/main.svg	0	4960.00	0	[{"key": "Size", "value": "XL"}, {"key": "Color", "value": "Black"}]
+
 73	24	UNIQLO-UQT-M	6270.00	131	10	http://localhost:9000/nexus-media/public/catalog/skus/UNIQLO-UQT-M/main.svg	0	\N	0	[{"key": "Size", "value": "M"}]
+
 74	24	UNIQLO-UQT-L	6270.00	30	10	http://localhost:9000/nexus-media/public/catalog/skus/UNIQLO-UQT-L/main.svg	0	\N	0	[{"key": "Size", "value": "L"}]
+
 75	24	UNIQLO-UQT-XL	6270.00	22	10	http://localhost:9000/nexus-media/public/catalog/skus/UNIQLO-UQT-XL/main.svg	0	\N	0	[{"key": "Size", "value": "XL"}]
+
 77	25	ZARA-ZRBL-M-BLK	970.00	119	10	http://localhost:9000/nexus-media/public/catalog/skus/ZARA-ZRBL-M-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "M"}, {"key": "Color", "value": "Black"}]
+
 78	25	ZARA-ZRBL-L-BLK	970.00	140	10	http://localhost:9000/nexus-media/public/catalog/skus/ZARA-ZRBL-L-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "L"}, {"key": "Color", "value": "Black"}]
+
 79	25	ZARA-ZRBL-XL-BLK	970.00	88	10	http://localhost:9000/nexus-media/public/catalog/skus/ZARA-ZRBL-XL-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "XL"}, {"key": "Color", "value": "Black"}]
+
 80	26	HM-HMD-S-BLK	2500.00	121	10	http://localhost:9000/nexus-media/public/catalog/skus/HM-HMD-S-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "S"}, {"key": "Color", "value": "Black"}]
+
 81	26	HM-HMD-M-BLK	2500.00	116	10	http://localhost:9000/nexus-media/public/catalog/skus/HM-HMD-M-BLK/main.svg	0	2250.00	0	[{"key": "Size", "value": "M"}, {"key": "Color", "value": "Black"}]
+
 82	26	HM-HMD-L-BLK	2500.00	101	10	http://localhost:9000/nexus-media/public/catalog/skus/HM-HMD-L-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "L"}, {"key": "Color", "value": "Black"}]
+
 84	27	FABIND-FBKRT-S-BLK	2710.00	159	10	http://localhost:9000/nexus-media/public/catalog/skus/FABIND-FBKRT-S-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "S"}, {"key": "Color", "value": "Black"}]
+
 85	27	FABIND-FBKRT-M-BLK	2710.00	84	10	http://localhost:9000/nexus-media/public/catalog/skus/FABIND-FBKRT-M-BLK/main.svg	0	2220.00	0	[{"key": "Size", "value": "M"}, {"key": "Color", "value": "Black"}]
+
 86	27	FABIND-FBKRT-L-BLK	2710.00	74	10	http://localhost:9000/nexus-media/public/catalog/skus/FABIND-FBKRT-L-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "L"}, {"key": "Color", "value": "Black"}]
+
 88	28	MANYAVAR-MVKRT-S-BLK	2550.00	121	10	http://localhost:9000/nexus-media/public/catalog/skus/MANYAVAR-MVKRT-S-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "S"}, {"key": "Color", "value": "Black"}]
+
 137	46	HAWKINS-CONT-5L	6850.00	67	10	http://localhost:9000/nexus-media/public/catalog/skus/HAWKINS-CONT-5L/main.svg	0	\N	0	[{"key": "Capacity", "value": "5L"}]
+
 91	28	MANYAVAR-MVKRT-XL-BLK	2550.00	92	10	http://localhost:9000/nexus-media/public/catalog/skus/MANYAVAR-MVKRT-XL-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "XL"}, {"key": "Color", "value": "Black"}]
+
 92	29	WFW-WKS-S-BLK	3480.00	96	10	http://localhost:9000/nexus-media/public/catalog/skus/WFW-WKS-S-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "S"}, {"key": "Color", "value": "Black"}]
+
 93	29	WFW-WKS-M-BLK	3480.00	98	10	http://localhost:9000/nexus-media/public/catalog/skus/WFW-WKS-M-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "M"}, {"key": "Color", "value": "Black"}]
+
 94	29	WFW-WKS-L-BLK	3480.00	63	10	http://localhost:9000/nexus-media/public/catalog/skus/WFW-WKS-L-BLK/main.svg	0	3130.00	0	[{"key": "Size", "value": "L"}, {"key": "Color", "value": "Black"}]
+
 95	29	WFW-WKS-XL-BLK	3480.00	81	10	http://localhost:9000/nexus-media/public/catalog/skus/WFW-WKS-XL-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "XL"}, {"key": "Color", "value": "Black"}]
+
 96	30	NIKE-AM270-BLK-8	9820.00	76	10	http://localhost:9000/nexus-media/public/catalog/skus/NIKE-AM270-BLK-8/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Size (US)", "value": "8"}]
+
 98	30	NIKE-AM270-WHT-8	9820.00	62	10	http://localhost:9000/nexus-media/public/catalog/skus/NIKE-AM270-WHT-8/main.svg	0	\N	0	[{"key": "Color", "value": "White"}, {"key": "Size (US)", "value": "8"}]
+
 99	30	NIKE-AM270-WHT-9	9820.00	33	10	http://localhost:9000/nexus-media/public/catalog/skus/NIKE-AM270-WHT-9/main.svg	0	9030.00	0	[{"key": "Color", "value": "White"}, {"key": "Size (US)", "value": "9"}]
+
 100	31	ADIDAS-UBLGT-BLK-8	8260.00	150	10	http://localhost:9000/nexus-media/public/catalog/skus/ADIDAS-UBLGT-BLK-8/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Size (US)", "value": "8"}]
+
 101	31	ADIDAS-UBLGT-BLK-9	8260.00	118	10	http://localhost:9000/nexus-media/public/catalog/skus/ADIDAS-UBLGT-BLK-9/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Size (US)", "value": "9"}]
+
 103	31	ADIDAS-UBLGT-WHT-9	8260.00	108	10	http://localhost:9000/nexus-media/public/catalog/skus/ADIDAS-UBLGT-WHT-9/main.svg	0	6770.00	0	[{"key": "Color", "value": "White"}, {"key": "Size (US)", "value": "9"}]
+
 106	32	PUMA-VN3-WHT-8	2840.00	70	10	http://localhost:9000/nexus-media/public/catalog/skus/PUMA-VN3-WHT-8/main.svg	0	\N	0	[{"key": "Color", "value": "White"}, {"key": "Size (US)", "value": "8"}]
+
 107	32	PUMA-VN3-WHT-9	2840.00	145	10	http://localhost:9000/nexus-media/public/catalog/skus/PUMA-VN3-WHT-9/main.svg	0	\N	0	[{"key": "Color", "value": "White"}, {"key": "Size (US)", "value": "9"}]
+
 109	33	TNF-VEND-BLK-9	2540.00	62	10	http://localhost:9000/nexus-media/public/catalog/skus/TNF-VEND-BLK-9/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Size (US)", "value": "9"}]
+
 110	33	TNF-VEND-WHT-8	2540.00	18	10	http://localhost:9000/nexus-media/public/catalog/skus/TNF-VEND-WHT-8/main.svg	0	\N	0	[{"key": "Color", "value": "White"}, {"key": "Size (US)", "value": "8"}]
+
 111	33	TNF-VEND-WHT-9	2540.00	61	10	http://localhost:9000/nexus-media/public/catalog/skus/TNF-VEND-WHT-9/main.svg	0	\N	0	[{"key": "Color", "value": "White"}, {"key": "Size (US)", "value": "9"}]
+
 112	34	RAYBAN-AVCL-BLK	960.00	93	10	http://localhost:9000/nexus-media/public/catalog/skus/RAYBAN-AVCL-BLK/main.svg	0	860.00	0	[{"key": "Color", "value": "Black"}]
+
 113	34	RAYBAN-AVCL-SLV	980.00	151	10	http://localhost:9000/nexus-media/public/catalog/skus/RAYBAN-AVCL-SLV/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}]
+
 114	35	VANH-VHBLT-S	6090.00	145	10	http://localhost:9000/nexus-media/public/catalog/skus/VANH-VHBLT-S/main.svg	0	\N	0	[{"key": "Size", "value": "S"}]
+
 116	35	VANH-VHBLT-L	6090.00	141	10	http://localhost:9000/nexus-media/public/catalog/skus/VANH-VHBLT-L/main.svg	0	\N	0	[{"key": "Size", "value": "L"}]
+
 117	36	UNIQLO-RMSB-BLK	5250.00	41	10	http://localhost:9000/nexus-media/public/catalog/skus/UNIQLO-RMSB-BLK/main.svg	0	4720.00	0	[{"key": "Color", "value": "Black"}]
+
 118	36	UNIQLO-RMSB-SLV	5350.00	22	10	http://localhost:9000/nexus-media/public/catalog/skus/UNIQLO-RMSB-SLV/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}]
+
 119	37	NIKE-HBPK-BLK	1150.00	120	10	http://localhost:9000/nexus-media/public/catalog/skus/NIKE-HBPK-BLK/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+
 121	38	ADIDAS-3SCAP-M	3310.00	88	10	http://localhost:9000/nexus-media/public/catalog/skus/ADIDAS-3SCAP-M/main.svg	0	2910.00	0	[{"key": "Size", "value": "M"}]
+
 122	38	ADIDAS-3SCAP-L	3310.00	139	10	http://localhost:9000/nexus-media/public/catalog/skus/ADIDAS-3SCAP-L/main.svg	0	\N	0	[{"key": "Size", "value": "L"}]
+
 123	38	ADIDAS-3SCAP-XL	3310.00	70	10	http://localhost:9000/nexus-media/public/catalog/skus/ADIDAS-3SCAP-XL/main.svg	0	\N	0	[{"key": "Size", "value": "XL"}]
+
 124	39	IKEA-MALM6-STD	17780.00	140	10	http://localhost:9000/nexus-media/public/catalog/skus/IKEA-MALM6-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+
 126	40	IKEA-LACK-SLV	21960.00	85	10	http://localhost:9000/nexus-media/public/catalog/skus/IKEA-LACK-SLV/main.svg	0	18010.00	0	[{"key": "Color", "value": "Silver"}]
+
 4	1	APPLE-IP17-SLV-256	57620.00	5	10	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-SLV-256/main.svg	0	47250.00	0	[{"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "256GB"}]
+
 127	41	IKEA-BILLY-BLK	14620.00	32	10	http://localhost:9000/nexus-media/public/catalog/skus/IKEA-BILLY-BLK/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+
 128	41	IKEA-BILLY-SLV	14910.00	89	10	http://localhost:9000/nexus-media/public/catalog/skus/IKEA-BILLY-SLV/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}]
+
 129	42	PHILIPS-AF3K-4L	15620.00	75	10	http://localhost:9000/nexus-media/public/catalog/skus/PHILIPS-AF3K-4L/main.svg	0	\N	0	[{"key": "Capacity", "value": "4L"}]
+
 130	42	PHILIPS-AF3K-6L	15620.00	137	10	http://localhost:9000/nexus-media/public/catalog/skus/PHILIPS-AF3K-6L/main.svg	0	14060.00	0	[{"key": "Capacity", "value": "6L"}]
+
 132	44	BOSCH-BOSDW-12P	9130.00	118	10	http://localhost:9000/nexus-media/public/catalog/skus/BOSCH-BOSDW-12P/main.svg	0	\N	0	[{"key": "Capacity", "value": "12-place"}]
+
 133	44	BOSCH-BOSDW-14P	9130.00	32	10	http://localhost:9000/nexus-media/public/catalog/skus/BOSCH-BOSDW-14P/main.svg	0	\N	0	[{"key": "Capacity", "value": "14-place"}]
+
 134	45	PRESTIGE-AFPRO-4L	23130.00	70	10	http://localhost:9000/nexus-media/public/catalog/skus/PRESTIGE-AFPRO-4L/main.svg	0	\N	0	[{"key": "Capacity", "value": "4L"}]
+
 136	46	HAWKINS-CONT-3L	6850.00	76	10	http://localhost:9000/nexus-media/public/catalog/skus/HAWKINS-CONT-3L/main.svg	0	\N	0	[{"key": "Capacity", "value": "3L"}]
+
 140	48	LG-LGW65-8KG	14170.00	61	10	http://localhost:9000/nexus-media/public/catalog/skus/LG-LGW65-8KG/main.svg	0	\N	0	[{"key": "Capacity", "value": "8kg"}]
+
 141	49	BOSCH-BOS8-6.5KG	4660.00	138	10	http://localhost:9000/nexus-media/public/catalog/skus/BOSCH-BOS8-6.5KG/main.svg	0	\N	0	[{"key": "Capacity", "value": "6.5kg"}]
+
 142	49	BOSCH-BOS8-8KG	4660.00	19	10	http://localhost:9000/nexus-media/public/catalog/skus/BOSCH-BOS8-8KG/main.svg	0	\N	0	[{"key": "Capacity", "value": "8kg"}]
+
 143	50	BAJAJ-MTF-BLK	44600.00	67	10	http://localhost:9000/nexus-media/public/catalog/skus/BAJAJ-MTF-BLK/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+
 144	50	BAJAJ-MTF-SLV	45500.00	76	10	http://localhost:9000/nexus-media/public/catalog/skus/BAJAJ-MTF-SLV/main.svg	0	40040.00	0	[{"key": "Color", "value": "Silver"}]
+
 146	51	HAVELLS-AQP-15L	7550.00	11	10	http://localhost:9000/nexus-media/public/catalog/skus/HAVELLS-AQP-15L/main.svg	0	\N	0	[{"key": "Capacity", "value": "15L"}]
+
 147	52	USHA-MAF-BLK	45620.00	133	10	http://localhost:9000/nexus-media/public/catalog/skus/USHA-MAF-BLK/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+
 148	52	USHA-MAF-SLV	46530.00	144	10	http://localhost:9000/nexus-media/public/catalog/skus/USHA-MAF-SLV/main.svg	0	41880.00	0	[{"key": "Color", "value": "Silver"}]
+
 149	53	BUTTERFLY-RB3-STD	6360.00	13	10	http://localhost:9000/nexus-media/public/catalog/skus/BUTTERFLY-RB3-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+
 151	54	CROMPTON-SEK-2L	2220.00	75	10	http://localhost:9000/nexus-media/public/catalog/skus/CROMPTON-SEK-2L/main.svg	0	\N	0	[{"key": "Capacity", "value": "2L"}]
+
 152	55	WONDERCHEF-GFP-24CM	5200.00	137	10	http://localhost:9000/nexus-media/public/catalog/skus/WONDERCHEF-GFP-24CM/main.svg	0	\N	0	[{"key": "Size", "value": "24cm"}]
+
 153	55	WONDERCHEF-GFP-26CM	5200.00	63	10	http://localhost:9000/nexus-media/public/catalog/skus/WONDERCHEF-GFP-26CM/main.svg	0	4420.00	0	[{"key": "Size", "value": "26cm"}]
+
 154	55	WONDERCHEF-GFP-28CM	5200.00	44	10	http://localhost:9000/nexus-media/public/catalog/skus/WONDERCHEF-GFP-28CM/main.svg	0	\N	0	[{"key": "Size", "value": "28cm"}]
+
 156	56	PRESTIGE-ODP-26CM	4820.00	33	10	http://localhost:9000/nexus-media/public/catalog/skus/PRESTIGE-ODP-26CM/main.svg	0	\N	0	[{"key": "Size", "value": "26cm"}]
+
 157	56	PRESTIGE-ODP-28CM	4820.00	52	10	http://localhost:9000/nexus-media/public/catalog/skus/PRESTIGE-ODP-28CM/main.svg	0	4340.00	0	[{"key": "Size", "value": "28cm"}]
+
 158	57	HAWKINS-FNT-24CM	6970.00	94	10	http://localhost:9000/nexus-media/public/catalog/skus/HAWKINS-FNT-24CM/main.svg	0	\N	0	[{"key": "Size", "value": "24cm"}]
+
 159	57	HAWKINS-FNT-26CM	6970.00	93	10	http://localhost:9000/nexus-media/public/catalog/skus/HAWKINS-FNT-26CM/main.svg	0	\N	0	[{"key": "Size", "value": "26cm"}]
+
 161	58	ORDINARY-NOZ-STD	1230.00	141	10	http://localhost:9000/nexus-media/public/catalog/skus/ORDINARY-NOZ-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+
 162	59	NIVEA-NSOFT-30ML	2150.00	124	10	http://localhost:9000/nexus-media/public/catalog/skus/NIVEA-NSOFT-30ML/main.svg	0	1940.00	0	[{"key": "Pack Size", "value": "30ml"}]
+
 163	59	NIVEA-NSOFT-50ML	2150.00	24	10	http://localhost:9000/nexus-media/public/catalog/skus/NIVEA-NSOFT-50ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "50ml"}]
+
 164	60	CLINIQUE-MS100-30ML	900.00	115	10	http://localhost:9000/nexus-media/public/catalog/skus/CLINIQUE-MS100-30ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "30ml"}]
+
 165	60	CLINIQUE-MS100-50ML	900.00	97	10	http://localhost:9000/nexus-media/public/catalog/skus/CLINIQUE-MS100-50ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "50ml"}]
+
 167	61	NEUTRO-HWB-30ML	2340.00	65	10	http://localhost:9000/nexus-media/public/catalog/skus/NEUTRO-HWB-30ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "30ml"}]
+
 168	61	NEUTRO-HWB-50ML	2340.00	127	10	http://localhost:9000/nexus-media/public/catalog/skus/NEUTRO-HWB-50ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "50ml"}]
+
 169	61	NEUTRO-HWB-100ML	2340.00	95	10	http://localhost:9000/nexus-media/public/catalog/skus/NEUTRO-HWB-100ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "100ml"}]
+
 170	62	MAMAEARTH-VCFS-STD	2170.00	48	10	http://localhost:9000/nexus-media/public/catalog/skus/MAMAEARTH-VCFS-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+
 171	63	MINIMAL-SA2-STD	1840.00	70	10	http://localhost:9000/nexus-media/public/catalog/skus/MINIMAL-SA2-STD/main.svg	0	1620.00	0	[{"key": "Color", "value": "Black"}]
+
 173	64	FOREST-FTM-50ML	1450.00	106	10	http://localhost:9000/nexus-media/public/catalog/skus/FOREST-FTM-50ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "50ml"}]
+
 174	64	FOREST-FTM-100ML	1450.00	149	10	http://localhost:9000/nexus-media/public/catalog/skus/FOREST-FTM-100ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "100ml"}]
+
 175	65	PLUM-GTFW-30ML	2300.00	125	10	http://localhost:9000/nexus-media/public/catalog/skus/PLUM-GTFW-30ML/main.svg	0	1960.00	0	[{"key": "Pack Size", "value": "30ml"}]
+
 176	65	PLUM-GTFW-50ML	2300.00	150	10	http://localhost:9000/nexus-media/public/catalog/skus/PLUM-GTFW-50ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "50ml"}]
+
 178	66	LOREAL-TMatch-110	700.00	134	10	http://localhost:9000/nexus-media/public/catalog/skus/LOREAL-TMatch-110/main.svg	0	\N	0	[{"key": "Shade", "value": "110 Porcelain"}]
+
 179	66	LOREAL-TMatch-120	700.00	115	10	http://localhost:9000/nexus-media/public/catalog/skus/LOREAL-TMatch-120/main.svg	0	\N	0	[{"key": "Shade", "value": "120 Classic Ivory"}]
+
 180	66	LOREAL-TMatch-130	700.00	151	10	http://localhost:9000/nexus-media/public/catalog/skus/LOREAL-TMatch-130/main.svg	0	620.00	0	[{"key": "Shade", "value": "130 Buff Beige"}]
+
 181	66	LOREAL-TMatch-220	700.00	42	10	http://localhost:9000/nexus-media/public/catalog/skus/LOREAL-TMatch-220/main.svg	0	\N	0	[{"key": "Shade", "value": "220 Natural Beige"}]
+
 183	67	MAYBELLINE-FMF-120	1660.00	137	10	http://localhost:9000/nexus-media/public/catalog/skus/MAYBELLINE-FMF-120/main.svg	0	\N	0	[{"key": "Shade", "value": "120 Classic Ivory"}]
+
 184	67	MAYBELLINE-FMF-130	1660.00	27	10	http://localhost:9000/nexus-media/public/catalog/skus/MAYBELLINE-FMF-130/main.svg	0	1490.00	0	[{"key": "Shade", "value": "130 Buff Beige"}]
+
 185	67	MAYBELLINE-FMF-220	1660.00	122	10	http://localhost:9000/nexus-media/public/catalog/skus/MAYBELLINE-FMF-220/main.svg	0	\N	0	[{"key": "Shade", "value": "220 Natural Beige"}]
+
 186	68	LAKME-9T5-110	2180.00	44	10	http://localhost:9000/nexus-media/public/catalog/skus/LAKME-9T5-110/main.svg	0	\N	0	[{"key": "Shade", "value": "110 Porcelain"}]
+
 188	68	LAKME-9T5-130	2180.00	69	10	http://localhost:9000/nexus-media/public/catalog/skus/LAKME-9T5-130/main.svg	0	\N	0	[{"key": "Shade", "value": "130 Buff Beige"}]
+
 189	68	LAKME-9T5-220	2180.00	121	10	http://localhost:9000/nexus-media/public/catalog/skus/LAKME-9T5-220/main.svg	0	1960.00	0	[{"key": "Shade", "value": "220 Natural Beige"}]
+
 190	69	NYKAA-SKGEN-110	1710.00	34	10	http://localhost:9000/nexus-media/public/catalog/skus/NYKAA-SKGEN-110/main.svg	0	\N	0	[{"key": "Shade", "value": "110 Porcelain"}]
+
 192	69	NYKAA-SKGEN-130	1710.00	158	10	http://localhost:9000/nexus-media/public/catalog/skus/NYKAA-SKGEN-130/main.svg	0	\N	0	[{"key": "Shade", "value": "130 Buff Beige"}]
+
 193	69	NYKAA-SKGEN-220	1710.00	76	10	http://localhost:9000/nexus-media/public/catalog/skus/NYKAA-SKGEN-220/main.svg	0	1540.00	0	[{"key": "Shade", "value": "220 Natural Beige"}]
+
 194	70	BIOTIQUE-BCC-30ML	2310.00	97	10	http://localhost:9000/nexus-media/public/catalog/skus/BIOTIQUE-BCC-30ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "30ml"}]
+
 195	70	BIOTIQUE-BCC-50ML	2310.00	155	10	http://localhost:9000/nexus-media/public/catalog/skus/BIOTIQUE-BCC-50ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "50ml"}]
+
 196	70	BIOTIQUE-BCC-100ML	2310.00	130	10	http://localhost:9000/nexus-media/public/catalog/skus/BIOTIQUE-BCC-100ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "100ml"}]
+
 198	71	DOVE-DIR-50ML	760.00	140	10	http://localhost:9000/nexus-media/public/catalog/skus/DOVE-DIR-50ML/main.svg	0	680.00	0	[{"key": "Pack Size", "value": "50ml"}]
+
 199	71	DOVE-DIR-100ML	760.00	121	10	http://localhost:9000/nexus-media/public/catalog/skus/DOVE-DIR-100ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "100ml"}]
+
 200	72	LOREAL-ARS-30ML	1840.00	22	10	http://localhost:9000/nexus-media/public/catalog/skus/LOREAL-ARS-30ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "30ml"}]
+
 201	72	LOREAL-ARS-50ML	1840.00	51	10	http://localhost:9000/nexus-media/public/catalog/skus/LOREAL-ARS-50ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "50ml"}]
+
 203	73	MAMAEARTH-OHO-30ML	770.00	132	10	http://localhost:9000/nexus-media/public/catalog/skus/MAMAEARTH-OHO-30ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "30ml"}]
+
 204	73	MAMAEARTH-OHO-50ML	770.00	76	10	http://localhost:9000/nexus-media/public/catalog/skus/MAMAEARTH-OHO-50ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "50ml"}]
+
 205	73	MAMAEARTH-OHO-100ML	770.00	95	10	http://localhost:9000/nexus-media/public/catalog/skus/MAMAEARTH-OHO-100ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "100ml"}]
+
 206	74	NIVEA-MSG-30ML	1570.00	122	10	http://localhost:9000/nexus-media/public/catalog/skus/NIVEA-MSG-30ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "30ml"}]
+
 208	74	NIVEA-MSG-100ML	1570.00	94	10	http://localhost:9000/nexus-media/public/catalog/skus/NIVEA-MSG-100ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "100ml"}]
+
 209	75	NYKAA-MBW-30ML	2440.00	69	10	http://localhost:9000/nexus-media/public/catalog/skus/NYKAA-MBW-30ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "30ml"}]
+
 210	75	NYKAA-MBW-50ML	2440.00	135	10	http://localhost:9000/nexus-media/public/catalog/skus/NYKAA-MBW-50ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "50ml"}]
+
 211	75	NYKAA-MBW-100ML	2440.00	55	10	http://localhost:9000/nexus-media/public/catalog/skus/NYKAA-MBW-100ML/main.svg	0	2000.00	0	[{"key": "Pack Size", "value": "100ml"}]
+
 212	76	PLUM-GTSG-30ML	320.00	110	10	http://localhost:9000/nexus-media/public/catalog/skus/PLUM-GTSG-30ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "30ml"}]
+
 214	76	PLUM-GTSG-100ML	320.00	146	10	http://localhost:9000/nexus-media/public/catalog/skus/PLUM-GTSG-100ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "100ml"}]
+
 215	77	UA-CA10-BLK-8	8630.00	44	10	http://localhost:9000/nexus-media/public/catalog/skus/UA-CA10-BLK-8/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Size (US)", "value": "8"}]
+
 216	77	UA-CA10-BLK-9	8630.00	159	10	http://localhost:9000/nexus-media/public/catalog/skus/UA-CA10-BLK-9/main.svg	0	7590.00	0	[{"key": "Color", "value": "Black"}, {"key": "Size (US)", "value": "9"}]
+
 217	77	UA-CA10-WHT-8	8630.00	105	10	http://localhost:9000/nexus-media/public/catalog/skus/UA-CA10-WHT-8/main.svg	0	\N	0	[{"key": "Color", "value": "White"}, {"key": "Size (US)", "value": "8"}]
+
 219	78	DECATHLON-KRC-BLK-8	2480.00	55	10	http://localhost:9000/nexus-media/public/catalog/skus/DECATHLON-KRC-BLK-8/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Size (US)", "value": "8"}]
+
 220	78	DECATHLON-KRC-BLK-9	2480.00	62	10	http://localhost:9000/nexus-media/public/catalog/skus/DECATHLON-KRC-BLK-9/main.svg	0	2230.00	0	[{"key": "Color", "value": "Black"}, {"key": "Size (US)", "value": "9"}]
+
 221	78	DECATHLON-KRC-WHT-8	2480.00	157	10	http://localhost:9000/nexus-media/public/catalog/skus/DECATHLON-KRC-WHT-8/main.svg	0	\N	0	[{"key": "Color", "value": "White"}, {"key": "Size (US)", "value": "8"}]
+
 222	78	DECATHLON-KRC-WHT-9	2480.00	147	10	http://localhost:9000/nexus-media/public/catalog/skus/DECATHLON-KRC-WHT-9/main.svg	0	\N	0	[{"key": "Color", "value": "White"}, {"key": "Size (US)", "value": "9"}]
+
 224	79	NIVIA-RACER-BLK-9	6930.00	12	10	http://localhost:9000/nexus-media/public/catalog/skus/NIVIA-RACER-BLK-9/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Size (US)", "value": "9"}]
+
 225	79	NIVIA-RACER-WHT-8	6930.00	25	10	http://localhost:9000/nexus-media/public/catalog/skus/NIVIA-RACER-WHT-8/main.svg	0	6240.00	0	[{"key": "Color", "value": "White"}, {"key": "Size (US)", "value": "8"}]
+
 5	2	SAMSUNG-GS26-BLK-128	68520.00	50	10	http://localhost:9000/nexus-media/public/catalog/skus/SAMSUNG-GS26-BLK-128/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Storage", "value": "128GB"}]
+
 227	80	VECTORX-SPRINT-BLK-8	4130.00	116	10	http://localhost:9000/nexus-media/public/catalog/skus/VECTORX-SPRINT-BLK-8/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Size (US)", "value": "8"}]
+
 229	80	VECTORX-SPRINT-WHT-8	4130.00	72	10	http://localhost:9000/nexus-media/public/catalog/skus/VECTORX-SPRINT-WHT-8/main.svg	0	3510.00	0	[{"key": "Color", "value": "White"}, {"key": "Size (US)", "value": "8"}]
+
 230	80	VECTORX-SPRINT-WHT-9	4130.00	62	10	http://localhost:9000/nexus-media/public/catalog/skus/VECTORX-SPRINT-WHT-9/main.svg	0	\N	0	[{"key": "Color", "value": "White"}, {"key": "Size (US)", "value": "9"}]
+
 231	81	DECATHLON-ADJDB-STD	4500.00	118	10	http://localhost:9000/nexus-media/public/catalog/skus/DECATHLON-ADJDB-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+
 232	82	NIVIA-HD10-STD	2120.00	46	10	http://localhost:9000/nexus-media/public/catalog/skus/NIVIA-HD10-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+
 233	83	COSCO-RTSET-STD	7480.00	129	10	http://localhost:9000/nexus-media/public/catalog/skus/COSCO-RTSET-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+
 235	84	VECTORX-PTG-L	6750.00	22	10	http://localhost:9000/nexus-media/public/catalog/skus/VECTORX-PTG-L/main.svg	0	\N	0	[{"key": "Size", "value": "L"}]
+
 236	84	VECTORX-PTG-XL	6750.00	83	10	http://localhost:9000/nexus-media/public/catalog/skus/VECTORX-PTG-XL/main.svg	0	\N	0	[{"key": "Size", "value": "XL"}]
+
 237	85	DECATHLON-BYM-BLK	5020.00	21	10	http://localhost:9000/nexus-media/public/catalog/skus/DECATHLON-BYM-BLK/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+
 239	86	NIVIA-TPEM-BLK	1970.00	32	10	http://localhost:9000/nexus-media/public/catalog/skus/NIVIA-TPEM-BLK/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+
 240	86	NIVIA-TPEM-SLV	2010.00	86	10	http://localhost:9000/nexus-media/public/catalog/skus/NIVIA-TPEM-SLV/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}]
+
 241	87	COSCO-YBP-BLK	3270.00	98	10	http://localhost:9000/nexus-media/public/catalog/skus/COSCO-YBP-BLK/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+
 242	87	COSCO-YBP-SLV	3330.00	66	10	http://localhost:9000/nexus-media/public/catalog/skus/COSCO-YBP-SLV/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}]
+
 243	88	WILSON-PS97-STD	7760.00	143	10	http://localhost:9000/nexus-media/public/catalog/skus/WILSON-PS97-STD/main.svg	0	6980.00	0	[{"key": "Color", "value": "Black"}]
+
 245	90	SS-SSKYER-S8	1770.00	47	10	http://localhost:9000/nexus-media/public/catalog/skus/SS-SSKYER-S8/main.svg	0	\N	0	[{"key": "Size", "value": "8"}]
+
 246	90	SS-SSKYER-S9	1770.00	142	10	http://localhost:9000/nexus-media/public/catalog/skus/SS-SSKYER-S9/main.svg	0	\N	0	[{"key": "Size", "value": "9"}]
+
 247	90	SS-SSKYER-S10	1770.00	39	10	http://localhost:9000/nexus-media/public/catalog/skus/SS-SSKYER-S10/main.svg	0	1560.00	0	[{"key": "Size", "value": "10"}]
+
 248	91	SG-SGP-S8	6600.00	42	10	http://localhost:9000/nexus-media/public/catalog/skus/SG-SGP-S8/main.svg	0	\N	0	[{"key": "Size", "value": "8"}]
+
 249	91	SG-SGP-S9	6600.00	129	10	http://localhost:9000/nexus-media/public/catalog/skus/SG-SGP-S9/main.svg	0	\N	0	[{"key": "Size", "value": "9"}]
+
 251	92	DECATHLON-QHB40-BLK	1510.00	31	10	http://localhost:9000/nexus-media/public/catalog/skus/DECATHLON-QHB40-BLK/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+
 252	92	DECATHLON-QHB40-SLV	1540.00	45	10	http://localhost:9000/nexus-media/public/catalog/skus/DECATHLON-QHB40-SLV/main.svg	0	1390.00	0	[{"key": "Color", "value": "Silver"}]
+
 253	93	NIVIA-STORM-STD	1910.00	76	10	http://localhost:9000/nexus-media/public/catalog/skus/NIVIA-STORM-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+
 255	95	WILSON-NBAOB-M	2370.00	69	10	http://localhost:9000/nexus-media/public/catalog/skus/WILSON-NBAOB-M/main.svg	0	\N	0	[{"key": "Size", "value": "M"}]
+
 256	95	WILSON-NBAOB-L	2370.00	108	10	http://localhost:9000/nexus-media/public/catalog/skus/WILSON-NBAOB-L/main.svg	0	1940.00	0	[{"key": "Size", "value": "L"}]
+
 257	95	WILSON-NBAOB-XL	2370.00	86	10	http://localhost:9000/nexus-media/public/catalog/skus/WILSON-NBAOB-XL/main.svg	0	\N	0	[{"key": "Size", "value": "XL"}]
+
 258	96	PRH-MNL-PB	1240.00	202	10	http://localhost:9000/nexus-media/public/catalog/skus/PRH-MNL-PB/main.svg	0	\N	0	[{"key": "Format", "value": "Paperback"}]
+
 259	96	PRH-MNL-HC	1270.00	97	10	http://localhost:9000/nexus-media/public/catalog/skus/PRH-MNL-HC/main.svg	0	\N	0	[{"key": "Format", "value": "Hardcover"}]
+
 261	97	PRH-1984-PB	1440.00	166	10	http://localhost:9000/nexus-media/public/catalog/skus/PRH-1984-PB/main.svg	0	1300.00	0	[{"key": "Format", "value": "Paperback"}]
+
 262	97	PRH-1984-HC	1480.00	224	10	http://localhost:9000/nexus-media/public/catalog/skus/PRH-1984-HC/main.svg	0	\N	0	[{"key": "Format", "value": "Hardcover"}]
+
 263	97	PRH-1984-KD	1380.00	160	10	http://localhost:9000/nexus-media/public/catalog/skus/PRH-1984-KD/main.svg	0	\N	0	[{"key": "Format", "value": "Kindle"}]
+
 264	98	RUPA-TSP-PB	1770.00	21	10	http://localhost:9000/nexus-media/public/catalog/skus/RUPA-TSP-PB/main.svg	0	\N	0	[{"key": "Format", "value": "Paperback"}]
+
 265	98	RUPA-TSP-HC	1820.00	116	10	http://localhost:9000/nexus-media/public/catalog/skus/RUPA-TSP-HC/main.svg	0	1490.00	0	[{"key": "Format", "value": "Hardcover"}]
+
 267	99	ACK-MHB-PB	430.00	91	10	http://localhost:9000/nexus-media/public/catalog/skus/ACK-MHB-PB/main.svg	0	\N	0	[{"key": "Format", "value": "Paperback"}]
+
 104	32	PUMA-VN3-BLK-8	2840.00	9	10	http://localhost:9000/nexus-media/public/catalog/skus/PUMA-VN3-BLK-8/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Size (US)", "value": "8"}]
+
 268	99	ACK-MHB-HC	450.00	173	10	http://localhost:9000/nexus-media/public/catalog/skus/ACK-MHB-HC/main.svg	0	\N	0	[{"key": "Format", "value": "Hardcover"}]
+
 269	99	ACK-MHB-KD	420.00	243	10	http://localhost:9000/nexus-media/public/catalog/skus/ACK-MHB-KD/main.svg	0	\N	0	[{"key": "Format", "value": "Kindle"}]
+
 270	100	PRH-AH-PB	1500.00	103	10	http://localhost:9000/nexus-media/public/catalog/skus/PRH-AH-PB/main.svg	0	1230.00	0	[{"key": "Format", "value": "Paperback"}]
+
 272	100	PRH-AH-KD	1440.00	87	10	http://localhost:9000/nexus-media/public/catalog/skus/PRH-AH-KD/main.svg	0	\N	0	[{"key": "Format", "value": "Kindle"}]
+
 273	101	MCGRAW-TLS-PB	440.00	173	10	http://localhost:9000/nexus-media/public/catalog/skus/MCGRAW-TLS-PB/main.svg	0	\N	0	[{"key": "Format", "value": "Paperback"}]
+
 274	101	MCGRAW-TLS-HC	450.00	166	10	http://localhost:9000/nexus-media/public/catalog/skus/MCGRAW-TLS-HC/main.svg	0	370.00	0	[{"key": "Format", "value": "Hardcover"}]
+
 275	101	MCGRAW-TLS-KD	420.00	179	10	http://localhost:9000/nexus-media/public/catalog/skus/MCGRAW-TLS-KD/main.svg	0	\N	0	[{"key": "Format", "value": "Kindle"}]
+
 277	102	PEARSON-SSG-HC	1700.00	249	10	http://localhost:9000/nexus-media/public/catalog/skus/PEARSON-SSG-HC/main.svg	0	\N	0	[{"key": "Format", "value": "Hardcover"}]
+
 278	102	PEARSON-SSG-KD	1580.00	118	10	http://localhost:9000/nexus-media/public/catalog/skus/PEARSON-SSG-KD/main.svg	0	\N	0	[{"key": "Format", "value": "Kindle"}]
+
 279	103	OREILLY-CC-PB	1600.00	56	10	http://localhost:9000/nexus-media/public/catalog/skus/OREILLY-CC-PB/main.svg	0	1440.00	0	[{"key": "Format", "value": "Paperback"}]
+
 280	103	OREILLY-CC-HC	1650.00	110	10	http://localhost:9000/nexus-media/public/catalog/skus/OREILLY-CC-HC/main.svg	0	\N	0	[{"key": "Format", "value": "Hardcover"}]
+
 281	103	OREILLY-CC-KD	1540.00	160	10	http://localhost:9000/nexus-media/public/catalog/skus/OREILLY-CC-KD/main.svg	0	\N	0	[{"key": "Format", "value": "Kindle"}]
+
 283	104	OREILLY-DDIA-HC	1310.00	141	10	http://localhost:9000/nexus-media/public/catalog/skus/OREILLY-DDIA-HC/main.svg	0	1110.00	0	[{"key": "Format", "value": "Hardcover"}]
+
 285	105	MCGRAW-CCIT-PB	1220.00	29	10	http://localhost:9000/nexus-media/public/catalog/skus/MCGRAW-CCIT-PB/main.svg	0	\N	0	[{"key": "Format", "value": "Paperback"}]
+
 287	105	MCGRAW-CCIT-KD	1180.00	81	10	http://localhost:9000/nexus-media/public/catalog/skus/MCGRAW-CCIT-KD/main.svg	0	\N	0	[{"key": "Format", "value": "Kindle"}]
+
 289	106	PEARSON-JPC-HC	1560.00	108	10	http://localhost:9000/nexus-media/public/catalog/skus/PEARSON-JPC-HC/main.svg	0	\N	0	[{"key": "Format", "value": "Hardcover"}]
+
 290	106	PEARSON-JPC-KD	1450.00	121	10	http://localhost:9000/nexus-media/public/catalog/skus/PEARSON-JPC-KD/main.svg	0	\N	0	[{"key": "Format", "value": "Kindle"}]
+
 291	107	SCHAND-DSC-PB	1670.00	199	10	http://localhost:9000/nexus-media/public/catalog/skus/SCHAND-DSC-PB/main.svg	0	\N	0	[{"key": "Format", "value": "Paperback"}]
+
 292	107	SCHAND-DSC-HC	1720.00	50	10	http://localhost:9000/nexus-media/public/catalog/skus/SCHAND-DSC-HC/main.svg	0	1410.00	0	[{"key": "Format", "value": "Hardcover"}]
+
 293	107	SCHAND-DSC-KD	1600.00	176	10	http://localhost:9000/nexus-media/public/catalog/skus/SCHAND-DSC-KD/main.svg	0	\N	0	[{"key": "Format", "value": "Kindle"}]
+
 295	108	ARIHANT-PYCP-HC	900.00	202	10	http://localhost:9000/nexus-media/public/catalog/skus/ARIHANT-PYCP-HC/main.svg	0	\N	0	[{"key": "Format", "value": "Hardcover"}]
+
 296	108	ARIHANT-PYCP-KD	840.00	96	10	http://localhost:9000/nexus-media/public/catalog/skus/ARIHANT-PYCP-KD/main.svg	0	\N	0	[{"key": "Format", "value": "Kindle"}]
+
 297	109	MOLESKINE-MKNL-STD	560.00	139	10	http://localhost:9000/nexus-media/public/catalog/skus/MOLESKINE-MKNL-STD/main.svg	0	490.00	0	[{"key": "Color", "value": "Black"}]
+
 298	110	CROSSWORD-PRN-BLK	910.00	45	10	http://localhost:9000/nexus-media/public/catalog/skus/CROSSWORD-PRN-BLK/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+
 300	111	RUPA-EXJ-BLK	560.00	115	10	http://localhost:9000/nexus-media/public/catalog/skus/RUPA-EXJ-BLK/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+
 301	111	RUPA-EXJ-SLV	580.00	187	10	http://localhost:9000/nexus-media/public/catalog/skus/RUPA-EXJ-SLV/main.svg	0	490.00	0	[{"key": "Color", "value": "Silver"}]
+
 302	112	SCHAND-GPN-STD	280.00	70	10	http://localhost:9000/nexus-media/public/catalog/skus/SCHAND-GPN-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+
 303	113	ARIHANT-EPN-A6	1050.00	163	10	http://localhost:9000/nexus-media/public/catalog/skus/ARIHANT-EPN-A6/main.svg	0	\N	0	[{"key": "Size", "value": "A6"}]
+
 304	113	ARIHANT-EPN-A5	1050.00	233	10	http://localhost:9000/nexus-media/public/catalog/skus/ARIHANT-EPN-A5/main.svg	0	\N	0	[{"key": "Size", "value": "A5"}]
+
 306	115	NESTLE-NCF-100G	320.00	109	10	http://localhost:9000/nexus-media/public/catalog/skus/NESTLE-NCF-100G/main.svg	0	290.00	0	[{"key": "Pack Size", "value": "100g"}]
+
 307	115	NESTLE-NCF-200G	320.00	121	10	http://localhost:9000/nexus-media/public/catalog/skus/NESTLE-NCF-200G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "200g"}]
+
 308	115	NESTLE-NCF-500G	320.00	26	10	http://localhost:9000/nexus-media/public/catalog/skus/NESTLE-NCF-500G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "500g"}]
+
 309	116	COKE-COKE-300ML	890.00	216	10	http://localhost:9000/nexus-media/public/catalog/skus/COKE-COKE-300ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "300ml"}]
+
 311	116	COKE-COKE-1.25L	1090.00	8	10	http://localhost:9000/nexus-media/public/catalog/skus/COKE-COKE-1.25L/main.svg	0	\N	0	[{"key": "Pack Size", "value": "1.25L"}]
+
 105	32	PUMA-VN3-BLK-9	2840.00	16	10	http://localhost:9000/nexus-media/public/catalog/skus/PUMA-VN3-BLK-9/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Size (US)", "value": "9"}]
+
 312	116	COKE-COKE-2.25L	1290.00	118	10	http://localhost:9000/nexus-media/public/catalog/skus/COKE-COKE-2.25L/main.svg	0	\N	0	[{"key": "Pack Size", "value": "2.25L"}]
+
 313	117	AMUL-ATMLK-500ML	650.00	22	10	http://localhost:9000/nexus-media/public/catalog/skus/AMUL-ATMLK-500ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "500ml"}]
+
 314	117	AMUL-ATMLK-1L	770.00	102	10	http://localhost:9000/nexus-media/public/catalog/skus/AMUL-ATMLK-1L/main.svg	0	\N	0	[{"key": "Pack Size", "value": "1L"}]
+
 316	118	TATA-TTG-200G	420.00	246	10	http://localhost:9000/nexus-media/public/catalog/skus/TATA-TTG-200G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "200g"}]
+
 317	118	TATA-TTG-500G	420.00	129	10	http://localhost:9000/nexus-media/public/catalog/skus/TATA-TTG-500G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "500g"}]
+
 318	119	MOTHERDAIRY-TDMLK-500ML	480.00	168	10	http://localhost:9000/nexus-media/public/catalog/skus/MOTHERDAIRY-TDMLK-500ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "500ml"}]
+
 319	119	MOTHERDAIRY-TDMLK-1L	570.00	14	10	http://localhost:9000/nexus-media/public/catalog/skus/MOTHERDAIRY-TDMLK-1L/main.svg	0	520.00	0	[{"key": "Pack Size", "value": "1L"}]
+
 321	120	BRITANNIA-GDC-100G	340.00	35	10	http://localhost:9000/nexus-media/public/catalog/skus/BRITANNIA-GDC-100G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "100g"}]
+
 322	120	BRITANNIA-GDC-200G	340.00	78	10	http://localhost:9000/nexus-media/public/catalog/skus/BRITANNIA-GDC-200G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "200g"}]
+
 323	120	BRITANNIA-GDC-500G	340.00	12	10	http://localhost:9000/nexus-media/public/catalog/skus/BRITANNIA-GDC-500G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "500g"}]
+
 324	121	PARLE-HSB-100G	190.00	199	10	http://localhost:9000/nexus-media/public/catalog/skus/PARLE-HSB-100G/main.svg	0	170.00	0	[{"key": "Pack Size", "value": "100g"}]
+
 326	121	PARLE-HSB-500G	190.00	55	10	http://localhost:9000/nexus-media/public/catalog/skus/PARLE-HSB-500G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "500g"}]
+
 327	122	ITC-SDF-100G	440.00	40	10	http://localhost:9000/nexus-media/public/catalog/skus/ITC-SDF-100G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "100g"}]
+
 328	122	ITC-SDF-200G	440.00	39	10	http://localhost:9000/nexus-media/public/catalog/skus/ITC-SDF-200G/main.svg	0	370.00	0	[{"key": "Pack Size", "value": "200g"}]
+
 329	122	ITC-SDF-500G	440.00	212	10	http://localhost:9000/nexus-media/public/catalog/skus/ITC-SDF-500G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "500g"}]
+
 330	123	NESTLE-MUNCH-100G	410.00	89	10	http://localhost:9000/nexus-media/public/catalog/skus/NESTLE-MUNCH-100G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "100g"}]
+
 332	123	NESTLE-MUNCH-500G	410.00	111	10	http://localhost:9000/nexus-media/public/catalog/skus/NESTLE-MUNCH-500G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "500g"}]
+
 334	124	DABUR-REAL-1L	650.00	12	10	http://localhost:9000/nexus-media/public/catalog/skus/DABUR-REAL-1L/main.svg	0	\N	0	[{"key": "Pack Size", "value": "1L"}]
+
 335	124	DABUR-REAL-2L	750.00	154	10	http://localhost:9000/nexus-media/public/catalog/skus/DABUR-REAL-2L/main.svg	0	\N	0	[{"key": "Pack Size", "value": "2L"}]
+
 336	125	KELLOGG-KCF-100G	300.00	41	10	http://localhost:9000/nexus-media/public/catalog/skus/KELLOGG-KCF-100G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "100g"}]
+
 338	125	KELLOGG-KCF-500G	300.00	199	10	http://localhost:9000/nexus-media/public/catalog/skus/KELLOGG-KCF-500G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "500g"}]
+
 339	126	MTR-MPOHA-100G	640.00	21	10	http://localhost:9000/nexus-media/public/catalog/skus/MTR-MPOHA-100G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "100g"}]
+
 340	126	MTR-MPOHA-200G	640.00	73	10	http://localhost:9000/nexus-media/public/catalog/skus/MTR-MPOHA-200G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "200g"}]
+
 341	126	MTR-MPOHA-500G	640.00	157	10	http://localhost:9000/nexus-media/public/catalog/skus/MTR-MPOHA-500G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "500g"}]
+
 343	127	AASHIRVAAD-MGA-200G	80.00	203	10	http://localhost:9000/nexus-media/public/catalog/skus/AASHIRVAAD-MGA-200G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "200g"}]
+
 344	127	AASHIRVAAD-MGA-500G	80.00	230	10	http://localhost:9000/nexus-media/public/catalog/skus/AASHIRVAAD-MGA-500G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "500g"}]
+
 345	128	TATA-SPOHA-100G	900.00	107	10	http://localhost:9000/nexus-media/public/catalog/skus/TATA-SPOHA-100G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "100g"}]
+
 346	128	TATA-SPOHA-200G	900.00	61	10	http://localhost:9000/nexus-media/public/catalog/skus/TATA-SPOHA-200G/main.svg	0	810.00	0	[{"key": "Pack Size", "value": "200g"}]
+
 347	128	TATA-SPOHA-500G	900.00	119	10	http://localhost:9000/nexus-media/public/catalog/skus/TATA-SPOHA-500G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "500g"}]
+
 349	129	FORTUNE-FSO-1L	560.00	202	10	http://localhost:9000/nexus-media/public/catalog/skus/FORTUNE-FSO-1L/main.svg	0	\N	0	[{"key": "Pack Size", "value": "1L"}]
+
 350	129	FORTUNE-FSO-2L	650.00	62	10	http://localhost:9000/nexus-media/public/catalog/skus/FORTUNE-FSO-2L/main.svg	0	\N	0	[{"key": "Pack Size", "value": "2L"}]
+
 351	130	PATANJALI-DALIA-100G	640.00	91	10	http://localhost:9000/nexus-media/public/catalog/skus/PATANJALI-DALIA-100G/main.svg	0	580.00	0	[{"key": "Pack Size", "value": "100g"}]
+
 352	130	PATANJALI-DALIA-200G	640.00	223	10	http://localhost:9000/nexus-media/public/catalog/skus/PATANJALI-DALIA-200G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "200g"}]
+
 6	2	SAMSUNG-GS26-BLK-256	74000.00	110	10	http://localhost:9000/nexus-media/public/catalog/skus/SAMSUNG-GS26-BLK-256/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Storage", "value": "256GB"}]
+
 354	131	UNILEVER-KTK-500ML	180.00	168	10	http://localhost:9000/nexus-media/public/catalog/skus/UNILEVER-KTK-500ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "500ml"}]
+
 355	131	UNILEVER-KTK-1L	220.00	226	10	http://localhost:9000/nexus-media/public/catalog/skus/UNILEVER-KTK-1L/main.svg	0	200.00	0	[{"key": "Pack Size", "value": "1L"}]
+
 356	131	UNILEVER-KTK-2L	250.00	232	10	http://localhost:9000/nexus-media/public/catalog/skus/UNILEVER-KTK-2L/main.svg	0	\N	0	[{"key": "Pack Size", "value": "2L"}]
+
 357	132	AMUL-PGHEE-500ML	380.00	50	10	http://localhost:9000/nexus-media/public/catalog/skus/AMUL-PGHEE-500ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "500ml"}]
+
 358	132	AMUL-PGHEE-1L	460.00	139	10	http://localhost:9000/nexus-media/public/catalog/skus/AMUL-PGHEE-1L/main.svg	0	\N	0	[{"key": "Pack Size", "value": "1L"}]
+
 360	133	MOTHERDAIRY-PANEER-100G	430.00	49	10	http://localhost:9000/nexus-media/public/catalog/skus/MOTHERDAIRY-PANEER-100G/main.svg	0	370.00	0	[{"key": "Pack Size", "value": "100g"}]
+
 361	133	MOTHERDAIRY-PANEER-200G	430.00	101	10	http://localhost:9000/nexus-media/public/catalog/skus/MOTHERDAIRY-PANEER-200G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "200g"}]
+
 362	133	MOTHERDAIRY-PANEER-500G	430.00	239	10	http://localhost:9000/nexus-media/public/catalog/skus/MOTHERDAIRY-PANEER-500G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "500g"}]
+
 364	134	3M-MFC-50ML	7080.00	38	10	http://localhost:9000/nexus-media/public/catalog/skus/3M-MFC-50ML/main.svg	0	6510.00	0	[{"key": "Pack Size", "value": "50ml"}]
+
 365	134	3M-MFC-100ML	7080.00	113	10	http://localhost:9000/nexus-media/public/catalog/skus/3M-MFC-100ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "100ml"}]
+
 366	135	BOSCHI-CAF-STD	7210.00	11	10	http://localhost:9000/nexus-media/public/catalog/skus/BOSCHI-CAF-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+
 367	136	TVS-CBC-STD	1970.00	143	10	http://localhost:9000/nexus-media/public/catalog/skus/TVS-CBC-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+
 368	137	CEAT-TVK-STD	8640.00	154	10	http://localhost:9000/nexus-media/public/catalog/skus/CEAT-TVK-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+
 370	139	MOTUL-XCESS-STD	7590.00	53	10	http://localhost:9000/nexus-media/public/catalog/skus/MOTUL-XCESS-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+
 371	140	GULF-FG530-STD	6640.00	115	10	http://localhost:9000/nexus-media/public/catalog/skus/GULF-FG530-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+
 372	141	3M-PRIT-30ML	8130.00	122	10	http://localhost:9000/nexus-media/public/catalog/skus/3M-PRIT-30ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "30ml"}]
+
 373	141	3M-PRIT-50ML	8130.00	49	10	http://localhost:9000/nexus-media/public/catalog/skus/3M-PRIT-50ML/main.svg	0	6670.00	0	[{"key": "Pack Size", "value": "50ml"}]
+
 375	142	MICHELIN-XM2P-R15	2850.00	59	10	http://localhost:9000/nexus-media/public/catalog/skus/MICHELIN-XM2P-R15/main.svg	0	\N	0	[{"key": "Size", "value": "195/65 R15"}]
+
 376	142	MICHELIN-XM2P-R16	2850.00	20	10	http://localhost:9000/nexus-media/public/catalog/skus/MICHELIN-XM2P-R16/main.svg	0	\N	0	[{"key": "Size", "value": "205/55 R16"}]
+
 377	142	MICHELIN-XM2P-R17	2850.00	116	10	http://localhost:9000/nexus-media/public/catalog/skus/MICHELIN-XM2P-R17/main.svg	0	\N	0	[{"key": "Size", "value": "215/60 R17"}]
+
 378	143	MRF-PERF-R15	8280.00	41	10	http://localhost:9000/nexus-media/public/catalog/skus/MRF-PERF-R15/main.svg	0	7620.00	0	[{"key": "Size", "value": "195/65 R15"}]
+
 380	143	MRF-PERF-R17	8280.00	121	10	http://localhost:9000/nexus-media/public/catalog/skus/MRF-PERF-R17/main.svg	0	\N	0	[{"key": "Size", "value": "215/60 R17"}]
+
 381	144	APOLLO-ALN4-R15	5830.00	144	10	http://localhost:9000/nexus-media/public/catalog/skus/APOLLO-ALN4-R15/main.svg	0	\N	0	[{"key": "Size", "value": "195/65 R15"}]
+
 9	3	GOOGLE-PX11-BLK-128	54640.00	89	10	http://localhost:9000/nexus-media/public/catalog/skus/GOOGLE-PX11-BLK-128/main.svg	0	49180.00	0	[{"key": "Color", "value": "Black"}, {"key": "Storage", "value": "128GB"}]
+
 16	4	LAVA-TAB11-SLV-256	27700.00	17	10	http://localhost:9000/nexus-media/public/catalog/skus/LAVA-TAB11-SLV-256/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "256GB"}]
+
 22	6	MICRO-INN3-BLK-256	38750.00	114	10	http://localhost:9000/nexus-media/public/catalog/skus/MICRO-INN3-BLK-256/main.svg	0	31780.00	0	[{"key": "Color", "value": "Black"}, {"key": "Storage", "value": "256GB"}]
+
 27	7	DELL-IN16P-32-1TB-BLK	136640.00	76	10	http://localhost:9000/nexus-media/public/catalog/skus/DELL-IN16P-32-1TB-BLK/main.svg	0	122980.00	0	[{"key": "RAM", "value": "32GB"}, {"key": "Color", "value": "Black"}, {"key": "Storage", "value": "1TB"}]
+
 3	1	APPLE-IP17-SLV-128	53430.00	83	10	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-SLV-128/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "128GB"}]
+
 33	9	ASUS-VBS16-16-512-BLK	61920.00	36	10	http://localhost:9000/nexus-media/public/catalog/skus/ASUS-VBS16-16-512-BLK/main.svg	0	\N	0	[{"key": "RAM", "value": "16GB"}, {"key": "Color", "value": "Black"}, {"key": "Storage", "value": "512GB"}]
+
 39	10	ONEPLUS-OPPAD3-SLV-128	43630.00	38	10	http://localhost:9000/nexus-media/public/catalog/skus/ONEPLUS-OPPAD3-SLV-128/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "128GB"}]
+
 44	12	NOTHING-EAR3-SLV	6930.00	9	10	http://localhost:9000/nexus-media/public/catalog/skus/NOTHING-EAR3-SLV/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}]
+
 49	16	SONY-WH6-BLK	34990.00	8	10	http://localhost:9000/nexus-media/public/catalog/skus/SONY-WH6-BLK/main.svg	0	31490.00	0	[{"key": "Color", "value": "Black"}]
+
 53	18	SAMSUNG-ODG6-27-QHD	11010.00	58	10	http://localhost:9000/nexus-media/public/catalog/skus/SAMSUNG-ODG6-27-QHD/main.svg	0	\N	0	[{"key": "Resolution", "value": "2560x1440"}, {"key": "Size (inches)", "value": "27"}]
+
 60	20	LEVIS-511SL-XL-BLK	4570.00	120	10	http://localhost:9000/nexus-media/public/catalog/skus/LEVIS-511SL-XL-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "XL"}, {"key": "Color", "value": "Black"}]
+
 65	22	PETEREN-PEFSH-S-BLK	2580.00	98	10	http://localhost:9000/nexus-media/public/catalog/skus/PETEREN-PEFSH-S-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "S"}, {"key": "Color", "value": "Black"}]
+
 70	23	RAYMOND-RFT-M-BLK	6050.00	98	10	http://localhost:9000/nexus-media/public/catalog/skus/RAYMOND-RFT-M-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "M"}, {"key": "Color", "value": "Black"}]
+
 76	25	ZARA-ZRBL-S-BLK	970.00	100	10	http://localhost:9000/nexus-media/public/catalog/skus/ZARA-ZRBL-S-BLK/main.svg	0	820.00	0	[{"key": "Size", "value": "S"}, {"key": "Color", "value": "Black"}]
+
 83	26	HM-HMD-XL-BLK	2500.00	150	10	http://localhost:9000/nexus-media/public/catalog/skus/HM-HMD-XL-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "XL"}, {"key": "Color", "value": "Black"}]
+
 87	27	FABIND-FBKRT-XL-BLK	2710.00	38	10	http://localhost:9000/nexus-media/public/catalog/skus/FABIND-FBKRT-XL-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "XL"}, {"key": "Color", "value": "Black"}]
+
 89	28	MANYAVAR-MVKRT-M-BLK	2550.00	93	10	http://localhost:9000/nexus-media/public/catalog/skus/MANYAVAR-MVKRT-M-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "M"}, {"key": "Color", "value": "Black"}]
+
 90	28	MANYAVAR-MVKRT-L-BLK	2550.00	149	10	http://localhost:9000/nexus-media/public/catalog/skus/MANYAVAR-MVKRT-L-BLK/main.svg	0	2300.00	0	[{"key": "Size", "value": "L"}, {"key": "Color", "value": "Black"}]
+
 97	30	NIKE-AM270-BLK-9	9820.00	95	10	http://localhost:9000/nexus-media/public/catalog/skus/NIKE-AM270-BLK-9/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Size (US)", "value": "9"}]
+
 102	31	ADIDAS-UBLGT-WHT-8	8260.00	23	10	http://localhost:9000/nexus-media/public/catalog/skus/ADIDAS-UBLGT-WHT-8/main.svg	0	\N	0	[{"key": "Color", "value": "White"}, {"key": "Size (US)", "value": "8"}]
+
 108	33	TNF-VEND-BLK-8	2540.00	133	10	http://localhost:9000/nexus-media/public/catalog/skus/TNF-VEND-BLK-8/main.svg	0	2160.00	0	[{"key": "Color", "value": "Black"}, {"key": "Size (US)", "value": "8"}]
+
 383	144	APOLLO-ALN4-R17	5830.00	78	10	http://localhost:9000/nexus-media/public/catalog/skus/APOLLO-ALN4-R17/main.svg	0	\N	0	[{"key": "Size", "value": "215/60 R17"}]
+
 385	145	CEAT-MILAZE-R16	11610.00	130	10	http://localhost:9000/nexus-media/public/catalog/skus/CEAT-MILAZE-R16/main.svg	0	\N	0	[{"key": "Size", "value": "205/55 R16"}]
+
 386	145	CEAT-MILAZE-R17	11610.00	126	10	http://localhost:9000/nexus-media/public/catalog/skus/CEAT-MILAZE-R17/main.svg	0	\N	0	[{"key": "Size", "value": "215/60 R17"}]
+
 387	146	TVS-EGRIP-R15	5380.00	132	10	http://localhost:9000/nexus-media/public/catalog/skus/TVS-EGRIP-R15/main.svg	0	4410.00	0	[{"key": "Size", "value": "195/65 R15"}]
+
 388	146	TVS-EGRIP-R16	5380.00	147	10	http://localhost:9000/nexus-media/public/catalog/skus/TVS-EGRIP-R16/main.svg	0	\N	0	[{"key": "Size", "value": "205/55 R16"}]
+
 390	147	BOSCHI-PSP-STD	3840.00	66	10	http://localhost:9000/nexus-media/public/catalog/skus/BOSCHI-PSP-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+
 391	148	CEAT-CBPS-STD	5420.00	103	10	http://localhost:9000/nexus-media/public/catalog/skus/CEAT-CBPS-STD/main.svg	0	4610.00	0	[{"key": "Color", "value": "Black"}]
+
 392	149	3M-CVC-BLK	3760.00	32	10	http://localhost:9000/nexus-media/public/catalog/skus/3M-CVC-BLK/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+
 393	149	3M-CVC-SLV	3830.00	25	10	http://localhost:9000/nexus-media/public/catalog/skus/3M-CVC-SLV/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}]
+
 396	151	CASTROL-EF-50ML	2770.00	43	10	http://localhost:9000/nexus-media/public/catalog/skus/CASTROL-EF-50ML/main.svg	0	2270.00	0	[{"key": "Pack Size", "value": "50ml"}]
+
 397	151	CASTROL-EF-100ML	2770.00	144	10	http://localhost:9000/nexus-media/public/catalog/skus/CASTROL-EF-100ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "100ml"}]
+
 398	152	MOTUL-CCLEAN-30ML	13020.00	67	10	http://localhost:9000/nexus-media/public/catalog/skus/MOTUL-CCLEAN-30ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "30ml"}]
+
 399	152	MOTUL-CCLEAN-50ML	13020.00	114	10	http://localhost:9000/nexus-media/public/catalog/skus/MOTUL-CCLEAN-50ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "50ml"}]
+
 115	35	VANH-VHBLT-M	6090.00	60	10	http://localhost:9000/nexus-media/public/catalog/skus/VANH-VHBLT-M/main.svg	0	\N	0	[{"key": "Size", "value": "M"}]
+
 120	37	NIKE-HBPK-SLV	1170.00	73	10	http://localhost:9000/nexus-media/public/catalog/skus/NIKE-HBPK-SLV/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}]
+
 125	40	IKEA-LACK-BLK	21530.00	80	10	http://localhost:9000/nexus-media/public/catalog/skus/IKEA-LACK-BLK/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+
 131	43	DYSON-V15D-STD	10510.00	25	10	http://localhost:9000/nexus-media/public/catalog/skus/DYSON-V15D-STD/main.svg	0	\N	0	\N
+
 135	45	PRESTIGE-AFPRO-6L	23130.00	30	10	http://localhost:9000/nexus-media/public/catalog/skus/PRESTIGE-AFPRO-6L/main.svg	0	18970.00	0	[{"key": "Capacity", "value": "6L"}]
+
 7	2	SAMSUNG-GS26-SLV-128	69890.00	107	10	http://localhost:9000/nexus-media/public/catalog/skus/SAMSUNG-GS26-SLV-128/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "128GB"}]
+
 8	2	SAMSUNG-GS26-SLV-256	75370.00	85	10	http://localhost:9000/nexus-media/public/catalog/skus/SAMSUNG-GS26-SLV-256/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "256GB"}]
+
 10	3	GOOGLE-PX11-BLK-256	59010.00	50	10	http://localhost:9000/nexus-media/public/catalog/skus/GOOGLE-PX11-BLK-256/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Storage", "value": "256GB"}]
+
 11	3	GOOGLE-PX11-SLV-128	55730.00	110	10	http://localhost:9000/nexus-media/public/catalog/skus/GOOGLE-PX11-SLV-128/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "128GB"}]
+
 12	3	GOOGLE-PX11-SLV-256	60100.00	99	10	http://localhost:9000/nexus-media/public/catalog/skus/GOOGLE-PX11-SLV-256/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "256GB"}]
+
 13	4	LAVA-TAB11-BLK-128	25180.00	75	10	http://localhost:9000/nexus-media/public/catalog/skus/LAVA-TAB11-BLK-128/main.svg	0	20650.00	0	[{"key": "Color", "value": "Black"}, {"key": "Storage", "value": "128GB"}]
+
 14	4	LAVA-TAB11-BLK-256	27190.00	52	10	http://localhost:9000/nexus-media/public/catalog/skus/LAVA-TAB11-BLK-256/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Storage", "value": "256GB"}]
+
 15	4	LAVA-TAB11-SLV-128	25680.00	20	10	http://localhost:9000/nexus-media/public/catalog/skus/LAVA-TAB11-SLV-128/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "128GB"}]
+
 17	5	ONEPLUS-OP14-BLK-128	40530.00	29	10	http://localhost:9000/nexus-media/public/catalog/skus/ONEPLUS-OP14-BLK-128/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Storage", "value": "128GB"}]
+
 18	5	ONEPLUS-OP14-BLK-256	43780.00	115	10	http://localhost:9000/nexus-media/public/catalog/skus/ONEPLUS-OP14-BLK-256/main.svg	0	40280.00	0	[{"key": "Color", "value": "Black"}, {"key": "Storage", "value": "256GB"}]
+
 19	5	ONEPLUS-OP14-SLV-128	41340.00	48	10	http://localhost:9000/nexus-media/public/catalog/skus/ONEPLUS-OP14-SLV-128/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "128GB"}]
+
 20	5	ONEPLUS-OP14-SLV-256	44590.00	112	10	http://localhost:9000/nexus-media/public/catalog/skus/ONEPLUS-OP14-SLV-256/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "256GB"}]
+
 21	6	MICRO-INN3-BLK-128	35880.00	90	10	http://localhost:9000/nexus-media/public/catalog/skus/MICRO-INN3-BLK-128/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Storage", "value": "128GB"}]
+
 42	11	PORT-MUFFM2-SLV	18530.00	35	10	http://localhost:9000/nexus-media/public/catalog/skus/PORT-MUFFM2-SLV/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}]
+
 286	105	MCGRAW-CCIT-HC	1260.00	211	10	http://localhost:9000/nexus-media/public/catalog/skus/MCGRAW-CCIT-HC/main.svg	0	\N	0	[{"key": "Format", "value": "Hardcover"}]
+
 150	54	CROMPTON-SEK-1.5L	1740.00	8	10	http://localhost:9000/nexus-media/public/catalog/skus/CROMPTON-SEK-1.5L/main.svg	0	\N	0	[{"key": "Capacity", "value": "1.5L"}]
+
 155	56	PRESTIGE-ODP-24CM	4820.00	98	10	http://localhost:9000/nexus-media/public/catalog/skus/PRESTIGE-ODP-24CM/main.svg	0	\N	0	[{"key": "Size", "value": "24cm"}]
+
 160	57	HAWKINS-FNT-28CM	6970.00	33	10	http://localhost:9000/nexus-media/public/catalog/skus/HAWKINS-FNT-28CM/main.svg	0	\N	0	[{"key": "Size", "value": "28cm"}]
+
 166	60	CLINIQUE-MS100-100ML	900.00	94	10	http://localhost:9000/nexus-media/public/catalog/skus/CLINIQUE-MS100-100ML/main.svg	0	810.00	0	[{"key": "Pack Size", "value": "100ml"}]
+
 172	64	FOREST-FTM-30ML	1450.00	75	10	http://localhost:9000/nexus-media/public/catalog/skus/FOREST-FTM-30ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "30ml"}]
+
 177	65	PLUM-GTFW-100ML	2300.00	41	10	http://localhost:9000/nexus-media/public/catalog/skus/PLUM-GTFW-100ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "100ml"}]
+
 182	67	MAYBELLINE-FMF-110	1660.00	79	10	http://localhost:9000/nexus-media/public/catalog/skus/MAYBELLINE-FMF-110/main.svg	0	\N	0	[{"key": "Shade", "value": "110 Porcelain"}]
+
 187	68	LAKME-9T5-120	2180.00	107	10	http://localhost:9000/nexus-media/public/catalog/skus/LAKME-9T5-120/main.svg	0	\N	0	[{"key": "Shade", "value": "120 Classic Ivory"}]
+
 191	69	NYKAA-SKGEN-120	1710.00	8	10	http://localhost:9000/nexus-media/public/catalog/skus/NYKAA-SKGEN-120/main.svg	0	\N	0	[{"key": "Shade", "value": "120 Classic Ivory"}]
+
 197	71	DOVE-DIR-30ML	760.00	152	10	http://localhost:9000/nexus-media/public/catalog/skus/DOVE-DIR-30ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "30ml"}]
+
 202	72	LOREAL-ARS-100ML	1840.00	149	10	http://localhost:9000/nexus-media/public/catalog/skus/LOREAL-ARS-100ML/main.svg	0	1620.00	0	[{"key": "Pack Size", "value": "100ml"}]
+
 207	74	NIVEA-MSG-50ML	1570.00	12	10	http://localhost:9000/nexus-media/public/catalog/skus/NIVEA-MSG-50ML/main.svg	0	1290.00	0	[{"key": "Pack Size", "value": "50ml"}]
+
 213	76	PLUM-GTSG-50ML	320.00	10	10	http://localhost:9000/nexus-media/public/catalog/skus/PLUM-GTSG-50ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "50ml"}]
+
 218	77	UA-CA10-WHT-9	8630.00	115	10	http://localhost:9000/nexus-media/public/catalog/skus/UA-CA10-WHT-9/main.svg	0	\N	0	[{"key": "Color", "value": "White"}, {"key": "Size (US)", "value": "9"}]
+
 223	79	NIVIA-RACER-BLK-8	6930.00	57	10	http://localhost:9000/nexus-media/public/catalog/skus/NIVIA-RACER-BLK-8/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Size (US)", "value": "8"}]
+
 228	80	VECTORX-SPRINT-BLK-9	4130.00	30	10	http://localhost:9000/nexus-media/public/catalog/skus/VECTORX-SPRINT-BLK-9/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Size (US)", "value": "9"}]
+
 138	47	KENT-KGR-STD	22540.00	111	10	http://localhost:9000/nexus-media/public/catalog/skus/KENT-KGR-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+
 139	48	LG-LGW65-6.5KG	14170.00	66	10	http://localhost:9000/nexus-media/public/catalog/skus/LG-LGW65-6.5KG/main.svg	0	12040.00	0	[{"key": "Capacity", "value": "6.5kg"}]
+
 145	51	HAVELLS-AQP-10L	7550.00	75	10	http://localhost:9000/nexus-media/public/catalog/skus/HAVELLS-AQP-10L/main.svg	0	\N	0	[{"key": "Capacity", "value": "10L"}]
+
 250	91	SG-SGP-S10	6600.00	81	10	http://localhost:9000/nexus-media/public/catalog/skus/SG-SGP-S10/main.svg	0	\N	0	[{"key": "Size", "value": "10"}]
+
 234	84	VECTORX-PTG-M	6750.00	23	10	http://localhost:9000/nexus-media/public/catalog/skus/VECTORX-PTG-M/main.svg	0	6080.00	0	[{"key": "Size", "value": "M"}]
+
 238	85	DECATHLON-BYM-SLV	5120.00	31	10	http://localhost:9000/nexus-media/public/catalog/skus/DECATHLON-BYM-SLV/main.svg	0	4510.00	0	[{"key": "Color", "value": "Silver"}]
+
 244	89	YONEX-A100Z-STD	3670.00	101	10	http://localhost:9000/nexus-media/public/catalog/skus/YONEX-A100Z-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+
 254	94	COSCO-CVB-STD	2460.00	117	10	http://localhost:9000/nexus-media/public/catalog/skus/COSCO-CVB-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+
 260	96	PRH-MNL-KD	1190.00	46	10	http://localhost:9000/nexus-media/public/catalog/skus/PRH-MNL-KD/main.svg	0	\N	0	[{"key": "Format", "value": "Kindle"}]
+
 266	98	RUPA-TSP-KD	1700.00	168	10	http://localhost:9000/nexus-media/public/catalog/skus/RUPA-TSP-KD/main.svg	0	\N	0	[{"key": "Format", "value": "Kindle"}]
+
 271	100	PRH-AH-HC	1540.00	47	10	http://localhost:9000/nexus-media/public/catalog/skus/PRH-AH-HC/main.svg	0	\N	0	[{"key": "Format", "value": "Hardcover"}]
+
 276	102	PEARSON-SSG-PB	1650.00	72	10	http://localhost:9000/nexus-media/public/catalog/skus/PEARSON-SSG-PB/main.svg	0	\N	0	[{"key": "Format", "value": "Paperback"}]
+
 282	104	OREILLY-DDIA-PB	1270.00	51	10	http://localhost:9000/nexus-media/public/catalog/skus/OREILLY-DDIA-PB/main.svg	0	\N	0	[{"key": "Format", "value": "Paperback"}]
+
 284	104	OREILLY-DDIA-KD	1220.00	221	10	http://localhost:9000/nexus-media/public/catalog/skus/OREILLY-DDIA-KD/main.svg	0	\N	0	[{"key": "Format", "value": "Kindle"}]
+
 288	106	PEARSON-JPC-PB	1510.00	216	10	http://localhost:9000/nexus-media/public/catalog/skus/PEARSON-JPC-PB/main.svg	0	1330.00	0	[{"key": "Format", "value": "Paperback"}]
+
 294	108	ARIHANT-PYCP-PB	870.00	182	10	http://localhost:9000/nexus-media/public/catalog/skus/ARIHANT-PYCP-PB/main.svg	0	\N	0	[{"key": "Format", "value": "Paperback"}]
+
 299	110	CROSSWORD-PRN-SLV	930.00	58	10	http://localhost:9000/nexus-media/public/catalog/skus/CROSSWORD-PRN-SLV/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}]
+
 305	114	PRH-RDJ-STD	700.00	135	10	http://localhost:9000/nexus-media/public/catalog/skus/PRH-RDJ-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+
 310	116	COKE-COKE-750ML	890.00	122	10	http://localhost:9000/nexus-media/public/catalog/skus/COKE-COKE-750ML/main.svg	0	730.00	0	[{"key": "Pack Size", "value": "750ml"}]
+
 315	118	TATA-TTG-100G	420.00	94	10	http://localhost:9000/nexus-media/public/catalog/skus/TATA-TTG-100G/main.svg	0	380.00	0	[{"key": "Pack Size", "value": "100g"}]
+
 320	119	MOTHERDAIRY-TDMLK-2L	670.00	183	10	http://localhost:9000/nexus-media/public/catalog/skus/MOTHERDAIRY-TDMLK-2L/main.svg	0	\N	0	[{"key": "Pack Size", "value": "2L"}]
+
 325	121	PARLE-HSB-200G	190.00	6	10	http://localhost:9000/nexus-media/public/catalog/skus/PARLE-HSB-200G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "200g"}]
+
 331	123	NESTLE-MUNCH-200G	410.00	49	10	http://localhost:9000/nexus-media/public/catalog/skus/NESTLE-MUNCH-200G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "200g"}]
+
 333	124	DABUR-REAL-500ML	540.00	100	10	http://localhost:9000/nexus-media/public/catalog/skus/DABUR-REAL-500ML/main.svg	0	460.00	0	[{"key": "Pack Size", "value": "500ml"}]
+
 337	125	KELLOGG-KCF-200G	300.00	7	10	http://localhost:9000/nexus-media/public/catalog/skus/KELLOGG-KCF-200G/main.svg	0	260.00	0	[{"key": "Pack Size", "value": "200g"}]
+
 342	127	AASHIRVAAD-MGA-100G	80.00	47	10	http://localhost:9000/nexus-media/public/catalog/skus/AASHIRVAAD-MGA-100G/main.svg	0	70.00	0	[{"key": "Pack Size", "value": "100g"}]
+
 348	129	FORTUNE-FSO-500ML	470.00	144	10	http://localhost:9000/nexus-media/public/catalog/skus/FORTUNE-FSO-500ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "500ml"}]
+
 353	130	PATANJALI-DALIA-500G	640.00	168	10	http://localhost:9000/nexus-media/public/catalog/skus/PATANJALI-DALIA-500G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "500g"}]
+
 359	132	AMUL-PGHEE-2L	540.00	92	10	http://localhost:9000/nexus-media/public/catalog/skus/AMUL-PGHEE-2L/main.svg	0	\N	0	[{"key": "Pack Size", "value": "2L"}]
+
 363	134	3M-MFC-30ML	7080.00	34	10	http://localhost:9000/nexus-media/public/catalog/skus/3M-MFC-30ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "30ml"}]
+
 369	138	CASTROL-MAG530-STD	2580.00	125	10	http://localhost:9000/nexus-media/public/catalog/skus/CASTROL-MAG530-STD/main.svg	0	2120.00	0	[{"key": "Color", "value": "Black"}]
+
 374	141	3M-PRIT-100ML	8130.00	23	10	http://localhost:9000/nexus-media/public/catalog/skus/3M-PRIT-100ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "100ml"}]
+
 379	143	MRF-PERF-R16	8280.00	150	10	http://localhost:9000/nexus-media/public/catalog/skus/MRF-PERF-R16/main.svg	0	\N	0	[{"key": "Size", "value": "205/55 R16"}]
+
 382	144	APOLLO-ALN4-R16	5830.00	112	10	http://localhost:9000/nexus-media/public/catalog/skus/APOLLO-ALN4-R16/main.svg	0	4780.00	0	[{"key": "Size", "value": "205/55 R16"}]
+
 384	145	CEAT-MILAZE-R15	11610.00	10	10	http://localhost:9000/nexus-media/public/catalog/skus/CEAT-MILAZE-R15/main.svg	0	\N	0	[{"key": "Size", "value": "195/65 R15"}]
+
 389	146	TVS-EGRIP-R17	5380.00	156	10	http://localhost:9000/nexus-media/public/catalog/skus/TVS-EGRIP-R17/main.svg	0	\N	0	[{"key": "Size", "value": "215/60 R17"}]
+
 395	151	CASTROL-EF-30ML	2770.00	111	10	http://localhost:9000/nexus-media/public/catalog/skus/CASTROL-EF-30ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "30ml"}]
+
 400	152	MOTUL-CCLEAN-100ML	13020.00	119	10	http://localhost:9000/nexus-media/public/catalog/skus/MOTUL-CCLEAN-100ML/main.svg	0	11980.00	0	[{"key": "Pack Size", "value": "100ml"}]
+
 \.
 
 
@@ -7025,7 +8267,7 @@ COPY integration.outbox_event (id, aggregate_type, aggregate_id, type, payload, 
 --
 
 COPY marketing.sms_coupon (id, type, name, platform, count, amount, per_limit, min_point, start_time, end_time, use_type, note, publish_count, use_count, receive_count, enable_time, code, max_discount_amount, version, stackable, is_public) FROM stdin;
-1	0	Welcome Promo	\N	99	10.00	1	0.00	2026-09-25 12:50:41.059784	2026-10-25 12:50:41.059784	0	\N	\N	\N	1	2026-09-25 12:50:41.059784	WELCOME10	\N	1	f	t
+1	0	Welcome Promo	\N	99	10.00	1	0.00	2026-09-25 12:50:41.059784	2026-10-25 12:50:41.059784	0	\N	\N	WELCOME10
 \.
 
 
@@ -7099,15 +8341,24 @@ COPY marketing.sms_flash_promotion_session (id, name, start_time, end_time, stat
 
 COPY migration.flyway_schema_history (installed_rank, version, description, type, script, checksum, installed_by, installed_on, execution_time, success) FROM stdin;
 1	1	baseline	SQL	V1__baseline.sql	146656653	postgres	2026-09-25 11:17:39.702335	93	t
+
 2	2	seed full catalog	SQL	V2__seed_full_catalog.sql	-734177831	postgres	2026-09-25 12:13:07.03409	58	t
+
 3	3	membership and admin	SQL	V3__membership_and_admin.sql	17031760	postgres	2026-09-25 12:13:07.158114	2	t
+
 4	3.1	product desc text	SQL	V3_1__product_desc_text.sql	1882706475	postgres	2026-09-25 12:13:07.165683	1	t
 5	4	english menus	SQL	V4__english_menus.sql	1654041005	postgres	2026-09-25 12:13:07.170771	4	t
+
 6	5	english resources	SQL	V5__english_resources.sql	1611983688	postgres	2026-09-25 12:13:07.178479	6	t
+
 7	6	coupon enhancements	SQL	V6__coupon_enhancements.sql	-1620614981	postgres	2026-09-25 12:13:07.189167	7	t
+
 8	7	flash sale tables	SQL	V7__flash_sale_tables.sql	1184604928	postgres	2026-09-25 12:13:07.200742	6	t
+
 9	8	ai chat history	SQL	V8__ai_chat_history.sql	-929212253	postgres	2026-09-25 12:13:07.210667	2	t
+
 10	9	coupon improvements	SQL	V9__coupon_improvements.sql	-1303713297	postgres	2026-09-25 12:49:00.385874	14	t
+
 \.
 
 
@@ -7116,24 +8367,24 @@ COPY migration.flyway_schema_history (installed_rank, version, description, type
 --
 
 COPY orders.oms_cart_item (id, product_id, product_sku_id, member_id, quantity, price, product_pic, product_name, product_sub_title, product_sku_code, member_nickname, create_date, modify_date, delete_status, product_category_id, product_brand, product_sn, product_attr) FROM stdin;
-19	1	2	1	1	56570.00	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-BLK-256/main.svg	iPhone 17 (Black, 256GB)	\N	APPLE-IP17-BLK-256	Customer One	2026-09-27 13:23:30.71045	\N	1	\N	\N	\N	[{"key":"Color","value":"Black"},{"key":"Storage","value":"256GB"}]
-21	1	3	1	1	53430.00	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-SLV-128/main.svg	iPhone 17 (Silver, 128GB)	\N	APPLE-IP17-SLV-128	Customer One	2026-09-27 13:23:37.33667	\N	1	\N	\N	\N	[{"key":"Color","value":"Silver"},{"key":"Storage","value":"128GB"}]
-4	150	\N	1	97	4640.00	http://localhost:9000/nexus-media/public/catalog/products/150/main.svg	Portable Tyre Inflator	\N	\N	Customer One	2026-09-25 14:24:42.129	\N	1	\N	\N	\N	\N
-5	150	\N	1	1	4640.00	http://localhost:9000/nexus-media/public/catalog/products/150/main.svg	Portable Tyre Inflator	\N	\N	Customer One	2026-09-25 14:26:31.164	\N	1	\N	\N	\N	\N
-8	1	4	1	4	57620.00	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-SLV-256/main.svg	iPhone 17 (Silver, 256GB)	\N	\N	Customer One	2026-09-25 23:09:55.831	\N	1	\N	\N	\N	\N
-20	1	4	1	2	57620.00	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-SLV-256/main.svg	iPhone 17 (Silver, 256GB)	\N	APPLE-IP17-SLV-256	Customer One	2026-09-27 13:23:34.42814	\N	1	\N	\N	\N	[{"key":"Color","value":"Silver"},{"key":"Storage","value":"256GB"}]
-6	1	2	1	4	56570.00	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-BLK-256/main.svg	iPhone 17 (Black, 256GB)	\N	\N	Customer One	2026-09-25 14:31:38.587	\N	1	\N	\N	\N	\N
-18	1	1	1	2	52380.00	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-BLK-128/main.svg	iPhone 17 (Black, 128GB)	\N	APPLE-IP17-BLK-128	Customer One	2026-09-27 13:23:26.192193	\N	1	\N	\N	\N	[{"key":"Color","value":"Black"},{"key":"Storage","value":"128GB"}]
-17	1	1	1	1	52380.00	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-BLK-128/main.svg	iPhone 17 (Black, 128GB)	\N	APPLE-IP17-BLK-128	Customer One	2026-09-27 13:13:34.827662	\N	1	\N	\N	\N	[{"key":"Color","value":"Black"},{"key":"Storage","value":"128GB"}]
-9	1	\N	1	12	56570.00	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-BLK-256/main.svg	iPhone 17 (Black, 256GB)	\N	\N	Customer One	2026-09-27 12:58:37.549046	2026-09-27 12:59:18.436263	1	\N	\N	\N	\N
-11	1	\N	1	21	56570.00	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-BLK-256/main.svg	iPhone 17 (Black, 256GB)	\N	\N	Customer One	2026-09-27 13:01:54.033302	2026-09-27 13:03:29.451347	1	\N	\N	\N	\N
-10	1	\N	1	2	56570.00	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-BLK-256/main.svg	iPhone 17 (Black, 256GB)	\N	\N	Customer One	2026-09-27 13:01:30.656942	\N	1	\N	\N	\N	\N
-16	1	2	1	12	56570.00	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-BLK-256/main.svg	iPhone 17 (Black, 256GB)	\N	APPLE-IP17-BLK-256	Customer One	2026-09-27 13:13:31.86371	\N	1	\N	\N	\N	[{"key":"Color","value":"Black"},{"key":"Storage","value":"256GB"}]
-12	1	2	1	1	56570.00	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-BLK-256/main.svg	iPhone 17 (Black, 256GB)	\N	APPLE-IP17-BLK-256	Customer One	2026-09-27 13:09:21.208676	\N	1	\N	\N	\N	[{"key":"Color","value":"Black"},{"key":"Storage","value":"256GB"}]
-13	1	4	1	2	57620.00	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-SLV-256/main.svg	iPhone 17 (Silver, 256GB)	\N	APPLE-IP17-SLV-256	Customer One	2026-09-27 13:09:25.557142	2026-09-27 13:10:01.324498	1	\N	\N	\N	[{"key":"Color","value":"Silver"},{"key":"Storage","value":"256GB"}]
-7	1	2	1	20	56570.00	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-BLK-256/main.svg	iPhone 17 (Black, 256GB)	\N	\N	Customer One	2026-09-25 23:02:21.602	2026-09-25 23:02:24.241	1	\N	\N	\N	\N
-15	1	1	1	22	52380.00	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-BLK-128/main.svg	iPhone 17 (Black, 128GB)	\N	APPLE-IP17-BLK-128	Customer One	2026-09-27 13:12:53.444645	\N	1	\N	\N	\N	[{"key":"Color","value":"Black"},{"key":"Storage","value":"128GB"}]
-14	1	2	1	18	56570.00	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-BLK-256/main.svg	iPhone 17 (Black, 256GB)	\N	APPLE-IP17-BLK-256	Customer One	2026-09-27 13:12:49.042026	\N	1	\N	\N	\N	[{"key":"Color","value":"Black"},{"key":"Storage","value":"256GB"}]
+19	1	2	1	1	56570.00	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-BLK-256/main.svg	iPhone 17 (Black, 256GB)	\N	APPLE-IP17-BLK-256	Customer One	2026-09-27 13:23:30.71045	1	\N
+21	1	3	1	1	53430.00	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-SLV-128/main.svg	iPhone 17 (Silver, 128GB)	\N	APPLE-IP17-SLV-128	Customer One	2026-09-27 13:23:37.33667	1	\N
+4	150	\N	1	97	4640.00	http://localhost:9000/nexus-media/public/catalog/products/150/main.svg	Portable Tyre Inflator	\N	\N	Customer One	2026-09-25 14:24:42.129	1	\N
+5	150	\N	1	1	4640.00	http://localhost:9000/nexus-media/public/catalog/products/150/main.svg	Portable Tyre Inflator	\N	\N	Customer One	2026-09-25 14:26:31.164	1	\N
+8	1	4	1	4	57620.00	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-SLV-256/main.svg	iPhone 17 (Silver, 256GB)	\N	\N	Customer One	2026-09-25 23:09:55.831	1	\N
+20	1	4	1	2	57620.00	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-SLV-256/main.svg	iPhone 17 (Silver, 256GB)	\N	APPLE-IP17-SLV-256	Customer One	2026-09-27 13:23:34.42814	1	\N
+6	1	2	1	4	56570.00	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-BLK-256/main.svg	iPhone 17 (Black, 256GB)	\N	\N	Customer One	2026-09-25 14:31:38.587	1	\N
+18	1	1	1	2	52380.00	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-BLK-128/main.svg	iPhone 17 (Black, 128GB)	\N	APPLE-IP17-BLK-128	Customer One	2026-09-27 13:23:26.192193	1	\N
+17	1	1	1	1	52380.00	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-BLK-128/main.svg	iPhone 17 (Black, 128GB)	\N	APPLE-IP17-BLK-128	Customer One	2026-09-27 13:13:34.827662	1	\N
+9	1	\N	1	12	56570.00	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-BLK-256/main.svg	iPhone 17 (Black, 256GB)	\N	\N	Customer One	2026-09-27 12:58:37.549046	1	\N
+11	1	\N	1	21	56570.00	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-BLK-256/main.svg	iPhone 17 (Black, 256GB)	\N	\N	Customer One	2026-09-27 13:01:54.033302	1	\N
+10	1	\N	1	2	56570.00	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-BLK-256/main.svg	iPhone 17 (Black, 256GB)	\N	\N	Customer One	2026-09-27 13:01:30.656942	1	\N
+16	1	2	1	12	56570.00	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-BLK-256/main.svg	iPhone 17 (Black, 256GB)	\N	APPLE-IP17-BLK-256	Customer One	2026-09-27 13:13:31.86371	1	\N
+12	1	2	1	1	56570.00	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-BLK-256/main.svg	iPhone 17 (Black, 256GB)	\N	APPLE-IP17-BLK-256	Customer One	2026-09-27 13:09:21.208676	1	\N
+13	1	4	1	2	57620.00	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-SLV-256/main.svg	iPhone 17 (Silver, 256GB)	\N	APPLE-IP17-SLV-256	Customer One	2026-09-27 13:09:25.557142	1	\N
+7	1	2	1	20	56570.00	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-BLK-256/main.svg	iPhone 17 (Black, 256GB)	\N	\N	Customer One	2026-09-25 23:02:21.602	1	\N
+15	1	1	1	22	52380.00	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-BLK-128/main.svg	iPhone 17 (Black, 128GB)	\N	APPLE-IP17-BLK-128	Customer One	2026-09-27 13:12:53.444645	1	\N
+14	1	2	1	18	56570.00	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-BLK-256/main.svg	iPhone 17 (Black, 256GB)	\N	APPLE-IP17-BLK-256	Customer One	2026-09-27 13:12:49.042026	1	\N
 \.
 
 
@@ -7151,9 +8402,9 @@ COPY orders.oms_company_address (id, address_name, send_status, receive_status, 
 --
 
 COPY orders.oms_order (id, member_id, coupon_id, order_sn, create_time, member_username, total_amount, pay_amount, freight_amount, promotion_amount, points_discount_amount, coupon_amount, discount_amount, pay_type, source_type, status, order_type, delivery_company, delivery_sn, auto_confirm_day, earned_points, promotion_info, bill_type, bill_header, bill_content, bill_receiver_phone, bill_receiver_email, receiver_name, receiver_phone, receiver_post_code, receiver_province, receiver_city, receiver_region, receiver_detail_address, note, confirm_status, delete_status, used_points, payment_id, payment_time, delivery_time, receive_time, comment_time, modify_time, vendor_id) FROM stdin;
-6	1	\N	202609270102000001	2026-09-27 12:59:38.215765	customer1	678840.00	679039.00	199.00	0.00	0.00	0.00	0.00	2	1	0	0	\N	\N	15	0	No promotion	\N	\N	\N	\N	\N	Customer One	9876543210	110001	Delhi	New Delhi	Central	123 Fake Street, Connaught Place	\N	0	0	\N	\N	\N	\N	\N	\N	\N	1
-7	1	\N	202609270102000002	2026-09-27 13:14:12.125836	customer1	731220.00	731419.00	199.00	0.00	0.00	0.00	0.00	2	1	0	0	\N	\N	15	0	No promotion;No promotion	\N	\N	\N	\N	\N	Customer One	9876543210	110001	Delhi	New Delhi	Central	123 Fake Street, Connaught Place	\N	0	0	\N	\N	\N	\N	\N	\N	\N	1
-8	1	\N	202609270102000003	2026-09-27 13:24:14.169148	customer1	330000.00	330199.00	199.00	0.00	0.00	0.00	0.00	2	1	1	0	\N	\N	15	0	No promotion;No promotion;No promotion;No promotion	\N	\N	\N	\N	\N	Customer One	9876543210	110001	Delhi	New Delhi	Central	123 Fake Street, Connaught Place	\N	0	0	\N	pay_Th4oaAl0j3L9gH	2026-09-27 13:25:13.041773	\N	\N	\N	\N	1
+6	1	\N	202609270102000001	2026-09-27 12:59:38.215765	customer1	678840.00	679039.00	199.00	0.00	0.00	0.00	2	0
+7	1	\N	202609270102000002	2026-09-27 13:14:12.125836	customer1	731220.00	731419.00	199.00	0.00	0.00	0.00	2	0
+8	1	\N	202609270102000003	2026-09-27 13:24:14.169148	customer1	330000.00	330199.00	199.00	0.00	0.00	0.00	2	0
 \.
 
 
@@ -7162,13 +8413,13 @@ COPY orders.oms_order (id, member_id, coupon_id, order_sn, create_time, member_u
 --
 
 COPY orders.oms_order_item (id, order_id, order_sn, product_id, product_pic, product_name, product_brand, product_sn, product_price, product_quantity, product_sku_id, product_sku_code, product_category_id, promotion_name, promotion_amount, coupon_amount, points_discount_amount, real_amount, earned_points, product_attr) FROM stdin;
-6	6	202609270102000001	1	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-BLK-256/main.svg	iPhone 17 (Black, 256GB)	\N	\N	56570.00	12	\N	\N	\N	No promotion	0.00	0.00	0.00	56570.00	\N	\N
-7	7	202609270102000002	1	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-BLK-128/main.svg	iPhone 17 (Black, 128GB)	\N	\N	52380.00	1	1	APPLE-IP17-BLK-128	\N	No promotion	0.00	0.00	0.00	52380.00	\N	[{"key":"Color","value":"Black"},{"key":"Storage","value":"128GB"}]
-8	7	202609270102000002	1	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-BLK-256/main.svg	iPhone 17 (Black, 256GB)	\N	\N	56570.00	12	2	APPLE-IP17-BLK-256	\N	No promotion	0.00	0.00	0.00	56570.00	\N	[{"key":"Color","value":"Black"},{"key":"Storage","value":"256GB"}]
-9	8	202609270102000003	1	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-BLK-256/main.svg	iPhone 17 (Black, 256GB)	\N	\N	56570.00	1	2	APPLE-IP17-BLK-256	\N	No promotion	0.00	0.00	0.00	56570.00	\N	[{"key":"Color","value":"Black"},{"key":"Storage","value":"256GB"}]
-10	8	202609270102000003	1	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-SLV-128/main.svg	iPhone 17 (Silver, 128GB)	\N	\N	53430.00	1	3	APPLE-IP17-SLV-128	\N	No promotion	0.00	0.00	0.00	53430.00	\N	[{"key":"Color","value":"Silver"},{"key":"Storage","value":"128GB"}]
-11	8	202609270102000003	1	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-SLV-256/main.svg	iPhone 17 (Silver, 256GB)	\N	\N	57620.00	2	4	APPLE-IP17-SLV-256	\N	No promotion	0.00	0.00	0.00	57620.00	\N	[{"key":"Color","value":"Silver"},{"key":"Storage","value":"256GB"}]
-12	8	202609270102000003	1	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-BLK-128/main.svg	iPhone 17 (Black, 128GB)	\N	\N	52380.00	2	1	APPLE-IP17-BLK-128	\N	No promotion	0.00	0.00	0.00	52380.00	\N	[{"key":"Color","value":"Black"},{"key":"Storage","value":"128GB"}]
+6	6	202609270102000001	1	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-BLK-256/main.svg	iPhone 17 (Black, 256GB)	\N	\N	56570.00	12	\N	\N	No promotion	0.00
+7	7	202609270102000002	1	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-BLK-128/main.svg	iPhone 17 (Black, 128GB)	\N	\N	52380.00	1	1	APPLE-IP17-BLK-128	No promotion	0.00
+8	7	202609270102000002	1	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-BLK-256/main.svg	iPhone 17 (Black, 256GB)	\N	\N	56570.00	12	2	APPLE-IP17-BLK-256	No promotion	0.00
+9	8	202609270102000003	1	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-BLK-256/main.svg	iPhone 17 (Black, 256GB)	\N	\N	56570.00	1	2	APPLE-IP17-BLK-256	No promotion	0.00
+10	8	202609270102000003	1	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-SLV-128/main.svg	iPhone 17 (Silver, 128GB)	\N	\N	53430.00	1	3	APPLE-IP17-SLV-128	No promotion	0.00
+11	8	202609270102000003	1	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-SLV-256/main.svg	iPhone 17 (Silver, 256GB)	\N	\N	57620.00	2	4	APPLE-IP17-SLV-256	No promotion	0.00
+12	8	202609270102000003	1	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-BLK-128/main.svg	iPhone 17 (Black, 128GB)	\N	\N	52380.00	2	1	APPLE-IP17-BLK-128	No promotion	0.00
 \.
 
 
@@ -7185,7 +8436,7 @@ COPY orders.oms_order_operate_history (id, order_id, operate_man, create_time, o
 --
 
 COPY orders.oms_order_return_apply (id, order_id, company_address_id, product_id, order_sn, create_time, member_username, return_amount, return_name, return_phone, status, handle_time, product_pic, product_name, product_brand, product_attr, product_count, product_price, product_real_price, reason, description, proof_pics, handle_note, handle_man, receive_man, receive_time, receive_note) FROM stdin;
-2	8	1	1	202609270102000003	2026-09-27 13:25:33.65216	customer1	28810.00	Customer One		2	2026-09-27 13:27:01.141076	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-SLV-256/main.svg	iPhone 17 (Silver, 256GB)	\N	[{"key":"Color","value":"Silver"},{"key":"Storage","value":"256GB"}]	1	57620.00	28810.00	Defective product	Defective product	\N	ok	admin	admin	2026-09-27 13:27:04.423864	ok
+2	8	1	1	202609270102000003	2026-09-27 13:25:33.65216	customer1	28810.00	Customer One		2	2026-09-27 13:27:01.141076	iPhone 17 (Silver, 256GB)	1
 \.
 
 
@@ -7207,6 +8458,7 @@ COPY orders.oms_order_return_reason (id, name, sort, status, create_time) FROM s
 
 COPY orders.oms_order_setting (id, flash_order_overtime, normal_order_overtime, confirm_overtime, finish_overtime, comment_overtime) FROM stdin;
 1	60	120	15	7	7
+
 \.
 
 
@@ -7233,15 +8485,24 @@ COPY public.ai_chat_conversation (id, member_id, session_id, role, content, mode
 
 COPY public.flyway_schema_history (installed_rank, version, description, type, script, checksum, installed_by, installed_on, execution_time, success) FROM stdin;
 1	1	baseline	SQL	V1__baseline.sql	146656653	postgres	2026-09-27 01:38:11.920816	110	t
+
 2	2	seed full catalog	SQL	V2__seed_full_catalog.sql	-734177831	postgres	2026-09-27 01:38:12.089311	108	t
+
 3	3	membership and admin	SQL	V3__membership_and_admin.sql	17031760	postgres	2026-09-27 01:38:12.283447	7	t
+
 4	3.1	product desc text	SQL	V3_1__product_desc_text.sql	1882706475	postgres	2026-09-27 01:38:12.299541	3	t
 5	4	english menus	SQL	V4__english_menus.sql	1654041005	postgres	2026-09-27 01:38:12.309145	7	t
+
 6	5	english resources	SQL	V5__english_resources.sql	1611983688	postgres	2026-09-27 01:38:12.32246	9	t
+
 7	6	coupon enhancements	SQL	V6__coupon_enhancements.sql	-1620614981	postgres	2026-09-27 01:38:12.337257	9	t
+
 8	7	flash sale tables	SQL	V7__flash_sale_tables.sql	1184604928	postgres	2026-09-27 01:38:12.352003	11	t
+
 9	8	ai chat history	SQL	V8__ai_chat_history.sql	-929212253	postgres	2026-09-27 01:38:12.368953	5	t
+
 10	9	coupon improvements	SQL	V9__coupon_improvements.sql	-1303713297	postgres	2026-09-27 01:38:12.378824	3	t
+
 \.
 
 
@@ -7332,111 +8593,111 @@ COPY public.outbox_event (id, aggregate_type, aggregate_id, type, payload, statu
 -- Data for Name: pms_brand; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.pms_brand (id, name, first_letter, sort, factory_status, show_status, product_count, product_comment_count, logo, big_pic, brand_story) FROM stdin;
-1	Apple	A	0	1	1	0	0	\N	\N	Story of Apple
-2	Samsung	S	0	1	1	0	0	\N	\N	Story of Samsung
-3	Google	G	0	1	1	0	0	\N	\N	Story of Google
-4	Sony	S	0	1	1	0	0	\N	\N	Story of Sony
-5	OnePlus	O	0	1	1	0	0	\N	\N	Story of OnePlus
-6	Nothing	N	0	1	1	0	0	\N	\N	Story of Nothing
-7	Dell	D	0	1	1	0	0	\N	\N	Story of Dell
-8	Lenovo	L	0	1	1	0	0	\N	\N	Story of Lenovo
-9	ASUS	A	0	1	1	0	0	\N	\N	Story of ASUS
-10	Logitech	L	0	1	1	0	0	\N	\N	Story of Logitech
-11	boAt	B	0	1	1	0	0	\N	\N	Story of boAt
-12	Noise	N	0	1	1	0	0	\N	\N	Story of Noise
-13	Portronics	P	0	1	1	0	0	\N	\N	Story of Portronics
-14	Zebronics	Z	0	1	1	0	0	\N	\N	Story of Zebronics
-15	Lava	L	0	1	1	0	0	\N	\N	Story of Lava
-16	Micromax	M	0	1	1	0	0	\N	\N	Story of Micromax
-17	Nike	N	0	1	1	0	0	\N	\N	Story of Nike
-18	Adidas	A	0	1	1	0	0	\N	\N	Story of Adidas
-19	Puma	P	0	1	1	0	0	\N	\N	Story of Puma
-20	Levi's	L	0	1	1	0	0	\N	\N	Story of Levi's
-21	Uniqlo	U	0	1	1	0	0	\N	\N	Story of Uniqlo
-22	Zara	Z	0	1	1	0	0	\N	\N	Story of Zara
-23	H&M	H	0	1	1	0	0	\N	\N	Story of H&M
-24	Ray-Ban	R	0	1	1	0	0	\N	\N	Story of Ray-Ban
-25	The North Face	T	0	1	1	0	0	\N	\N	Story of The North Face
-26	FabIndia	F	0	1	1	0	0	\N	\N	Story of FabIndia
-27	Manyavar	M	0	1	1	0	0	\N	\N	Story of Manyavar
-28	W for Woman	W	0	1	1	0	0	\N	\N	Story of W for Woman
-29	Allen Solly	A	0	1	1	0	0	\N	\N	Story of Allen Solly
-30	Peter England	P	0	1	1	0	0	\N	\N	Story of Peter England
-31	Raymond	R	0	1	1	0	0	\N	\N	Story of Raymond
-32	Van Heusen	V	0	1	1	0	0	\N	\N	Story of Van Heusen
-33	IKEA	I	0	1	1	0	0	\N	\N	Story of IKEA
-34	Philips	P	0	1	1	0	0	\N	\N	Story of Philips
-35	Dyson	D	0	1	1	0	0	\N	\N	Story of Dyson
-36	LG	L	0	1	1	0	0	\N	\N	Story of LG
-37	Bosch	B	0	1	1	0	0	\N	\N	Story of Bosch
-38	Prestige	P	0	1	1	0	0	\N	\N	Story of Prestige
-39	Hawkins	H	0	1	1	0	0	\N	\N	Story of Hawkins
-40	KENT	K	0	1	1	0	0	\N	\N	Story of KENT
-41	Bajaj	B	0	1	1	0	0	\N	\N	Story of Bajaj
-42	Havells	H	0	1	1	0	0	\N	\N	Story of Havells
-43	Usha	U	0	1	1	0	0	\N	\N	Story of Usha
-44	Butterfly	B	0	1	1	0	0	\N	\N	Story of Butterfly
-45	Crompton	C	0	1	1	0	0	\N	\N	Story of Crompton
-46	Wonderchef	W	0	1	1	0	0	\N	\N	Story of Wonderchef
-47	L'Oréal	L	0	1	1	0	0	\N	\N	Story of L'Oréal
-48	Maybelline	M	0	1	1	0	0	\N	\N	Story of Maybelline
-49	Nivea	N	0	1	1	0	0	\N	\N	Story of Nivea
-50	Clinique	C	0	1	1	0	0	\N	\N	Story of Clinique
-51	The Ordinary	T	0	1	1	0	0	\N	\N	Story of The Ordinary
-52	Dove	D	0	1	1	0	0	\N	\N	Story of Dove
-53	Neutrogena	N	0	1	1	0	0	\N	\N	Story of Neutrogena
-54	Lakmé	L	0	1	1	0	0	\N	\N	Story of Lakmé
-55	Mamaearth	M	0	1	1	0	0	\N	\N	Story of Mamaearth
-56	Minimalist	M	0	1	1	0	0	\N	\N	Story of Minimalist
-57	Forest Essentials	F	0	1	1	0	0	\N	\N	Story of Forest Essentials
-58	Plum	P	0	1	1	0	0	\N	\N	Story of Plum
-59	Nykaa	N	0	1	1	0	0	\N	\N	Story of Nykaa
-60	Biotique	B	0	1	1	0	0	\N	\N	Story of Biotique
-61	Under Armour	U	0	1	1	0	0	\N	\N	Story of Under Armour
-62	Decathlon	D	0	1	1	0	0	\N	\N	Story of Decathlon
-63	Wilson	W	0	1	1	0	0	\N	\N	Story of Wilson
-64	Yonex	Y	0	1	1	0	0	\N	\N	Story of Yonex
-65	Nivia	N	0	1	1	0	0	\N	\N	Story of Nivia
-66	Cosco	C	0	1	1	0	0	\N	\N	Story of Cosco
-67	SS	S	0	1	1	0	0	\N	\N	Story of SS
-68	SG	S	0	1	1	0	0	\N	\N	Story of SG
-69	Vector X	V	0	1	1	0	0	\N	\N	Story of Vector X
-70	Penguin Random House	P	0	1	1	0	0	\N	\N	Story of Penguin Random House
-71	O'Reilly	O	0	1	1	0	0	\N	\N	Story of O'Reilly
-72	McGraw Hill	M	0	1	1	0	0	\N	\N	Story of McGraw Hill
-73	Pearson	P	0	1	1	0	0	\N	\N	Story of Pearson
-74	Moleskine	M	0	1	1	0	0	\N	\N	Story of Moleskine
-75	Rupa Publications	R	0	1	1	0	0	\N	\N	Story of Rupa Publications
-76	S. Chand	S	0	1	1	0	0	\N	\N	Story of S. Chand
-77	Arihant	A	0	1	1	0	0	\N	\N	Story of Arihant
-78	Amar Chitra Katha	A	0	1	1	0	0	\N	\N	Story of Amar Chitra Katha
-79	Crossword	C	0	1	1	0	0	\N	\N	Story of Crossword
-80	Nestlé	N	0	1	1	0	0	\N	\N	Story of Nestlé
-81	Coca-Cola	C	0	1	1	0	0	\N	\N	Story of Coca-Cola
-82	Kellogg's	K	0	1	1	0	0	\N	\N	Story of Kellogg's
-83	Unilever	U	0	1	1	0	0	\N	\N	Story of Unilever
-84	Britannia	B	0	1	1	0	0	\N	\N	Story of Britannia
-85	Tata	T	0	1	1	0	0	\N	\N	Story of Tata
-86	Amul	A	0	1	1	0	0	\N	\N	Story of Amul
-87	Parle	P	0	1	1	0	0	\N	\N	Story of Parle
-88	ITC	I	0	1	1	0	0	\N	\N	Story of ITC
-89	Dabur	D	0	1	1	0	0	\N	\N	Story of Dabur
-90	Patanjali	P	0	1	1	0	0	\N	\N	Story of Patanjali
-91	Mother Dairy	M	0	1	1	0	0	\N	\N	Story of Mother Dairy
-92	Aashirvaad	A	0	1	1	0	0	\N	\N	Story of Aashirvaad
-93	Fortune	F	0	1	1	0	0	\N	\N	Story of Fortune
-94	MTR	M	0	1	1	0	0	\N	\N	Story of MTR
-95	Michelin	M	0	1	1	0	0	\N	\N	Story of Michelin
-96	Castrol	C	0	1	1	0	0	\N	\N	Story of Castrol
-97	3M	3	0	1	1	0	0	\N	\N	Story of 3M
-98	Motul	M	0	1	1	0	0	\N	\N	Story of Motul
-99	CEAT	C	0	1	1	0	0	\N	\N	Story of CEAT
-100	MRF	M	0	1	1	0	0	\N	\N	Story of MRF
-101	Apollo Tyres	A	0	1	1	0	0	\N	\N	Story of Apollo Tyres
-102	TVS	T	0	1	1	0	0	\N	\N	Story of TVS
-103	Bosch India	B	0	1	1	0	0	\N	\N	Story of Bosch India
-104	Gulf Oi	G	0	1	1	0	0	\N	\N	Story of Gulf Oi
+COPY public.pms_brand (id, name, show_status, logo) FROM stdin;
+1	Apple	1	\N
+2	Samsung	1	\N
+3	Google	1	\N
+4	Sony	1	\N
+5	OnePlus	1	\N
+6	Nothing	1	\N
+7	Dell	1	\N
+8	Lenovo	1	\N
+9	ASUS	1	\N
+10	Logitech	1	\N
+11	boAt	1	\N
+12	Noise	1	\N
+13	Portronics	1	\N
+14	Zebronics	1	\N
+15	Lava	1	\N
+16	Micromax	1	\N
+17	Nike	1	\N
+18	Adidas	1	\N
+19	Puma	1	\N
+20	Levi's	1	\N
+21	Uniqlo	1	\N
+22	Zara	1	\N
+23	H&M	1	\N
+24	Ray-Ban	1	\N
+25	The North Face	1	\N
+26	FabIndia	1	\N
+27	Manyavar	1	\N
+28	W for Woman	1	\N
+29	Allen Solly	1	\N
+30	Peter England	1	\N
+31	Raymond	1	\N
+32	Van Heusen	1	\N
+33	IKEA	1	\N
+34	Philips	1	\N
+35	Dyson	1	\N
+36	LG	1	\N
+37	Bosch	1	\N
+38	Prestige	1	\N
+39	Hawkins	1	\N
+40	KENT	1	\N
+41	Bajaj	1	\N
+42	Havells	1	\N
+43	Usha	1	\N
+44	Butterfly	1	\N
+45	Crompton	1	\N
+46	Wonderchef	1	\N
+47	L'Oréal	1	\N
+48	Maybelline	1	\N
+49	Nivea	1	\N
+50	Clinique	1	\N
+51	The Ordinary	1	\N
+52	Dove	1	\N
+53	Neutrogena	1	\N
+54	Lakmé	1	\N
+55	Mamaearth	1	\N
+56	Minimalist	1	\N
+57	Forest Essentials	1	\N
+58	Plum	1	\N
+59	Nykaa	1	\N
+60	Biotique	1	\N
+61	Under Armour	1	\N
+62	Decathlon	1	\N
+63	Wilson	1	\N
+64	Yonex	1	\N
+65	Nivia	1	\N
+66	Cosco	1	\N
+67	SS	1	\N
+68	SG	1	\N
+69	Vector X	1	\N
+70	Penguin Random House	1	\N
+71	O'Reilly	1	\N
+72	McGraw Hill	1	\N
+73	Pearson	1	\N
+74	Moleskine	1	\N
+75	Rupa Publications	1	\N
+76	S. Chand	1	\N
+77	Arihant	1	\N
+78	Amar Chitra Katha	1	\N
+79	Crossword	1	\N
+80	Nestlé	1	\N
+81	Coca-Cola	1	\N
+82	Kellogg's	1	\N
+83	Unilever	1	\N
+84	Britannia	1	\N
+85	Tata	1	\N
+86	Amul	1	\N
+87	Parle	1	\N
+88	ITC	1	\N
+89	Dabur	1	\N
+90	Patanjali	1	\N
+91	Mother Dairy	1	\N
+92	Aashirvaad	1	\N
+93	Fortune	1	\N
+94	MTR	1	\N
+95	Michelin	1	\N
+96	Castrol	1	\N
+97	3M	1	\N
+98	Motul	1	\N
+99	CEAT	1	\N
+100	MRF	1	\N
+101	Apollo Tyres	1	\N
+102	TVS	1	\N
+103	Bosch India	1	\N
+104	Gulf Oi	1	\N
 \.
 
 
@@ -7444,7 +8705,7 @@ COPY public.pms_brand (id, name, first_letter, sort, factory_status, show_status
 -- Data for Name: pms_comment; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.pms_comment (id, product_id, member_nick_name, product_name, star, member_ip, create_time, show_status, product_attribute, likes_count, read_count, pics, member_icon, reply_count, content) FROM stdin;
+COPY public.pms_comment (id, product_id, member_nick_name, product_name, star, member_ip, create_time, show_status, likes_count, dislike_count, pics, member_icon, reply_count, content) FROM stdin;
 \.
 
 
@@ -7461,16 +8722,16 @@ COPY public.pms_comment_reply (id, comment_id, member_nick_name, member_icon, co
 --
 
 COPY public.pms_product (id, brand_id, product_category_id, product_attribute_category_id, name, pic, product_sn, delete_status, publish_status, new_status, recommend_status, verify_status, sort, sale, sub_title, unit, weight, service_ids, keywords, note, promotion_start_time, promotion_end_time, promotion_per_limit, promotion_type, brand_name, product_category_name, description, detail_html, detail_title, detail_desc, vendor_id) FROM stdin;
-1	1	2	1	iPhone 17	http://localhost:9000/nexus-media/public/catalog/products/1-iphone-17/main.webp	APP-IPH-1	0	1	1	1	1	0	0	\N	piece	500.00	\N	iphone 17	\N	\N	\N	\N	\N	\N	\N	\N	\N	iPhone 17 Details	\N	\N
-2	2	2	1	Galaxy S25	http://localhost:9000/nexus-media/public/catalog/products/2-galaxy-s25/main.webp	SAM-GAL-2	0	1	1	1	1	0	0	\N	piece	500.00	\N	galaxy s25	\N	\N	\N	\N	\N	\N	\N	\N	\N	Galaxy S25 Details	\N	\N
-3	1	3	2	MacBook Pro M5	http://localhost:9000/nexus-media/public/catalog/products/3-macbook-pro-m5/main.webp	APP-MAC-3	0	1	1	1	1	0	0	\N	piece	500.00	\N	macbook pro m5	\N	\N	\N	\N	\N	\N	\N	\N	\N	MacBook Pro M5 Details	\N	\N
-4	17	13	4	Air Max 2026	http://localhost:9000/nexus-media/public/catalog/products/4-air-max-2026/main.webp	NIK-AIR-4	0	1	1	1	1	0	0	\N	piece	500.00	\N	air max 2026	\N	\N	\N	\N	\N	\N	\N	\N	\N	Air Max 2026 Details	\N	\N
-5	18	13	4	Ultraboost 26	http://localhost:9000/nexus-media/public/catalog/products/5-ultraboost-26/main.webp	ADI-ULT-5	0	1	1	1	1	0	0	\N	piece	500.00	\N	ultraboost 26	\N	\N	\N	\N	\N	\N	\N	\N	\N	Ultraboost 26 Details	\N	\N
-6	73	33	7	Clean Code	http://localhost:9000/nexus-media/public/catalog/products/6-clean-code/main.webp	PEA-CLE-6	0	1	1	1	1	0	0	\N	piece	500.00	\N	clean code	\N	\N	\N	\N	\N	\N	\N	\N	\N	Clean Code Details	\N	\N
-7	81	36	8	Coca-Cola Zero	http://localhost:9000/nexus-media/public/catalog/products/7-coca-cola-zero/main.webp	COC-COC-7	0	1	1	1	1	0	0	\N	piece	500.00	\N	coca-cola zero	\N	\N	\N	\N	\N	\N	\N	\N	\N	Coca-Cola Zero Details	\N	\N
-8	21	11	5	Supima Cotton T-Shirt	http://localhost:9000/nexus-media/public/catalog/products/8-supima-cotton-t-shirt/main.webp	UNI-SUP-8	0	1	1	1	1	0	0	\N	piece	500.00	\N	supima cotton t-shirt	\N	\N	\N	\N	\N	\N	\N	\N	\N	Supima Cotton T-Shirt Details	\N	\N
-9	4	5	3	WH-1000XM6	http://localhost:9000/nexus-media/public/catalog/products/9-wh-1000xm6/main.webp	SON-WH--9	0	1	1	1	1	0	0	\N	piece	500.00	\N	wh-1000xm6	\N	\N	\N	\N	\N	\N	\N	\N	\N	WH-1000XM6 Details	\N	\N
-10	35	18	10	V15 Detect Absolute	http://localhost:9000/nexus-media/public/catalog/products/10-v15-detect-absolute/main.webp	DYS-V15-10	0	1	1	1	1	0	0	\N	piece	500.00	\N	v15 detect absolute	\N	\N	\N	\N	\N	\N	\N	\N	\N	V15 Detect Absolute Details	\N	\N
+1	1	2	1	iPhone 17	http://localhost:9000/nexus-media/public/catalog/products/1-iphone-17/main.webp	APP-IPH-1	0	1	1	1	1	0	500.00
+2	2	2	1	Galaxy S25	http://localhost:9000/nexus-media/public/catalog/products/2-galaxy-s25/main.webp	SAM-GAL-2	0	1	1	1	1	0	500.00
+3	1	3	2	MacBook Pro M5	http://localhost:9000/nexus-media/public/catalog/products/3-macbook-pro-m5/main.webp	APP-MAC-3	0	1	1	1	1	0	500.00
+4	17	13	4	Air Max 2026	http://localhost:9000/nexus-media/public/catalog/products/4-air-max-2026/main.webp	NIK-AIR-4	0	1	1	1	1	0	500.00
+5	18	13	4	Ultraboost 26	http://localhost:9000/nexus-media/public/catalog/products/5-ultraboost-26/main.webp	ADI-ULT-5	0	1	1	1	1	0	500.00
+6	73	33	7	Clean Code	http://localhost:9000/nexus-media/public/catalog/products/6-clean-code/main.webp	PEA-CLE-6	0	1	1	1	1	0	500.00
+7	81	36	8	Coca-Cola Zero	http://localhost:9000/nexus-media/public/catalog/products/7-coca-cola-zero/main.webp	COC-COC-7	0	1	1	1	1	0	500.00
+8	21	11	5	Supima Cotton T-Shirt	http://localhost:9000/nexus-media/public/catalog/products/8-supima-cotton-t-shirt/main.webp	UNI-SUP-8	0	1	1	1	1	0	500.00
+9	4	5	3	WH-1000XM6	http://localhost:9000/nexus-media/public/catalog/products/9-wh-1000xm6/main.webp	SON-WH--9	0	1	1	1	1	0	500.00
+10	35	18	10	V15 Detect Absolute	http://localhost:9000/nexus-media/public/catalog/products/10-v15-detect-absolute/main.webp	DYS-V15-10	0	1	1	1	1	0	500.00
 \.
 
 
@@ -7480,21 +8741,37 @@ COPY public.pms_product (id, brand_id, product_category_id, product_attribute_ca
 
 COPY public.pms_product_attribute (id, product_attribute_category_id, name, select_type, input_type, input_list, sort, filter_type, search_type, related_status, hand_add_status, type) FROM stdin;
 1	1	Color	1	1	Value1,Value2	0	1	1	1	0	0
+
 2	1	Storage	1	1	Value1,Value2	0	1	1	1	0	0
+
 3	2	RAM	1	1	Value1,Value2	0	1	1	1	0	0
+
 4	2	Storage	1	1	Value1,Value2	0	1	1	1	0	0
+
 5	2	Color	1	1	Value1,Value2	0	1	1	1	0	0
+
 6	3	Color	1	1	Value1,Value2	0	1	1	1	0	0
+
 7	4	Size (US)	1	1	Value1,Value2	0	1	1	1	0	0
+
 8	4	Color	1	1	Value1,Value2	0	1	1	1	0	0
+
 9	5	Size	1	1	Value1,Value2	0	1	1	1	0	0
+
 10	5	Color	1	1	Value1,Value2	0	1	1	1	0	0
+
 11	6	Shade	1	1	Value1,Value2	0	1	1	1	0	0
+
 12	7	Format	1	1	Value1,Value2	0	1	1	1	0	0
+
 13	8	Pack Size	1	1	Value1,Value2	0	1	1	1	0	0
+
 14	9	Size (inches)	1	1	Value1,Value2	0	1	1	1	0	0
+
 15	9	Resolution	1	1	Value1,Value2	0	1	1	1	0	0
+
 16	10	Color	1	1	Value1,Value2	0	1	1	1	0	0
+
 \.
 
 
@@ -7522,78 +8799,151 @@ COPY public.pms_product_attribute_category (id, name, attribute_count, param_cou
 
 COPY public.pms_product_attribute_value (id, product_id, product_attribute_id, value) FROM stdin;
 1	1	1	Black
+
 2	1	2	128GB
+
 3	1	1	Black
+
 4	1	2	256GB
+
 5	1	1	Silver
+
 6	1	2	128GB
+
 7	1	1	Silver
+
 8	1	2	256GB
+
 9	2	1	Phantom Black
+
 10	2	2	256GB
+
 11	2	1	Phantom Black
+
 12	2	2	512GB
+
 13	2	1	Cream
+
 14	2	2	256GB
+
 15	2	1	Cream
+
 16	2	2	512GB
+
 17	3	3	16GB
+
 18	3	4	512GB
+
 19	3	5	Space Gray
+
 20	3	3	16GB
+
 21	3	4	1TB
+
 22	3	5	Space Gray
+
 23	3	3	32GB
+
 24	3	4	512GB
+
 25	3	5	Space Gray
+
 26	3	3	32GB
+
 27	3	4	1TB
+
 28	3	5	Space Gray
+
 29	4	7	8
+
 30	4	8	Black
+
 31	4	7	8
+
 32	4	8	White
+
 33	4	7	9
+
 34	4	8	Black
+
 35	4	7	9
+
 36	4	8	White
+
 37	4	7	10
+
 38	4	8	Black
+
 39	4	7	10
+
 40	4	8	White
+
 41	5	7	7
+
 42	5	8	Core Black
+
 43	5	7	8
+
 44	5	8	Core Black
+
 45	5	7	9
+
 46	5	8	Core Black
+
 47	6	12	Paperback
+
 48	6	12	Hardcover
+
 49	6	12	Kindle
+
 50	7	13	300ml
+
 51	7	13	750ml
+
 52	7	13	1.25L
+
 53	7	13	2.25L
+
 54	8	9	S
+
 55	8	10	White
+
 56	8	9	S
+
 57	8	10	Black
+
 58	8	9	M
+
 59	8	10	White
+
 60	8	9	M
+
 61	8	10	Black
+
 62	8	9	L
+
 63	8	10	White
+
 64	8	9	L
+
 65	8	10	Black
+
 66	8	9	XL
+
 67	8	10	White
+
 68	8	9	XL
+
 69	8	10	Black
+
 70	9	6	Black
+
 71	9	6	Silver
+
 72	9	6	Blue
+
 73	10	16	Yellow/Nickel
+
 \.
 
 
@@ -7603,48 +8953,91 @@ COPY public.pms_product_attribute_value (id, product_id, product_attribute_id, v
 
 COPY public.pms_product_category (id, parent_id, name, level, product_count, product_unit, nav_status, show_status, sort, icon, keywords, description) FROM stdin;
 1	0	Electronics	0	0	piece	1	1	0	\N	electronics	Electronics items
+
 2	1	Smartphones	1	0	piece	1	1	0	\N	smartphones	Smartphones items
+
 3	1	Laptops	1	0	piece	1	1	0	\N	laptops	Laptops items
+
 4	1	Tablets	1	0	piece	1	1	0	\N	tablets	Tablets items
+
 5	1	Headphones & Earbuds	1	0	piece	1	1	0	\N	headphones & earbuds	Headphones & Earbuds items
+
 6	1	Smartwatches	1	0	piece	1	1	0	\N	smartwatches	Smartwatches items
+
 7	1	Cameras	1	0	piece	1	1	0	\N	cameras	Cameras items
+
 8	1	Monitors	1	0	piece	1	1	0	\N	monitors	Monitors items
+
 9	1	Keyboards & Mice	1	0	piece	1	1	0	\N	keyboards & mice	Keyboards & Mice items
+
 10	0	Fashion	0	0	piece	1	1	0	\N	fashion	Fashion items
+
 11	10	Men's Clothing	1	0	piece	1	1	0	\N	men's clothing	Men's Clothing items
+
 12	10	Women's Clothing	1	0	piece	1	1	0	\N	women's clothing	Women's Clothing items
+
 13	10	Footwear	1	0	piece	1	1	0	\N	footwear	Footwear items
+
 14	10	Accessories	1	0	piece	1	1	0	\N	accessories	Accessories items
+
 15	0	Home & Kitchen	0	0	piece	1	1	0	\N	home & kitchen	Home & Kitchen items
+
 16	15	Furniture	1	0	piece	1	1	0	\N	furniture	Furniture items
+
 17	15	Kitchen Appliances	1	0	piece	1	1	0	\N	kitchen appliances	Kitchen Appliances items
+
 18	15	Home Appliances	1	0	piece	1	1	0	\N	home appliances	Home Appliances items
+
 19	15	Kitchenware	1	0	piece	1	1	0	\N	kitchenware	Kitchenware items
+
 20	0	Beauty & Personal Care	0	0	piece	1	1	0	\N	beauty & personal care	Beauty & Personal Care items
+
 21	20	Skincare	1	0	piece	1	1	0	\N	skincare	Skincare items
+
 22	20	Hair Care	1	0	piece	1	1	0	\N	hair care	Hair Care items
+
 23	20	Makeup	1	0	piece	1	1	0	\N	makeup	Makeup items
+
 24	20	Grooming	1	0	piece	1	1	0	\N	grooming	Grooming items
+
 25	0	Sports & Fitness	0	0	piece	1	1	0	\N	sports & fitness	Sports & Fitness items
+
 26	25	Running	1	0	piece	1	1	0	\N	running	Running items
+
 27	25	Gym Equipment	1	0	piece	1	1	0	\N	gym equipment	Gym Equipment items
+
 28	25	Yoga	1	0	piece	1	1	0	\N	yoga	Yoga items
+
 29	25	Outdoor	1	0	piece	1	1	0	\N	outdoor	Outdoor items
+
 30	0	Books & Stationery	0	0	piece	1	1	0	\N	books & stationery	Books & Stationery items
+
 31	30	Fiction	1	0	piece	1	1	0	\N	fiction	Fiction items
+
 32	30	Non-Fiction	1	0	piece	1	1	0	\N	non-fiction	Non-Fiction items
+
 33	30	Technology	1	0	piece	1	1	0	\N	technology	Technology items
+
 34	30	Notebooks & Supplies	1	0	piece	1	1	0	\N	notebooks & supplies	Notebooks & Supplies items
+
 35	0	Grocery	0	0	piece	1	1	0	\N	grocery	Grocery items
+
 36	35	Beverages	1	0	piece	1	1	0	\N	beverages	Beverages items
+
 37	35	Snacks	1	0	piece	1	1	0	\N	snacks	Snacks items
+
 38	35	Breakfast	1	0	piece	1	1	0	\N	breakfast	Breakfast items
+
 39	35	Pantry	1	0	piece	1	1	0	\N	pantry	Pantry items
+
 40	0	Automotive	0	0	piece	1	1	0	\N	automotive	Automotive items
+
 41	40	Car Accessories	1	0	piece	1	1	0	\N	car accessories	Car Accessories items
+
 42	40	Car Care	1	0	piece	1	1	0	\N	car care	Car Care items
+
 43	40	Replacement Parts	1	0	piece	1	1	0	\N	replacement parts	Replacement Parts items
+
 \.
 
 
@@ -7686,15 +9079,25 @@ COPY public.pms_product_ladder (id, product_id, count, discount, price) FROM std
 
 COPY public.pms_product_media (id, product_id, media_type, media_url, sort_order) FROM stdin;
 1	1	image	http://localhost:9000/nexus-media/public/catalog/products/1-iphone-17/main.webp	0
+
 2	2	image	http://localhost:9000/nexus-media/public/catalog/products/2-galaxy-s25/main.webp	0
+
 3	3	image	http://localhost:9000/nexus-media/public/catalog/products/3-macbook-pro-m5/main.webp	0
+
 4	4	image	http://localhost:9000/nexus-media/public/catalog/products/4-air-max-2026/main.webp	0
+
 5	5	image	http://localhost:9000/nexus-media/public/catalog/products/5-ultraboost-26/main.webp	0
+
 6	6	image	http://localhost:9000/nexus-media/public/catalog/products/6-clean-code/main.webp	0
+
 7	7	image	http://localhost:9000/nexus-media/public/catalog/products/7-coca-cola-zero/main.webp	0
+
 8	8	image	http://localhost:9000/nexus-media/public/catalog/products/8-supima-cotton-t-shirt/main.webp	0
+
 9	9	image	http://localhost:9000/nexus-media/public/catalog/products/9-wh-1000xm6/main.webp	0
+
 10	10	image	http://localhost:9000/nexus-media/public/catalog/products/10-v15-detect-absolute/main.webp	0
+
 \.
 
 
@@ -7718,7 +9121,7 @@ COPY public.pms_product_verify_record (id, product_id, create_time, reviewer_nam
 -- Data for Name: pms_review; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.pms_review (id, product_id, member_id, parent_id, rating, content, like_count, status, created_time) FROM stdin;
+COPY public.pms_review (id, product_id, member_id, parent_id, rating, content, like_count, dislike_count, status, created_time) FROM stdin;
 \.
 
 
@@ -7736,45 +9139,85 @@ COPY public.pms_review_media (id, review_id, media_type, media_url, thumbnail_ur
 
 COPY public.pms_sku_stock (id, product_id, sku_code, price, stock, low_stock, pic, sale, promotion_price, lock_stock, sku_attributes) FROM stdin;
 1	1	APP-IPH-1-BLA-128	81851.00	12	5	http://localhost:9000/nexus-media/public/catalog/skus/APP-IPH-1-BLA-128/main.webp	0	\N	\N	[{"key": "Color", "value": "Black"}, {"key": "Storage", "value": "128GB"}]
+
 2	1	APP-IPH-1-BLA-256	81114.00	51	5	http://localhost:9000/nexus-media/public/catalog/skus/APP-IPH-1-BLA-256/main.webp	0	\N	\N	[{"key": "Color", "value": "Black"}, {"key": "Storage", "value": "256GB"}]
+
 3	1	APP-IPH-1-SIL-128	80023.00	10	5	http://localhost:9000/nexus-media/public/catalog/skus/APP-IPH-1-SIL-128/main.webp	0	\N	\N	[{"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "128GB"}]
+
 4	1	APP-IPH-1-SIL-256	82600.00	26	5	http://localhost:9000/nexus-media/public/catalog/skus/APP-IPH-1-SIL-256/main.webp	0	\N	\N	[{"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "256GB"}]
+
 5	2	SAM-GAL-2-PHA-256	75967.00	22	5	http://localhost:9000/nexus-media/public/catalog/skus/SAM-GAL-2-PHA-256/main.webp	0	\N	\N	[{"key": "Color", "value": "Phantom Black"}, {"key": "Storage", "value": "256GB"}]
+
 6	2	SAM-GAL-2-PHA-512	76304.00	82	5	http://localhost:9000/nexus-media/public/catalog/skus/SAM-GAL-2-PHA-512/main.webp	0	\N	\N	[{"key": "Color", "value": "Phantom Black"}, {"key": "Storage", "value": "512GB"}]
+
 7	2	SAM-GAL-2-CRE-256	79629.00	17	5	http://localhost:9000/nexus-media/public/catalog/skus/SAM-GAL-2-CRE-256/main.webp	0	\N	\N	[{"key": "Color", "value": "Cream"}, {"key": "Storage", "value": "256GB"}]
+
 8	2	SAM-GAL-2-CRE-512	76532.00	39	5	http://localhost:9000/nexus-media/public/catalog/skus/SAM-GAL-2-CRE-512/main.webp	0	\N	\N	[{"key": "Color", "value": "Cream"}, {"key": "Storage", "value": "512GB"}]
+
 9	3	APP-MAC-3-16G-512-SPA	154564.00	38	5	http://localhost:9000/nexus-media/public/catalog/skus/APP-MAC-3-16G-512-SPA/main.webp	0	\N	\N	[{"key": "RAM", "value": "16GB"}, {"key": "Storage", "value": "512GB"}, {"key": "Color", "value": "Space Gray"}]
+
 10	3	APP-MAC-3-16G-1TB-SPA	152879.00	42	5	http://localhost:9000/nexus-media/public/catalog/skus/APP-MAC-3-16G-1TB-SPA/main.webp	0	\N	\N	[{"key": "RAM", "value": "16GB"}, {"key": "Storage", "value": "1TB"}, {"key": "Color", "value": "Space Gray"}]
+
 11	3	APP-MAC-3-32G-512-SPA	150761.00	63	5	http://localhost:9000/nexus-media/public/catalog/skus/APP-MAC-3-32G-512-SPA/main.webp	0	\N	\N	[{"key": "RAM", "value": "32GB"}, {"key": "Storage", "value": "512GB"}, {"key": "Color", "value": "Space Gray"}]
+
 12	3	APP-MAC-3-32G-1TB-SPA	154147.00	31	5	http://localhost:9000/nexus-media/public/catalog/skus/APP-MAC-3-32G-1TB-SPA/main.webp	0	\N	\N	[{"key": "RAM", "value": "32GB"}, {"key": "Storage", "value": "1TB"}, {"key": "Color", "value": "Space Gray"}]
+
 13	4	NIK-AIR-4-8-BLA	12279.00	73	5	http://localhost:9000/nexus-media/public/catalog/skus/NIK-AIR-4-8-BLA/main.webp	0	\N	\N	[{"key": "Size (US)", "value": "8"}, {"key": "Color", "value": "Black"}]
+
 14	4	NIK-AIR-4-8-WHI	16734.00	23	5	http://localhost:9000/nexus-media/public/catalog/skus/NIK-AIR-4-8-WHI/main.webp	0	\N	\N	[{"key": "Size (US)", "value": "8"}, {"key": "Color", "value": "White"}]
+
 15	4	NIK-AIR-4-9-BLA	12283.00	82	5	http://localhost:9000/nexus-media/public/catalog/skus/NIK-AIR-4-9-BLA/main.webp	0	\N	\N	[{"key": "Size (US)", "value": "9"}, {"key": "Color", "value": "Black"}]
+
 16	4	NIK-AIR-4-9-WHI	13567.00	93	5	http://localhost:9000/nexus-media/public/catalog/skus/NIK-AIR-4-9-WHI/main.webp	0	\N	\N	[{"key": "Size (US)", "value": "9"}, {"key": "Color", "value": "White"}]
+
 17	4	NIK-AIR-4-10-BLA	12140.00	93	5	http://localhost:9000/nexus-media/public/catalog/skus/NIK-AIR-4-10-BLA/main.webp	0	\N	\N	[{"key": "Size (US)", "value": "10"}, {"key": "Color", "value": "Black"}]
+
 18	4	NIK-AIR-4-10-WHI	15736.00	73	5	http://localhost:9000/nexus-media/public/catalog/skus/NIK-AIR-4-10-WHI/main.webp	0	\N	\N	[{"key": "Size (US)", "value": "10"}, {"key": "Color", "value": "White"}]
+
 19	5	ADI-ULT-5-7-COR	17246.00	92	5	http://localhost:9000/nexus-media/public/catalog/skus/ADI-ULT-5-7-COR/main.webp	0	\N	\N	[{"key": "Size (US)", "value": "7"}, {"key": "Color", "value": "Core Black"}]
+
 20	5	ADI-ULT-5-8-COR	15404.00	75	5	http://localhost:9000/nexus-media/public/catalog/skus/ADI-ULT-5-8-COR/main.webp	0	\N	\N	[{"key": "Size (US)", "value": "8"}, {"key": "Color", "value": "Core Black"}]
+
 21	5	ADI-ULT-5-9-COR	15237.00	60	5	http://localhost:9000/nexus-media/public/catalog/skus/ADI-ULT-5-9-COR/main.webp	0	\N	\N	[{"key": "Size (US)", "value": "9"}, {"key": "Color", "value": "Core Black"}]
+
 22	6	PEA-CLE-6-PAP	3429.00	15	5	http://localhost:9000/nexus-media/public/catalog/skus/PEA-CLE-6-PAP/main.webp	0	\N	\N	[{"key": "Format", "value": "Paperback"}]
+
 23	6	PEA-CLE-6-HAR	4763.00	65	5	http://localhost:9000/nexus-media/public/catalog/skus/PEA-CLE-6-HAR/main.webp	0	\N	\N	[{"key": "Format", "value": "Hardcover"}]
+
 24	6	PEA-CLE-6-KIN	5471.00	93	5	http://localhost:9000/nexus-media/public/catalog/skus/PEA-CLE-6-KIN/main.webp	0	\N	\N	[{"key": "Format", "value": "Kindle"}]
+
 25	7	COC-COC-7-300	3738.00	81	5	http://localhost:9000/nexus-media/public/catalog/skus/COC-COC-7-300/main.webp	0	\N	\N	[{"key": "Pack Size", "value": "300ml"}]
+
 26	7	COC-COC-7-750	3147.00	42	5	http://localhost:9000/nexus-media/public/catalog/skus/COC-COC-7-750/main.webp	0	\N	\N	[{"key": "Pack Size", "value": "750ml"}]
+
 27	7	COC-COC-7-1.2	2891.00	21	5	http://localhost:9000/nexus-media/public/catalog/skus/COC-COC-7-1.2/main.webp	0	\N	\N	[{"key": "Pack Size", "value": "1.25L"}]
+
 28	7	COC-COC-7-2.2	1211.00	10	5	http://localhost:9000/nexus-media/public/catalog/skus/COC-COC-7-2.2/main.webp	0	\N	\N	[{"key": "Pack Size", "value": "2.25L"}]
+
 29	8	UNI-SUP-8-S-WHI	2281.00	78	5	http://localhost:9000/nexus-media/public/catalog/skus/UNI-SUP-8-S-WHI/main.webp	0	\N	\N	[{"key": "Size", "value": "S"}, {"key": "Color", "value": "White"}]
+
 30	8	UNI-SUP-8-S-BLA	4276.00	78	5	http://localhost:9000/nexus-media/public/catalog/skus/UNI-SUP-8-S-BLA/main.webp	0	\N	\N	[{"key": "Size", "value": "S"}, {"key": "Color", "value": "Black"}]
+
 31	8	UNI-SUP-8-M-WHI	4499.00	65	5	http://localhost:9000/nexus-media/public/catalog/skus/UNI-SUP-8-M-WHI/main.webp	0	\N	\N	[{"key": "Size", "value": "M"}, {"key": "Color", "value": "White"}]
+
 32	8	UNI-SUP-8-M-BLA	2641.00	20	5	http://localhost:9000/nexus-media/public/catalog/skus/UNI-SUP-8-M-BLA/main.webp	0	\N	\N	[{"key": "Size", "value": "M"}, {"key": "Color", "value": "Black"}]
+
 33	8	UNI-SUP-8-L-WHI	5380.00	92	5	http://localhost:9000/nexus-media/public/catalog/skus/UNI-SUP-8-L-WHI/main.webp	0	\N	\N	[{"key": "Size", "value": "L"}, {"key": "Color", "value": "White"}]
+
 34	8	UNI-SUP-8-L-BLA	3220.00	23	5	http://localhost:9000/nexus-media/public/catalog/skus/UNI-SUP-8-L-BLA/main.webp	0	\N	\N	[{"key": "Size", "value": "L"}, {"key": "Color", "value": "Black"}]
+
 35	8	UNI-SUP-8-XL-WHI	5464.00	44	5	http://localhost:9000/nexus-media/public/catalog/skus/UNI-SUP-8-XL-WHI/main.webp	0	\N	\N	[{"key": "Size", "value": "XL"}, {"key": "Color", "value": "White"}]
+
 36	8	UNI-SUP-8-XL-BLA	3594.00	53	5	http://localhost:9000/nexus-media/public/catalog/skus/UNI-SUP-8-XL-BLA/main.webp	0	\N	\N	[{"key": "Size", "value": "XL"}, {"key": "Color", "value": "Black"}]
+
 37	9	SON-WH--9-BLA	29341.00	44	5	http://localhost:9000/nexus-media/public/catalog/skus/SON-WH--9-BLA/main.webp	0	\N	\N	[{"key": "Color", "value": "Black"}]
+
 38	9	SON-WH--9-SIL	29771.00	78	5	http://localhost:9000/nexus-media/public/catalog/skus/SON-WH--9-SIL/main.webp	0	\N	\N	[{"key": "Color", "value": "Silver"}]
+
 39	9	SON-WH--9-BLU	25922.00	47	5	http://localhost:9000/nexus-media/public/catalog/skus/SON-WH--9-BLU/main.webp	0	\N	\N	[{"key": "Color", "value": "Blue"}]
+
 40	10	DYS-V15-10-YEL	56206.00	18	5	http://localhost:9000/nexus-media/public/catalog/skus/DYS-V15-10-YEL/main.webp	0	\N	\N	[{"key": "Color", "value": "Yellow/Nickel"}]
+
 \.
 
 
@@ -7884,7 +9327,9 @@ COPY public.ums_admin_login_log (id, admin_id, create_time, ip, address, user_ag
 
 COPY public.ums_admin_role_relation (id, admin_id, role_id) FROM stdin;
 1	3	2
+
 2	4	2
+
 \.
 
 
@@ -8006,26 +9451,47 @@ COPY users.ums_admin (id, username, password, icon, email, nick_name, note, crea
 
 COPY users.ums_admin_login_log (id, admin_id, create_time, ip, address, user_agent) FROM stdin;
 1	1	2026-09-25 12:23:54.171	172.18.0.1	\N	\N
+
 2	1	2026-09-25 12:24:10.301	172.18.0.1	\N	\N
+
 3	1	2026-09-25 13:15:06.248	172.18.0.1	\N	\N
+
 4	1	2026-09-25 13:46:39.749	172.18.0.1	\N	\N
+
 5	1	2026-09-25 22:28:57.906	172.18.0.1	\N	\N
+
 6	3	2026-09-25 22:54:01.732	172.18.0.1	\N	\N
+
 7	1	2026-09-26 11:56:17.255427	172.18.0.3	\N	\N
+
 8	1	2026-09-27 02:34:44.803221	172.18.0.1	\N	\N
+
 9	1	2026-09-27 02:34:48.735188	172.18.0.1	\N	\N
+
 10	1	2026-09-27 02:35:50.083465	172.18.0.1	\N	\N
+
 11	1	2026-09-27 02:36:34.05214	172.18.0.1	\N	\N
+
 12	1	2026-09-27 02:38:27.528223	172.18.0.1	\N	\N
+
 13	1	2026-09-27 02:45:04.720348	172.18.0.1	\N	\N
+
 14	1	2026-09-27 02:45:55.011739	172.18.0.1	\N	\N
+
 15	1	2026-09-27 02:48:17.119091	172.18.0.1	\N	\N
+
 16	1	2026-09-27 02:48:50.525834	172.18.0.1	\N	\N
+
 17	1	2026-09-27 02:50:39.09046	172.18.0.1	\N	\N
+
 18	1	2026-09-27 02:51:38.507918	172.18.0.1	\N	\N
+
 19	1	2026-09-27 02:54:11.92585	172.18.0.1	\N	\N
+
 20	1	2026-09-27 03:01:41.340752	172.18.0.1	\N	\N
+
 21	1	2026-09-27 03:40:33.962386	172.18.0.1	\N	\N
+
 \.
 
 
@@ -8035,8 +9501,11 @@ COPY users.ums_admin_login_log (id, admin_id, create_time, ip, address, user_age
 
 COPY users.ums_admin_role_relation (id, admin_id, role_id) FROM stdin;
 1	3	2
+
 2	4	2
+
 3	1	1
+
 \.
 
 
@@ -8071,6 +9540,7 @@ COPY users.ums_member_product_category_relation (id, member_id, product_category
 
 COPY users.ums_member_receive_address (id, member_id, name, phone_number, default_status, post_code, province, city, region, detail_address) FROM stdin;
 1	1	Customer One	9876543210	1	110001	Delhi	New Delhi	Central	123 Fake Street, Connaught Place
+
 \.
 
 

@@ -43,6 +43,7 @@ public class PmsPortalReviewServiceImpl implements PmsPortalReviewService {
     public CommonPage<PmsReview> list(Long productId, Integer pageNum, Integer pageSize) {
         Page<PmsReview> page = reviewRepository.findByProductIdAndParentIdIsNullAndStatus(
                 productId, 1, PageRequest.of(pageNum - 1, pageSize, Sort.by(Sort.Direction.DESC, "id")));
+        enrichReviewStates(page.getContent());
         return CommonPage.restPage(page);
     }
 
@@ -50,7 +51,21 @@ public class PmsPortalReviewServiceImpl implements PmsPortalReviewService {
     public List<PmsReview> listReplies(Long parentId) {
         List<PmsReview> allDescendants = new ArrayList<>();
         collectDescendants(parentId, allDescendants);
+        enrichReviewStates(allDescendants);
         return allDescendants;
+    }
+
+    private void enrichReviewStates(List<PmsReview> reviews) {
+        var member = memberService.getCurrentMember();
+        Long userId = member != null ? member.getId() : null;
+        if (userId == null) {
+            reviews.forEach(r -> { r.setUserLiked(false); r.setUserDisliked(false); });
+            return;
+        }
+        for (PmsReview r : reviews) {
+            r.setUserLiked(redisService.sIsMember("review:like:" + r.getId(), userId));
+            r.setUserDisliked(redisService.sIsMember("review:dislike:" + r.getId(), userId));
+        }
     }
 
     private void collectDescendants(Long parentId, List<PmsReview> allDescendants) {
@@ -73,6 +88,7 @@ public class PmsPortalReviewServiceImpl implements PmsPortalReviewService {
         review.setRating(param.rating());
         review.setContent(param.content());
         review.setLikeCount(0);
+        review.setDislikeCount(0);
         review.setStatus(1); // Auto approve for now
         review.setCreatedTime(java.time.LocalDateTime.now());
         
@@ -139,14 +155,13 @@ public class PmsPortalReviewServiceImpl implements PmsPortalReviewService {
             comment.setCreateTime(java.time.LocalDateTime.now());
             comment.setShowStatus(1);
             comment.setLikesCount(0);
-            comment.setReadCount(0);
+            comment.setDislikeCount(0);
             comment.setReplyCount(0);
             comment.setPics(pics);
             
             PmsProduct product = productRepository.findById(param.productId()).orElse(null);
             if (product != null) {
                 comment.setProductName(product.getName());
-                comment.setProductAttribute(product.getSubTitle());
             }
             commentRepository.save(comment);
         } else {
@@ -165,13 +180,12 @@ public class PmsPortalReviewServiceImpl implements PmsPortalReviewService {
                     childComment.setCreateTime(java.time.LocalDateTime.now());
                     childComment.setShowStatus(1);
                     childComment.setStar(param.rating() == null ? 5 : param.rating());
-                    childComment.setReadCount(0);
+                    childComment.setDislikeCount(0);
                     childComment.setLikesCount(0);
                     childComment.setReplyCount(0);
                     PmsProduct product = productRepository.findById(param.productId()).orElse(null);
                     if (product != null) {
                         childComment.setProductName(product.getName());
-                        childComment.setProductAttribute(product.getSubTitle());
                     }
                     childComment = commentRepository.save(childComment);
 
@@ -188,15 +202,7 @@ public class PmsPortalReviewServiceImpl implements PmsPortalReviewService {
             }
         }
         
-        // Universally update brand's comment count for both comments and replies
-        PmsProduct product = productRepository.findById(param.productId()).orElse(null);
-        if (product != null && product.getBrandId() != null) {
-            PmsBrand brand = brandRepository.findById(product.getBrandId()).orElse(null);
-            if (brand != null) {
-                brand.setProductCommentCount((brand.getProductCommentCount() == null ? 0 : brand.getProductCommentCount()) + 1);
-                brandRepository.save(brand);
-            }
-        }
+
         
         return saved;
     }
@@ -238,35 +244,96 @@ public class PmsPortalReviewServiceImpl implements PmsPortalReviewService {
             throw new RuntimeException("Must be logged in to like");
         }
         
-        String redisKey = "review:like:" + id;
+        String likeKey = "review:like:" + id;
+        String dislikeKey = "review:dislike:" + id;
         Long userId = member.getId();
         
-        // Check if already liked
-        if (redisService.sIsMember(redisKey, userId)) {
-            // Already liked, just return current count or maybe we can implement unlike here.
-            // For now, just return current count.
-            PmsReview review = reviewRepository.findById(id).orElse(null);
-            return review != null && review.getLikeCount() != null ? review.getLikeCount() : 0;
-        }
-
-        // Add to set
-        redisService.sAdd(redisKey, (Object) userId);
-
         PmsReview review = reviewRepository.findById(id).orElse(null);
-        if (review != null) {
-            Integer currentLikes = review.getLikeCount() == null ? 0 : review.getLikeCount();
-            review.setLikeCount(currentLikes + 1);
-            reviewRepository.save(review);
-            
-            // Also update PmsComment if needed
-            PmsComment comment = commentRepository.findFirstByProductIdAndContentOrderByIdDesc(review.getProductId(), review.getContent());
+        if (review == null) return 0;
+        PmsComment comment = getCommentForReview(id);
+        
+        if (redisService.sIsMember(likeKey, userId)) {
+            // Undo like
+            redisService.sRemove(likeKey, (Object) userId);
+            review.setLikeCount(Math.max(0, (review.getLikeCount() == null ? 0 : review.getLikeCount()) - 1));
             if (comment != null) {
-                Integer commentLikes = comment.getLikesCount() == null ? 0 : comment.getLikesCount();
-                comment.setLikesCount(commentLikes + 1);
-                commentRepository.save(comment);
+                comment.setLikesCount(Math.max(0, (comment.getLikesCount() == null ? 0 : comment.getLikesCount()) - 1));
             }
-            return review.getLikeCount();
+        } else {
+            // Do like
+            redisService.sAdd(likeKey, (Object) userId);
+            review.setLikeCount((review.getLikeCount() == null ? 0 : review.getLikeCount()) + 1);
+            if (comment != null) {
+                comment.setLikesCount((comment.getLikesCount() == null ? 0 : comment.getLikesCount()) + 1);
+            }
+            
+            // If already disliked, undo dislike
+            if (redisService.sIsMember(dislikeKey, userId)) {
+                redisService.sRemove(dislikeKey, (Object) userId);
+                review.setDislikeCount(Math.max(0, (review.getDislikeCount() == null ? 0 : review.getDislikeCount()) - 1));
+                if (comment != null) {
+                    comment.setDislikeCount(Math.max(0, (comment.getDislikeCount() == null ? 0 : comment.getDislikeCount()) - 1));
+                }
+            }
         }
-        return 0;
+        
+        reviewRepository.save(review);
+        if (comment != null) commentRepository.save(comment);
+        
+        return review.getLikeCount();
+    }
+
+    @Override
+    public Integer dislike(Long id) {
+        var member = memberService.getCurrentMember();
+        if (member == null) {
+            throw new RuntimeException("Must be logged in to dislike");
+        }
+        
+        String likeKey = "review:like:" + id;
+        String dislikeKey = "review:dislike:" + id;
+        Long userId = member.getId();
+        
+        PmsReview review = reviewRepository.findById(id).orElse(null);
+        if (review == null) return 0;
+        PmsComment comment = getCommentForReview(id);
+        
+        if (redisService.sIsMember(dislikeKey, userId)) {
+            // Undo dislike
+            redisService.sRemove(dislikeKey, (Object) userId);
+            review.setDislikeCount(Math.max(0, (review.getDislikeCount() == null ? 0 : review.getDislikeCount()) - 1));
+            if (comment != null) {
+                comment.setDislikeCount(Math.max(0, (comment.getDislikeCount() == null ? 0 : comment.getDislikeCount()) - 1));
+            }
+        } else {
+            // Do dislike
+            redisService.sAdd(dislikeKey, (Object) userId);
+            review.setDislikeCount((review.getDislikeCount() == null ? 0 : review.getDislikeCount()) + 1);
+            if (comment != null) {
+                comment.setDislikeCount((comment.getDislikeCount() == null ? 0 : comment.getDislikeCount()) + 1);
+            }
+            
+            // If already liked, undo like
+            if (redisService.sIsMember(likeKey, userId)) {
+                redisService.sRemove(likeKey, (Object) userId);
+                review.setLikeCount(Math.max(0, (review.getLikeCount() == null ? 0 : review.getLikeCount()) - 1));
+                if (comment != null) {
+                    comment.setLikesCount(Math.max(0, (comment.getLikesCount() == null ? 0 : comment.getLikesCount()) - 1));
+                }
+            }
+        }
+        
+        reviewRepository.save(review);
+        if (comment != null) commentRepository.save(comment);
+        
+        return review.getDislikeCount();
+    }
+    
+    private PmsComment getCommentForReview(Long reviewId) {
+        PmsReview review = reviewRepository.findById(reviewId).orElse(null);
+        if (review != null) {
+            return commentRepository.findFirstByProductIdAndContentOrderByIdDesc(review.getProductId(), review.getContent());
+        }
+        return null;
     }
 }

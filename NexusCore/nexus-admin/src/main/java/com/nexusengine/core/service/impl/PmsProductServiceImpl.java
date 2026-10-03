@@ -156,14 +156,10 @@ public class PmsProductServiceImpl implements PmsProductService {
     public org.springframework.data.domain.Page<PmsProduct> list(PmsProductQueryParam queryParam, Integer pageSize, Integer pageNum) {
         String username = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getName();
         UmsAdmin admin = adminService.getAdminByUsername(username);
-        Long vendorId = admin != null ? admin.getVendorId() : null;
         org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(pageNum - 1 > 0 ? pageNum - 1 : 0, pageSize, Sort.by(Sort.Direction.ASC, "id"));
         
         return productRepository.findAll((root, query, cb) -> {
             var predicates = new java.util.ArrayList<jakarta.persistence.criteria.Predicate>();
-            if (vendorId != null) {
-                predicates.add(cb.equal(root.get("vendorId"), vendorId));
-            }
             if (queryParam.publishStatus() != null) {
                 predicates.add(cb.equal(root.get("publishStatus"), queryParam.publishStatus()));
             }
@@ -189,16 +185,6 @@ public class PmsProductServiceImpl implements PmsProductService {
     private void checkVendorAuthorization(List<Long> ids) {
         String username = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getName();
         UmsAdmin admin = adminService.getAdminByUsername(username);
-        Long vendorId = admin != null ? admin.getVendorId() : null;
-        
-        if (vendorId != null) {
-            List<PmsProduct> products = productRepository.findAllById(ids);
-            for (PmsProduct product : products) {
-                if (!vendorId.equals(product.getVendorId())) {
-                    throw new com.nexusengine.core.common.exception.ApiException("Unauthorized: You can only modify your own products");
-                }
-            }
-        }
     }
 
     @Override
@@ -265,21 +251,13 @@ public class PmsProductServiceImpl implements PmsProductService {
     public List<PmsProduct> list(String keyword) {
         String username = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getName();
         UmsAdmin admin = adminService.getAdminByUsername(username);
-        Long vendorId = admin != null ? admin.getVendorId() : null;
         
         boolean hasKeyword = StrUtil.isNotEmpty(keyword);
         
-        if (vendorId != null) {
-            if (hasKeyword) {
-                return productRepository.findByVendorIdAndNameContaining(vendorId, keyword);
-            }
-            return productRepository.findByVendorId(vendorId);
-        } else {
-            if (hasKeyword) {
-                return productRepository.findByNameContaining(keyword);
-            }
-            return productRepository.findAll(PageRequest.of(0, 1000)).getContent();
+        if (hasKeyword) {
+            return productRepository.findByNameContaining(keyword);
         }
+        return productRepository.findAll(PageRequest.of(0, 1000)).getContent();
     }
 
 

@@ -20,32 +20,10 @@ public class PmsBrand implements Serializable {
 
     private String name;
 
-    @Column(name = "first_letter")
-    @Schema(title = "First letter")
-    private String firstLetter;
-
-    private Integer sort;
-
-    @Column(name = "factory_status")
-    @Schema(title = "Factory status")
-    private Integer factoryStatus;
-
     @Column(name = "show_status")
     private Integer showStatus;
 
-    @Column(name = "product_count")
-    @Schema(title = "Product count")
-    private Integer productCount;
-
-    @Column(name = "product_comment_count")
-    @Schema(title = "Product comment count")
-    private Integer productCommentCount;
-
     @Schema(title = "Logo")
     private String logo;
-
-    @Column(name = "big_pic")
-    @Schema(title = "Big pic")
-    private String bigPic;
 
 }

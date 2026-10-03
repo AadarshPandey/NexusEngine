@@ -28,9 +28,6 @@ public class PmsBrandServiceImpl implements PmsBrandService {
     public int createBrand(PmsBrandParam pmsBrandParam) {
         PmsBrand pmsBrand = new PmsBrand();
         BeanUtils.copyProperties(pmsBrandParam, pmsBrand);
-        if (StrUtil.isEmpty(pmsBrand.getFirstLetter())) {
-            pmsBrand.setFirstLetter(pmsBrand.getName().substring(0, 1));
-        }
         brandRepository.save(pmsBrand);
         return 1;
     }
@@ -40,9 +37,6 @@ public class PmsBrandServiceImpl implements PmsBrandService {
         PmsBrand pmsBrand = new PmsBrand();
         BeanUtils.copyProperties(pmsBrandParam, pmsBrand);
         pmsBrand.setId(id);
-        if (StrUtil.isEmpty(pmsBrand.getFirstLetter())) {
-            pmsBrand.setFirstLetter(pmsBrand.getName().substring(0, 1));
-        }
         brandRepository.save(pmsBrand);
         return 1;
     }
@@ -80,27 +74,10 @@ public class PmsBrandServiceImpl implements PmsBrandService {
     }
 
     @Override
-    public int updateSort(Long id, Integer sort) {
-        PmsBrand brand = brandRepository.findById(id).orElse(null);
-        if (brand != null) { brand.setSort(sort); brandRepository.save(brand); return 1; }
-        return 0;
-    }
-
-    @Override
     public int updateShowStatus(List<Long> ids, Integer showStatus) {
         List<PmsBrand> brands = brandRepository.findAllById(ids);
         for (PmsBrand brand : brands) {
             brand.setShowStatus(showStatus);
-            brandRepository.save(brand);
-        }
-        return brands.size();
-    }
-
-    @Override
-    public int updateFactoryStatus(List<Long> ids, Integer factoryStatus) {
-        List<PmsBrand> brands = brandRepository.findAllById(ids);
-        for (PmsBrand brand : brands) {
-            brand.setFactoryStatus(factoryStatus);
             brandRepository.save(brand);
         }
         return brands.size();

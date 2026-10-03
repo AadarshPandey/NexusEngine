@@ -197,7 +197,6 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
         if (!orderItemList.isEmpty()) {
             PmsProduct product = productRepository.findById(orderItemList.get(0).getProductId()).orElse(null);
             if (product != null) {
-                order.setVendorId(product.getVendorId());
             }
         }
         UmsMemberReceiveAddress address = memberReceiveAddressService.getItem(orderParam.memberReceiveAddressId());

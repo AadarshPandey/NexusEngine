@@ -17,29 +17,17 @@ export type PmsProduct = {
   newStatus?: number
   recommendStatus?: number
   verifyStatus?: number
-  sort?: number
   sale?: number
   price?: number
   promotionPrice?: number
   giftGrowth?: number
-  subTitle?: string
   originalPrice?: number
   stock?: number
   lowStock?: number
-  unit?: string
-  weight?: number
-  serviceIds?: string
   keywords?: string
-  note?: string
   albumPics?: string
-  promotionStartTime?: string
-  promotionEndTime?: string
-  promotionPerLimit?: number
-  promotionType?: number
   brandName?: string
-  productCategoryName?: string
   description?: string
-  detailHtml?: string
 }
 
 export type ProductQueryParam = PageParam & {

@@ -7,14 +7,8 @@
 CREATE TABLE IF NOT EXISTS pms_brand (
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(255),
-    first_letter VARCHAR(255),
-    sort INTEGER,
-    factory_status INTEGER,
     show_status INTEGER,
-    product_count INTEGER,
-    product_comment_count INTEGER,
-    logo VARCHAR(255),
-    big_pic VARCHAR(255)
+    logo VARCHAR(255)
 );
 
 CREATE TABLE IF NOT EXISTS pms_product_category (
@@ -173,9 +167,10 @@ CREATE TABLE IF NOT EXISTS pms_comment (
     member_ip VARCHAR(255),
     create_time TIMESTAMP,
     show_status INTEGER,
-    product_attribute VARCHAR(255),
+    
     likes_count INTEGER,
-    read_count INTEGER,
+    dislike_count INTEGER,
+    dislike_count INTEGER,
     pics VARCHAR(255),
     member_icon VARCHAR(255),
     reply_count INTEGER,
@@ -201,6 +196,7 @@ CREATE TABLE IF NOT EXISTS pms_review (
     rating INTEGER,
     content VARCHAR(255),
     like_count INTEGER,
+    dislike_count INTEGER,
     status INTEGER,
     created_time TIMESTAMP
 );

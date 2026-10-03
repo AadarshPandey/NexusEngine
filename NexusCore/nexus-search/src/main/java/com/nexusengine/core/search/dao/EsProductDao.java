@@ -51,10 +51,8 @@ public class EsProductDao {
             esProduct.setBrandId(product.getBrandId());
             esProduct.setBrandName(product.getBrandName());
             esProduct.setProductCategoryId(product.getProductCategoryId());
-            esProduct.setProductCategoryName(product.getProductCategoryName());
             esProduct.setPic(product.getPic());
             esProduct.setName(product.getName());
-            esProduct.setSubTitle(product.getSubTitle());
             esProduct.setKeywords(product.getKeywords());
             esProduct.setPrice(BigDecimal.ZERO); // FAANG Refactor: Delegated to SKU
             esProduct.setSale(product.getSale());
@@ -62,7 +60,6 @@ public class EsProductDao {
             esProduct.setRecommendStatus(product.getRecommendStatus());
             esProduct.setStock(0); // FAANG Refactor: Delegated to SKU
             esProduct.setPromotionType(product.getPromotionType());
-            esProduct.setSort(product.getSort());
             // Load attribute values
             List<PmsProductAttributeValue> attrValues = attributeValueRepository.findByProductIdAndProductAttributeIdIn(
                     product.getId(), Collections.emptyList());

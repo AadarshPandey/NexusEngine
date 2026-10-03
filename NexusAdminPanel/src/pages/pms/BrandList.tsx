@@ -34,7 +34,7 @@ import {
   FilterList,
   ViewList,
 } from '@mui/icons-material';
-import { getBrandListAPI, brandUpdateShowStatusAPI, brandUpdateFactoryStatusAPI, brandDeleteByIdAPI } from '@/apis/brand';
+import { getBrandListAPI, brandUpdateShowStatusAPI, brandDeleteByIdAPI } from '@/apis/brand';
 import type { PmsBrand } from '@/types/brand';
 import http from '@/utils/http';
 
@@ -47,8 +47,6 @@ const BrandList: React.FC = () => {
   const [keyword, setKeyword] = useState('');
   const [pageNum, setPageNum] = useState(0);
   const [pageSize, setPageSize] = useState(10);
-  const [editingSortId, setEditingSortId] = useState<number | null>(null);
-  const [editSortValue, setEditSortValue] = useState('');
   const [selected, setSelected] = useState<number[]>([]);
   const [operateType, setOperateType] = useState('');
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' as 'success' | 'error' });
@@ -70,22 +68,6 @@ const BrandList: React.FC = () => {
     fetchList();
   }, [fetchList]);
 
-  
-  const handleSortSave = async (id: number) => {
-    try {
-      await http({
-        url: `/brand/update/${id}`,
-        method: 'post',
-        data: { sort: parseInt(editSortValue, 10) }
-      });
-      fetchList();
-      setSnackbar({ open: true, message: 'Sort order updated successfully', severity: 'success' });
-      setEditingSortId(null);
-    } catch (error) {
-      setSnackbar({ open: true, message: 'Failed to update sort order', severity: 'error' });
-    }
-  };
-
   const handleSearch = () => {
     setPageNum(0);
     fetchList();
@@ -100,17 +82,6 @@ const BrandList: React.FC = () => {
       } catch {
         setSnackbar({ open: true, message: 'Failed to delete brand', severity: 'error' });
       }
-    }
-  };
-
-  const handleFactoryStatusChange = async (row: PmsBrand) => {
-    const newStatus = row.factoryStatus === 1 ? 0 : 1;
-    try {
-      await brandUpdateFactoryStatusAPI({ ids: String(row.id), factoryStatus: newStatus });
-      setList((prev) => prev.map((item) => (item.id === row.id ? { ...item, factoryStatus: newStatus } : item)));
-      setSnackbar({ open: true, message: 'Status updated', severity: 'success' });
-    } catch {
-      setSnackbar({ open: true, message: 'Failed to update status', severity: 'error' });
     }
   };
 
@@ -225,24 +196,20 @@ const BrandList: React.FC = () => {
                 </TableCell>
                 <TableCell>ID</TableCell>
                 <TableCell>Brand Name</TableCell>
-                <TableCell>First Letter</TableCell>
-                <TableCell align="center">Sort</TableCell>
-                <TableCell align="center">Manufacturer</TableCell>
                 <TableCell align="center">Visible</TableCell>
-                <TableCell align="center">Related</TableCell>
                 <TableCell align="center">Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={9} sx={{ textAlign: 'center', py: 6 }}>
+                  <TableCell colSpan={5} sx={{ textAlign: 'center', py: 6 }}>
                     <Typography sx={{ color: 'text.secondary' }}>Loading...</Typography>
                   </TableCell>
                 </TableRow>
               ) : list.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={9} sx={{ textAlign: 'center', py: 6 }}>
+                  <TableCell colSpan={5} sx={{ textAlign: 'center', py: 6 }}>
                     <Typography sx={{ color: 'text.secondary' }}>No brands found</Typography>
                   </TableCell>
                 </TableRow>
@@ -258,42 +225,6 @@ const BrandList: React.FC = () => {
                     </TableCell>
                     <TableCell>{row.id}</TableCell>
                     <TableCell sx={{ fontWeight: 500 }}>{row.name}</TableCell>
-                    <TableCell>{row.firstLetter}</TableCell>
-                    <TableCell align="center">
-                      {editingSortId === row.id ? (
-                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                          <TextField
-                            size="small"
-                            type="number"
-                            value={editSortValue}
-                            onChange={(e) => setEditSortValue(e.target.value)}
-                            sx={{ width: 60 }}
-                            autoFocus
-                            onBlur={() => handleSortSave(row.id!)}
-                            onKeyDown={(e) => e.key === 'Enter' && handleSortSave(row.id!)}
-                          />
-                        </Box>
-                      ) : (
-                        <Box
-                          onClick={() => {
-                            setEditingSortId(row.id!);
-                            setEditSortValue(row.sort?.toString() || '0');
-                          }}
-                          sx={{ cursor: 'pointer', borderBottom: '1px dashed #ccc', display: 'inline-block', px: 1, '&:hover': { color: 'primary.main', borderBottomColor: 'primary.main' } }}
-                          title="Click to edit sort order"
-                        >
-                          {row.sort}
-                        </Box>
-                      )}
-                    </TableCell>
-                    <TableCell align="center">
-                      <Switch
-                        checked={row.factoryStatus === 1}
-                        onChange={() => handleFactoryStatusChange(row)}
-                        size="small"
-                        color="primary"
-                      />
-                    </TableCell>
                     <TableCell align="center">
                       <Switch
                         checked={row.showStatus === 1}
@@ -301,15 +232,6 @@ const BrandList: React.FC = () => {
                         size="small"
                         color="primary"
                       />
-                    </TableCell>
-                    <TableCell align="center">
-                      <Typography component="span" sx={{ fontSize: '0.8125rem', color: 'text.secondary' }}>
-                        Products: <Button size="small" sx={{ minWidth: 'auto', p: 0 }}>100</Button>
-                      </Typography>
-                      {' '}
-                      <Typography component="span" sx={{ fontSize: '0.8125rem', color: 'text.secondary' }}>
-                        Reviews: <Button size="small" sx={{ minWidth: 'auto', p: 0 }}>1000</Button>
-                      </Typography>
                     </TableCell>
                     <TableCell align="center">
                       <Box sx={{ display: 'flex', justifyContent: 'center', gap: 0.5 }}>

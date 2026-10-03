@@ -47,6 +47,9 @@ public class PmsReview implements Serializable {
     @Column(name = "like_count")
     private Integer likeCount;
 
+    @Column(name = "dislike_count")
+    private Integer dislikeCount;
+
     @Schema(title = "Status: 0->Pending, 1->Approved, 2->Rejected")
     private Integer status;
 
@@ -56,4 +59,10 @@ public class PmsReview implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "review_id")
     private List<PmsReviewMedia> mediaList;
+
+    @Transient
+    private Boolean userLiked;
+
+    @Transient
+    private Boolean userDisliked;
 }

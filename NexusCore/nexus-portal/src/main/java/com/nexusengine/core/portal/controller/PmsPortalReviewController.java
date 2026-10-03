@@ -53,4 +53,9 @@ public class PmsPortalReviewController {
     public CommonResult<Integer> like(@PathVariable Long id) {
         return CommonResult.success(reviewService.like(id));
     }
+
+    @PostMapping("/{id}/dislike")
+    public CommonResult<Integer> dislike(@PathVariable Long id) {
+        return CommonResult.success(reviewService.dislike(id));
+    }
 }

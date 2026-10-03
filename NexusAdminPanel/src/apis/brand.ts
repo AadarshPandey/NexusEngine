@@ -32,15 +32,7 @@ export function brandUpdateShowStatusAPI(params: { ids: string; showStatus: numb
   })
 }
 
-/**
- */
-export function brandUpdateFactoryStatusAPI(params: { ids: string; factoryStatus: number }) {
-  return http({
-    url: '/brand/update/factoryStatus',
-    method: 'post',
-    params: params,
-  })
-}
+
 
 /**
  */

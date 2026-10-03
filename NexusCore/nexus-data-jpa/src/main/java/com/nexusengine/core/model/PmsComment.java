@@ -45,15 +45,11 @@ public class PmsComment implements Serializable {
     @Column(name = "show_status")
     private Integer showStatus;
 
-    @Column(name = "product_attribute")
-    @Schema(title = "Product attribute")
-    private String productAttribute;
-
     @Column(name = "likes_count")
     private Integer likesCount;
 
-    @Column(name = "read_count")
-    private Integer readCount;
+    @Column(name = "dislike_count")
+    private Integer dislikeCount;
 
     @Schema(title = "Pics")
     private String pics;

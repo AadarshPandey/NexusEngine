@@ -71,52 +71,16 @@ public class PmsProduct implements Serializable {
     @Schema(title = "Verify status")
     private Integer verifyStatus;
 
-    @Schema(title = "Sort")
-    private Integer sort;
-
     @Schema(title = "Sale")
     private Integer sale;
 
-
-
-
-
-    @Column(name = "sub_title")
-    @Schema(title = "Sub title")
-    private String subTitle;
-
-    @Schema(title = "Unit")
-    private String unit;
-
-    @Schema(title = "Weight")
-    private BigDecimal weight;
-
-
-    @Column(name = "service_ids")
-    @Schema(title = "Service ids")
-    private String serviceIds;
-
     private String keywords;
-
-    private String note;
     @OneToMany(fetch = jakarta.persistence.FetchType.EAGER)
     @JoinColumn(name = "product_id")
     @com.fasterxml.jackson.annotation.JsonManagedReference
     private List<PmsProductMedia> mediaList;
 
 
-
-    @Column(name = "promotion_start_time")
-    @Schema(title = "Promotion start time")
-    private LocalDateTime promotionStartTime;
-
-    @Column(name = "promotion_end_time")
-    @Schema(title = "Promotion end time")
-    private LocalDateTime promotionEndTime;
-
-    @Column(name = "promotion_per_limit")
-    @Schema(title = "Promotion per limit")
-    private Integer promotionPerLimit;
 
     @Column(name = "promotion_type")
     @Schema(title = "Promotion type")
@@ -126,22 +90,8 @@ public class PmsProduct implements Serializable {
     @Schema(title = "Brand name")
     private String brandName;
 
-    @Column(name = "product_category_name")
-    @Schema(title = "Product category name")
-    private String productCategoryName;
-
     @Schema(title = "Description")
     private String description;
-
-
-    @Column(name = "detail_html")
-    @Schema(title = "Detail html")
-    private String detailHtml;
-
-
-    @Column(name = "vendor_id")
-    @Schema(title = "Vendor ID")
-    private Long vendorId;
 
     @org.hibernate.annotations.Formula("(SELECT COALESCE(MIN(s.price), 0) FROM catalog.pms_sku_stock s WHERE s.product_id = id)")
     private BigDecimal price;

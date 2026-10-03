@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Box, Typography, Button, TextField, Rating, List, ListItem, Divider, Avatar, IconButton, Collapse } from '@mui/material';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
+import ThumbDownOutlinedIcon from '@mui/icons-material/ThumbDownOutlined';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import request from '../utils/request';
 
 interface MediaParam {
@@ -18,6 +21,9 @@ interface Review {
   content: string;
   createdTime: string;
   likeCount?: number;
+  dislikeCount?: number;
+  userLiked?: boolean;
+  userDisliked?: boolean;
   mediaList?: MediaParam[];
   replies?: Review[];
 }
@@ -86,6 +92,15 @@ export const ReviewSection: React.FC<{ productId: number }> = ({ productId }) =>
       loadReviews(); // Reload to get updated likes
     } catch (e) {
       alert('Failed to like review.');
+    }
+  };
+
+  const handleDislike = async (id: number) => {
+    try {
+      await request.post(`/review/${id}/dislike`);
+      loadReviews();
+    } catch (e) {
+      alert('Failed to dislike review.');
     }
   };
 
@@ -166,10 +181,15 @@ export const ReviewSection: React.FC<{ productId: number }> = ({ productId }) =>
                 </Typography>
                 <Box sx={{ flexGrow: 1 }} />
                 
-                <IconButton size="small" onClick={() => handleLike(review.id)}>
-                  <ThumbUpOutlinedIcon fontSize="small" />
+                <IconButton size="small" onClick={() => handleLike(review.id)} color={review.userLiked ? 'primary' : 'default'}>
+                  {review.userLiked ? <ThumbUpIcon fontSize="small" /> : <ThumbUpOutlinedIcon fontSize="small" />}
                 </IconButton>
                 <Typography variant="caption">{review.likeCount || 0}</Typography>
+
+                <IconButton size="small" onClick={() => handleDislike(review.id)} color={review.userDisliked ? 'primary' : 'default'}>
+                  {review.userDisliked ? <ThumbDownIcon fontSize="small" /> : <ThumbDownOutlinedIcon fontSize="small" />}
+                </IconButton>
+                <Typography variant="caption">{review.dislikeCount || 0}</Typography>
                 
                 <Button size="small" sx={{ ml: 1 }} onClick={() => { setReplyingTo(replyingTo === review.id ? null : review.id); setReplyMediaList([]); }}>
                   {replyingTo === review.id ? 'Cancel' : 'Reply'}
@@ -218,10 +238,15 @@ export const ReviewSection: React.FC<{ productId: number }> = ({ productId }) =>
                           {new Date(reply.createdTime).toLocaleDateString()}
                         </Typography>
                         <Box sx={{ flexGrow: 1 }} />
-                        <IconButton size="small" onClick={() => handleLike(reply.id)}>
-                          <ThumbUpOutlinedIcon fontSize="small" sx={{ fontSize: 16 }} />
+                        <IconButton size="small" onClick={() => handleLike(reply.id)} color={reply.userLiked ? 'primary' : 'default'}>
+                          {reply.userLiked ? <ThumbUpIcon fontSize="small" sx={{ fontSize: 16 }} /> : <ThumbUpOutlinedIcon fontSize="small" sx={{ fontSize: 16 }} />}
                         </IconButton>
                         <Typography variant="caption">{reply.likeCount || 0}</Typography>
+
+                        <IconButton size="small" onClick={() => handleDislike(reply.id)} color={reply.userDisliked ? 'primary' : 'default'}>
+                          {reply.userDisliked ? <ThumbDownIcon fontSize="small" sx={{ fontSize: 16 }} /> : <ThumbDownOutlinedIcon fontSize="small" sx={{ fontSize: 16 }} />}
+                        </IconButton>
+                        <Typography variant="caption">{reply.dislikeCount || 0}</Typography>
                         
                         <Button size="small" sx={{ ml: 1 }} onClick={() => { setReplyingTo(replyingTo === reply.id ? null : reply.id); setReplyMediaList([]); }}>
                           {replyingTo === reply.id ? 'Cancel' : 'Reply'}

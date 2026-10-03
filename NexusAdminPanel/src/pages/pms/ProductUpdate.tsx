@@ -16,7 +16,6 @@ const ProductUpdate: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
     name: '',
-    subTitle: '',
     description: '',
     price: '',
     originalPrice: '',
@@ -153,7 +152,6 @@ const ProductUpdate: React.FC = () => {
               <TextField fullWidth label="Product Name" required value={formData.name || ''} onChange={e => setFormData({...formData, name: e.target.value})} />
             </Grid>
             <Grid size={{ xs: 12 }}>
-              <TextField fullWidth label="Subtitle" value={formData.subTitle || ''} onChange={e => setFormData({...formData, subTitle: e.target.value})} />
             </Grid>
             
             <Grid size={{ xs: 12, md: 6 }}>

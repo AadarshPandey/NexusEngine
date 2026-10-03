@@ -26,8 +26,8 @@ public class HomeDao {
     }
 
     public List<PmsBrand> getRecommendBrandList(int offset, int limit) {
-        // Return first N brands sorted by sort order
-        return brandRepository.findAll(PageRequest.of(offset / Math.max(limit, 1), limit, Sort.by(Sort.Direction.DESC, "sort"))).getContent();
+        // Return first N brands sorted by id since sort column was removed
+        return brandRepository.findAll(PageRequest.of(offset / Math.max(limit, 1), limit, Sort.by(Sort.Direction.DESC, "id"))).getContent();
     }
 
     public List<PmsProduct> getNewProductList(int offset, int limit) {

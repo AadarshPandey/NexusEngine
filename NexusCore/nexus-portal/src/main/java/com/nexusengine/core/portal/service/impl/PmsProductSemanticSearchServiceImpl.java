@@ -113,7 +113,7 @@ public class PmsProductSemanticSearchServiceImpl implements PmsProductSemanticSe
     private String buildProductContent(PmsProduct product) {
         return String.format("%s %s %s %s",
                 product.getName() != null ? product.getName() : "",
-                product.getSubTitle() != null ? product.getSubTitle() : "",
+                "",
                 product.getDescription() != null ? product.getDescription() : "",
                 product.getKeywords() != null ? product.getKeywords() : "");
     }

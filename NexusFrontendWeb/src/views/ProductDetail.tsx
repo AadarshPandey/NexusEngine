@@ -6,7 +6,7 @@ import type { AppDispatch, RootState } from '../store';
 import { fetchProductDetail } from '../api/product';
 import type { PmsPortalProductDetail, PmsSkuStock } from '../api/product';
 import { addItemToCart } from '../store/slices/cartSlice';
-import DOMPurify from 'dompurify';
+import ReactMarkdown from 'react-markdown';
 import { ReviewSection } from '../components/ReviewSection';
 
 const ProductDetail: React.FC = () => {
@@ -189,7 +189,6 @@ const ProductDetail: React.FC = () => {
           {/* Details Column */}
           <Grid size={{ xs: 12, md: 6 }}>
             <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold' }}>{product.name}</Typography>
-            <Typography variant="subtitle1" color="text.secondary" gutterBottom>{product.subTitle}</Typography>
             <Divider sx={{ my: 2 }} />
             
             <Typography variant="h3" color="primary" gutterBottom>₹{displayPrice?.toFixed(2)}</Typography>
@@ -232,7 +231,7 @@ const ProductDetail: React.FC = () => {
 
             <Box sx={{ mt: 4 }}>
               <Typography variant="h6" gutterBottom>Product Description</Typography>
-              <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product.description || '<p>No description available.</p>') }} />
+              <ReactMarkdown>{product.description || 'No description available.'}</ReactMarkdown>
             </Box>
           </Grid>
         </Grid>

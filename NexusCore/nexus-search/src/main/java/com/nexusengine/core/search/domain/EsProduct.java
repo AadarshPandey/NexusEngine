@@ -30,13 +30,9 @@ public class EsProduct implements Serializable {
     @Field(type = FieldType.Text)
     private String brandName;
     private Long productCategoryId;
-    @Field(type = FieldType.Keyword)
-    private String productCategoryName;
     private String pic;
     @Field(type = FieldType.Text)
     private String name;
-    @Field(type = FieldType.Text)
-    private String subTitle;
     @Field(type = FieldType.Text)
     private String keywords;
     private BigDecimal price;
@@ -45,7 +41,6 @@ public class EsProduct implements Serializable {
     private Integer recommendStatus;
     private Integer stock;
     private Integer promotionType;
-    private Integer sort;
     @Field(type = FieldType.Nested, fielddata = true)
     private List<EsProductAttributeValue> attrValueList;
 }
