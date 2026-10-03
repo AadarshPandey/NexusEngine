@@ -2,6 +2,7 @@ package com.nexusengine.core.portal;
 
 import com.nexusengine.core.model.*;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -41,8 +42,8 @@ public final class TestFixtures {
         coupon.setMinPoint(minPoint);
         coupon.setPerLimit(limit);
         coupon.setCount(100);
-        coupon.setStartTime(new Date(System.currentTimeMillis() - 10000));
-        coupon.setEndTime(new Date(System.currentTimeMillis() + 86400000));
+        coupon.setStartTime(LocalDateTime.now().minusSeconds(10));
+        coupon.setEndTime(LocalDateTime.now().plusDays(1));
         coupon.setUseType(0);
         return coupon;
     }
@@ -75,7 +76,7 @@ public final class TestFixtures {
         order.setPayAmount(new BigDecimal("500.00"));
         order.setStatus(0);
         order.setDeleteStatus(0);
-        order.setCreateTime(new Date());
+        order.setCreateTime(LocalDateTime.now());
         return order;
     }
 

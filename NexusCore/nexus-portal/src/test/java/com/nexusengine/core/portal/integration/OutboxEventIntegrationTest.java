@@ -44,7 +44,7 @@ public class OutboxEventIntegrationTest {
         event.setPayload("60000");
         event.setStatus("PENDING");
         event.setRetryCount(0);
-        event.setCreatedAt(new Date());
+        event.setCreatedAt(LocalDateTime.now());
         
         event = outboxEventRepository.save(event);
         Long eventId = event.getId();
