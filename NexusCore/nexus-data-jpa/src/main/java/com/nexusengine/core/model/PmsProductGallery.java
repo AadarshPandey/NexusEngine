@@ -8,7 +8,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @Entity
-@Table(name = "pms_product_gallery", schema = "catalog")
+@Table(name = "pms_product_gallery", schema = "pms")
 public class PmsProductGallery implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

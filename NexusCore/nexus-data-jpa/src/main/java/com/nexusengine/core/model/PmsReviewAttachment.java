@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "pms_review_attachments", schema = "catalog")
+@Table(name = "pms_review_attachments", schema = "pms")
 public class PmsReviewAttachment implements Serializable {
 
     private static final long serialVersionUID = 1L;

@@ -1,6 +1,6 @@
 -- Move tables to specific schemas
 
-CREATE SCHEMA IF NOT EXISTS catalog;
+CREATE SCHEMA IF NOT EXISTS pms;
 CREATE SCHEMA IF NOT EXISTS orders;
 CREATE SCHEMA IF NOT EXISTS users;
 CREATE SCHEMA IF NOT EXISTS marketing;
@@ -15,7 +15,7 @@ BEGIN
         SELECT 1 FROM information_schema.tables 
         WHERE table_schema='public' AND table_name='pms_brand'
     ) THEN
-        ALTER TABLE public.pms_brand SET SCHEMA catalog;
+        ALTER TABLE public.pms_brand SET SCHEMA pms;
     END IF;
 END $$;
 
@@ -32,9 +32,9 @@ BEGIN
         JOIN pg_namespace n ON n.oid = t.relnamespace
         WHERE s.relkind = 'S' 
           AND t.relname = 'pms_brand' 
-          AND n.nspname = 'catalog' -- because table is already moved
+          AND n.nspname = 'pms' -- because table is already moved
     LOOP
-        EXECUTE 'ALTER SEQUENCE ' || seq_record.sequence_name || ' SET SCHEMA catalog';
+        EXECUTE 'ALTER SEQUENCE ' || seq_record.sequence_name || ' SET SCHEMA pms';
     END LOOP;
 END $$;
 
@@ -45,7 +45,7 @@ BEGIN
         SELECT 1 FROM information_schema.tables 
         WHERE table_schema='public' AND table_name='pms_comment'
     ) THEN
-        ALTER TABLE public.pms_comment SET SCHEMA catalog;
+        ALTER TABLE public.pms_comment SET SCHEMA pms;
     END IF;
 END $$;
 
@@ -61,9 +61,9 @@ BEGIN
         JOIN pg_class t ON d.refobjid = t.oid
         JOIN pg_namespace n ON n.oid = t.relnamespace
         WHERE s.relkind = 'S' 
-          AND n.nspname = 'catalog' -- because table is already moved
+          AND n.nspname = 'pms' -- because table is already moved
     LOOP
-        EXECUTE 'ALTER SEQUENCE ' || seq_record.sequence_name || ' SET SCHEMA catalog';
+        EXECUTE 'ALTER SEQUENCE ' || seq_record.sequence_name || ' SET SCHEMA pms';
     END LOOP;
 END $$;
 
@@ -74,7 +74,7 @@ BEGIN
         SELECT 1 FROM information_schema.tables 
         WHERE table_schema='public' AND table_name='pms_comment_reply'
     ) THEN
-        ALTER TABLE public.pms_comment_reply SET SCHEMA catalog;
+        ALTER TABLE public.pms_comment_reply SET SCHEMA pms;
     END IF;
 END $$;
 
@@ -90,9 +90,9 @@ BEGIN
         JOIN pg_class t ON d.refobjid = t.oid
         JOIN pg_namespace n ON n.oid = t.relnamespace
         WHERE s.relkind = 'S' 
-          AND n.nspname = 'catalog' -- because table is already moved
+          AND n.nspname = 'pms' -- because table is already moved
     LOOP
-        EXECUTE 'ALTER SEQUENCE ' || seq_record.sequence_name || ' SET SCHEMA catalog';
+        EXECUTE 'ALTER SEQUENCE ' || seq_record.sequence_name || ' SET SCHEMA pms';
     END LOOP;
 END $$;
 
@@ -103,7 +103,7 @@ BEGIN
         SELECT 1 FROM information_schema.tables 
         WHERE table_schema='public' AND table_name='pms_product'
     ) THEN
-        ALTER TABLE public.pms_product SET SCHEMA catalog;
+        ALTER TABLE public.pms_product SET SCHEMA pms;
     END IF;
 END $$;
 
@@ -120,9 +120,9 @@ BEGIN
         JOIN pg_namespace n ON n.oid = t.relnamespace
         WHERE s.relkind = 'S' 
           AND t.relname = 'pms_product' 
-          AND n.nspname = 'catalog' -- because table is already moved
+          AND n.nspname = 'pms' -- because table is already moved
     LOOP
-        EXECUTE 'ALTER SEQUENCE ' || seq_record.sequence_name || ' SET SCHEMA catalog';
+        EXECUTE 'ALTER SEQUENCE ' || seq_record.sequence_name || ' SET SCHEMA pms';
     END LOOP;
 END $$;
 
@@ -133,7 +133,7 @@ BEGIN
         SELECT 1 FROM information_schema.tables 
         WHERE table_schema='public' AND table_name='pms_product_attribute'
     ) THEN
-        ALTER TABLE public.pms_product_attribute SET SCHEMA catalog;
+        ALTER TABLE public.pms_product_attribute SET SCHEMA pms;
     END IF;
 END $$;
 
@@ -150,9 +150,9 @@ BEGIN
         JOIN pg_namespace n ON n.oid = t.relnamespace
         WHERE s.relkind = 'S' 
           AND t.relname = 'pms_product_attribute' 
-          AND n.nspname = 'catalog' -- because table is already moved
+          AND n.nspname = 'pms' -- because table is already moved
     LOOP
-        EXECUTE 'ALTER SEQUENCE ' || seq_record.sequence_name || ' SET SCHEMA catalog';
+        EXECUTE 'ALTER SEQUENCE ' || seq_record.sequence_name || ' SET SCHEMA pms';
     END LOOP;
 END $$;
 
@@ -163,7 +163,7 @@ BEGIN
         SELECT 1 FROM information_schema.tables 
         WHERE table_schema='public' AND table_name='pms_product_attribute_category'
     ) THEN
-        ALTER TABLE public.pms_product_attribute_category SET SCHEMA catalog;
+        ALTER TABLE public.pms_product_attribute_category SET SCHEMA pms;
     END IF;
 END $$;
 
@@ -180,9 +180,9 @@ BEGIN
         JOIN pg_namespace n ON n.oid = t.relnamespace
         WHERE s.relkind = 'S' 
           AND t.relname = 'pms_product_attribute_category' 
-          AND n.nspname = 'catalog' -- because table is already moved
+          AND n.nspname = 'pms' -- because table is already moved
     LOOP
-        EXECUTE 'ALTER SEQUENCE ' || seq_record.sequence_name || ' SET SCHEMA catalog';
+        EXECUTE 'ALTER SEQUENCE ' || seq_record.sequence_name || ' SET SCHEMA pms';
     END LOOP;
 END $$;
 
@@ -193,7 +193,7 @@ BEGIN
         SELECT 1 FROM information_schema.tables 
         WHERE table_schema='public' AND table_name='pms_product_attribute_value'
     ) THEN
-        ALTER TABLE public.pms_product_attribute_value SET SCHEMA catalog;
+        ALTER TABLE public.pms_product_attribute_value SET SCHEMA pms;
     END IF;
 END $$;
 
@@ -210,9 +210,9 @@ BEGIN
         JOIN pg_namespace n ON n.oid = t.relnamespace
         WHERE s.relkind = 'S' 
           AND t.relname = 'pms_product_attribute_value' 
-          AND n.nspname = 'catalog' -- because table is already moved
+          AND n.nspname = 'pms' -- because table is already moved
     LOOP
-        EXECUTE 'ALTER SEQUENCE ' || seq_record.sequence_name || ' SET SCHEMA catalog';
+        EXECUTE 'ALTER SEQUENCE ' || seq_record.sequence_name || ' SET SCHEMA pms';
     END LOOP;
 END $$;
 
@@ -223,7 +223,7 @@ BEGIN
         SELECT 1 FROM information_schema.tables 
         WHERE table_schema='public' AND table_name='pms_product_category'
     ) THEN
-        ALTER TABLE public.pms_product_category SET SCHEMA catalog;
+        ALTER TABLE public.pms_product_category SET SCHEMA pms;
     END IF;
 END $$;
 
@@ -240,9 +240,9 @@ BEGIN
         JOIN pg_namespace n ON n.oid = t.relnamespace
         WHERE s.relkind = 'S' 
           AND t.relname = 'pms_product_category' 
-          AND n.nspname = 'catalog' -- because table is already moved
+          AND n.nspname = 'pms' -- because table is already moved
     LOOP
-        EXECUTE 'ALTER SEQUENCE ' || seq_record.sequence_name || ' SET SCHEMA catalog';
+        EXECUTE 'ALTER SEQUENCE ' || seq_record.sequence_name || ' SET SCHEMA pms';
     END LOOP;
 END $$;
 
@@ -253,7 +253,7 @@ BEGIN
         SELECT 1 FROM information_schema.tables 
         WHERE table_schema='public' AND table_name='pms_product_category_attribute_relation'
     ) THEN
-        ALTER TABLE public.pms_product_category_attribute_relation SET SCHEMA catalog;
+        ALTER TABLE public.pms_product_category_attribute_relation SET SCHEMA pms;
     END IF;
 END $$;
 
@@ -270,9 +270,9 @@ BEGIN
         JOIN pg_namespace n ON n.oid = t.relnamespace
         WHERE s.relkind = 'S' 
           AND t.relname = 'pms_product_category_attribute_relation' 
-          AND n.nspname = 'catalog' -- because table is already moved
+          AND n.nspname = 'pms' -- because table is already moved
     LOOP
-        EXECUTE 'ALTER SEQUENCE ' || seq_record.sequence_name || ' SET SCHEMA catalog';
+        EXECUTE 'ALTER SEQUENCE ' || seq_record.sequence_name || ' SET SCHEMA pms';
     END LOOP;
 END $$;
 
@@ -283,7 +283,7 @@ BEGIN
         SELECT 1 FROM information_schema.tables 
         WHERE table_schema='public' AND table_name='pms_product_spend_discount'
     ) THEN
-        ALTER TABLE public.pms_product_spend_discount SET SCHEMA catalog;
+        ALTER TABLE public.pms_product_spend_discount SET SCHEMA pms;
     END IF;
 END $$;
 
@@ -300,9 +300,9 @@ BEGIN
         JOIN pg_namespace n ON n.oid = t.relnamespace
         WHERE s.relkind = 'S' 
           AND t.relname = 'pms_product_spend_discount' 
-          AND n.nspname = 'catalog' -- because table is already moved
+          AND n.nspname = 'pms' -- because table is already moved
     LOOP
-        EXECUTE 'ALTER SEQUENCE ' || seq_record.sequence_name || ' SET SCHEMA catalog';
+        EXECUTE 'ALTER SEQUENCE ' || seq_record.sequence_name || ' SET SCHEMA pms';
     END LOOP;
 END $$;
 
@@ -313,7 +313,7 @@ BEGIN
         SELECT 1 FROM information_schema.tables 
         WHERE table_schema='public' AND table_name='pms_product_volume_discount'
     ) THEN
-        ALTER TABLE public.pms_product_volume_discount SET SCHEMA catalog;
+        ALTER TABLE public.pms_product_volume_discount SET SCHEMA pms;
     END IF;
 END $$;
 
@@ -330,9 +330,9 @@ BEGIN
         JOIN pg_namespace n ON n.oid = t.relnamespace
         WHERE s.relkind = 'S' 
           AND t.relname = 'pms_product_volume_discount' 
-          AND n.nspname = 'catalog' -- because table is already moved
+          AND n.nspname = 'pms' -- because table is already moved
     LOOP
-        EXECUTE 'ALTER SEQUENCE ' || seq_record.sequence_name || ' SET SCHEMA catalog';
+        EXECUTE 'ALTER SEQUENCE ' || seq_record.sequence_name || ' SET SCHEMA pms';
     END LOOP;
 END $$;
 
@@ -343,7 +343,7 @@ BEGIN
         SELECT 1 FROM information_schema.tables 
         WHERE table_schema='public' AND table_name='pms_product_gallery'
     ) THEN
-        ALTER TABLE public.pms_product_gallery SET SCHEMA catalog;
+        ALTER TABLE public.pms_product_gallery SET SCHEMA pms;
     END IF;
 END $$;
 
@@ -360,9 +360,9 @@ BEGIN
         JOIN pg_namespace n ON n.oid = t.relnamespace
         WHERE s.relkind = 'S' 
           AND t.relname = 'pms_product_gallery' 
-          AND n.nspname = 'catalog' -- because table is already moved
+          AND n.nspname = 'pms' -- because table is already moved
     LOOP
-        EXECUTE 'ALTER SEQUENCE ' || seq_record.sequence_name || ' SET SCHEMA catalog';
+        EXECUTE 'ALTER SEQUENCE ' || seq_record.sequence_name || ' SET SCHEMA pms';
     END LOOP;
 END $$;
 
@@ -373,7 +373,7 @@ BEGIN
         SELECT 1 FROM information_schema.tables 
         WHERE table_schema='public' AND table_name='pms_product_audit_log'
     ) THEN
-        ALTER TABLE public.pms_product_audit_log SET SCHEMA catalog;
+        ALTER TABLE public.pms_product_audit_log SET SCHEMA pms;
     END IF;
 END $$;
 
@@ -390,9 +390,9 @@ BEGIN
         JOIN pg_namespace n ON n.oid = t.relnamespace
         WHERE s.relkind = 'S' 
           AND t.relname = 'pms_product_audit_log' 
-          AND n.nspname = 'catalog' -- because table is already moved
+          AND n.nspname = 'pms' -- because table is already moved
     LOOP
-        EXECUTE 'ALTER SEQUENCE ' || seq_record.sequence_name || ' SET SCHEMA catalog';
+        EXECUTE 'ALTER SEQUENCE ' || seq_record.sequence_name || ' SET SCHEMA pms';
     END LOOP;
 END $$;
 
@@ -403,7 +403,7 @@ BEGIN
         SELECT 1 FROM information_schema.tables 
         WHERE table_schema='public' AND table_name='pms_product_approval_history'
     ) THEN
-        ALTER TABLE public.pms_product_approval_history SET SCHEMA catalog;
+        ALTER TABLE public.pms_product_approval_history SET SCHEMA pms;
     END IF;
 END $$;
 
@@ -420,9 +420,9 @@ BEGIN
         JOIN pg_namespace n ON n.oid = t.relnamespace
         WHERE s.relkind = 'S' 
           AND t.relname = 'pms_product_approval_history' 
-          AND n.nspname = 'catalog' -- because table is already moved
+          AND n.nspname = 'pms' -- because table is already moved
     LOOP
-        EXECUTE 'ALTER SEQUENCE ' || seq_record.sequence_name || ' SET SCHEMA catalog';
+        EXECUTE 'ALTER SEQUENCE ' || seq_record.sequence_name || ' SET SCHEMA pms';
     END LOOP;
 END $$;
 
@@ -433,7 +433,7 @@ BEGIN
         SELECT 1 FROM information_schema.tables 
         WHERE table_schema='public' AND table_name='pms_review'
     ) THEN
-        ALTER TABLE public.pms_review SET SCHEMA catalog;
+        ALTER TABLE public.pms_review SET SCHEMA pms;
     END IF;
 END $$;
 
@@ -450,9 +450,9 @@ BEGIN
         JOIN pg_namespace n ON n.oid = t.relnamespace
         WHERE s.relkind = 'S' 
           AND t.relname = 'pms_review' 
-          AND n.nspname = 'catalog' -- because table is already moved
+          AND n.nspname = 'pms' -- because table is already moved
     LOOP
-        EXECUTE 'ALTER SEQUENCE ' || seq_record.sequence_name || ' SET SCHEMA catalog';
+        EXECUTE 'ALTER SEQUENCE ' || seq_record.sequence_name || ' SET SCHEMA pms';
     END LOOP;
 END $$;
 
@@ -463,7 +463,7 @@ BEGIN
         SELECT 1 FROM information_schema.tables 
         WHERE table_schema='public' AND table_name='pms_review_attachments'
     ) THEN
-        ALTER TABLE public.pms_review_attachments SET SCHEMA catalog;
+        ALTER TABLE public.pms_review_attachments SET SCHEMA pms;
     END IF;
 END $$;
 
@@ -480,9 +480,9 @@ BEGIN
         JOIN pg_namespace n ON n.oid = t.relnamespace
         WHERE s.relkind = 'S' 
           AND t.relname = 'pms_review_attachments' 
-          AND n.nspname = 'catalog' -- because table is already moved
+          AND n.nspname = 'pms' -- because table is already moved
     LOOP
-        EXECUTE 'ALTER SEQUENCE ' || seq_record.sequence_name || ' SET SCHEMA catalog';
+        EXECUTE 'ALTER SEQUENCE ' || seq_record.sequence_name || ' SET SCHEMA pms';
     END LOOP;
 END $$;
 
@@ -493,7 +493,7 @@ BEGIN
         SELECT 1 FROM information_schema.tables 
         WHERE table_schema='public' AND table_name='pms_sku_stock'
     ) THEN
-        ALTER TABLE public.pms_sku_stock SET SCHEMA catalog;
+        ALTER TABLE public.pms_sku_stock SET SCHEMA pms;
     END IF;
 END $$;
 
@@ -510,9 +510,9 @@ BEGIN
         JOIN pg_namespace n ON n.oid = t.relnamespace
         WHERE s.relkind = 'S' 
           AND t.relname = 'pms_sku_stock' 
-          AND n.nspname = 'catalog' -- because table is already moved
+          AND n.nspname = 'pms' -- because table is already moved
     LOOP
-        EXECUTE 'ALTER SEQUENCE ' || seq_record.sequence_name || ' SET SCHEMA catalog';
+        EXECUTE 'ALTER SEQUENCE ' || seq_record.sequence_name || ' SET SCHEMA pms';
     END LOOP;
 END $$;
 

@@ -126,13 +126,13 @@ CREATE SCHEMA ai;
 ALTER SCHEMA ai OWNER TO postgres;
 
 --
--- Name: catalog; Type: SCHEMA; Schema: -; Owner: postgres
+-- Name: pms; Type: SCHEMA; Schema: -; Owner: postgres
 --
 
-CREATE SCHEMA catalog;
+CREATE SCHEMA pms;
 
 
-ALTER SCHEMA catalog OWNER TO postgres;
+ALTER SCHEMA pms OWNER TO postgres;
 
 --
 -- Name: integration; Type: SCHEMA; Schema: -; Owner: postgres
@@ -323,10 +323,10 @@ CREATE TABLE ai.vector_store (
 ALTER TABLE ai.vector_store OWNER TO postgres;
 
 --
--- Name: pms_brand; Type: TABLE; Schema: catalog; Owner: postgres
+-- Name: pms_brand; Type: TABLE; Schema: pms; Owner: postgres
 --
 
-CREATE TABLE catalog.pms_brand (
+CREATE TABLE pms.pms_brand (
     id bigint NOT NULL,
     name character varying(255),
     show_status integer,
@@ -334,13 +334,13 @@ CREATE TABLE catalog.pms_brand (
 );
 
 
-ALTER TABLE catalog.pms_brand OWNER TO postgres;
+ALTER TABLE pms.pms_brand OWNER TO postgres;
 
 --
--- Name: pms_brand_id_seq; Type: SEQUENCE; Schema: catalog; Owner: postgres
+-- Name: pms_brand_id_seq; Type: SEQUENCE; Schema: pms; Owner: postgres
 --
 
-CREATE SEQUENCE catalog.pms_brand_id_seq
+CREATE SEQUENCE pms.pms_brand_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -348,20 +348,20 @@ CREATE SEQUENCE catalog.pms_brand_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE catalog.pms_brand_id_seq OWNER TO postgres;
+ALTER SEQUENCE pms.pms_brand_id_seq OWNER TO postgres;
 
 --
--- Name: pms_brand_id_seq; Type: SEQUENCE OWNED BY; Schema: catalog; Owner: postgres
+-- Name: pms_brand_id_seq; Type: SEQUENCE OWNED BY; Schema: pms; Owner: postgres
 --
 
-ALTER SEQUENCE catalog.pms_brand_id_seq OWNED BY catalog.pms_brand.id;
+ALTER SEQUENCE pms.pms_brand_id_seq OWNED BY pms.pms_brand.id;
 
 
 --
--- Name: pms_comment; Type: TABLE; Schema: catalog; Owner: postgres
+-- Name: pms_comment; Type: TABLE; Schema: pms; Owner: postgres
 --
 
-CREATE TABLE catalog.pms_comment (
+CREATE TABLE pms.pms_comment (
     id bigint NOT NULL,
     product_id bigint,
     member_nick_name character varying(255),
@@ -381,13 +381,13 @@ CREATE TABLE catalog.pms_comment (
 );
 
 
-ALTER TABLE catalog.pms_comment OWNER TO postgres;
+ALTER TABLE pms.pms_comment OWNER TO postgres;
 
 --
--- Name: pms_comment_id_seq; Type: SEQUENCE; Schema: catalog; Owner: postgres
+-- Name: pms_comment_id_seq; Type: SEQUENCE; Schema: pms; Owner: postgres
 --
 
-CREATE SEQUENCE catalog.pms_comment_id_seq
+CREATE SEQUENCE pms.pms_comment_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -395,20 +395,20 @@ CREATE SEQUENCE catalog.pms_comment_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE catalog.pms_comment_id_seq OWNER TO postgres;
+ALTER SEQUENCE pms.pms_comment_id_seq OWNER TO postgres;
 
 --
--- Name: pms_comment_id_seq; Type: SEQUENCE OWNED BY; Schema: catalog; Owner: postgres
+-- Name: pms_comment_id_seq; Type: SEQUENCE OWNED BY; Schema: pms; Owner: postgres
 --
 
-ALTER SEQUENCE catalog.pms_comment_id_seq OWNED BY catalog.pms_comment.id;
+ALTER SEQUENCE pms.pms_comment_id_seq OWNED BY pms.pms_comment.id;
 
 
 --
--- Name: pms_comment_reply; Type: TABLE; Schema: catalog; Owner: postgres
+-- Name: pms_comment_reply; Type: TABLE; Schema: pms; Owner: postgres
 --
 
-CREATE TABLE catalog.pms_comment_reply (
+CREATE TABLE pms.pms_comment_reply (
     id bigint NOT NULL,
     comment_id bigint,
     member_nick_name character varying(255),
@@ -419,13 +419,13 @@ CREATE TABLE catalog.pms_comment_reply (
 );
 
 
-ALTER TABLE catalog.pms_comment_reply OWNER TO postgres;
+ALTER TABLE pms.pms_comment_reply OWNER TO postgres;
 
 --
--- Name: pms_comment_reply_id_seq; Type: SEQUENCE; Schema: catalog; Owner: postgres
+-- Name: pms_comment_reply_id_seq; Type: SEQUENCE; Schema: pms; Owner: postgres
 --
 
-CREATE SEQUENCE catalog.pms_comment_reply_id_seq
+CREATE SEQUENCE pms.pms_comment_reply_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -433,20 +433,20 @@ CREATE SEQUENCE catalog.pms_comment_reply_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE catalog.pms_comment_reply_id_seq OWNER TO postgres;
+ALTER SEQUENCE pms.pms_comment_reply_id_seq OWNER TO postgres;
 
 --
--- Name: pms_comment_reply_id_seq; Type: SEQUENCE OWNED BY; Schema: catalog; Owner: postgres
+-- Name: pms_comment_reply_id_seq; Type: SEQUENCE OWNED BY; Schema: pms; Owner: postgres
 --
 
-ALTER SEQUENCE catalog.pms_comment_reply_id_seq OWNED BY catalog.pms_comment_reply.id;
+ALTER SEQUENCE pms.pms_comment_reply_id_seq OWNED BY pms.pms_comment_reply.id;
 
 
 --
--- Name: pms_product; Type: TABLE; Schema: catalog; Owner: postgres
+-- Name: pms_product; Type: TABLE; Schema: pms; Owner: postgres
 --
 
-CREATE TABLE catalog.pms_product (
+CREATE TABLE pms.pms_product (
     id bigint NOT NULL,
     brand_id bigint,
     product_category_id bigint,
@@ -481,13 +481,13 @@ CREATE TABLE catalog.pms_product (
 );
 
 
-ALTER TABLE catalog.pms_product OWNER TO postgres;
+ALTER TABLE pms.pms_product OWNER TO postgres;
 
 --
--- Name: pms_product_attribute; Type: TABLE; Schema: catalog; Owner: postgres
+-- Name: pms_product_attribute; Type: TABLE; Schema: pms; Owner: postgres
 --
 
-CREATE TABLE catalog.pms_product_attribute (
+CREATE TABLE pms.pms_product_attribute (
     id bigint NOT NULL,
     product_attribute_category_id bigint,
     name character varying(255),
@@ -503,13 +503,13 @@ CREATE TABLE catalog.pms_product_attribute (
 );
 
 
-ALTER TABLE catalog.pms_product_attribute OWNER TO postgres;
+ALTER TABLE pms.pms_product_attribute OWNER TO postgres;
 
 --
--- Name: pms_product_attribute_category; Type: TABLE; Schema: catalog; Owner: postgres
+-- Name: pms_product_attribute_category; Type: TABLE; Schema: pms; Owner: postgres
 --
 
-CREATE TABLE catalog.pms_product_attribute_category (
+CREATE TABLE pms.pms_product_attribute_category (
     id bigint NOT NULL,
     name character varying(255),
     attribute_count integer,
@@ -517,13 +517,13 @@ CREATE TABLE catalog.pms_product_attribute_category (
 );
 
 
-ALTER TABLE catalog.pms_product_attribute_category OWNER TO postgres;
+ALTER TABLE pms.pms_product_attribute_category OWNER TO postgres;
 
 --
--- Name: pms_product_attribute_category_id_seq; Type: SEQUENCE; Schema: catalog; Owner: postgres
+-- Name: pms_product_attribute_category_id_seq; Type: SEQUENCE; Schema: pms; Owner: postgres
 --
 
-CREATE SEQUENCE catalog.pms_product_attribute_category_id_seq
+CREATE SEQUENCE pms.pms_product_attribute_category_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -531,20 +531,20 @@ CREATE SEQUENCE catalog.pms_product_attribute_category_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE catalog.pms_product_attribute_category_id_seq OWNER TO postgres;
+ALTER SEQUENCE pms.pms_product_attribute_category_id_seq OWNER TO postgres;
 
 --
--- Name: pms_product_attribute_category_id_seq; Type: SEQUENCE OWNED BY; Schema: catalog; Owner: postgres
+-- Name: pms_product_attribute_category_id_seq; Type: SEQUENCE OWNED BY; Schema: pms; Owner: postgres
 --
 
-ALTER SEQUENCE catalog.pms_product_attribute_category_id_seq OWNED BY catalog.pms_product_attribute_category.id;
+ALTER SEQUENCE pms.pms_product_attribute_category_id_seq OWNED BY pms.pms_product_attribute_category.id;
 
 
 --
--- Name: pms_product_attribute_id_seq; Type: SEQUENCE; Schema: catalog; Owner: postgres
+-- Name: pms_product_attribute_id_seq; Type: SEQUENCE; Schema: pms; Owner: postgres
 --
 
-CREATE SEQUENCE catalog.pms_product_attribute_id_seq
+CREATE SEQUENCE pms.pms_product_attribute_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -552,20 +552,20 @@ CREATE SEQUENCE catalog.pms_product_attribute_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE catalog.pms_product_attribute_id_seq OWNER TO postgres;
+ALTER SEQUENCE pms.pms_product_attribute_id_seq OWNER TO postgres;
 
 --
--- Name: pms_product_attribute_id_seq; Type: SEQUENCE OWNED BY; Schema: catalog; Owner: postgres
+-- Name: pms_product_attribute_id_seq; Type: SEQUENCE OWNED BY; Schema: pms; Owner: postgres
 --
 
-ALTER SEQUENCE catalog.pms_product_attribute_id_seq OWNED BY catalog.pms_product_attribute.id;
+ALTER SEQUENCE pms.pms_product_attribute_id_seq OWNED BY pms.pms_product_attribute.id;
 
 
 --
--- Name: pms_product_attribute_value; Type: TABLE; Schema: catalog; Owner: postgres
+-- Name: pms_product_attribute_value; Type: TABLE; Schema: pms; Owner: postgres
 --
 
-CREATE TABLE catalog.pms_product_attribute_value (
+CREATE TABLE pms.pms_product_attribute_value (
     id bigint NOT NULL,
     product_id bigint,
     product_attribute_id bigint,
@@ -573,13 +573,13 @@ CREATE TABLE catalog.pms_product_attribute_value (
 );
 
 
-ALTER TABLE catalog.pms_product_attribute_value OWNER TO postgres;
+ALTER TABLE pms.pms_product_attribute_value OWNER TO postgres;
 
 --
--- Name: pms_product_attribute_value_id_seq; Type: SEQUENCE; Schema: catalog; Owner: postgres
+-- Name: pms_product_attribute_value_id_seq; Type: SEQUENCE; Schema: pms; Owner: postgres
 --
 
-CREATE SEQUENCE catalog.pms_product_attribute_value_id_seq
+CREATE SEQUENCE pms.pms_product_attribute_value_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -587,20 +587,20 @@ CREATE SEQUENCE catalog.pms_product_attribute_value_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE catalog.pms_product_attribute_value_id_seq OWNER TO postgres;
+ALTER SEQUENCE pms.pms_product_attribute_value_id_seq OWNER TO postgres;
 
 --
--- Name: pms_product_attribute_value_id_seq; Type: SEQUENCE OWNED BY; Schema: catalog; Owner: postgres
+-- Name: pms_product_attribute_value_id_seq; Type: SEQUENCE OWNED BY; Schema: pms; Owner: postgres
 --
 
-ALTER SEQUENCE catalog.pms_product_attribute_value_id_seq OWNED BY catalog.pms_product_attribute_value.id;
+ALTER SEQUENCE pms.pms_product_attribute_value_id_seq OWNED BY pms.pms_product_attribute_value.id;
 
 
 --
--- Name: pms_product_category; Type: TABLE; Schema: catalog; Owner: postgres
+-- Name: pms_product_category; Type: TABLE; Schema: pms; Owner: postgres
 --
 
-CREATE TABLE catalog.pms_product_category (
+CREATE TABLE pms.pms_product_category (
     id bigint NOT NULL,
     parent_id bigint,
     name character varying(255),
@@ -616,26 +616,26 @@ CREATE TABLE catalog.pms_product_category (
 );
 
 
-ALTER TABLE catalog.pms_product_category OWNER TO postgres;
+ALTER TABLE pms.pms_product_category OWNER TO postgres;
 
 --
--- Name: pms_product_category_attribute_relation; Type: TABLE; Schema: catalog; Owner: postgres
+-- Name: pms_product_category_attribute_relation; Type: TABLE; Schema: pms; Owner: postgres
 --
 
-CREATE TABLE catalog.pms_product_category_attribute_relation (
+CREATE TABLE pms.pms_product_category_attribute_relation (
     id bigint NOT NULL,
     product_category_id bigint,
     product_attribute_id bigint
 );
 
 
-ALTER TABLE catalog.pms_product_category_attribute_relation OWNER TO postgres;
+ALTER TABLE pms.pms_product_category_attribute_relation OWNER TO postgres;
 
 --
--- Name: pms_product_category_attribute_relation_id_seq; Type: SEQUENCE; Schema: catalog; Owner: postgres
+-- Name: pms_product_category_attribute_relation_id_seq; Type: SEQUENCE; Schema: pms; Owner: postgres
 --
 
-CREATE SEQUENCE catalog.pms_product_category_attribute_relation_id_seq
+CREATE SEQUENCE pms.pms_product_category_attribute_relation_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -643,20 +643,20 @@ CREATE SEQUENCE catalog.pms_product_category_attribute_relation_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE catalog.pms_product_category_attribute_relation_id_seq OWNER TO postgres;
+ALTER SEQUENCE pms.pms_product_category_attribute_relation_id_seq OWNER TO postgres;
 
 --
--- Name: pms_product_category_attribute_relation_id_seq; Type: SEQUENCE OWNED BY; Schema: catalog; Owner: postgres
+-- Name: pms_product_category_attribute_relation_id_seq; Type: SEQUENCE OWNED BY; Schema: pms; Owner: postgres
 --
 
-ALTER SEQUENCE catalog.pms_product_category_attribute_relation_id_seq OWNED BY catalog.pms_product_category_attribute_relation.id;
+ALTER SEQUENCE pms.pms_product_category_attribute_relation_id_seq OWNED BY pms.pms_product_category_attribute_relation.id;
 
 
 --
--- Name: pms_product_category_id_seq; Type: SEQUENCE; Schema: catalog; Owner: postgres
+-- Name: pms_product_category_id_seq; Type: SEQUENCE; Schema: pms; Owner: postgres
 --
 
-CREATE SEQUENCE catalog.pms_product_category_id_seq
+CREATE SEQUENCE pms.pms_product_category_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -664,20 +664,20 @@ CREATE SEQUENCE catalog.pms_product_category_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE catalog.pms_product_category_id_seq OWNER TO postgres;
+ALTER SEQUENCE pms.pms_product_category_id_seq OWNER TO postgres;
 
 --
--- Name: pms_product_category_id_seq; Type: SEQUENCE OWNED BY; Schema: catalog; Owner: postgres
+-- Name: pms_product_category_id_seq; Type: SEQUENCE OWNED BY; Schema: pms; Owner: postgres
 --
 
-ALTER SEQUENCE catalog.pms_product_category_id_seq OWNED BY catalog.pms_product_category.id;
+ALTER SEQUENCE pms.pms_product_category_id_seq OWNED BY pms.pms_product_category.id;
 
 
 --
--- Name: pms_product_spend_discount; Type: TABLE; Schema: catalog; Owner: postgres
+-- Name: pms_product_spend_discount; Type: TABLE; Schema: pms; Owner: postgres
 --
 
-CREATE TABLE catalog.pms_product_spend_discount (
+CREATE TABLE pms.pms_product_spend_discount (
     id bigint NOT NULL,
     product_id bigint,
     full_price numeric(19,2),
@@ -685,13 +685,13 @@ CREATE TABLE catalog.pms_product_spend_discount (
 );
 
 
-ALTER TABLE catalog.pms_product_spend_discount OWNER TO postgres;
+ALTER TABLE pms.pms_product_spend_discount OWNER TO postgres;
 
 --
--- Name: pms_product_spend_discount_id_seq; Type: SEQUENCE; Schema: catalog; Owner: postgres
+-- Name: pms_product_spend_discount_id_seq; Type: SEQUENCE; Schema: pms; Owner: postgres
 --
 
-CREATE SEQUENCE catalog.pms_product_spend_discount_id_seq
+CREATE SEQUENCE pms.pms_product_spend_discount_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -699,20 +699,20 @@ CREATE SEQUENCE catalog.pms_product_spend_discount_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE catalog.pms_product_spend_discount_id_seq OWNER TO postgres;
+ALTER SEQUENCE pms.pms_product_spend_discount_id_seq OWNER TO postgres;
 
 --
--- Name: pms_product_spend_discount_id_seq; Type: SEQUENCE OWNED BY; Schema: catalog; Owner: postgres
+-- Name: pms_product_spend_discount_id_seq; Type: SEQUENCE OWNED BY; Schema: pms; Owner: postgres
 --
 
-ALTER SEQUENCE catalog.pms_product_spend_discount_id_seq OWNED BY catalog.pms_product_spend_discount.id;
+ALTER SEQUENCE pms.pms_product_spend_discount_id_seq OWNED BY pms.pms_product_spend_discount.id;
 
 
 --
--- Name: pms_product_id_seq; Type: SEQUENCE; Schema: catalog; Owner: postgres
+-- Name: pms_product_id_seq; Type: SEQUENCE; Schema: pms; Owner: postgres
 --
 
-CREATE SEQUENCE catalog.pms_product_id_seq
+CREATE SEQUENCE pms.pms_product_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -720,20 +720,20 @@ CREATE SEQUENCE catalog.pms_product_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE catalog.pms_product_id_seq OWNER TO postgres;
+ALTER SEQUENCE pms.pms_product_id_seq OWNER TO postgres;
 
 --
--- Name: pms_product_id_seq; Type: SEQUENCE OWNED BY; Schema: catalog; Owner: postgres
+-- Name: pms_product_id_seq; Type: SEQUENCE OWNED BY; Schema: pms; Owner: postgres
 --
 
-ALTER SEQUENCE catalog.pms_product_id_seq OWNED BY catalog.pms_product.id;
+ALTER SEQUENCE pms.pms_product_id_seq OWNED BY pms.pms_product.id;
 
 
 --
--- Name: pms_product_volume_discount; Type: TABLE; Schema: catalog; Owner: postgres
+-- Name: pms_product_volume_discount; Type: TABLE; Schema: pms; Owner: postgres
 --
 
-CREATE TABLE catalog.pms_product_volume_discount (
+CREATE TABLE pms.pms_product_volume_discount (
     id bigint NOT NULL,
     product_id bigint,
     count integer,
@@ -742,13 +742,13 @@ CREATE TABLE catalog.pms_product_volume_discount (
 );
 
 
-ALTER TABLE catalog.pms_product_volume_discount OWNER TO postgres;
+ALTER TABLE pms.pms_product_volume_discount OWNER TO postgres;
 
 --
--- Name: pms_product_volume_discount_id_seq; Type: SEQUENCE; Schema: catalog; Owner: postgres
+-- Name: pms_product_volume_discount_id_seq; Type: SEQUENCE; Schema: pms; Owner: postgres
 --
 
-CREATE SEQUENCE catalog.pms_product_volume_discount_id_seq
+CREATE SEQUENCE pms.pms_product_volume_discount_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -756,20 +756,20 @@ CREATE SEQUENCE catalog.pms_product_volume_discount_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE catalog.pms_product_volume_discount_id_seq OWNER TO postgres;
+ALTER SEQUENCE pms.pms_product_volume_discount_id_seq OWNER TO postgres;
 
 --
--- Name: pms_product_volume_discount_id_seq; Type: SEQUENCE OWNED BY; Schema: catalog; Owner: postgres
+-- Name: pms_product_volume_discount_id_seq; Type: SEQUENCE OWNED BY; Schema: pms; Owner: postgres
 --
 
-ALTER SEQUENCE catalog.pms_product_volume_discount_id_seq OWNED BY catalog.pms_product_volume_discount.id;
+ALTER SEQUENCE pms.pms_product_volume_discount_id_seq OWNED BY pms.pms_product_volume_discount.id;
 
 
 --
--- Name: pms_product_gallery; Type: TABLE; Schema: catalog; Owner: postgres
+-- Name: pms_product_gallery; Type: TABLE; Schema: pms; Owner: postgres
 --
 
-CREATE TABLE catalog.pms_product_gallery (
+CREATE TABLE pms.pms_product_gallery (
     id bigint NOT NULL,
     product_id bigint NOT NULL,
     media_type character varying(50),
@@ -778,13 +778,13 @@ CREATE TABLE catalog.pms_product_gallery (
 );
 
 
-ALTER TABLE catalog.pms_product_gallery OWNER TO postgres;
+ALTER TABLE pms.pms_product_gallery OWNER TO postgres;
 
 --
--- Name: pms_product_gallery_id_seq; Type: SEQUENCE; Schema: catalog; Owner: postgres
+-- Name: pms_product_gallery_id_seq; Type: SEQUENCE; Schema: pms; Owner: postgres
 --
 
-CREATE SEQUENCE catalog.pms_product_gallery_id_seq
+CREATE SEQUENCE pms.pms_product_gallery_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -792,20 +792,20 @@ CREATE SEQUENCE catalog.pms_product_gallery_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE catalog.pms_product_gallery_id_seq OWNER TO postgres;
+ALTER SEQUENCE pms.pms_product_gallery_id_seq OWNER TO postgres;
 
 --
--- Name: pms_product_gallery_id_seq; Type: SEQUENCE OWNED BY; Schema: catalog; Owner: postgres
+-- Name: pms_product_gallery_id_seq; Type: SEQUENCE OWNED BY; Schema: pms; Owner: postgres
 --
 
-ALTER SEQUENCE catalog.pms_product_gallery_id_seq OWNED BY catalog.pms_product_gallery.id;
+ALTER SEQUENCE pms.pms_product_gallery_id_seq OWNED BY pms.pms_product_gallery.id;
 
 
 --
--- Name: pms_product_audit_log; Type: TABLE; Schema: catalog; Owner: postgres
+-- Name: pms_product_audit_log; Type: TABLE; Schema: pms; Owner: postgres
 --
 
-CREATE TABLE catalog.pms_product_audit_log (
+CREATE TABLE pms.pms_product_audit_log (
     id bigint NOT NULL,
     product_id bigint,
     price_old numeric(19,2),
@@ -817,13 +817,13 @@ CREATE TABLE catalog.pms_product_audit_log (
 );
 
 
-ALTER TABLE catalog.pms_product_audit_log OWNER TO postgres;
+ALTER TABLE pms.pms_product_audit_log OWNER TO postgres;
 
 --
--- Name: pms_product_audit_log_id_seq; Type: SEQUENCE; Schema: catalog; Owner: postgres
+-- Name: pms_product_audit_log_id_seq; Type: SEQUENCE; Schema: pms; Owner: postgres
 --
 
-CREATE SEQUENCE catalog.pms_product_audit_log_id_seq
+CREATE SEQUENCE pms.pms_product_audit_log_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -831,20 +831,20 @@ CREATE SEQUENCE catalog.pms_product_audit_log_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE catalog.pms_product_audit_log_id_seq OWNER TO postgres;
+ALTER SEQUENCE pms.pms_product_audit_log_id_seq OWNER TO postgres;
 
 --
--- Name: pms_product_audit_log_id_seq; Type: SEQUENCE OWNED BY; Schema: catalog; Owner: postgres
+-- Name: pms_product_audit_log_id_seq; Type: SEQUENCE OWNED BY; Schema: pms; Owner: postgres
 --
 
-ALTER SEQUENCE catalog.pms_product_audit_log_id_seq OWNED BY catalog.pms_product_audit_log.id;
+ALTER SEQUENCE pms.pms_product_audit_log_id_seq OWNED BY pms.pms_product_audit_log.id;
 
 
 --
--- Name: pms_product_approval_history; Type: TABLE; Schema: catalog; Owner: postgres
+-- Name: pms_product_approval_history; Type: TABLE; Schema: pms; Owner: postgres
 --
 
-CREATE TABLE catalog.pms_product_approval_history (
+CREATE TABLE pms.pms_product_approval_history (
     id bigint NOT NULL,
     product_id bigint,
     create_time timestamp without time zone,
@@ -854,13 +854,13 @@ CREATE TABLE catalog.pms_product_approval_history (
 );
 
 
-ALTER TABLE catalog.pms_product_approval_history OWNER TO postgres;
+ALTER TABLE pms.pms_product_approval_history OWNER TO postgres;
 
 --
--- Name: pms_product_approval_history_id_seq; Type: SEQUENCE; Schema: catalog; Owner: postgres
+-- Name: pms_product_approval_history_id_seq; Type: SEQUENCE; Schema: pms; Owner: postgres
 --
 
-CREATE SEQUENCE catalog.pms_product_approval_history_id_seq
+CREATE SEQUENCE pms.pms_product_approval_history_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -868,20 +868,20 @@ CREATE SEQUENCE catalog.pms_product_approval_history_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE catalog.pms_product_approval_history_id_seq OWNER TO postgres;
+ALTER SEQUENCE pms.pms_product_approval_history_id_seq OWNER TO postgres;
 
 --
--- Name: pms_product_approval_history_id_seq; Type: SEQUENCE OWNED BY; Schema: catalog; Owner: postgres
+-- Name: pms_product_approval_history_id_seq; Type: SEQUENCE OWNED BY; Schema: pms; Owner: postgres
 --
 
-ALTER SEQUENCE catalog.pms_product_approval_history_id_seq OWNED BY catalog.pms_product_approval_history.id;
+ALTER SEQUENCE pms.pms_product_approval_history_id_seq OWNED BY pms.pms_product_approval_history.id;
 
 
 --
--- Name: pms_review; Type: TABLE; Schema: catalog; Owner: postgres
+-- Name: pms_review; Type: TABLE; Schema: pms; Owner: postgres
 --
 
-CREATE TABLE catalog.pms_review (
+CREATE TABLE pms.pms_review (
     id bigint NOT NULL,
     product_id bigint,
     member_id bigint,
@@ -895,13 +895,13 @@ CREATE TABLE catalog.pms_review (
 );
 
 
-ALTER TABLE catalog.pms_review OWNER TO postgres;
+ALTER TABLE pms.pms_review OWNER TO postgres;
 
 --
--- Name: pms_review_id_seq; Type: SEQUENCE; Schema: catalog; Owner: postgres
+-- Name: pms_review_id_seq; Type: SEQUENCE; Schema: pms; Owner: postgres
 --
 
-CREATE SEQUENCE catalog.pms_review_id_seq
+CREATE SEQUENCE pms.pms_review_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -909,20 +909,20 @@ CREATE SEQUENCE catalog.pms_review_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE catalog.pms_review_id_seq OWNER TO postgres;
+ALTER SEQUENCE pms.pms_review_id_seq OWNER TO postgres;
 
 --
--- Name: pms_review_id_seq; Type: SEQUENCE OWNED BY; Schema: catalog; Owner: postgres
+-- Name: pms_review_id_seq; Type: SEQUENCE OWNED BY; Schema: pms; Owner: postgres
 --
 
-ALTER SEQUENCE catalog.pms_review_id_seq OWNED BY catalog.pms_review.id;
+ALTER SEQUENCE pms.pms_review_id_seq OWNED BY pms.pms_review.id;
 
 
 --
--- Name: pms_review_attachments; Type: TABLE; Schema: catalog; Owner: postgres
+-- Name: pms_review_attachments; Type: TABLE; Schema: pms; Owner: postgres
 --
 
-CREATE TABLE catalog.pms_review_attachments (
+CREATE TABLE pms.pms_review_attachments (
     id bigint NOT NULL,
     review_id bigint,
     media_type character varying(255),
@@ -932,13 +932,13 @@ CREATE TABLE catalog.pms_review_attachments (
 );
 
 
-ALTER TABLE catalog.pms_review_attachments OWNER TO postgres;
+ALTER TABLE pms.pms_review_attachments OWNER TO postgres;
 
 --
--- Name: pms_review_attachments_id_seq; Type: SEQUENCE; Schema: catalog; Owner: postgres
+-- Name: pms_review_attachments_id_seq; Type: SEQUENCE; Schema: pms; Owner: postgres
 --
 
-CREATE SEQUENCE catalog.pms_review_attachments_id_seq
+CREATE SEQUENCE pms.pms_review_attachments_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -946,20 +946,20 @@ CREATE SEQUENCE catalog.pms_review_attachments_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE catalog.pms_review_attachments_id_seq OWNER TO postgres;
+ALTER SEQUENCE pms.pms_review_attachments_id_seq OWNER TO postgres;
 
 --
--- Name: pms_review_attachments_id_seq; Type: SEQUENCE OWNED BY; Schema: catalog; Owner: postgres
+-- Name: pms_review_attachments_id_seq; Type: SEQUENCE OWNED BY; Schema: pms; Owner: postgres
 --
 
-ALTER SEQUENCE catalog.pms_review_attachments_id_seq OWNED BY catalog.pms_review_attachments.id;
+ALTER SEQUENCE pms.pms_review_attachments_id_seq OWNED BY pms.pms_review_attachments.id;
 
 
 --
--- Name: pms_sku_stock; Type: TABLE; Schema: catalog; Owner: postgres
+-- Name: pms_sku_stock; Type: TABLE; Schema: pms; Owner: postgres
 --
 
-CREATE TABLE catalog.pms_sku_stock (
+CREATE TABLE pms.pms_sku_stock (
     id bigint NOT NULL,
     product_id bigint,
     sku_code character varying(255),
@@ -974,13 +974,13 @@ CREATE TABLE catalog.pms_sku_stock (
 );
 
 
-ALTER TABLE catalog.pms_sku_stock OWNER TO postgres;
+ALTER TABLE pms.pms_sku_stock OWNER TO postgres;
 
 --
--- Name: pms_sku_stock_id_seq; Type: SEQUENCE; Schema: catalog; Owner: postgres
+-- Name: pms_sku_stock_id_seq; Type: SEQUENCE; Schema: pms; Owner: postgres
 --
 
-CREATE SEQUENCE catalog.pms_sku_stock_id_seq
+CREATE SEQUENCE pms.pms_sku_stock_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -988,13 +988,13 @@ CREATE SEQUENCE catalog.pms_sku_stock_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE catalog.pms_sku_stock_id_seq OWNER TO postgres;
+ALTER SEQUENCE pms.pms_sku_stock_id_seq OWNER TO postgres;
 
 --
--- Name: pms_sku_stock_id_seq; Type: SEQUENCE OWNED BY; Schema: catalog; Owner: postgres
+-- Name: pms_sku_stock_id_seq; Type: SEQUENCE OWNED BY; Schema: pms; Owner: postgres
 --
 
-ALTER SEQUENCE catalog.pms_sku_stock_id_seq OWNED BY catalog.pms_sku_stock.id;
+ALTER SEQUENCE pms.pms_sku_stock_id_seq OWNED BY pms.pms_sku_stock.id;
 
 
 --
@@ -4529,122 +4529,122 @@ ALTER TABLE ONLY ai.ai_chat_conversation ALTER COLUMN id SET DEFAULT nextval('ai
 
 
 --
--- Name: pms_brand id; Type: DEFAULT; Schema: catalog; Owner: postgres
+-- Name: pms_brand id; Type: DEFAULT; Schema: pms; Owner: postgres
 --
 
-ALTER TABLE ONLY catalog.pms_brand ALTER COLUMN id SET DEFAULT nextval('catalog.pms_brand_id_seq'::regclass);
-
-
---
--- Name: pms_comment id; Type: DEFAULT; Schema: catalog; Owner: postgres
---
-
-ALTER TABLE ONLY catalog.pms_comment ALTER COLUMN id SET DEFAULT nextval('catalog.pms_comment_id_seq'::regclass);
+ALTER TABLE ONLY pms.pms_brand ALTER COLUMN id SET DEFAULT nextval('pms.pms_brand_id_seq'::regclass);
 
 
 --
--- Name: pms_comment_reply id; Type: DEFAULT; Schema: catalog; Owner: postgres
+-- Name: pms_comment id; Type: DEFAULT; Schema: pms; Owner: postgres
 --
 
-ALTER TABLE ONLY catalog.pms_comment_reply ALTER COLUMN id SET DEFAULT nextval('catalog.pms_comment_reply_id_seq'::regclass);
-
-
---
--- Name: pms_product id; Type: DEFAULT; Schema: catalog; Owner: postgres
---
-
-ALTER TABLE ONLY catalog.pms_product ALTER COLUMN id SET DEFAULT nextval('catalog.pms_product_id_seq'::regclass);
+ALTER TABLE ONLY pms.pms_comment ALTER COLUMN id SET DEFAULT nextval('pms.pms_comment_id_seq'::regclass);
 
 
 --
--- Name: pms_product_attribute id; Type: DEFAULT; Schema: catalog; Owner: postgres
+-- Name: pms_comment_reply id; Type: DEFAULT; Schema: pms; Owner: postgres
 --
 
-ALTER TABLE ONLY catalog.pms_product_attribute ALTER COLUMN id SET DEFAULT nextval('catalog.pms_product_attribute_id_seq'::regclass);
-
-
---
--- Name: pms_product_attribute_category id; Type: DEFAULT; Schema: catalog; Owner: postgres
---
-
-ALTER TABLE ONLY catalog.pms_product_attribute_category ALTER COLUMN id SET DEFAULT nextval('catalog.pms_product_attribute_category_id_seq'::regclass);
+ALTER TABLE ONLY pms.pms_comment_reply ALTER COLUMN id SET DEFAULT nextval('pms.pms_comment_reply_id_seq'::regclass);
 
 
 --
--- Name: pms_product_attribute_value id; Type: DEFAULT; Schema: catalog; Owner: postgres
+-- Name: pms_product id; Type: DEFAULT; Schema: pms; Owner: postgres
 --
 
-ALTER TABLE ONLY catalog.pms_product_attribute_value ALTER COLUMN id SET DEFAULT nextval('catalog.pms_product_attribute_value_id_seq'::regclass);
-
-
---
--- Name: pms_product_category id; Type: DEFAULT; Schema: catalog; Owner: postgres
---
-
-ALTER TABLE ONLY catalog.pms_product_category ALTER COLUMN id SET DEFAULT nextval('catalog.pms_product_category_id_seq'::regclass);
+ALTER TABLE ONLY pms.pms_product ALTER COLUMN id SET DEFAULT nextval('pms.pms_product_id_seq'::regclass);
 
 
 --
--- Name: pms_product_category_attribute_relation id; Type: DEFAULT; Schema: catalog; Owner: postgres
+-- Name: pms_product_attribute id; Type: DEFAULT; Schema: pms; Owner: postgres
 --
 
-ALTER TABLE ONLY catalog.pms_product_category_attribute_relation ALTER COLUMN id SET DEFAULT nextval('catalog.pms_product_category_attribute_relation_id_seq'::regclass);
-
-
---
--- Name: pms_product_spend_discount id; Type: DEFAULT; Schema: catalog; Owner: postgres
---
-
-ALTER TABLE ONLY catalog.pms_product_spend_discount ALTER COLUMN id SET DEFAULT nextval('catalog.pms_product_spend_discount_id_seq'::regclass);
+ALTER TABLE ONLY pms.pms_product_attribute ALTER COLUMN id SET DEFAULT nextval('pms.pms_product_attribute_id_seq'::regclass);
 
 
 --
--- Name: pms_product_volume_discount id; Type: DEFAULT; Schema: catalog; Owner: postgres
+-- Name: pms_product_attribute_category id; Type: DEFAULT; Schema: pms; Owner: postgres
 --
 
-ALTER TABLE ONLY catalog.pms_product_volume_discount ALTER COLUMN id SET DEFAULT nextval('catalog.pms_product_volume_discount_id_seq'::regclass);
-
-
---
--- Name: pms_product_gallery id; Type: DEFAULT; Schema: catalog; Owner: postgres
---
-
-ALTER TABLE ONLY catalog.pms_product_gallery ALTER COLUMN id SET DEFAULT nextval('catalog.pms_product_gallery_id_seq'::regclass);
+ALTER TABLE ONLY pms.pms_product_attribute_category ALTER COLUMN id SET DEFAULT nextval('pms.pms_product_attribute_category_id_seq'::regclass);
 
 
 --
--- Name: pms_product_audit_log id; Type: DEFAULT; Schema: catalog; Owner: postgres
+-- Name: pms_product_attribute_value id; Type: DEFAULT; Schema: pms; Owner: postgres
 --
 
-ALTER TABLE ONLY catalog.pms_product_audit_log ALTER COLUMN id SET DEFAULT nextval('catalog.pms_product_audit_log_id_seq'::regclass);
-
-
---
--- Name: pms_product_approval_history id; Type: DEFAULT; Schema: catalog; Owner: postgres
---
-
-ALTER TABLE ONLY catalog.pms_product_approval_history ALTER COLUMN id SET DEFAULT nextval('catalog.pms_product_approval_history_id_seq'::regclass);
+ALTER TABLE ONLY pms.pms_product_attribute_value ALTER COLUMN id SET DEFAULT nextval('pms.pms_product_attribute_value_id_seq'::regclass);
 
 
 --
--- Name: pms_review id; Type: DEFAULT; Schema: catalog; Owner: postgres
+-- Name: pms_product_category id; Type: DEFAULT; Schema: pms; Owner: postgres
 --
 
-ALTER TABLE ONLY catalog.pms_review ALTER COLUMN id SET DEFAULT nextval('catalog.pms_review_id_seq'::regclass);
-
-
---
--- Name: pms_review_attachments id; Type: DEFAULT; Schema: catalog; Owner: postgres
---
-
-ALTER TABLE ONLY catalog.pms_review_attachments ALTER COLUMN id SET DEFAULT nextval('catalog.pms_review_attachments_id_seq'::regclass);
+ALTER TABLE ONLY pms.pms_product_category ALTER COLUMN id SET DEFAULT nextval('pms.pms_product_category_id_seq'::regclass);
 
 
 --
--- Name: pms_sku_stock id; Type: DEFAULT; Schema: catalog; Owner: postgres
+-- Name: pms_product_category_attribute_relation id; Type: DEFAULT; Schema: pms; Owner: postgres
 --
 
-ALTER TABLE ONLY catalog.pms_sku_stock ALTER COLUMN id SET DEFAULT nextval('catalog.pms_sku_stock_id_seq'::regclass);
+ALTER TABLE ONLY pms.pms_product_category_attribute_relation ALTER COLUMN id SET DEFAULT nextval('pms.pms_product_category_attribute_relation_id_seq'::regclass);
+
+
+--
+-- Name: pms_product_spend_discount id; Type: DEFAULT; Schema: pms; Owner: postgres
+--
+
+ALTER TABLE ONLY pms.pms_product_spend_discount ALTER COLUMN id SET DEFAULT nextval('pms.pms_product_spend_discount_id_seq'::regclass);
+
+
+--
+-- Name: pms_product_volume_discount id; Type: DEFAULT; Schema: pms; Owner: postgres
+--
+
+ALTER TABLE ONLY pms.pms_product_volume_discount ALTER COLUMN id SET DEFAULT nextval('pms.pms_product_volume_discount_id_seq'::regclass);
+
+
+--
+-- Name: pms_product_gallery id; Type: DEFAULT; Schema: pms; Owner: postgres
+--
+
+ALTER TABLE ONLY pms.pms_product_gallery ALTER COLUMN id SET DEFAULT nextval('pms.pms_product_gallery_id_seq'::regclass);
+
+
+--
+-- Name: pms_product_audit_log id; Type: DEFAULT; Schema: pms; Owner: postgres
+--
+
+ALTER TABLE ONLY pms.pms_product_audit_log ALTER COLUMN id SET DEFAULT nextval('pms.pms_product_audit_log_id_seq'::regclass);
+
+
+--
+-- Name: pms_product_approval_history id; Type: DEFAULT; Schema: pms; Owner: postgres
+--
+
+ALTER TABLE ONLY pms.pms_product_approval_history ALTER COLUMN id SET DEFAULT nextval('pms.pms_product_approval_history_id_seq'::regclass);
+
+
+--
+-- Name: pms_review id; Type: DEFAULT; Schema: pms; Owner: postgres
+--
+
+ALTER TABLE ONLY pms.pms_review ALTER COLUMN id SET DEFAULT nextval('pms.pms_review_id_seq'::regclass);
+
+
+--
+-- Name: pms_review_attachments id; Type: DEFAULT; Schema: pms; Owner: postgres
+--
+
+ALTER TABLE ONLY pms.pms_review_attachments ALTER COLUMN id SET DEFAULT nextval('pms.pms_review_attachments_id_seq'::regclass);
+
+
+--
+-- Name: pms_sku_stock id; Type: DEFAULT; Schema: pms; Owner: postgres
+--
+
+ALTER TABLE ONLY pms.pms_sku_stock ALTER COLUMN id SET DEFAULT nextval('pms.pms_sku_stock_id_seq'::regclass);
 
 
 --
@@ -5250,294 +5250,294 @@ COPY ai.vector_store (id, content, metadata, embedding) FROM stdin;
 
 
 --
--- Data for Name: pms_brand; Type: TABLE DATA; Schema: catalog; Owner: postgres
+-- Data for Name: pms_brand; Type: TABLE DATA; Schema: pms; Owner: postgres
 --
 
-COPY catalog.pms_brand (id, name, show_status, logo) FROM stdin;
-3	Aashirvaad	1	http://localhost:9000/nexus-media/public/catalog/brands/3/logo.svg
-5	Allen Solly	1	http://localhost:9000/nexus-media/public/catalog/brands/5/logo.svg
-7	Amul	1	http://localhost:9000/nexus-media/public/catalog/brands/7/logo.svg
-8	Apollo Tyres	1	http://localhost:9000/nexus-media/public/catalog/brands/8/logo.svg
-10	Arihant	1	http://localhost:9000/nexus-media/public/catalog/brands/10/logo.svg
-11	Bajaj	1	http://localhost:9000/nexus-media/public/catalog/brands/11/logo.svg
-13	Bosch	1	http://localhost:9000/nexus-media/public/catalog/brands/13/logo.svg
-15	Britannia	1	http://localhost:9000/nexus-media/public/catalog/brands/15/logo.svg
-16	Butterfly	1	http://localhost:9000/nexus-media/public/catalog/brands/16/logo.svg
-18	Castrol	1	http://localhost:9000/nexus-media/public/catalog/brands/18/logo.svg
-20	Coca-Cola	1	http://localhost:9000/nexus-media/public/catalog/brands/20/logo.svg
-21	Cosco	1	http://localhost:9000/nexus-media/public/catalog/brands/21/logo.svg
-23	Crossword	1	http://localhost:9000/nexus-media/public/catalog/brands/23/logo.svg
-25	Decathlon	1	http://localhost:9000/nexus-media/public/catalog/brands/25/logo.svg
-26	Dell	1	http://localhost:9000/nexus-media/public/catalog/brands/26/logo.svg
-28	Dyson	1	http://localhost:9000/nexus-media/public/catalog/brands/28/logo.svg
-30	Forest Essentials	1	http://localhost:9000/nexus-media/public/catalog/brands/30/logo.svg
-32	Google	1	http://localhost:9000/nexus-media/public/catalog/brands/32/logo.svg
-33	Gulf Oil	1	http://localhost:9000/nexus-media/public/catalog/brands/33/logo.svg
-35	Havells	1	http://localhost:9000/nexus-media/public/catalog/brands/35/logo.svg
-37	IKEA	1	http://localhost:9000/nexus-media/public/catalog/brands/37/logo.svg
-38	ITC	1	http://localhost:9000/nexus-media/public/catalog/brands/38/logo.svg
-40	Kellogg's	1	http://localhost:9000/nexus-media/public/catalog/brands/40/logo.svg
-42	LG	1	http://localhost:9000/nexus-media/public/catalog/brands/42/logo.svg
-44	Lava	1	http://localhost:9000/nexus-media/public/catalog/brands/44/logo.svg
-45	Lenovo	1	http://localhost:9000/nexus-media/public/catalog/brands/45/logo.svg
-47	Logitech	1	http://localhost:9000/nexus-media/public/catalog/brands/47/logo.svg
-49	MTR	1	http://localhost:9000/nexus-media/public/catalog/brands/49/logo.svg
-51	Manyavar	1	http://localhost:9000/nexus-media/public/catalog/brands/51/logo.svg
-52	Maybelline	1	http://localhost:9000/nexus-media/public/catalog/brands/52/logo.svg
-54	Michelin	1	http://localhost:9000/nexus-media/public/catalog/brands/54/logo.svg
-56	Minimalist	1	http://localhost:9000/nexus-media/public/catalog/brands/56/logo.svg
-57	Moleskine	1	http://localhost:9000/nexus-media/public/catalog/brands/57/logo.svg
-59	Motul	1	http://localhost:9000/nexus-media/public/catalog/brands/59/logo.svg
-61	Neutrogena	1	http://localhost:9000/nexus-media/public/catalog/brands/61/logo.svg
-62	Nike	1	http://localhost:9000/nexus-media/public/catalog/brands/62/logo.svg
-1	3M	1	http://localhost:9000/nexus-media/public/catalog/brands/1/logo.svg
-2	ASUS	1	http://localhost:9000/nexus-media/public/catalog/brands/2/logo.svg
-4	Adidas	1	http://localhost:9000/nexus-media/public/catalog/brands/4/logo.svg
-6	Amar Chitra Katha	1	http://localhost:9000/nexus-media/public/catalog/brands/6/logo.svg
-9	Apple	1	http://localhost:9000/nexus-media/public/catalog/brands/9/logo.svg
-12	Biotique	1	http://localhost:9000/nexus-media/public/catalog/brands/12/logo.svg
-14	Bosch India	1	http://localhost:9000/nexus-media/public/catalog/brands/14/logo.svg
-17	CEAT	1	http://localhost:9000/nexus-media/public/catalog/brands/17/logo.svg
-19	Clinique	1	http://localhost:9000/nexus-media/public/catalog/brands/19/logo.svg
-22	Crompton	1	http://localhost:9000/nexus-media/public/catalog/brands/22/logo.svg
-24	Dabur	1	http://localhost:9000/nexus-media/public/catalog/brands/24/logo.svg
-27	Dove	1	http://localhost:9000/nexus-media/public/catalog/brands/27/logo.svg
-65	Noise	1	http://localhost:9000/nexus-media/public/catalog/brands/65/logo.svg
-66	Nothing	1	http://localhost:9000/nexus-media/public/catalog/brands/66/logo.svg
-68	O'Reilly	1	http://localhost:9000/nexus-media/public/catalog/brands/68/logo.svg
-70	Parle	1	http://localhost:9000/nexus-media/public/catalog/brands/70/logo.svg
-71	Patanjali	1	http://localhost:9000/nexus-media/public/catalog/brands/71/logo.svg
-73	Penguin Random House	1	http://localhost:9000/nexus-media/public/catalog/brands/73/logo.svg
-75	Philips	1	http://localhost:9000/nexus-media/public/catalog/brands/75/logo.svg
-76	Plum	1	http://localhost:9000/nexus-media/public/catalog/brands/76/logo.svg
-78	Prestige	1	http://localhost:9000/nexus-media/public/catalog/brands/78/logo.svg
-80	Ray-Ban	1	http://localhost:9000/nexus-media/public/catalog/brands/80/logo.svg
-81	Raymond	1	http://localhost:9000/nexus-media/public/catalog/brands/81/logo.svg
-83	S. Chand	1	http://localhost:9000/nexus-media/public/catalog/brands/83/logo.svg
-85	SS (Sareen Sports)	1	http://localhost:9000/nexus-media/public/catalog/brands/85/logo.svg
-86	Samsung	1	http://localhost:9000/nexus-media/public/catalog/brands/86/logo.svg
-88	TVS	1	http://localhost:9000/nexus-media/public/catalog/brands/88/logo.svg
-89	Tata	1	http://localhost:9000/nexus-media/public/catalog/brands/89/logo.svg
-91	The Ordinary	1	http://localhost:9000/nexus-media/public/catalog/brands/91/logo.svg
-93	Unilever	1	http://localhost:9000/nexus-media/public/catalog/brands/93/logo.svg
-94	Uniqlo	1	http://localhost:9000/nexus-media/public/catalog/brands/94/logo.svg
-96	Van Heusen	1	http://localhost:9000/nexus-media/public/catalog/brands/96/logo.svg
-98	W for Woman	1	http://localhost:9000/nexus-media/public/catalog/brands/98/logo.svg
-99	Wilson	1	http://localhost:9000/nexus-media/public/catalog/brands/99/logo.svg
-101	Yonex	1	http://localhost:9000/nexus-media/public/catalog/brands/101/logo.svg
-103	Zebronics	1	http://localhost:9000/nexus-media/public/catalog/brands/103/logo.svg
-29	FabIndia	1	http://localhost:9000/nexus-media/public/catalog/brands/29/logo.svg
-31	Fortune	1	http://localhost:9000/nexus-media/public/catalog/brands/31/logo.svg
-34	H&M	1	http://localhost:9000/nexus-media/public/catalog/brands/34/logo.svg
-36	Hawkins	1	http://localhost:9000/nexus-media/public/catalog/brands/36/logo.svg
-39	KENT	1	http://localhost:9000/nexus-media/public/catalog/brands/39/logo.svg
-41	L'Oréal	1	http://localhost:9000/nexus-media/public/catalog/brands/41/logo.svg
-43	Lakmé	1	http://localhost:9000/nexus-media/public/catalog/brands/43/logo.svg
-46	Levi's	1	http://localhost:9000/nexus-media/public/catalog/brands/46/logo.svg
-48	MRF	1	http://localhost:9000/nexus-media/public/catalog/brands/48/logo.svg
-50	Mamaearth	1	http://localhost:9000/nexus-media/public/catalog/brands/50/logo.svg
-53	McGraw Hill	1	http://localhost:9000/nexus-media/public/catalog/brands/53/logo.svg
-55	Micromax	1	http://localhost:9000/nexus-media/public/catalog/brands/55/logo.svg
-58	Mother Dairy	1	http://localhost:9000/nexus-media/public/catalog/brands/58/logo.svg
-60	Nestlé	1	http://localhost:9000/nexus-media/public/catalog/brands/60/logo.svg
-63	Nivea	1	http://localhost:9000/nexus-media/public/catalog/brands/63/logo.svg
-64	Nivia	1	http://localhost:9000/nexus-media/public/catalog/brands/64/logo.svg
-67	Nykaa	1	http://localhost:9000/nexus-media/public/catalog/brands/67/logo.svg
-69	OnePlus	1	http://localhost:9000/nexus-media/public/catalog/brands/69/logo.svg
-72	Pearson	1	http://localhost:9000/nexus-media/public/catalog/brands/72/logo.svg
-74	Peter England	1	http://localhost:9000/nexus-media/public/catalog/brands/74/logo.svg
-77	Portronics	1	http://localhost:9000/nexus-media/public/catalog/brands/77/logo.svg
-79	Puma	1	http://localhost:9000/nexus-media/public/catalog/brands/79/logo.svg
-82	Rupa Publications	1	http://localhost:9000/nexus-media/public/catalog/brands/82/logo.svg
-84	SG (Sanspareils Greenlands)	1	http://localhost:9000/nexus-media/public/catalog/brands/84/logo.svg
-87	Sony	1	http://localhost:9000/nexus-media/public/catalog/brands/87/logo.svg
-90	The North Face	1	http://localhost:9000/nexus-media/public/catalog/brands/90/logo.svg
-92	Under Armour	1	http://localhost:9000/nexus-media/public/catalog/brands/92/logo.svg
-95	Usha	1	http://localhost:9000/nexus-media/public/catalog/brands/95/logo.svg
-97	Vector X	1	http://localhost:9000/nexus-media/public/catalog/brands/97/logo.svg
-100	Wonderchef	1	http://localhost:9000/nexus-media/public/catalog/brands/100/logo.svg
-102	Zara	1	http://localhost:9000/nexus-media/public/catalog/brands/102/logo.svg
-104	boAt	1	http://localhost:9000/nexus-media/public/catalog/brands/104/logo.svg
+COPY pms.pms_brand (id, name, show_status, logo) FROM stdin;
+3	Aashirvaad	1	http://localhost:9000/nexus-media/public/pms/brands/3/logo.svg
+5	Allen Solly	1	http://localhost:9000/nexus-media/public/pms/brands/5/logo.svg
+7	Amul	1	http://localhost:9000/nexus-media/public/pms/brands/7/logo.svg
+8	Apollo Tyres	1	http://localhost:9000/nexus-media/public/pms/brands/8/logo.svg
+10	Arihant	1	http://localhost:9000/nexus-media/public/pms/brands/10/logo.svg
+11	Bajaj	1	http://localhost:9000/nexus-media/public/pms/brands/11/logo.svg
+13	Bosch	1	http://localhost:9000/nexus-media/public/pms/brands/13/logo.svg
+15	Britannia	1	http://localhost:9000/nexus-media/public/pms/brands/15/logo.svg
+16	Butterfly	1	http://localhost:9000/nexus-media/public/pms/brands/16/logo.svg
+18	Castrol	1	http://localhost:9000/nexus-media/public/pms/brands/18/logo.svg
+20	Coca-Cola	1	http://localhost:9000/nexus-media/public/pms/brands/20/logo.svg
+21	Cosco	1	http://localhost:9000/nexus-media/public/pms/brands/21/logo.svg
+23	Crossword	1	http://localhost:9000/nexus-media/public/pms/brands/23/logo.svg
+25	Decathlon	1	http://localhost:9000/nexus-media/public/pms/brands/25/logo.svg
+26	Dell	1	http://localhost:9000/nexus-media/public/pms/brands/26/logo.svg
+28	Dyson	1	http://localhost:9000/nexus-media/public/pms/brands/28/logo.svg
+30	Forest Essentials	1	http://localhost:9000/nexus-media/public/pms/brands/30/logo.svg
+32	Google	1	http://localhost:9000/nexus-media/public/pms/brands/32/logo.svg
+33	Gulf Oil	1	http://localhost:9000/nexus-media/public/pms/brands/33/logo.svg
+35	Havells	1	http://localhost:9000/nexus-media/public/pms/brands/35/logo.svg
+37	IKEA	1	http://localhost:9000/nexus-media/public/pms/brands/37/logo.svg
+38	ITC	1	http://localhost:9000/nexus-media/public/pms/brands/38/logo.svg
+40	Kellogg's	1	http://localhost:9000/nexus-media/public/pms/brands/40/logo.svg
+42	LG	1	http://localhost:9000/nexus-media/public/pms/brands/42/logo.svg
+44	Lava	1	http://localhost:9000/nexus-media/public/pms/brands/44/logo.svg
+45	Lenovo	1	http://localhost:9000/nexus-media/public/pms/brands/45/logo.svg
+47	Logitech	1	http://localhost:9000/nexus-media/public/pms/brands/47/logo.svg
+49	MTR	1	http://localhost:9000/nexus-media/public/pms/brands/49/logo.svg
+51	Manyavar	1	http://localhost:9000/nexus-media/public/pms/brands/51/logo.svg
+52	Maybelline	1	http://localhost:9000/nexus-media/public/pms/brands/52/logo.svg
+54	Michelin	1	http://localhost:9000/nexus-media/public/pms/brands/54/logo.svg
+56	Minimalist	1	http://localhost:9000/nexus-media/public/pms/brands/56/logo.svg
+57	Moleskine	1	http://localhost:9000/nexus-media/public/pms/brands/57/logo.svg
+59	Motul	1	http://localhost:9000/nexus-media/public/pms/brands/59/logo.svg
+61	Neutrogena	1	http://localhost:9000/nexus-media/public/pms/brands/61/logo.svg
+62	Nike	1	http://localhost:9000/nexus-media/public/pms/brands/62/logo.svg
+1	3M	1	http://localhost:9000/nexus-media/public/pms/brands/1/logo.svg
+2	ASUS	1	http://localhost:9000/nexus-media/public/pms/brands/2/logo.svg
+4	Adidas	1	http://localhost:9000/nexus-media/public/pms/brands/4/logo.svg
+6	Amar Chitra Katha	1	http://localhost:9000/nexus-media/public/pms/brands/6/logo.svg
+9	Apple	1	http://localhost:9000/nexus-media/public/pms/brands/9/logo.svg
+12	Biotique	1	http://localhost:9000/nexus-media/public/pms/brands/12/logo.svg
+14	Bosch India	1	http://localhost:9000/nexus-media/public/pms/brands/14/logo.svg
+17	CEAT	1	http://localhost:9000/nexus-media/public/pms/brands/17/logo.svg
+19	Clinique	1	http://localhost:9000/nexus-media/public/pms/brands/19/logo.svg
+22	Crompton	1	http://localhost:9000/nexus-media/public/pms/brands/22/logo.svg
+24	Dabur	1	http://localhost:9000/nexus-media/public/pms/brands/24/logo.svg
+27	Dove	1	http://localhost:9000/nexus-media/public/pms/brands/27/logo.svg
+65	Noise	1	http://localhost:9000/nexus-media/public/pms/brands/65/logo.svg
+66	Nothing	1	http://localhost:9000/nexus-media/public/pms/brands/66/logo.svg
+68	O'Reilly	1	http://localhost:9000/nexus-media/public/pms/brands/68/logo.svg
+70	Parle	1	http://localhost:9000/nexus-media/public/pms/brands/70/logo.svg
+71	Patanjali	1	http://localhost:9000/nexus-media/public/pms/brands/71/logo.svg
+73	Penguin Random House	1	http://localhost:9000/nexus-media/public/pms/brands/73/logo.svg
+75	Philips	1	http://localhost:9000/nexus-media/public/pms/brands/75/logo.svg
+76	Plum	1	http://localhost:9000/nexus-media/public/pms/brands/76/logo.svg
+78	Prestige	1	http://localhost:9000/nexus-media/public/pms/brands/78/logo.svg
+80	Ray-Ban	1	http://localhost:9000/nexus-media/public/pms/brands/80/logo.svg
+81	Raymond	1	http://localhost:9000/nexus-media/public/pms/brands/81/logo.svg
+83	S. Chand	1	http://localhost:9000/nexus-media/public/pms/brands/83/logo.svg
+85	SS (Sareen Sports)	1	http://localhost:9000/nexus-media/public/pms/brands/85/logo.svg
+86	Samsung	1	http://localhost:9000/nexus-media/public/pms/brands/86/logo.svg
+88	TVS	1	http://localhost:9000/nexus-media/public/pms/brands/88/logo.svg
+89	Tata	1	http://localhost:9000/nexus-media/public/pms/brands/89/logo.svg
+91	The Ordinary	1	http://localhost:9000/nexus-media/public/pms/brands/91/logo.svg
+93	Unilever	1	http://localhost:9000/nexus-media/public/pms/brands/93/logo.svg
+94	Uniqlo	1	http://localhost:9000/nexus-media/public/pms/brands/94/logo.svg
+96	Van Heusen	1	http://localhost:9000/nexus-media/public/pms/brands/96/logo.svg
+98	W for Woman	1	http://localhost:9000/nexus-media/public/pms/brands/98/logo.svg
+99	Wilson	1	http://localhost:9000/nexus-media/public/pms/brands/99/logo.svg
+101	Yonex	1	http://localhost:9000/nexus-media/public/pms/brands/101/logo.svg
+103	Zebronics	1	http://localhost:9000/nexus-media/public/pms/brands/103/logo.svg
+29	FabIndia	1	http://localhost:9000/nexus-media/public/pms/brands/29/logo.svg
+31	Fortune	1	http://localhost:9000/nexus-media/public/pms/brands/31/logo.svg
+34	H&M	1	http://localhost:9000/nexus-media/public/pms/brands/34/logo.svg
+36	Hawkins	1	http://localhost:9000/nexus-media/public/pms/brands/36/logo.svg
+39	KENT	1	http://localhost:9000/nexus-media/public/pms/brands/39/logo.svg
+41	L'Oréal	1	http://localhost:9000/nexus-media/public/pms/brands/41/logo.svg
+43	Lakmé	1	http://localhost:9000/nexus-media/public/pms/brands/43/logo.svg
+46	Levi's	1	http://localhost:9000/nexus-media/public/pms/brands/46/logo.svg
+48	MRF	1	http://localhost:9000/nexus-media/public/pms/brands/48/logo.svg
+50	Mamaearth	1	http://localhost:9000/nexus-media/public/pms/brands/50/logo.svg
+53	McGraw Hill	1	http://localhost:9000/nexus-media/public/pms/brands/53/logo.svg
+55	Micromax	1	http://localhost:9000/nexus-media/public/pms/brands/55/logo.svg
+58	Mother Dairy	1	http://localhost:9000/nexus-media/public/pms/brands/58/logo.svg
+60	Nestlé	1	http://localhost:9000/nexus-media/public/pms/brands/60/logo.svg
+63	Nivea	1	http://localhost:9000/nexus-media/public/pms/brands/63/logo.svg
+64	Nivia	1	http://localhost:9000/nexus-media/public/pms/brands/64/logo.svg
+67	Nykaa	1	http://localhost:9000/nexus-media/public/pms/brands/67/logo.svg
+69	OnePlus	1	http://localhost:9000/nexus-media/public/pms/brands/69/logo.svg
+72	Pearson	1	http://localhost:9000/nexus-media/public/pms/brands/72/logo.svg
+74	Peter England	1	http://localhost:9000/nexus-media/public/pms/brands/74/logo.svg
+77	Portronics	1	http://localhost:9000/nexus-media/public/pms/brands/77/logo.svg
+79	Puma	1	http://localhost:9000/nexus-media/public/pms/brands/79/logo.svg
+82	Rupa Publications	1	http://localhost:9000/nexus-media/public/pms/brands/82/logo.svg
+84	SG (Sanspareils Greenlands)	1	http://localhost:9000/nexus-media/public/pms/brands/84/logo.svg
+87	Sony	1	http://localhost:9000/nexus-media/public/pms/brands/87/logo.svg
+90	The North Face	1	http://localhost:9000/nexus-media/public/pms/brands/90/logo.svg
+92	Under Armour	1	http://localhost:9000/nexus-media/public/pms/brands/92/logo.svg
+95	Usha	1	http://localhost:9000/nexus-media/public/pms/brands/95/logo.svg
+97	Vector X	1	http://localhost:9000/nexus-media/public/pms/brands/97/logo.svg
+100	Wonderchef	1	http://localhost:9000/nexus-media/public/pms/brands/100/logo.svg
+102	Zara	1	http://localhost:9000/nexus-media/public/pms/brands/102/logo.svg
+104	boAt	1	http://localhost:9000/nexus-media/public/pms/brands/104/logo.svg
 \.
 
 
 --
--- Data for Name: pms_comment; Type: TABLE DATA; Schema: catalog; Owner: postgres
+-- Data for Name: pms_comment; Type: TABLE DATA; Schema: pms; Owner: postgres
 --
 
 
 
 --
--- Data for Name: pms_comment_reply; Type: TABLE DATA; Schema: catalog; Owner: postgres
+-- Data for Name: pms_comment_reply; Type: TABLE DATA; Schema: pms; Owner: postgres
 --
 
 
 
 --
--- Data for Name: pms_product; Type: TABLE DATA; Schema: catalog; Owner: postgres
+-- Data for Name: pms_product; Type: TABLE DATA; Schema: pms; Owner: postgres
 --
 
-COPY catalog.pms_product (id, brand_id, product_category_id, product_attribute_category_id, name, pic, product_sn, delete_status, publish_status, new_status, recommend_status, verify_status, sort, sale, sub_title, unit, weight, service_ids, keywords, note, promotion_start_time, promotion_end_time, promotion_per_limit, promotion_type, brand_name, product_category_name, description, detail_html, vendor_id, detail_title, detail_desc) FROM stdin;
-4	44	4	8	Tab Pro 11	http://localhost:9000/nexus-media/public/catalog/products/4/main.svg	P004	0	1	1	1	1	0	\N
-150	88	43	41	Portable Tyre Inflator	http://localhost:9000/nexus-media/public/catalog/products/150/main.svg	P150	0	1	1	1	1	97	\N
-10	69	4	8	Pad 3	http://localhost:9000/nexus-media/public/catalog/products/10/main.svg	P010	0	1	1	1	1	0	\N
-7	26	5	3	Inspiron 16 Plus	http://localhost:9000/nexus-media/public/catalog/products/7/main.svg	P007	0	1	1	1	1	0	\N
-8	45	5	3	ThinkPad E16	http://localhost:9000/nexus-media/public/catalog/products/8/main.svg	P008	0	1	1	1	1	0	\N
-9	2	5	3	Vivobook S 16	http://localhost:9000/nexus-media/public/catalog/products/9/main.svg	P009	0	1	1	1	1	0	\N
-15	47	6	4	MX Brio Webcam	http://localhost:9000/nexus-media/public/catalog/products/15/main.svg	P015	0	1	1	1	1	0	\N
-14	104	7	2	Lunar Pro Smartwatch	http://localhost:9000/nexus-media/public/catalog/products/14/main.svg	P014	0	1	1	1	1	0	\N
-17	42	8	5	UltraGear 27GS60F	http://localhost:9000/nexus-media/public/catalog/products/17/main.svg	P017	0	1	1	1	1	0	\N
-18	86	8	5	Odyssey G6 27	http://localhost:9000/nexus-media/public/catalog/products/18/main.svg	P018	0	1	1	1	1	0	\N
-2	86	3	6	Galaxy S26	http://localhost:9000/nexus-media/public/catalog/products/2/main.svg	P002	0	1	1	1	1	0	\N
-3	32	3	6	Pixel 11	http://localhost:9000/nexus-media/public/catalog/products/3/main.svg	P003	0	1	1	1	1	0	\N
-19	103	9	9	Transformer Wireless Keyboard	http://localhost:9000/nexus-media/public/catalog/products/19/main.svg	P019	0	1	1	1	1	0	\N
-20	46	11	12	511 Slim Jeans	http://localhost:9000/nexus-media/public/catalog/products/20/main.svg	P020	0	1	1	1	1	0	\N
-5	69	3	6	OnePlus 14	http://localhost:9000/nexus-media/public/catalog/products/5/main.svg	P005	0	1	1	1	1	0	\N
-22	74	11	12	Regular Formal Shirt	http://localhost:9000/nexus-media/public/catalog/products/22/main.svg	P022	0	1	1	1	1	0	\N
-23	81	11	12	Classic Formal Trousers	http://localhost:9000/nexus-media/public/catalog/products/23/main.svg	P023	0	1	1	1	1	0	\N
-24	94	12	11	Supima Cotton T-Shirt	http://localhost:9000/nexus-media/public/catalog/products/24/main.svg	P024	0	1	1	1	1	0	\N
-25	102	12	11	Relaxed Fit Blouse	http://localhost:9000/nexus-media/public/catalog/products/25/main.svg	P025	0	1	1	1	1	0	\N
-26	34	12	11	Ribbed Midi Dress	http://localhost:9000/nexus-media/public/catalog/products/26/main.svg	P026	0	1	1	1	1	0	\N
-34	80	13	13	Aviator Classic	http://localhost:9000/nexus-media/public/catalog/products/34/main.svg	P034	0	1	1	1	1	0	\N
-35	96	13	13	Leather Finish Belt	http://localhost:9000/nexus-media/public/catalog/products/35/main.svg	P035	0	1	1	1	1	0	\N
-36	94	13	13	Round Mini Shoulder Bag	http://localhost:9000/nexus-media/public/catalog/products/36/main.svg	P036	0	1	1	1	1	0	\N
-37	62	13	13	Heritage Backpack	http://localhost:9000/nexus-media/public/catalog/products/37/main.svg	P037	0	1	1	1	1	0	\N
-38	4	13	13	Classic 3S Cap	http://localhost:9000/nexus-media/public/catalog/products/38/main.svg	P038	0	1	1	1	1	0	\N
-30	62	14	14	Air Max 270	http://localhost:9000/nexus-media/public/catalog/products/30/main.svg	P030	0	1	1	1	1	0	\N
-32	79	14	14	Velocity Nitro 3	http://localhost:9000/nexus-media/public/catalog/products/32/main.svg	P032	0	1	1	1	1	0	\N
-39	37	18	17	MALM 6-Drawer Chest	http://localhost:9000/nexus-media/public/catalog/products/39/main.svg	P039	0	1	1	1	1	0	\N
-41	37	18	17	BILLY Bookcase	http://localhost:9000/nexus-media/public/catalog/products/41/main.svg	P041	0	1	1	1	1	0	\N
-33	90	14	14	VECTIV Enduris	http://localhost:9000/nexus-media/public/catalog/products/33/main.svg	P033	0	1	1	1	1	0	\N
-12	66	2	7	Ear (3)	http://localhost:9000/nexus-media/public/catalog/products/12/main.svg	P012	0	1	1	1	1	0	\N
-75	67	21	22	ManGlow Beard Wash	http://localhost:9000/nexus-media/public/catalog/products/75/main.svg	P075	0	1	1	1	1	0	\N
-43	28	19	18	V15 Detect	http://localhost:9000/nexus-media/public/catalog/products/43/main.svg	P043	0	1	1	1	1	0	\N
-48	42	19	18	6.5kg Front Load Washer	http://localhost:9000/nexus-media/public/catalog/products/48/main.svg	P048	0	1	1	1	1	0	\N
-49	13	19	18	8kg Front Load Washer	http://localhost:9000/nexus-media/public/catalog/products/49/main.svg	P049	0	1	1	1	1	0	\N
-76	76	21	22	Green Tea Shave Gel	http://localhost:9000/nexus-media/public/catalog/products/76/main.svg	P076	0	1	1	1	1	0	\N
-66	41	22	23	True Match Foundation	http://localhost:9000/nexus-media/public/catalog/products/66/main.svg	P066	0	1	1	1	1	0	\N
-67	52	22	23	Fit Me Foundation	http://localhost:9000/nexus-media/public/catalog/products/67/main.svg	P067	0	1	1	1	1	0	\N
-68	43	22	23	9to5 Primer + Matte Lip Color	http://localhost:9000/nexus-media/public/catalog/products/68/main.svg	P068	0	1	1	1	1	0	\N
-69	67	22	23	SkinGenius Foundation	http://localhost:9000/nexus-media/public/catalog/products/69/main.svg	P069	0	1	1	1	1	0	\N
-45	78	17	19	Air Fryer Pro	http://localhost:9000/nexus-media/public/catalog/products/45/main.svg	P045	0	1	1	1	1	0	\N
-46	36	17	19	Contura Pressure Cooker	http://localhost:9000/nexus-media/public/catalog/products/46/main.svg	P046	0	1	1	1	1	0	\N
-47	39	17	19	Grand RO Water Purifier	http://localhost:9000/nexus-media/public/catalog/products/47/main.svg	P047	0	1	1	1	1	0	\N
-71	27	23	24	Intense Repair Shampoo	http://localhost:9000/nexus-media/public/catalog/products/71/main.svg	P071	0	1	1	1	1	0	\N
-81	25	26	26	500 Adjustable Dumbbell	http://localhost:9000/nexus-media/public/catalog/products/81/main.svg	P081	0	1	1	1	1	0	\N
-82	64	26	26	Hex Dumbbell 10kg	http://localhost:9000/nexus-media/public/catalog/products/82/main.svg	P082	0	1	1	1	1	0	\N
-77	92	29	28	Charged Assert 10	http://localhost:9000/nexus-media/public/catalog/products/77/main.svg	P077	0	1	1	1	1	0	\N
-78	25	29	28	Kalenji Run Comfort	http://localhost:9000/nexus-media/public/catalog/products/78/main.svg	P078	0	1	1	1	1	0	\N
-79	64	29	28	Running Shoes Racer	http://localhost:9000/nexus-media/public/catalog/products/79/main.svg	P079	0	1	1	1	1	0	\N
-80	97	29	28	Sprint Running Shoes	http://localhost:9000/nexus-media/public/catalog/products/80/main.svg	P080	0	1	1	1	1	0	\N
-72	41	23	24	Absolut Repair Shampoo	http://localhost:9000/nexus-media/public/catalog/products/72/main.svg	P072	0	1	1	1	1	0	\N
-73	50	23	24	Onion Hair Oil	http://localhost:9000/nexus-media/public/catalog/products/73/main.svg	P073	0	1	1	1	1	0	\N
-58	91	24	21	Niacinamide 10% + Zinc 1%	http://localhost:9000/nexus-media/public/catalog/products/58/main.svg	P058	0	1	1	1	1	0	\N
-59	63	24	21	Soft Moisturizing Cream	http://localhost:9000/nexus-media/public/catalog/products/59/main.svg	P059	0	1	1	1	1	0	\N
-60	19	24	21	Moisture Surge 100H	http://localhost:9000/nexus-media/public/catalog/products/60/main.svg	P060	0	1	1	1	1	0	\N
-61	61	24	21	Hydro Boost Water Gel	http://localhost:9000/nexus-media/public/catalog/products/61/main.svg	P061	0	1	1	1	1	0	\N
-53	16	16	16	Rapid 3 Burner Gas Stove	http://localhost:9000/nexus-media/public/catalog/products/53/main.svg	P053	0	1	1	1	1	0	\N
-85	25	27	27	Basic Yoga Mat	http://localhost:9000/nexus-media/public/catalog/products/85/main.svg	P085	0	1	1	1	1	0	\N
-88	99	28	29	Pro Staff 97 Tennis Racket	http://localhost:9000/nexus-media/public/catalog/products/88/main.svg	P088	0	1	1	1	1	0	\N
-89	101	28	29	Astrox 100ZZ	http://localhost:9000/nexus-media/public/catalog/products/89/main.svg	P089	0	1	1	1	1	0	\N
-90	85	28	29	Skyer Cricket Bat	http://localhost:9000/nexus-media/public/catalog/products/90/main.svg	P090	0	1	1	1	1	0	\N
-96	73	31	34	The Midnight Library	http://localhost:9000/nexus-media/public/catalog/products/96/main.svg	P096	0	1	1	1	1	0	\N
-97	73	31	34	1984	http://localhost:9000/nexus-media/public/catalog/products/97/main.svg	P097	0	1	1	1	1	0	\N
-98	82	31	34	The Silent Patient	http://localhost:9000/nexus-media/public/catalog/products/98/main.svg	P098	0	1	1	1	1	0	\N
-99	6	31	34	Mahabharata	http://localhost:9000/nexus-media/public/catalog/products/99/main.svg	P099	0	1	1	1	1	0	\N
-109	57	32	33	Classic Notebook Large	http://localhost:9000/nexus-media/public/catalog/products/109/main.svg	P109	0	1	1	1	1	0	\N
-110	23	32	33	Premium Ruled Notebook	http://localhost:9000/nexus-media/public/catalog/products/110/main.svg	P110	0	1	1	1	1	0	\N
-112	83	32	33	Graph Paper Notebook	http://localhost:9000/nexus-media/public/catalog/products/112/main.svg	P112	0	1	1	1	1	0	\N
-113	10	32	33	Exam Planner Notebook	http://localhost:9000/nexus-media/public/catalog/products/113/main.svg	P113	0	1	1	1	1	0	\N
-114	73	32	33	Reading Journal	http://localhost:9000/nexus-media/public/catalog/products/114/main.svg	P114	0	1	1	1	1	0	\N
-100	73	33	31	Atomic Habits	http://localhost:9000/nexus-media/public/catalog/products/100/main.svg	P100	0	1	1	1	1	0	\N
-101	53	33	31	The Lean Startup	http://localhost:9000/nexus-media/public/catalog/products/101/main.svg	P101	0	1	1	1	1	0	\N
-120	15	36	38	Good Day Cashew Cookies	http://localhost:9000/nexus-media/public/catalog/products/120/main.svg	P120	0	1	1	1	1	0	\N
-121	70	36	38	Hide & Seek Biscuits	http://localhost:9000/nexus-media/public/catalog/products/121/main.svg	P121	0	1	1	1	1	0	\N
-122	38	36	38	Sunfeast Dark Fantasy	http://localhost:9000/nexus-media/public/catalog/products/122/main.svg	P122	0	1	1	1	1	0	\N
-115	60	38	37	Nescafé Classic Coffee	http://localhost:9000/nexus-media/public/catalog/products/115/main.svg	P115	0	1	1	1	1	0	\N
-116	20	38	37	Coca-Cola Original	http://localhost:9000/nexus-media/public/catalog/products/116/main.svg	P116	0	1	1	1	1	0	\N
-117	7	38	37	Amul Taaza Milk	http://localhost:9000/nexus-media/public/catalog/products/117/main.svg	P117	0	1	1	1	1	0	\N
-118	89	38	37	Tata Tea Gold	http://localhost:9000/nexus-media/public/catalog/products/118/main.svg	P118	0	1	1	1	1	0	\N
-119	58	38	37	Toned Milk	http://localhost:9000/nexus-media/public/catalog/products/119/main.svg	P119	0	1	1	1	1	0	\N
-102	72	33	31	Sapiens Study Guide	http://localhost:9000/nexus-media/public/catalog/products/102/main.svg	P102	0	1	1	1	1	0	\N
-104	68	34	32	Designing Data-Intensive Applications	http://localhost:9000/nexus-media/public/catalog/products/104/main.svg	P104	0	1	1	1	1	0	\N
-105	53	34	32	Cracking the Coding Interview	http://localhost:9000/nexus-media/public/catalog/products/105/main.svg	P105	0	1	1	1	1	0	\N
-106	72	34	32	Java Programming Complete	http://localhost:9000/nexus-media/public/catalog/products/106/main.svg	P106	0	1	1	1	1	0	\N
-125	40	37	39	Corn Flakes	http://localhost:9000/nexus-media/public/catalog/products/125/main.svg	P125	0	1	1	1	1	0	\N
-129	31	39	36	Sunflower Oil	http://localhost:9000/nexus-media/public/catalog/products/129/main.svg	P129	0	1	1	1	1	0	\N
-130	71	39	36	Dalia	http://localhost:9000/nexus-media/public/catalog/products/130/main.svg	P130	0	1	1	1	1	0	\N
-132	7	39	36	Pure Ghee	http://localhost:9000/nexus-media/public/catalog/products/132/main.svg	P132	0	1	1	1	1	0	\N
-138	18	41	43	Magnatec 5W-30	http://localhost:9000/nexus-media/public/catalog/products/138/main.svg	P138	0	1	1	1	1	0	\N
-139	59	41	43	8100 X-Cess 5W-40	http://localhost:9000/nexus-media/public/catalog/products/139/main.svg	P139	0	1	1	1	1	0	\N
-141	1	41	43	Perfect-It Rubbing Compound	http://localhost:9000/nexus-media/public/catalog/products/141/main.svg	P141	0	1	1	1	1	0	\N
-151	18	41	43	Engine Flush	http://localhost:9000/nexus-media/public/catalog/products/151/main.svg	P151	0	1	1	1	1	0	\N
-142	54	42	42	Energy XM2+ Tyre	http://localhost:9000/nexus-media/public/catalog/products/142/main.svg	P142	0	1	1	1	1	0	\N
-143	48	42	42	Perfinza Tyre	http://localhost:9000/nexus-media/public/catalog/products/143/main.svg	P143	0	1	1	1	1	0	\N
-144	8	42	42	Alnac 4G Tyre	http://localhost:9000/nexus-media/public/catalog/products/144/main.svg	P144	0	1	1	1	1	0	\N
-145	17	42	42	Milaze Tyre	http://localhost:9000/nexus-media/public/catalog/products/145/main.svg	P145	0	1	1	1	1	0	\N
-134	1	43	41	Car Care Microfiber Cloth	http://localhost:9000/nexus-media/public/catalog/products/134/main.svg	P134	0	1	1	1	1	0	\N
-135	14	43	41	Car Air Filter	http://localhost:9000/nexus-media/public/catalog/products/135/main.svg	P135	0	1	1	1	1	0	\N
-136	88	43	41	Car Battery Charger	http://localhost:9000/nexus-media/public/catalog/products/136/main.svg	P136	0	1	1	1	1	0	\N
-137	17	43	41	Tubeless Valve Kit	http://localhost:9000/nexus-media/public/catalog/products/137/main.svg	P137	0	1	1	1	1	0	\N
-146	88	42	42	Eco Grip 2W Tyre	http://localhost:9000/nexus-media/public/catalog/products/146/main.svg	P146	0	1	1	1	1	0	\N
-11	77	2	7	Muffs M2 Wireless Headphones	http://localhost:9000/nexus-media/public/catalog/products/11/main.svg	P011	0	1	1	1	1	0	\N
-21	5	11	12	Slim Fit Oxford Shirt	http://localhost:9000/nexus-media/public/catalog/products/21/main.svg	P021	0	1	1	1	1	0	\N
-31	4	14	14	Ultraboost Light	http://localhost:9000/nexus-media/public/catalog/products/31/main.svg	P031	0	1	1	1	1	0	\N
-54	22	16	16	Steel Essential Kettle	http://localhost:9000/nexus-media/public/catalog/products/54/main.svg	P054	0	1	1	1	1	0	\N
-42	75	17	19	Airfryer 3000 Series	http://localhost:9000/nexus-media/public/catalog/products/42/main.svg	P042	0	1	1	1	1	0	\N
-40	37	18	17	LACK Coffee Table	http://localhost:9000/nexus-media/public/catalog/products/40/main.svg	P040	0	1	1	1	1	0	\N
-74	63	21	22	Men Sensitive Shaving Gel	http://localhost:9000/nexus-media/public/catalog/products/74/main.svg	P074	0	1	1	1	1	0	\N
-64	30	24	21	Facial Tonic Mist	http://localhost:9000/nexus-media/public/catalog/products/64/main.svg	P064	0	1	1	1	1	0	\N
-124	24	36	38	Real Fruit Drink	http://localhost:9000/nexus-media/public/catalog/products/124/main.svg	P124	0	1	1	1	1	0	\N
-128	89	37	39	Sampann Poha	http://localhost:9000/nexus-media/public/catalog/products/128/main.svg	P128	0	1	1	1	1	0	\N
-13	65	2	7	Buds X Prime	http://localhost:9000/nexus-media/public/catalog/products/13/main.svg	P013	0	1	1	1	1	0	\N
-16	87	2	7	WH-1000XM6	http://localhost:9000/nexus-media/public/catalog/products/16/main.svg	P016	0	1	1	1	1	0	\N
-6	55	3	6	IN Note 3	http://localhost:9000/nexus-media/public/catalog/products/6/main.svg	P006	0	1	1	1	1	0	\N
-27	29	12	11	Cotton Kurta	http://localhost:9000/nexus-media/public/catalog/products/27/main.svg	P027	0	1	1	1	1	0	\N
-28	51	12	11	Embroidered Kurta	http://localhost:9000/nexus-media/public/catalog/products/28/main.svg	P028	0	1	1	1	1	0	\N
-29	98	12	11	Straight Kurta Set	http://localhost:9000/nexus-media/public/catalog/products/29/main.svg	P029	0	1	1	1	1	0	\N
-55	100	16	16	Granite Fry Pan	http://localhost:9000/nexus-media/public/catalog/products/55/main.svg	P055	0	1	1	1	1	0	\N
-56	78	16	16	Omega Deluxe Pan	http://localhost:9000/nexus-media/public/catalog/products/56/main.svg	P056	0	1	1	1	1	0	\N
-57	36	16	16	Futura Nonstick Tawa	http://localhost:9000/nexus-media/public/catalog/products/57/main.svg	P057	0	1	1	1	1	0	\N
-44	13	17	19	Serie 4 Dishwasher	http://localhost:9000/nexus-media/public/catalog/products/44/main.svg	P044	0	1	1	1	1	0	\N
-50	11	19	18	Maharaja Tower Fan	http://localhost:9000/nexus-media/public/catalog/products/50/main.svg	P050	0	1	1	1	1	0	\N
-51	35	19	18	Aqua Plus Water Heater	http://localhost:9000/nexus-media/public/catalog/products/51/main.svg	P051	0	1	1	1	1	0	\N
-52	95	19	18	Mist Air Icy Fan	http://localhost:9000/nexus-media/public/catalog/products/52/main.svg	P052	0	1	1	1	1	0	\N
-70	12	22	23	Bio Coconut Whitening Cream	http://localhost:9000/nexus-media/public/catalog/products/70/main.svg	P070	0	1	1	1	1	0	\N
-62	50	24	21	Vitamin C Face Serum	http://localhost:9000/nexus-media/public/catalog/products/62/main.svg	P062	0	1	1	1	1	0	\N
-63	56	24	21	2% Salicylic Acid Serum	http://localhost:9000/nexus-media/public/catalog/products/63/main.svg	P063	0	1	1	1	1	0	\N
-65	76	24	21	Green Tea Face Wash	http://localhost:9000/nexus-media/public/catalog/products/65/main.svg	P065	0	1	1	1	1	0	\N
-84	97	26	26	Power Training Gloves	http://localhost:9000/nexus-media/public/catalog/products/84/main.svg	P084	0	1	1	1	1	0	\N
-83	21	26	26	Resistance Tube Set	http://localhost:9000/nexus-media/public/catalog/products/83/main.svg	P083	0	1	1	1	1	0	\N
-86	64	27	27	TPE Yoga Mat	http://localhost:9000/nexus-media/public/catalog/products/86/main.svg	P086	0	1	1	1	1	0	\N
-87	21	27	27	Yoga Block Pair	http://localhost:9000/nexus-media/public/catalog/products/87/main.svg	P087	0	1	1	1	1	0	\N
-92	25	28	29	Quechua Hiking Backpack 40L	http://localhost:9000/nexus-media/public/catalog/products/92/main.svg	P092	0	1	1	1	1	0	\N
-1	9	3	6	iPhone 17	http://localhost:9000/nexus-media/public/catalog/products/1/main.svg	P001	0	1	1	1	1	14	\N
-93	64	28	29	Storm Football	http://localhost:9000/nexus-media/public/catalog/products/93/main.svg	P093	0	1	1	1	1	0	\N
-94	21	28	29	Club Volleyball	http://localhost:9000/nexus-media/public/catalog/products/94/main.svg	P094	0	1	1	1	1	0	\N
-95	99	28	29	NBA Official Basketball	http://localhost:9000/nexus-media/public/catalog/products/95/main.svg	P095	0	1	1	1	1	0	\N
-91	84	28	29	Players English Willow Bat	http://localhost:9000/nexus-media/public/catalog/products/91/main.svg	P091	0	1	1	1	1	0	\N
-111	82	32	33	Executive Journal	http://localhost:9000/nexus-media/public/catalog/products/111/main.svg	P111	0	1	1	1	1	0	\N
-107	83	34	32	Data Structures in C	http://localhost:9000/nexus-media/public/catalog/products/107/main.svg	P107	0	1	1	1	1	0	\N
-108	10	34	32	Python for Competitive Programming	http://localhost:9000/nexus-media/public/catalog/products/108/main.svg	P108	0	1	1	1	1	0	\N
-103	68	34	32	Clean Code	http://localhost:9000/nexus-media/public/catalog/products/103/main.svg	P103	0	1	1	1	1	0	\N
-123	60	36	38	Munch Chocolate Bar	http://localhost:9000/nexus-media/public/catalog/products/123/main.svg	P123	0	1	1	1	1	0	\N
-126	49	37	39	3 Minute Breakfast Poha	http://localhost:9000/nexus-media/public/catalog/products/126/main.svg	P126	0	1	1	1	1	0	\N
-131	93	39	36	Kissan Tomato Ketchup	http://localhost:9000/nexus-media/public/catalog/products/131/main.svg	P131	0	1	1	1	1	0	\N
-140	33	41	43	Formula G 5W-30	http://localhost:9000/nexus-media/public/catalog/products/140/main.svg	P140	0	1	1	1	1	0	\N
-149	1	43	41	12V Car Vacuum Cleaner	http://localhost:9000/nexus-media/public/catalog/products/149/main.svg	P149	0	1	1	1	1	0	\N
-127	3	37	39	Multigrain Atta	http://localhost:9000/nexus-media/public/catalog/products/127/main.svg	P127	0	1	1	1	1	0	\N
-133	58	39	36	Paneer Fresh	http://localhost:9000/nexus-media/public/catalog/products/133/main.svg	P133	0	1	1	1	1	0	\N
-147	14	42	42	Platinum Spark Plug	http://localhost:9000/nexus-media/public/catalog/products/147/main.svg	P147	0	1	1	1	1	0	\N
-148	17	42	42	Car Brake Pad Set	http://localhost:9000/nexus-media/public/catalog/products/148/main.svg	P148	0	1	1	1	1	0	\N
-152	59	41	43	Chain Clean	http://localhost:9000/nexus-media/public/catalog/products/152/main.svg	P152	0	1	1	1	1	1	\N
+COPY pms.pms_product (id, brand_id, product_category_id, product_attribute_category_id, name, pic, product_sn, delete_status, publish_status, new_status, recommend_status, verify_status, sort, sale, sub_title, unit, weight, service_ids, keywords, note, promotion_start_time, promotion_end_time, promotion_per_limit, promotion_type, brand_name, product_category_name, description, detail_html, vendor_id, detail_title, detail_desc) FROM stdin;
+4	44	4	8	Tab Pro 11	http://localhost:9000/nexus-media/public/pms/products/4/main.svg	P004	0	1	1	1	1	0	\N
+150	88	43	41	Portable Tyre Inflator	http://localhost:9000/nexus-media/public/pms/products/150/main.svg	P150	0	1	1	1	1	97	\N
+10	69	4	8	Pad 3	http://localhost:9000/nexus-media/public/pms/products/10/main.svg	P010	0	1	1	1	1	0	\N
+7	26	5	3	Inspiron 16 Plus	http://localhost:9000/nexus-media/public/pms/products/7/main.svg	P007	0	1	1	1	1	0	\N
+8	45	5	3	ThinkPad E16	http://localhost:9000/nexus-media/public/pms/products/8/main.svg	P008	0	1	1	1	1	0	\N
+9	2	5	3	Vivobook S 16	http://localhost:9000/nexus-media/public/pms/products/9/main.svg	P009	0	1	1	1	1	0	\N
+15	47	6	4	MX Brio Webcam	http://localhost:9000/nexus-media/public/pms/products/15/main.svg	P015	0	1	1	1	1	0	\N
+14	104	7	2	Lunar Pro Smartwatch	http://localhost:9000/nexus-media/public/pms/products/14/main.svg	P014	0	1	1	1	1	0	\N
+17	42	8	5	UltraGear 27GS60F	http://localhost:9000/nexus-media/public/pms/products/17/main.svg	P017	0	1	1	1	1	0	\N
+18	86	8	5	Odyssey G6 27	http://localhost:9000/nexus-media/public/pms/products/18/main.svg	P018	0	1	1	1	1	0	\N
+2	86	3	6	Galaxy S26	http://localhost:9000/nexus-media/public/pms/products/2/main.svg	P002	0	1	1	1	1	0	\N
+3	32	3	6	Pixel 11	http://localhost:9000/nexus-media/public/pms/products/3/main.svg	P003	0	1	1	1	1	0	\N
+19	103	9	9	Transformer Wireless Keyboard	http://localhost:9000/nexus-media/public/pms/products/19/main.svg	P019	0	1	1	1	1	0	\N
+20	46	11	12	511 Slim Jeans	http://localhost:9000/nexus-media/public/pms/products/20/main.svg	P020	0	1	1	1	1	0	\N
+5	69	3	6	OnePlus 14	http://localhost:9000/nexus-media/public/pms/products/5/main.svg	P005	0	1	1	1	1	0	\N
+22	74	11	12	Regular Formal Shirt	http://localhost:9000/nexus-media/public/pms/products/22/main.svg	P022	0	1	1	1	1	0	\N
+23	81	11	12	Classic Formal Trousers	http://localhost:9000/nexus-media/public/pms/products/23/main.svg	P023	0	1	1	1	1	0	\N
+24	94	12	11	Supima Cotton T-Shirt	http://localhost:9000/nexus-media/public/pms/products/24/main.svg	P024	0	1	1	1	1	0	\N
+25	102	12	11	Relaxed Fit Blouse	http://localhost:9000/nexus-media/public/pms/products/25/main.svg	P025	0	1	1	1	1	0	\N
+26	34	12	11	Ribbed Midi Dress	http://localhost:9000/nexus-media/public/pms/products/26/main.svg	P026	0	1	1	1	1	0	\N
+34	80	13	13	Aviator Classic	http://localhost:9000/nexus-media/public/pms/products/34/main.svg	P034	0	1	1	1	1	0	\N
+35	96	13	13	Leather Finish Belt	http://localhost:9000/nexus-media/public/pms/products/35/main.svg	P035	0	1	1	1	1	0	\N
+36	94	13	13	Round Mini Shoulder Bag	http://localhost:9000/nexus-media/public/pms/products/36/main.svg	P036	0	1	1	1	1	0	\N
+37	62	13	13	Heritage Backpack	http://localhost:9000/nexus-media/public/pms/products/37/main.svg	P037	0	1	1	1	1	0	\N
+38	4	13	13	Classic 3S Cap	http://localhost:9000/nexus-media/public/pms/products/38/main.svg	P038	0	1	1	1	1	0	\N
+30	62	14	14	Air Max 270	http://localhost:9000/nexus-media/public/pms/products/30/main.svg	P030	0	1	1	1	1	0	\N
+32	79	14	14	Velocity Nitro 3	http://localhost:9000/nexus-media/public/pms/products/32/main.svg	P032	0	1	1	1	1	0	\N
+39	37	18	17	MALM 6-Drawer Chest	http://localhost:9000/nexus-media/public/pms/products/39/main.svg	P039	0	1	1	1	1	0	\N
+41	37	18	17	BILLY Bookcase	http://localhost:9000/nexus-media/public/pms/products/41/main.svg	P041	0	1	1	1	1	0	\N
+33	90	14	14	VECTIV Enduris	http://localhost:9000/nexus-media/public/pms/products/33/main.svg	P033	0	1	1	1	1	0	\N
+12	66	2	7	Ear (3)	http://localhost:9000/nexus-media/public/pms/products/12/main.svg	P012	0	1	1	1	1	0	\N
+75	67	21	22	ManGlow Beard Wash	http://localhost:9000/nexus-media/public/pms/products/75/main.svg	P075	0	1	1	1	1	0	\N
+43	28	19	18	V15 Detect	http://localhost:9000/nexus-media/public/pms/products/43/main.svg	P043	0	1	1	1	1	0	\N
+48	42	19	18	6.5kg Front Load Washer	http://localhost:9000/nexus-media/public/pms/products/48/main.svg	P048	0	1	1	1	1	0	\N
+49	13	19	18	8kg Front Load Washer	http://localhost:9000/nexus-media/public/pms/products/49/main.svg	P049	0	1	1	1	1	0	\N
+76	76	21	22	Green Tea Shave Gel	http://localhost:9000/nexus-media/public/pms/products/76/main.svg	P076	0	1	1	1	1	0	\N
+66	41	22	23	True Match Foundation	http://localhost:9000/nexus-media/public/pms/products/66/main.svg	P066	0	1	1	1	1	0	\N
+67	52	22	23	Fit Me Foundation	http://localhost:9000/nexus-media/public/pms/products/67/main.svg	P067	0	1	1	1	1	0	\N
+68	43	22	23	9to5 Primer + Matte Lip Color	http://localhost:9000/nexus-media/public/pms/products/68/main.svg	P068	0	1	1	1	1	0	\N
+69	67	22	23	SkinGenius Foundation	http://localhost:9000/nexus-media/public/pms/products/69/main.svg	P069	0	1	1	1	1	0	\N
+45	78	17	19	Air Fryer Pro	http://localhost:9000/nexus-media/public/pms/products/45/main.svg	P045	0	1	1	1	1	0	\N
+46	36	17	19	Contura Pressure Cooker	http://localhost:9000/nexus-media/public/pms/products/46/main.svg	P046	0	1	1	1	1	0	\N
+47	39	17	19	Grand RO Water Purifier	http://localhost:9000/nexus-media/public/pms/products/47/main.svg	P047	0	1	1	1	1	0	\N
+71	27	23	24	Intense Repair Shampoo	http://localhost:9000/nexus-media/public/pms/products/71/main.svg	P071	0	1	1	1	1	0	\N
+81	25	26	26	500 Adjustable Dumbbell	http://localhost:9000/nexus-media/public/pms/products/81/main.svg	P081	0	1	1	1	1	0	\N
+82	64	26	26	Hex Dumbbell 10kg	http://localhost:9000/nexus-media/public/pms/products/82/main.svg	P082	0	1	1	1	1	0	\N
+77	92	29	28	Charged Assert 10	http://localhost:9000/nexus-media/public/pms/products/77/main.svg	P077	0	1	1	1	1	0	\N
+78	25	29	28	Kalenji Run Comfort	http://localhost:9000/nexus-media/public/pms/products/78/main.svg	P078	0	1	1	1	1	0	\N
+79	64	29	28	Running Shoes Racer	http://localhost:9000/nexus-media/public/pms/products/79/main.svg	P079	0	1	1	1	1	0	\N
+80	97	29	28	Sprint Running Shoes	http://localhost:9000/nexus-media/public/pms/products/80/main.svg	P080	0	1	1	1	1	0	\N
+72	41	23	24	Absolut Repair Shampoo	http://localhost:9000/nexus-media/public/pms/products/72/main.svg	P072	0	1	1	1	1	0	\N
+73	50	23	24	Onion Hair Oil	http://localhost:9000/nexus-media/public/pms/products/73/main.svg	P073	0	1	1	1	1	0	\N
+58	91	24	21	Niacinamide 10% + Zinc 1%	http://localhost:9000/nexus-media/public/pms/products/58/main.svg	P058	0	1	1	1	1	0	\N
+59	63	24	21	Soft Moisturizing Cream	http://localhost:9000/nexus-media/public/pms/products/59/main.svg	P059	0	1	1	1	1	0	\N
+60	19	24	21	Moisture Surge 100H	http://localhost:9000/nexus-media/public/pms/products/60/main.svg	P060	0	1	1	1	1	0	\N
+61	61	24	21	Hydro Boost Water Gel	http://localhost:9000/nexus-media/public/pms/products/61/main.svg	P061	0	1	1	1	1	0	\N
+53	16	16	16	Rapid 3 Burner Gas Stove	http://localhost:9000/nexus-media/public/pms/products/53/main.svg	P053	0	1	1	1	1	0	\N
+85	25	27	27	Basic Yoga Mat	http://localhost:9000/nexus-media/public/pms/products/85/main.svg	P085	0	1	1	1	1	0	\N
+88	99	28	29	Pro Staff 97 Tennis Racket	http://localhost:9000/nexus-media/public/pms/products/88/main.svg	P088	0	1	1	1	1	0	\N
+89	101	28	29	Astrox 100ZZ	http://localhost:9000/nexus-media/public/pms/products/89/main.svg	P089	0	1	1	1	1	0	\N
+90	85	28	29	Skyer Cricket Bat	http://localhost:9000/nexus-media/public/pms/products/90/main.svg	P090	0	1	1	1	1	0	\N
+96	73	31	34	The Midnight Library	http://localhost:9000/nexus-media/public/pms/products/96/main.svg	P096	0	1	1	1	1	0	\N
+97	73	31	34	1984	http://localhost:9000/nexus-media/public/pms/products/97/main.svg	P097	0	1	1	1	1	0	\N
+98	82	31	34	The Silent Patient	http://localhost:9000/nexus-media/public/pms/products/98/main.svg	P098	0	1	1	1	1	0	\N
+99	6	31	34	Mahabharata	http://localhost:9000/nexus-media/public/pms/products/99/main.svg	P099	0	1	1	1	1	0	\N
+109	57	32	33	Classic Notebook Large	http://localhost:9000/nexus-media/public/pms/products/109/main.svg	P109	0	1	1	1	1	0	\N
+110	23	32	33	Premium Ruled Notebook	http://localhost:9000/nexus-media/public/pms/products/110/main.svg	P110	0	1	1	1	1	0	\N
+112	83	32	33	Graph Paper Notebook	http://localhost:9000/nexus-media/public/pms/products/112/main.svg	P112	0	1	1	1	1	0	\N
+113	10	32	33	Exam Planner Notebook	http://localhost:9000/nexus-media/public/pms/products/113/main.svg	P113	0	1	1	1	1	0	\N
+114	73	32	33	Reading Journal	http://localhost:9000/nexus-media/public/pms/products/114/main.svg	P114	0	1	1	1	1	0	\N
+100	73	33	31	Atomic Habits	http://localhost:9000/nexus-media/public/pms/products/100/main.svg	P100	0	1	1	1	1	0	\N
+101	53	33	31	The Lean Startup	http://localhost:9000/nexus-media/public/pms/products/101/main.svg	P101	0	1	1	1	1	0	\N
+120	15	36	38	Good Day Cashew Cookies	http://localhost:9000/nexus-media/public/pms/products/120/main.svg	P120	0	1	1	1	1	0	\N
+121	70	36	38	Hide & Seek Biscuits	http://localhost:9000/nexus-media/public/pms/products/121/main.svg	P121	0	1	1	1	1	0	\N
+122	38	36	38	Sunfeast Dark Fantasy	http://localhost:9000/nexus-media/public/pms/products/122/main.svg	P122	0	1	1	1	1	0	\N
+115	60	38	37	Nescafé Classic Coffee	http://localhost:9000/nexus-media/public/pms/products/115/main.svg	P115	0	1	1	1	1	0	\N
+116	20	38	37	Coca-Cola Original	http://localhost:9000/nexus-media/public/pms/products/116/main.svg	P116	0	1	1	1	1	0	\N
+117	7	38	37	Amul Taaza Milk	http://localhost:9000/nexus-media/public/pms/products/117/main.svg	P117	0	1	1	1	1	0	\N
+118	89	38	37	Tata Tea Gold	http://localhost:9000/nexus-media/public/pms/products/118/main.svg	P118	0	1	1	1	1	0	\N
+119	58	38	37	Toned Milk	http://localhost:9000/nexus-media/public/pms/products/119/main.svg	P119	0	1	1	1	1	0	\N
+102	72	33	31	Sapiens Study Guide	http://localhost:9000/nexus-media/public/pms/products/102/main.svg	P102	0	1	1	1	1	0	\N
+104	68	34	32	Designing Data-Intensive Applications	http://localhost:9000/nexus-media/public/pms/products/104/main.svg	P104	0	1	1	1	1	0	\N
+105	53	34	32	Cracking the Coding Interview	http://localhost:9000/nexus-media/public/pms/products/105/main.svg	P105	0	1	1	1	1	0	\N
+106	72	34	32	Java Programming Complete	http://localhost:9000/nexus-media/public/pms/products/106/main.svg	P106	0	1	1	1	1	0	\N
+125	40	37	39	Corn Flakes	http://localhost:9000/nexus-media/public/pms/products/125/main.svg	P125	0	1	1	1	1	0	\N
+129	31	39	36	Sunflower Oil	http://localhost:9000/nexus-media/public/pms/products/129/main.svg	P129	0	1	1	1	1	0	\N
+130	71	39	36	Dalia	http://localhost:9000/nexus-media/public/pms/products/130/main.svg	P130	0	1	1	1	1	0	\N
+132	7	39	36	Pure Ghee	http://localhost:9000/nexus-media/public/pms/products/132/main.svg	P132	0	1	1	1	1	0	\N
+138	18	41	43	Magnatec 5W-30	http://localhost:9000/nexus-media/public/pms/products/138/main.svg	P138	0	1	1	1	1	0	\N
+139	59	41	43	8100 X-Cess 5W-40	http://localhost:9000/nexus-media/public/pms/products/139/main.svg	P139	0	1	1	1	1	0	\N
+141	1	41	43	Perfect-It Rubbing Compound	http://localhost:9000/nexus-media/public/pms/products/141/main.svg	P141	0	1	1	1	1	0	\N
+151	18	41	43	Engine Flush	http://localhost:9000/nexus-media/public/pms/products/151/main.svg	P151	0	1	1	1	1	0	\N
+142	54	42	42	Energy XM2+ Tyre	http://localhost:9000/nexus-media/public/pms/products/142/main.svg	P142	0	1	1	1	1	0	\N
+143	48	42	42	Perfinza Tyre	http://localhost:9000/nexus-media/public/pms/products/143/main.svg	P143	0	1	1	1	1	0	\N
+144	8	42	42	Alnac 4G Tyre	http://localhost:9000/nexus-media/public/pms/products/144/main.svg	P144	0	1	1	1	1	0	\N
+145	17	42	42	Milaze Tyre	http://localhost:9000/nexus-media/public/pms/products/145/main.svg	P145	0	1	1	1	1	0	\N
+134	1	43	41	Car Care Microfiber Cloth	http://localhost:9000/nexus-media/public/pms/products/134/main.svg	P134	0	1	1	1	1	0	\N
+135	14	43	41	Car Air Filter	http://localhost:9000/nexus-media/public/pms/products/135/main.svg	P135	0	1	1	1	1	0	\N
+136	88	43	41	Car Battery Charger	http://localhost:9000/nexus-media/public/pms/products/136/main.svg	P136	0	1	1	1	1	0	\N
+137	17	43	41	Tubeless Valve Kit	http://localhost:9000/nexus-media/public/pms/products/137/main.svg	P137	0	1	1	1	1	0	\N
+146	88	42	42	Eco Grip 2W Tyre	http://localhost:9000/nexus-media/public/pms/products/146/main.svg	P146	0	1	1	1	1	0	\N
+11	77	2	7	Muffs M2 Wireless Headphones	http://localhost:9000/nexus-media/public/pms/products/11/main.svg	P011	0	1	1	1	1	0	\N
+21	5	11	12	Slim Fit Oxford Shirt	http://localhost:9000/nexus-media/public/pms/products/21/main.svg	P021	0	1	1	1	1	0	\N
+31	4	14	14	Ultraboost Light	http://localhost:9000/nexus-media/public/pms/products/31/main.svg	P031	0	1	1	1	1	0	\N
+54	22	16	16	Steel Essential Kettle	http://localhost:9000/nexus-media/public/pms/products/54/main.svg	P054	0	1	1	1	1	0	\N
+42	75	17	19	Airfryer 3000 Series	http://localhost:9000/nexus-media/public/pms/products/42/main.svg	P042	0	1	1	1	1	0	\N
+40	37	18	17	LACK Coffee Table	http://localhost:9000/nexus-media/public/pms/products/40/main.svg	P040	0	1	1	1	1	0	\N
+74	63	21	22	Men Sensitive Shaving Gel	http://localhost:9000/nexus-media/public/pms/products/74/main.svg	P074	0	1	1	1	1	0	\N
+64	30	24	21	Facial Tonic Mist	http://localhost:9000/nexus-media/public/pms/products/64/main.svg	P064	0	1	1	1	1	0	\N
+124	24	36	38	Real Fruit Drink	http://localhost:9000/nexus-media/public/pms/products/124/main.svg	P124	0	1	1	1	1	0	\N
+128	89	37	39	Sampann Poha	http://localhost:9000/nexus-media/public/pms/products/128/main.svg	P128	0	1	1	1	1	0	\N
+13	65	2	7	Buds X Prime	http://localhost:9000/nexus-media/public/pms/products/13/main.svg	P013	0	1	1	1	1	0	\N
+16	87	2	7	WH-1000XM6	http://localhost:9000/nexus-media/public/pms/products/16/main.svg	P016	0	1	1	1	1	0	\N
+6	55	3	6	IN Note 3	http://localhost:9000/nexus-media/public/pms/products/6/main.svg	P006	0	1	1	1	1	0	\N
+27	29	12	11	Cotton Kurta	http://localhost:9000/nexus-media/public/pms/products/27/main.svg	P027	0	1	1	1	1	0	\N
+28	51	12	11	Embroidered Kurta	http://localhost:9000/nexus-media/public/pms/products/28/main.svg	P028	0	1	1	1	1	0	\N
+29	98	12	11	Straight Kurta Set	http://localhost:9000/nexus-media/public/pms/products/29/main.svg	P029	0	1	1	1	1	0	\N
+55	100	16	16	Granite Fry Pan	http://localhost:9000/nexus-media/public/pms/products/55/main.svg	P055	0	1	1	1	1	0	\N
+56	78	16	16	Omega Deluxe Pan	http://localhost:9000/nexus-media/public/pms/products/56/main.svg	P056	0	1	1	1	1	0	\N
+57	36	16	16	Futura Nonstick Tawa	http://localhost:9000/nexus-media/public/pms/products/57/main.svg	P057	0	1	1	1	1	0	\N
+44	13	17	19	Serie 4 Dishwasher	http://localhost:9000/nexus-media/public/pms/products/44/main.svg	P044	0	1	1	1	1	0	\N
+50	11	19	18	Maharaja Tower Fan	http://localhost:9000/nexus-media/public/pms/products/50/main.svg	P050	0	1	1	1	1	0	\N
+51	35	19	18	Aqua Plus Water Heater	http://localhost:9000/nexus-media/public/pms/products/51/main.svg	P051	0	1	1	1	1	0	\N
+52	95	19	18	Mist Air Icy Fan	http://localhost:9000/nexus-media/public/pms/products/52/main.svg	P052	0	1	1	1	1	0	\N
+70	12	22	23	Bio Coconut Whitening Cream	http://localhost:9000/nexus-media/public/pms/products/70/main.svg	P070	0	1	1	1	1	0	\N
+62	50	24	21	Vitamin C Face Serum	http://localhost:9000/nexus-media/public/pms/products/62/main.svg	P062	0	1	1	1	1	0	\N
+63	56	24	21	2% Salicylic Acid Serum	http://localhost:9000/nexus-media/public/pms/products/63/main.svg	P063	0	1	1	1	1	0	\N
+65	76	24	21	Green Tea Face Wash	http://localhost:9000/nexus-media/public/pms/products/65/main.svg	P065	0	1	1	1	1	0	\N
+84	97	26	26	Power Training Gloves	http://localhost:9000/nexus-media/public/pms/products/84/main.svg	P084	0	1	1	1	1	0	\N
+83	21	26	26	Resistance Tube Set	http://localhost:9000/nexus-media/public/pms/products/83/main.svg	P083	0	1	1	1	1	0	\N
+86	64	27	27	TPE Yoga Mat	http://localhost:9000/nexus-media/public/pms/products/86/main.svg	P086	0	1	1	1	1	0	\N
+87	21	27	27	Yoga Block Pair	http://localhost:9000/nexus-media/public/pms/products/87/main.svg	P087	0	1	1	1	1	0	\N
+92	25	28	29	Quechua Hiking Backpack 40L	http://localhost:9000/nexus-media/public/pms/products/92/main.svg	P092	0	1	1	1	1	0	\N
+1	9	3	6	iPhone 17	http://localhost:9000/nexus-media/public/pms/products/1/main.svg	P001	0	1	1	1	1	14	\N
+93	64	28	29	Storm Football	http://localhost:9000/nexus-media/public/pms/products/93/main.svg	P093	0	1	1	1	1	0	\N
+94	21	28	29	Club Volleyball	http://localhost:9000/nexus-media/public/pms/products/94/main.svg	P094	0	1	1	1	1	0	\N
+95	99	28	29	NBA Official Basketball	http://localhost:9000/nexus-media/public/pms/products/95/main.svg	P095	0	1	1	1	1	0	\N
+91	84	28	29	Players English Willow Bat	http://localhost:9000/nexus-media/public/pms/products/91/main.svg	P091	0	1	1	1	1	0	\N
+111	82	32	33	Executive Journal	http://localhost:9000/nexus-media/public/pms/products/111/main.svg	P111	0	1	1	1	1	0	\N
+107	83	34	32	Data Structures in C	http://localhost:9000/nexus-media/public/pms/products/107/main.svg	P107	0	1	1	1	1	0	\N
+108	10	34	32	Python for Competitive Programming	http://localhost:9000/nexus-media/public/pms/products/108/main.svg	P108	0	1	1	1	1	0	\N
+103	68	34	32	Clean Code	http://localhost:9000/nexus-media/public/pms/products/103/main.svg	P103	0	1	1	1	1	0	\N
+123	60	36	38	Munch Chocolate Bar	http://localhost:9000/nexus-media/public/pms/products/123/main.svg	P123	0	1	1	1	1	0	\N
+126	49	37	39	3 Minute Breakfast Poha	http://localhost:9000/nexus-media/public/pms/products/126/main.svg	P126	0	1	1	1	1	0	\N
+131	93	39	36	Kissan Tomato Ketchup	http://localhost:9000/nexus-media/public/pms/products/131/main.svg	P131	0	1	1	1	1	0	\N
+140	33	41	43	Formula G 5W-30	http://localhost:9000/nexus-media/public/pms/products/140/main.svg	P140	0	1	1	1	1	0	\N
+149	1	43	41	12V Car Vacuum Cleaner	http://localhost:9000/nexus-media/public/pms/products/149/main.svg	P149	0	1	1	1	1	0	\N
+127	3	37	39	Multigrain Atta	http://localhost:9000/nexus-media/public/pms/products/127/main.svg	P127	0	1	1	1	1	0	\N
+133	58	39	36	Paneer Fresh	http://localhost:9000/nexus-media/public/pms/products/133/main.svg	P133	0	1	1	1	1	0	\N
+147	14	42	42	Platinum Spark Plug	http://localhost:9000/nexus-media/public/pms/products/147/main.svg	P147	0	1	1	1	1	0	\N
+148	17	42	42	Car Brake Pad Set	http://localhost:9000/nexus-media/public/pms/products/148/main.svg	P148	0	1	1	1	1	0	\N
+152	59	41	43	Chain Clean	http://localhost:9000/nexus-media/public/pms/products/152/main.svg	P152	0	1	1	1	1	1	\N
 \.
 
 
 --
--- Data for Name: pms_product_attribute; Type: TABLE DATA; Schema: catalog; Owner: postgres
+-- Data for Name: pms_product_attribute; Type: TABLE DATA; Schema: pms; Owner: postgres
 --
 
-COPY catalog.pms_product_attribute (id, product_attribute_category_id, name, select_type, input_type, input_list, sort, type) FROM stdin;
+COPY pms.pms_product_attribute (id, product_attribute_category_id, name, select_type, input_type, input_list, sort, type) FROM stdin;
 34	9	Layout	0	1	Standard	0	1
 35	9	Switch Type	0	1	Premium Material	0	1
 36	11	Size	0	1	L,M,S,XL,L,M,XL	0	0
@@ -5674,10 +5674,10 @@ COPY catalog.pms_product_attribute (id, product_attribute_category_id, name, sel
 
 
 --
--- Data for Name: pms_product_attribute_category; Type: TABLE DATA; Schema: catalog; Owner: postgres
+-- Data for Name: pms_product_attribute_category; Type: TABLE DATA; Schema: pms; Owner: postgres
 --
 
-COPY catalog.pms_product_attribute_category (id, name, attribute_count, param_count) FROM stdin;
+COPY pms.pms_product_attribute_category (id, name, attribute_count, param_count) FROM stdin;
 2	Laptop Specs	1	4
 3	Audio Specs	3	2
 4	Shoe Sizes	1	3
@@ -5692,10 +5692,10 @@ COPY catalog.pms_product_attribute_category (id, name, attribute_count, param_co
 
 
 --
--- Data for Name: pms_product_attribute_value; Type: TABLE DATA; Schema: catalog; Owner: postgres
+-- Data for Name: pms_product_attribute_value; Type: TABLE DATA; Schema: pms; Owner: postgres
 --
 
-COPY catalog.pms_product_attribute_value (id, product_id, product_attribute_id, value) FROM stdin;
+COPY pms.pms_product_attribute_value (id, product_id, product_attribute_id, value) FROM stdin;
 1	4	28	Black,Silver
 
 2	4	29	128GB,256GB
@@ -6804,104 +6804,104 @@ COPY catalog.pms_product_attribute_value (id, product_id, product_attribute_id, 
 
 
 --
--- Data for Name: pms_product_category; Type: TABLE DATA; Schema: catalog; Owner: postgres
+-- Data for Name: pms_product_category; Type: TABLE DATA; Schema: pms; Owner: postgres
 --
 
-COPY catalog.pms_product_category (id, parent_id, name, level, product_count, product_unit, nav_status, show_status, sort, icon, keywords, description) FROM stdin;
-1	0	Electronics	0	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/1/icon.svg	\N	\N
+COPY pms.pms_product_category (id, parent_id, name, level, product_count, product_unit, nav_status, show_status, sort, icon, keywords, description) FROM stdin;
+1	0	Electronics	0	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/pms/categories/1/icon.svg	\N	\N
 
-2	1	Headphones & Earbuds	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/1/subcategories/2/icon.svg	\N	\N
+2	1	Headphones & Earbuds	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/pms/categories/1/subcategories/2/icon.svg	\N	\N
 
-3	1	Smartphones	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/1/subcategories/3/icon.svg	\N	\N
+3	1	Smartphones	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/pms/categories/1/subcategories/3/icon.svg	\N	\N
 
-4	1	Tablets	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/1/subcategories/4/icon.svg	\N	\N
+4	1	Tablets	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/pms/categories/1/subcategories/4/icon.svg	\N	\N
 
-5	1	Laptops	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/1/subcategories/5/icon.svg	\N	\N
+5	1	Laptops	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/pms/categories/1/subcategories/5/icon.svg	\N	\N
 
-6	1	Cameras	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/1/subcategories/6/icon.svg	\N	\N
+6	1	Cameras	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/pms/categories/1/subcategories/6/icon.svg	\N	\N
 
-7	1	Smartwatches	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/1/subcategories/7/icon.svg	\N	\N
+7	1	Smartwatches	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/pms/categories/1/subcategories/7/icon.svg	\N	\N
 
-8	1	Monitors	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/1/subcategories/8/icon.svg	\N	\N
+8	1	Monitors	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/pms/categories/1/subcategories/8/icon.svg	\N	\N
 
-9	1	Keyboards & Mice	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/1/subcategories/9/icon.svg	\N	\N
+9	1	Keyboards & Mice	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/pms/categories/1/subcategories/9/icon.svg	\N	\N
 
-10	0	Fashion	0	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/10/icon.svg	\N	\N
+10	0	Fashion	0	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/pms/categories/10/icon.svg	\N	\N
 
-11	10	Men's Clothing	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/10/subcategories/11/icon.svg	\N	\N
+11	10	Men's Clothing	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/pms/categories/10/subcategories/11/icon.svg	\N	\N
 
-12	10	Women's Clothing	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/10/subcategories/12/icon.svg	\N	\N
+12	10	Women's Clothing	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/pms/categories/10/subcategories/12/icon.svg	\N	\N
 
-13	10	Accessories	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/10/subcategories/13/icon.svg	\N	\N
+13	10	Accessories	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/pms/categories/10/subcategories/13/icon.svg	\N	\N
 
-14	10	Footwear	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/10/subcategories/14/icon.svg	\N	\N
+14	10	Footwear	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/pms/categories/10/subcategories/14/icon.svg	\N	\N
 
-15	0	Home & Kitchen	0	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/15/icon.svg	\N	\N
+15	0	Home & Kitchen	0	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/pms/categories/15/icon.svg	\N	\N
 
-16	15	Kitchenware	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/15/subcategories/16/icon.svg	\N	\N
+16	15	Kitchenware	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/pms/categories/15/subcategories/16/icon.svg	\N	\N
 
-17	15	Kitchen Appliances	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/15/subcategories/17/icon.svg	\N	\N
+17	15	Kitchen Appliances	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/pms/categories/15/subcategories/17/icon.svg	\N	\N
 
-18	15	Furniture	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/15/subcategories/18/icon.svg	\N	\N
+18	15	Furniture	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/pms/categories/15/subcategories/18/icon.svg	\N	\N
 
-19	15	Home Appliances	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/15/subcategories/19/icon.svg	\N	\N
+19	15	Home Appliances	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/pms/categories/15/subcategories/19/icon.svg	\N	\N
 
-20	0	Beauty & Personal Care	0	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/20/icon.svg	\N	\N
+20	0	Beauty & Personal Care	0	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/pms/categories/20/icon.svg	\N	\N
 
-21	20	Grooming	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/20/subcategories/21/icon.svg	\N	\N
+21	20	Grooming	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/pms/categories/20/subcategories/21/icon.svg	\N	\N
 
-22	20	Makeup	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/20/subcategories/22/icon.svg	\N	\N
+22	20	Makeup	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/pms/categories/20/subcategories/22/icon.svg	\N	\N
 
-23	20	Hair Care	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/20/subcategories/23/icon.svg	\N	\N
+23	20	Hair Care	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/pms/categories/20/subcategories/23/icon.svg	\N	\N
 
-24	20	Skincare	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/20/subcategories/24/icon.svg	\N	\N
+24	20	Skincare	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/pms/categories/20/subcategories/24/icon.svg	\N	\N
 
-25	0	Sports & Fitness	0	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/25/icon.svg	\N	\N
+25	0	Sports & Fitness	0	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/pms/categories/25/icon.svg	\N	\N
 
-26	25	Gym Equipment	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/25/subcategories/26/icon.svg	\N	\N
+26	25	Gym Equipment	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/pms/categories/25/subcategories/26/icon.svg	\N	\N
 
-27	25	Yoga	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/25/subcategories/27/icon.svg	\N	\N
+27	25	Yoga	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/pms/categories/25/subcategories/27/icon.svg	\N	\N
 
-28	25	Outdoor	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/25/subcategories/28/icon.svg	\N	\N
+28	25	Outdoor	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/pms/categories/25/subcategories/28/icon.svg	\N	\N
 
-29	25	Running	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/25/subcategories/29/icon.svg	\N	\N
+29	25	Running	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/pms/categories/25/subcategories/29/icon.svg	\N	\N
 
-30	0	Books & Stationery	0	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/30/icon.svg	\N	\N
+30	0	Books & Stationery	0	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/pms/categories/30/icon.svg	\N	\N
 
-31	30	Fiction	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/30/subcategories/31/icon.svg	\N	\N
+31	30	Fiction	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/pms/categories/30/subcategories/31/icon.svg	\N	\N
 
-32	30	Notebooks & Supplies	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/30/subcategories/32/icon.svg	\N	\N
+32	30	Notebooks & Supplies	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/pms/categories/30/subcategories/32/icon.svg	\N	\N
 
-33	30	Non-Fiction	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/30/subcategories/33/icon.svg	\N	\N
+33	30	Non-Fiction	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/pms/categories/30/subcategories/33/icon.svg	\N	\N
 
-34	30	Technology	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/30/subcategories/34/icon.svg	\N	\N
+34	30	Technology	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/pms/categories/30/subcategories/34/icon.svg	\N	\N
 
-35	0	Grocery	0	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/35/icon.svg	\N	\N
+35	0	Grocery	0	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/pms/categories/35/icon.svg	\N	\N
 
-36	35	Snacks	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/35/subcategories/36/icon.svg	\N	\N
+36	35	Snacks	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/pms/categories/35/subcategories/36/icon.svg	\N	\N
 
-37	35	Breakfast	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/35/subcategories/37/icon.svg	\N	\N
+37	35	Breakfast	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/pms/categories/35/subcategories/37/icon.svg	\N	\N
 
-38	35	Beverages	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/35/subcategories/38/icon.svg	\N	\N
+38	35	Beverages	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/pms/categories/35/subcategories/38/icon.svg	\N	\N
 
-39	35	Pantry	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/35/subcategories/39/icon.svg	\N	\N
+39	35	Pantry	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/pms/categories/35/subcategories/39/icon.svg	\N	\N
 
-40	0	Automotive	0	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/40/icon.svg	\N	\N
+40	0	Automotive	0	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/pms/categories/40/icon.svg	\N	\N
 
-41	40	Car Care	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/40/subcategories/41/icon.svg	\N	\N
+41	40	Car Care	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/pms/categories/40/subcategories/41/icon.svg	\N	\N
 
-42	40	Replacement Parts	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/40/subcategories/42/icon.svg	\N	\N
+42	40	Replacement Parts	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/pms/categories/40/subcategories/42/icon.svg	\N	\N
 
-43	40	Car Accessories	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/catalog/categories/40/subcategories/43/icon.svg	\N	\N
+43	40	Car Accessories	1	10	\N	1	1	\N	http://localhost:9000/nexus-media/public/pms/categories/40/subcategories/43/icon.svg	\N	\N
 
 \.
 
 
 --
--- Data for Name: pms_product_category_attribute_relation; Type: TABLE DATA; Schema: catalog; Owner: postgres
+-- Data for Name: pms_product_category_attribute_relation; Type: TABLE DATA; Schema: pms; Owner: postgres
 --
 
-COPY catalog.pms_product_category_attribute_relation (id, product_category_id, product_attribute_id) FROM stdin;
+COPY pms.pms_product_category_attribute_relation (id, product_category_id, product_attribute_id) FROM stdin;
 1	2	1
 
 2	2	2
@@ -7164,885 +7164,885 @@ COPY catalog.pms_product_category_attribute_relation (id, product_category_id, p
 
 
 --
--- Data for Name: pms_product_spend_discount; Type: TABLE DATA; Schema: catalog; Owner: postgres
+-- Data for Name: pms_product_spend_discount; Type: TABLE DATA; Schema: pms; Owner: postgres
 --
 
-COPY catalog.pms_product_spend_discount (id, product_id, full_price, reduce_price) FROM stdin;
+COPY pms.pms_product_spend_discount (id, product_id, full_price, reduce_price) FROM stdin;
 \.
 
 
 --
--- Data for Name: pms_product_volume_discount; Type: TABLE DATA; Schema: catalog; Owner: postgres
+-- Data for Name: pms_product_volume_discount; Type: TABLE DATA; Schema: pms; Owner: postgres
 --
 
-COPY catalog.pms_product_volume_discount (id, product_id, count, discount, price) FROM stdin;
+COPY pms.pms_product_volume_discount (id, product_id, count, discount, price) FROM stdin;
 \.
 
 
 --
--- Data for Name: pms_product_gallery; Type: TABLE DATA; Schema: catalog; Owner: postgres
+-- Data for Name: pms_product_gallery; Type: TABLE DATA; Schema: pms; Owner: postgres
 --
 
-COPY catalog.pms_product_gallery (id, product_id, media_type, media_url, sort_order) FROM stdin;
-1	1	image	http://localhost:9000/nexus-media/public/catalog/products/1-iphone-17/main.webp	0
+COPY pms.pms_product_gallery (id, product_id, media_type, media_url, sort_order) FROM stdin;
+1	1	image	http://localhost:9000/nexus-media/public/pms/products/1-iphone-17/main.webp	0
 
-2	2	image	http://localhost:9000/nexus-media/public/catalog/products/2-galaxy-s25/main.webp	0
+2	2	image	http://localhost:9000/nexus-media/public/pms/products/2-galaxy-s25/main.webp	0
 
-3	3	image	http://localhost:9000/nexus-media/public/catalog/products/3-macbook-pro-m5/main.webp	0
+3	3	image	http://localhost:9000/nexus-media/public/pms/products/3-macbook-pro-m5/main.webp	0
 
-4	4	image	http://localhost:9000/nexus-media/public/catalog/products/4-air-max-2026/main.webp	0
+4	4	image	http://localhost:9000/nexus-media/public/pms/products/4-air-max-2026/main.webp	0
 
-5	5	image	http://localhost:9000/nexus-media/public/catalog/products/5-ultraboost-26/main.webp	0
+5	5	image	http://localhost:9000/nexus-media/public/pms/products/5-ultraboost-26/main.webp	0
 
-6	6	image	http://localhost:9000/nexus-media/public/catalog/products/6-clean-code/main.webp	0
+6	6	image	http://localhost:9000/nexus-media/public/pms/products/6-clean-code/main.webp	0
 
-7	7	image	http://localhost:9000/nexus-media/public/catalog/products/7-coca-cola-zero/main.webp	0
+7	7	image	http://localhost:9000/nexus-media/public/pms/products/7-coca-cola-zero/main.webp	0
 
-8	8	image	http://localhost:9000/nexus-media/public/catalog/products/8-supima-cotton-t-shirt/main.webp	0
+8	8	image	http://localhost:9000/nexus-media/public/pms/products/8-supima-cotton-t-shirt/main.webp	0
 
-9	9	image	http://localhost:9000/nexus-media/public/catalog/products/9-wh-1000xm6/main.webp	0
+9	9	image	http://localhost:9000/nexus-media/public/pms/products/9-wh-1000xm6/main.webp	0
 
-10	10	image	http://localhost:9000/nexus-media/public/catalog/products/10-v15-detect-absolute/main.webp	0
+10	10	image	http://localhost:9000/nexus-media/public/pms/products/10-v15-detect-absolute/main.webp	0
 
 \.
 
 
 --
--- Data for Name: pms_product_audit_log; Type: TABLE DATA; Schema: catalog; Owner: postgres
+-- Data for Name: pms_product_audit_log; Type: TABLE DATA; Schema: pms; Owner: postgres
 --
 
-COPY catalog.pms_product_audit_log (id, product_id, price_old, price_new, sale_price_old, sale_price_new, operate_man, create_time) FROM stdin;
+COPY pms.pms_product_audit_log (id, product_id, price_old, price_new, sale_price_old, sale_price_new, operate_man, create_time) FROM stdin;
 \.
 
 
 --
--- Data for Name: pms_product_approval_history; Type: TABLE DATA; Schema: catalog; Owner: postgres
+-- Data for Name: pms_product_approval_history; Type: TABLE DATA; Schema: pms; Owner: postgres
 --
 
-COPY catalog.pms_product_approval_history (id, product_id, create_time, reviewer_name, status, detail) FROM stdin;
+COPY pms.pms_product_approval_history (id, product_id, create_time, reviewer_name, status, detail) FROM stdin;
 \.
 
 
 --
--- Data for Name: pms_review; Type: TABLE DATA; Schema: catalog; Owner: postgres
+-- Data for Name: pms_review; Type: TABLE DATA; Schema: pms; Owner: postgres
 --
 
-COPY catalog.pms_review (id, product_id, member_id, parent_id, rating, content, like_count, dislike_count, status, created_time) FROM stdin;
+COPY pms.pms_review (id, product_id, member_id, parent_id, rating, content, like_count, dislike_count, status, created_time) FROM stdin;
 \.
 
 
 --
--- Data for Name: pms_review_attachments; Type: TABLE DATA; Schema: catalog; Owner: postgres
+-- Data for Name: pms_review_attachments; Type: TABLE DATA; Schema: pms; Owner: postgres
 --
 
-COPY catalog.pms_review_attachments (id, review_id, media_type, media_url, thumbnail_url, sort_order) FROM stdin;
+COPY pms.pms_review_attachments (id, review_id, media_type, media_url, thumbnail_url, sort_order) FROM stdin;
 \.
 
 
 --
--- Data for Name: pms_sku_stock; Type: TABLE DATA; Schema: catalog; Owner: postgres
+-- Data for Name: pms_sku_stock; Type: TABLE DATA; Schema: pms; Owner: postgres
 --
 
-COPY catalog.pms_sku_stock (id, product_id, sku_code, price, stock, low_stock, pic, sale, promotion_price, lock_stock, sku_attributes) FROM stdin;
-2	1	APPLE-IP17-BLK-256	56570.00	19	10	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-BLK-256/main.svg	0	\N	12	[{"key": "Color", "value": "Black"}, {"key": "Storage", "value": "256GB"}]
+COPY pms.pms_sku_stock (id, product_id, sku_code, price, stock, low_stock, pic, sale, promotion_price, lock_stock, sku_attributes) FROM stdin;
+2	1	APPLE-IP17-BLK-256	56570.00	19	10	http://localhost:9000/nexus-media/public/pms/skus/APPLE-IP17-BLK-256/main.svg	0	\N	12	[{"key": "Color", "value": "Black"}, {"key": "Storage", "value": "256GB"}]
 
-1	1	APPLE-IP17-BLK-128	52380.00	114	10	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-BLK-128/main.svg	0	\N	1	[{"key": "Color", "value": "Black"}, {"key": "Storage", "value": "128GB"}]
+1	1	APPLE-IP17-BLK-128	52380.00	114	10	http://localhost:9000/nexus-media/public/pms/skus/APPLE-IP17-BLK-128/main.svg	0	\N	1	[{"key": "Color", "value": "Black"}, {"key": "Storage", "value": "128GB"}]
 
-394	150	TVS-PTI-STD	4640.00	6	10	http://localhost:9000/nexus-media/public/catalog/skus/TVS-PTI-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+394	150	TVS-PTI-STD	4640.00	6	10	http://localhost:9000/nexus-media/public/pms/skus/TVS-PTI-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
 
-41	11	PORT-MUFFM2-BLK	18160.00	75	10	http://localhost:9000/nexus-media/public/catalog/skus/PORT-MUFFM2-BLK/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+41	11	PORT-MUFFM2-BLK	18160.00	75	10	http://localhost:9000/nexus-media/public/pms/skus/PORT-MUFFM2-BLK/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
 
-226	79	NIVIA-RACER-WHT-9	6930.00	60	10	http://localhost:9000/nexus-media/public/catalog/skus/NIVIA-RACER-WHT-9/main.svg	0	\N	0	[{"key": "Color", "value": "White"}, {"key": "Size (US)", "value": "9"}]
+226	79	NIVIA-RACER-WHT-9	6930.00	60	10	http://localhost:9000/nexus-media/public/pms/skus/NIVIA-RACER-WHT-9/main.svg	0	\N	0	[{"key": "Color", "value": "White"}, {"key": "Size (US)", "value": "9"}]
 
-23	6	MICRO-INN3-SLV-128	36600.00	42	10	http://localhost:9000/nexus-media/public/catalog/skus/MICRO-INN3-SLV-128/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "128GB"}]
+23	6	MICRO-INN3-SLV-128	36600.00	42	10	http://localhost:9000/nexus-media/public/pms/skus/MICRO-INN3-SLV-128/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "128GB"}]
 
-24	6	MICRO-INN3-SLV-256	39470.00	35	10	http://localhost:9000/nexus-media/public/catalog/skus/MICRO-INN3-SLV-256/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "256GB"}]
+24	6	MICRO-INN3-SLV-256	39470.00	35	10	http://localhost:9000/nexus-media/public/pms/skus/MICRO-INN3-SLV-256/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "256GB"}]
 
-25	7	DELL-IN16P-16-512-BLK	110200.00	92	10	http://localhost:9000/nexus-media/public/catalog/skus/DELL-IN16P-16-512-BLK/main.svg	0	\N	0	[{"key": "RAM", "value": "16GB"}, {"key": "Color", "value": "Black"}, {"key": "Storage", "value": "512GB"}]
+25	7	DELL-IN16P-16-512-BLK	110200.00	92	10	http://localhost:9000/nexus-media/public/pms/skus/DELL-IN16P-16-512-BLK/main.svg	0	\N	0	[{"key": "RAM", "value": "16GB"}, {"key": "Color", "value": "Black"}, {"key": "Storage", "value": "512GB"}]
 
-43	12	NOTHING-EAR3-BLK	6790.00	38	10	http://localhost:9000/nexus-media/public/catalog/skus/NOTHING-EAR3-BLK/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+43	12	NOTHING-EAR3-BLK	6790.00	38	10	http://localhost:9000/nexus-media/public/pms/skus/NOTHING-EAR3-BLK/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
 
-26	7	DELL-IN16P-16-1TB-SLV	127830.00	40	10	http://localhost:9000/nexus-media/public/catalog/skus/DELL-IN16P-16-1TB-SLV/main.svg	0	\N	0	[{"key": "RAM", "value": "16GB"}, {"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "1TB"}]
+26	7	DELL-IN16P-16-1TB-SLV	127830.00	40	10	http://localhost:9000/nexus-media/public/pms/skus/DELL-IN16P-16-1TB-SLV/main.svg	0	\N	0	[{"key": "RAM", "value": "16GB"}, {"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "1TB"}]
 
-28	7	DELL-IN16P-32-1TB-SLV	138850.00	90	10	http://localhost:9000/nexus-media/public/catalog/skus/DELL-IN16P-32-1TB-SLV/main.svg	0	\N	0	[{"key": "RAM", "value": "32GB"}, {"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "1TB"}]
+28	7	DELL-IN16P-32-1TB-SLV	138850.00	90	10	http://localhost:9000/nexus-media/public/pms/skus/DELL-IN16P-32-1TB-SLV/main.svg	0	\N	0	[{"key": "RAM", "value": "32GB"}, {"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "1TB"}]
 
-29	8	LENOVO-TPE16-16-512-BLK	109820.00	69	10	http://localhost:9000/nexus-media/public/catalog/skus/LENOVO-TPE16-16-512-BLK/main.svg	0	\N	0	[{"key": "RAM", "value": "16GB"}, {"key": "Color", "value": "Black"}, {"key": "Storage", "value": "512GB"}]
+29	8	LENOVO-TPE16-16-512-BLK	109820.00	69	10	http://localhost:9000/nexus-media/public/pms/skus/LENOVO-TPE16-16-512-BLK/main.svg	0	\N	0	[{"key": "RAM", "value": "16GB"}, {"key": "Color", "value": "Black"}, {"key": "Storage", "value": "512GB"}]
 
-30	8	LENOVO-TPE16-16-1TB-SLV	127390.00	13	10	http://localhost:9000/nexus-media/public/catalog/skus/LENOVO-TPE16-16-1TB-SLV/main.svg	0	\N	0	[{"key": "RAM", "value": "16GB"}, {"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "1TB"}]
+30	8	LENOVO-TPE16-16-1TB-SLV	127390.00	13	10	http://localhost:9000/nexus-media/public/pms/skus/LENOVO-TPE16-16-1TB-SLV/main.svg	0	\N	0	[{"key": "RAM", "value": "16GB"}, {"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "1TB"}]
 
-31	8	LENOVO-TPE16-32-1TB-BLK	136180.00	76	10	http://localhost:9000/nexus-media/public/catalog/skus/LENOVO-TPE16-32-1TB-BLK/main.svg	0	122560.00	0	[{"key": "RAM", "value": "32GB"}, {"key": "Color", "value": "Black"}, {"key": "Storage", "value": "1TB"}]
+31	8	LENOVO-TPE16-32-1TB-BLK	136180.00	76	10	http://localhost:9000/nexus-media/public/pms/skus/LENOVO-TPE16-32-1TB-BLK/main.svg	0	122560.00	0	[{"key": "RAM", "value": "32GB"}, {"key": "Color", "value": "Black"}, {"key": "Storage", "value": "1TB"}]
 
-32	8	LENOVO-TPE16-32-1TB-SLV	138370.00	30	10	http://localhost:9000/nexus-media/public/catalog/skus/LENOVO-TPE16-32-1TB-SLV/main.svg	0	\N	0	[{"key": "RAM", "value": "32GB"}, {"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "1TB"}]
+32	8	LENOVO-TPE16-32-1TB-SLV	138370.00	30	10	http://localhost:9000/nexus-media/public/pms/skus/LENOVO-TPE16-32-1TB-SLV/main.svg	0	\N	0	[{"key": "RAM", "value": "32GB"}, {"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "1TB"}]
 
-34	9	ASUS-VBS16-16-1TB-SLV	71830.00	87	10	http://localhost:9000/nexus-media/public/catalog/skus/ASUS-VBS16-16-1TB-SLV/main.svg	0	\N	0	[{"key": "RAM", "value": "16GB"}, {"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "1TB"}]
+34	9	ASUS-VBS16-16-1TB-SLV	71830.00	87	10	http://localhost:9000/nexus-media/public/pms/skus/ASUS-VBS16-16-1TB-SLV/main.svg	0	\N	0	[{"key": "RAM", "value": "16GB"}, {"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "1TB"}]
 
-35	9	ASUS-VBS16-32-1TB-BLK	76780.00	81	10	http://localhost:9000/nexus-media/public/catalog/skus/ASUS-VBS16-32-1TB-BLK/main.svg	0	\N	0	[{"key": "RAM", "value": "32GB"}, {"key": "Color", "value": "Black"}, {"key": "Storage", "value": "1TB"}]
+35	9	ASUS-VBS16-32-1TB-BLK	76780.00	81	10	http://localhost:9000/nexus-media/public/pms/skus/ASUS-VBS16-32-1TB-BLK/main.svg	0	\N	0	[{"key": "RAM", "value": "32GB"}, {"key": "Color", "value": "Black"}, {"key": "Storage", "value": "1TB"}]
 
-36	9	ASUS-VBS16-32-1TB-SLV	78020.00	25	10	http://localhost:9000/nexus-media/public/catalog/skus/ASUS-VBS16-32-1TB-SLV/main.svg	0	71780.00	0	[{"key": "RAM", "value": "32GB"}, {"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "1TB"}]
+36	9	ASUS-VBS16-32-1TB-SLV	78020.00	25	10	http://localhost:9000/nexus-media/public/pms/skus/ASUS-VBS16-32-1TB-SLV/main.svg	0	71780.00	0	[{"key": "RAM", "value": "32GB"}, {"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "1TB"}]
 
-37	10	ONEPLUS-OPPAD3-BLK-128	42770.00	38	10	http://localhost:9000/nexus-media/public/catalog/skus/ONEPLUS-OPPAD3-BLK-128/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Storage", "value": "128GB"}]
+37	10	ONEPLUS-OPPAD3-BLK-128	42770.00	38	10	http://localhost:9000/nexus-media/public/pms/skus/ONEPLUS-OPPAD3-BLK-128/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Storage", "value": "128GB"}]
 
-38	10	ONEPLUS-OPPAD3-BLK-256	46190.00	58	10	http://localhost:9000/nexus-media/public/catalog/skus/ONEPLUS-OPPAD3-BLK-256/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Storage", "value": "256GB"}]
+38	10	ONEPLUS-OPPAD3-BLK-256	46190.00	58	10	http://localhost:9000/nexus-media/public/pms/skus/ONEPLUS-OPPAD3-BLK-256/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Storage", "value": "256GB"}]
 
-40	10	ONEPLUS-OPPAD3-SLV-256	47050.00	12	10	http://localhost:9000/nexus-media/public/catalog/skus/ONEPLUS-OPPAD3-SLV-256/main.svg	0	41400.00	0	[{"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "256GB"}]
+40	10	ONEPLUS-OPPAD3-SLV-256	47050.00	12	10	http://localhost:9000/nexus-media/public/pms/skus/ONEPLUS-OPPAD3-SLV-256/main.svg	0	41400.00	0	[{"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "256GB"}]
 
-45	13	NOISE-BXPR-BLK	31000.00	76	10	http://localhost:9000/nexus-media/public/catalog/skus/NOISE-BXPR-BLK/main.svg	0	25420.00	0	[{"key": "Color", "value": "Black"}]
+45	13	NOISE-BXPR-BLK	31000.00	76	10	http://localhost:9000/nexus-media/public/pms/skus/NOISE-BXPR-BLK/main.svg	0	25420.00	0	[{"key": "Color", "value": "Black"}]
 
-46	14	BOAT-LUNPRO-BLK	19420.00	26	10	http://localhost:9000/nexus-media/public/catalog/skus/BOAT-LUNPRO-BLK/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+46	14	BOAT-LUNPRO-BLK	19420.00	26	10	http://localhost:9000/nexus-media/public/pms/skus/BOAT-LUNPRO-BLK/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
 
-47	14	BOAT-LUNPRO-SLV	19810.00	101	10	http://localhost:9000/nexus-media/public/catalog/skus/BOAT-LUNPRO-SLV/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}]
+47	14	BOAT-LUNPRO-SLV	19810.00	101	10	http://localhost:9000/nexus-media/public/pms/skus/BOAT-LUNPRO-SLV/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}]
 
-48	15	LOGI-MXBRIO-STD	9150.00	22	10	http://localhost:9000/nexus-media/public/catalog/skus/LOGI-MXBRIO-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+48	15	LOGI-MXBRIO-STD	9150.00	22	10	http://localhost:9000/nexus-media/public/pms/skus/LOGI-MXBRIO-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
 
-50	16	SONY-WH6-SLV	35490.00	101	10	http://localhost:9000/nexus-media/public/catalog/skus/SONY-WH6-SLV/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}]
+50	16	SONY-WH6-SLV	35490.00	101	10	http://localhost:9000/nexus-media/public/pms/skus/SONY-WH6-SLV/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}]
 
-51	17	LG-27GS6-27-QHD	42180.00	97	10	http://localhost:9000/nexus-media/public/catalog/skus/LG-27GS6-27-QHD/main.svg	0	\N	0	[{"key": "Resolution", "value": "2560x1440"}, {"key": "Size (inches)", "value": "27"}]
+51	17	LG-27GS6-27-QHD	42180.00	97	10	http://localhost:9000/nexus-media/public/pms/skus/LG-27GS6-27-QHD/main.svg	0	\N	0	[{"key": "Resolution", "value": "2560x1440"}, {"key": "Size (inches)", "value": "27"}]
 
-52	17	LG-27GS6-32-4K	52300.00	12	10	http://localhost:9000/nexus-media/public/catalog/skus/LG-27GS6-32-4K/main.svg	0	\N	0	[{"key": "Resolution", "value": "3840x2160"}, {"key": "Size (inches)", "value": "32"}]
+52	17	LG-27GS6-32-4K	52300.00	12	10	http://localhost:9000/nexus-media/public/pms/skus/LG-27GS6-32-4K/main.svg	0	\N	0	[{"key": "Resolution", "value": "3840x2160"}, {"key": "Size (inches)", "value": "32"}]
 
-54	18	SAMSUNG-ODG6-32-4K	13650.00	19	10	http://localhost:9000/nexus-media/public/catalog/skus/SAMSUNG-ODG6-32-4K/main.svg	0	11190.00	0	[{"key": "Resolution", "value": "3840x2160"}, {"key": "Size (inches)", "value": "32"}]
+54	18	SAMSUNG-ODG6-32-4K	13650.00	19	10	http://localhost:9000/nexus-media/public/pms/skus/SAMSUNG-ODG6-32-4K/main.svg	0	11190.00	0	[{"key": "Resolution", "value": "3840x2160"}, {"key": "Size (inches)", "value": "32"}]
 
-55	19	ZEBRO-TWK-BLK	6440.00	85	10	http://localhost:9000/nexus-media/public/catalog/skus/ZEBRO-TWK-BLK/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+55	19	ZEBRO-TWK-BLK	6440.00	85	10	http://localhost:9000/nexus-media/public/pms/skus/ZEBRO-TWK-BLK/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
 
-56	19	ZEBRO-TWK-SLV	6560.00	43	10	http://localhost:9000/nexus-media/public/catalog/skus/ZEBRO-TWK-SLV/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}]
+56	19	ZEBRO-TWK-SLV	6560.00	43	10	http://localhost:9000/nexus-media/public/pms/skus/ZEBRO-TWK-SLV/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}]
 
-57	20	LEVIS-511SL-S-BLK	4570.00	67	10	http://localhost:9000/nexus-media/public/catalog/skus/LEVIS-511SL-S-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "S"}, {"key": "Color", "value": "Black"}]
+57	20	LEVIS-511SL-S-BLK	4570.00	67	10	http://localhost:9000/nexus-media/public/pms/skus/LEVIS-511SL-S-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "S"}, {"key": "Color", "value": "Black"}]
 
-58	20	LEVIS-511SL-M-BLK	4570.00	35	10	http://localhost:9000/nexus-media/public/catalog/skus/LEVIS-511SL-M-BLK/main.svg	0	3880.00	0	[{"key": "Size", "value": "M"}, {"key": "Color", "value": "Black"}]
+58	20	LEVIS-511SL-M-BLK	4570.00	35	10	http://localhost:9000/nexus-media/public/pms/skus/LEVIS-511SL-M-BLK/main.svg	0	3880.00	0	[{"key": "Size", "value": "M"}, {"key": "Color", "value": "Black"}]
 
-59	20	LEVIS-511SL-L-BLK	4570.00	85	10	http://localhost:9000/nexus-media/public/catalog/skus/LEVIS-511SL-L-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "L"}, {"key": "Color", "value": "Black"}]
+59	20	LEVIS-511SL-L-BLK	4570.00	85	10	http://localhost:9000/nexus-media/public/pms/skus/LEVIS-511SL-L-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "L"}, {"key": "Color", "value": "Black"}]
 
-61	21	ALLENS-ASOXR-S-BLK	1220.00	67	10	http://localhost:9000/nexus-media/public/catalog/skus/ALLENS-ASOXR-S-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "S"}, {"key": "Color", "value": "Black"}]
+61	21	ALLENS-ASOXR-S-BLK	1220.00	67	10	http://localhost:9000/nexus-media/public/pms/skus/ALLENS-ASOXR-S-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "S"}, {"key": "Color", "value": "Black"}]
 
-62	21	ALLENS-ASOXR-M-BLK	1220.00	116	10	http://localhost:9000/nexus-media/public/catalog/skus/ALLENS-ASOXR-M-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "M"}, {"key": "Color", "value": "Black"}]
+62	21	ALLENS-ASOXR-M-BLK	1220.00	116	10	http://localhost:9000/nexus-media/public/pms/skus/ALLENS-ASOXR-M-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "M"}, {"key": "Color", "value": "Black"}]
 
-63	21	ALLENS-ASOXR-L-BLK	1220.00	121	10	http://localhost:9000/nexus-media/public/catalog/skus/ALLENS-ASOXR-L-BLK/main.svg	0	1040.00	0	[{"key": "Size", "value": "L"}, {"key": "Color", "value": "Black"}]
+63	21	ALLENS-ASOXR-L-BLK	1220.00	121	10	http://localhost:9000/nexus-media/public/pms/skus/ALLENS-ASOXR-L-BLK/main.svg	0	1040.00	0	[{"key": "Size", "value": "L"}, {"key": "Color", "value": "Black"}]
 
-64	21	ALLENS-ASOXR-XL-BLK	1220.00	14	10	http://localhost:9000/nexus-media/public/catalog/skus/ALLENS-ASOXR-XL-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "XL"}, {"key": "Color", "value": "Black"}]
+64	21	ALLENS-ASOXR-XL-BLK	1220.00	14	10	http://localhost:9000/nexus-media/public/pms/skus/ALLENS-ASOXR-XL-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "XL"}, {"key": "Color", "value": "Black"}]
 
-66	22	PETEREN-PEFSH-M-BLK	2580.00	58	10	http://localhost:9000/nexus-media/public/catalog/skus/PETEREN-PEFSH-M-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "M"}, {"key": "Color", "value": "Black"}]
+66	22	PETEREN-PEFSH-M-BLK	2580.00	58	10	http://localhost:9000/nexus-media/public/pms/skus/PETEREN-PEFSH-M-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "M"}, {"key": "Color", "value": "Black"}]
 
-67	22	PETEREN-PEFSH-L-BLK	2580.00	5	10	http://localhost:9000/nexus-media/public/catalog/skus/PETEREN-PEFSH-L-BLK/main.svg	0	2190.00	0	[{"key": "Size", "value": "L"}, {"key": "Color", "value": "Black"}]
+67	22	PETEREN-PEFSH-L-BLK	2580.00	5	10	http://localhost:9000/nexus-media/public/pms/skus/PETEREN-PEFSH-L-BLK/main.svg	0	2190.00	0	[{"key": "Size", "value": "L"}, {"key": "Color", "value": "Black"}]
 
-68	22	PETEREN-PEFSH-XL-BLK	2580.00	98	10	http://localhost:9000/nexus-media/public/catalog/skus/PETEREN-PEFSH-XL-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "XL"}, {"key": "Color", "value": "Black"}]
+68	22	PETEREN-PEFSH-XL-BLK	2580.00	98	10	http://localhost:9000/nexus-media/public/pms/skus/PETEREN-PEFSH-XL-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "XL"}, {"key": "Color", "value": "Black"}]
 
-69	23	RAYMOND-RFT-S-BLK	6050.00	99	10	http://localhost:9000/nexus-media/public/catalog/skus/RAYMOND-RFT-S-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "S"}, {"key": "Color", "value": "Black"}]
+69	23	RAYMOND-RFT-S-BLK	6050.00	99	10	http://localhost:9000/nexus-media/public/pms/skus/RAYMOND-RFT-S-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "S"}, {"key": "Color", "value": "Black"}]
 
-71	23	RAYMOND-RFT-L-BLK	6050.00	137	10	http://localhost:9000/nexus-media/public/catalog/skus/RAYMOND-RFT-L-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "L"}, {"key": "Color", "value": "Black"}]
+71	23	RAYMOND-RFT-L-BLK	6050.00	137	10	http://localhost:9000/nexus-media/public/pms/skus/RAYMOND-RFT-L-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "L"}, {"key": "Color", "value": "Black"}]
 
-72	23	RAYMOND-RFT-XL-BLK	6050.00	133	10	http://localhost:9000/nexus-media/public/catalog/skus/RAYMOND-RFT-XL-BLK/main.svg	0	4960.00	0	[{"key": "Size", "value": "XL"}, {"key": "Color", "value": "Black"}]
+72	23	RAYMOND-RFT-XL-BLK	6050.00	133	10	http://localhost:9000/nexus-media/public/pms/skus/RAYMOND-RFT-XL-BLK/main.svg	0	4960.00	0	[{"key": "Size", "value": "XL"}, {"key": "Color", "value": "Black"}]
 
-73	24	UNIQLO-UQT-M	6270.00	131	10	http://localhost:9000/nexus-media/public/catalog/skus/UNIQLO-UQT-M/main.svg	0	\N	0	[{"key": "Size", "value": "M"}]
+73	24	UNIQLO-UQT-M	6270.00	131	10	http://localhost:9000/nexus-media/public/pms/skus/UNIQLO-UQT-M/main.svg	0	\N	0	[{"key": "Size", "value": "M"}]
 
-74	24	UNIQLO-UQT-L	6270.00	30	10	http://localhost:9000/nexus-media/public/catalog/skus/UNIQLO-UQT-L/main.svg	0	\N	0	[{"key": "Size", "value": "L"}]
+74	24	UNIQLO-UQT-L	6270.00	30	10	http://localhost:9000/nexus-media/public/pms/skus/UNIQLO-UQT-L/main.svg	0	\N	0	[{"key": "Size", "value": "L"}]
 
-75	24	UNIQLO-UQT-XL	6270.00	22	10	http://localhost:9000/nexus-media/public/catalog/skus/UNIQLO-UQT-XL/main.svg	0	\N	0	[{"key": "Size", "value": "XL"}]
+75	24	UNIQLO-UQT-XL	6270.00	22	10	http://localhost:9000/nexus-media/public/pms/skus/UNIQLO-UQT-XL/main.svg	0	\N	0	[{"key": "Size", "value": "XL"}]
 
-77	25	ZARA-ZRBL-M-BLK	970.00	119	10	http://localhost:9000/nexus-media/public/catalog/skus/ZARA-ZRBL-M-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "M"}, {"key": "Color", "value": "Black"}]
+77	25	ZARA-ZRBL-M-BLK	970.00	119	10	http://localhost:9000/nexus-media/public/pms/skus/ZARA-ZRBL-M-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "M"}, {"key": "Color", "value": "Black"}]
 
-78	25	ZARA-ZRBL-L-BLK	970.00	140	10	http://localhost:9000/nexus-media/public/catalog/skus/ZARA-ZRBL-L-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "L"}, {"key": "Color", "value": "Black"}]
+78	25	ZARA-ZRBL-L-BLK	970.00	140	10	http://localhost:9000/nexus-media/public/pms/skus/ZARA-ZRBL-L-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "L"}, {"key": "Color", "value": "Black"}]
 
-79	25	ZARA-ZRBL-XL-BLK	970.00	88	10	http://localhost:9000/nexus-media/public/catalog/skus/ZARA-ZRBL-XL-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "XL"}, {"key": "Color", "value": "Black"}]
+79	25	ZARA-ZRBL-XL-BLK	970.00	88	10	http://localhost:9000/nexus-media/public/pms/skus/ZARA-ZRBL-XL-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "XL"}, {"key": "Color", "value": "Black"}]
 
-80	26	HM-HMD-S-BLK	2500.00	121	10	http://localhost:9000/nexus-media/public/catalog/skus/HM-HMD-S-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "S"}, {"key": "Color", "value": "Black"}]
+80	26	HM-HMD-S-BLK	2500.00	121	10	http://localhost:9000/nexus-media/public/pms/skus/HM-HMD-S-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "S"}, {"key": "Color", "value": "Black"}]
 
-81	26	HM-HMD-M-BLK	2500.00	116	10	http://localhost:9000/nexus-media/public/catalog/skus/HM-HMD-M-BLK/main.svg	0	2250.00	0	[{"key": "Size", "value": "M"}, {"key": "Color", "value": "Black"}]
+81	26	HM-HMD-M-BLK	2500.00	116	10	http://localhost:9000/nexus-media/public/pms/skus/HM-HMD-M-BLK/main.svg	0	2250.00	0	[{"key": "Size", "value": "M"}, {"key": "Color", "value": "Black"}]
 
-82	26	HM-HMD-L-BLK	2500.00	101	10	http://localhost:9000/nexus-media/public/catalog/skus/HM-HMD-L-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "L"}, {"key": "Color", "value": "Black"}]
+82	26	HM-HMD-L-BLK	2500.00	101	10	http://localhost:9000/nexus-media/public/pms/skus/HM-HMD-L-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "L"}, {"key": "Color", "value": "Black"}]
 
-84	27	FABIND-FBKRT-S-BLK	2710.00	159	10	http://localhost:9000/nexus-media/public/catalog/skus/FABIND-FBKRT-S-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "S"}, {"key": "Color", "value": "Black"}]
+84	27	FABIND-FBKRT-S-BLK	2710.00	159	10	http://localhost:9000/nexus-media/public/pms/skus/FABIND-FBKRT-S-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "S"}, {"key": "Color", "value": "Black"}]
 
-85	27	FABIND-FBKRT-M-BLK	2710.00	84	10	http://localhost:9000/nexus-media/public/catalog/skus/FABIND-FBKRT-M-BLK/main.svg	0	2220.00	0	[{"key": "Size", "value": "M"}, {"key": "Color", "value": "Black"}]
+85	27	FABIND-FBKRT-M-BLK	2710.00	84	10	http://localhost:9000/nexus-media/public/pms/skus/FABIND-FBKRT-M-BLK/main.svg	0	2220.00	0	[{"key": "Size", "value": "M"}, {"key": "Color", "value": "Black"}]
 
-86	27	FABIND-FBKRT-L-BLK	2710.00	74	10	http://localhost:9000/nexus-media/public/catalog/skus/FABIND-FBKRT-L-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "L"}, {"key": "Color", "value": "Black"}]
+86	27	FABIND-FBKRT-L-BLK	2710.00	74	10	http://localhost:9000/nexus-media/public/pms/skus/FABIND-FBKRT-L-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "L"}, {"key": "Color", "value": "Black"}]
 
-88	28	MANYAVAR-MVKRT-S-BLK	2550.00	121	10	http://localhost:9000/nexus-media/public/catalog/skus/MANYAVAR-MVKRT-S-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "S"}, {"key": "Color", "value": "Black"}]
+88	28	MANYAVAR-MVKRT-S-BLK	2550.00	121	10	http://localhost:9000/nexus-media/public/pms/skus/MANYAVAR-MVKRT-S-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "S"}, {"key": "Color", "value": "Black"}]
 
-137	46	HAWKINS-CONT-5L	6850.00	67	10	http://localhost:9000/nexus-media/public/catalog/skus/HAWKINS-CONT-5L/main.svg	0	\N	0	[{"key": "Capacity", "value": "5L"}]
+137	46	HAWKINS-CONT-5L	6850.00	67	10	http://localhost:9000/nexus-media/public/pms/skus/HAWKINS-CONT-5L/main.svg	0	\N	0	[{"key": "Capacity", "value": "5L"}]
 
-91	28	MANYAVAR-MVKRT-XL-BLK	2550.00	92	10	http://localhost:9000/nexus-media/public/catalog/skus/MANYAVAR-MVKRT-XL-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "XL"}, {"key": "Color", "value": "Black"}]
+91	28	MANYAVAR-MVKRT-XL-BLK	2550.00	92	10	http://localhost:9000/nexus-media/public/pms/skus/MANYAVAR-MVKRT-XL-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "XL"}, {"key": "Color", "value": "Black"}]
 
-92	29	WFW-WKS-S-BLK	3480.00	96	10	http://localhost:9000/nexus-media/public/catalog/skus/WFW-WKS-S-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "S"}, {"key": "Color", "value": "Black"}]
+92	29	WFW-WKS-S-BLK	3480.00	96	10	http://localhost:9000/nexus-media/public/pms/skus/WFW-WKS-S-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "S"}, {"key": "Color", "value": "Black"}]
 
-93	29	WFW-WKS-M-BLK	3480.00	98	10	http://localhost:9000/nexus-media/public/catalog/skus/WFW-WKS-M-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "M"}, {"key": "Color", "value": "Black"}]
+93	29	WFW-WKS-M-BLK	3480.00	98	10	http://localhost:9000/nexus-media/public/pms/skus/WFW-WKS-M-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "M"}, {"key": "Color", "value": "Black"}]
 
-94	29	WFW-WKS-L-BLK	3480.00	63	10	http://localhost:9000/nexus-media/public/catalog/skus/WFW-WKS-L-BLK/main.svg	0	3130.00	0	[{"key": "Size", "value": "L"}, {"key": "Color", "value": "Black"}]
+94	29	WFW-WKS-L-BLK	3480.00	63	10	http://localhost:9000/nexus-media/public/pms/skus/WFW-WKS-L-BLK/main.svg	0	3130.00	0	[{"key": "Size", "value": "L"}, {"key": "Color", "value": "Black"}]
 
-95	29	WFW-WKS-XL-BLK	3480.00	81	10	http://localhost:9000/nexus-media/public/catalog/skus/WFW-WKS-XL-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "XL"}, {"key": "Color", "value": "Black"}]
+95	29	WFW-WKS-XL-BLK	3480.00	81	10	http://localhost:9000/nexus-media/public/pms/skus/WFW-WKS-XL-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "XL"}, {"key": "Color", "value": "Black"}]
 
-96	30	NIKE-AM270-BLK-8	9820.00	76	10	http://localhost:9000/nexus-media/public/catalog/skus/NIKE-AM270-BLK-8/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Size (US)", "value": "8"}]
+96	30	NIKE-AM270-BLK-8	9820.00	76	10	http://localhost:9000/nexus-media/public/pms/skus/NIKE-AM270-BLK-8/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Size (US)", "value": "8"}]
 
-98	30	NIKE-AM270-WHT-8	9820.00	62	10	http://localhost:9000/nexus-media/public/catalog/skus/NIKE-AM270-WHT-8/main.svg	0	\N	0	[{"key": "Color", "value": "White"}, {"key": "Size (US)", "value": "8"}]
+98	30	NIKE-AM270-WHT-8	9820.00	62	10	http://localhost:9000/nexus-media/public/pms/skus/NIKE-AM270-WHT-8/main.svg	0	\N	0	[{"key": "Color", "value": "White"}, {"key": "Size (US)", "value": "8"}]
 
-99	30	NIKE-AM270-WHT-9	9820.00	33	10	http://localhost:9000/nexus-media/public/catalog/skus/NIKE-AM270-WHT-9/main.svg	0	9030.00	0	[{"key": "Color", "value": "White"}, {"key": "Size (US)", "value": "9"}]
+99	30	NIKE-AM270-WHT-9	9820.00	33	10	http://localhost:9000/nexus-media/public/pms/skus/NIKE-AM270-WHT-9/main.svg	0	9030.00	0	[{"key": "Color", "value": "White"}, {"key": "Size (US)", "value": "9"}]
 
-100	31	ADIDAS-UBLGT-BLK-8	8260.00	150	10	http://localhost:9000/nexus-media/public/catalog/skus/ADIDAS-UBLGT-BLK-8/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Size (US)", "value": "8"}]
+100	31	ADIDAS-UBLGT-BLK-8	8260.00	150	10	http://localhost:9000/nexus-media/public/pms/skus/ADIDAS-UBLGT-BLK-8/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Size (US)", "value": "8"}]
 
-101	31	ADIDAS-UBLGT-BLK-9	8260.00	118	10	http://localhost:9000/nexus-media/public/catalog/skus/ADIDAS-UBLGT-BLK-9/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Size (US)", "value": "9"}]
+101	31	ADIDAS-UBLGT-BLK-9	8260.00	118	10	http://localhost:9000/nexus-media/public/pms/skus/ADIDAS-UBLGT-BLK-9/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Size (US)", "value": "9"}]
 
-103	31	ADIDAS-UBLGT-WHT-9	8260.00	108	10	http://localhost:9000/nexus-media/public/catalog/skus/ADIDAS-UBLGT-WHT-9/main.svg	0	6770.00	0	[{"key": "Color", "value": "White"}, {"key": "Size (US)", "value": "9"}]
+103	31	ADIDAS-UBLGT-WHT-9	8260.00	108	10	http://localhost:9000/nexus-media/public/pms/skus/ADIDAS-UBLGT-WHT-9/main.svg	0	6770.00	0	[{"key": "Color", "value": "White"}, {"key": "Size (US)", "value": "9"}]
 
-106	32	PUMA-VN3-WHT-8	2840.00	70	10	http://localhost:9000/nexus-media/public/catalog/skus/PUMA-VN3-WHT-8/main.svg	0	\N	0	[{"key": "Color", "value": "White"}, {"key": "Size (US)", "value": "8"}]
+106	32	PUMA-VN3-WHT-8	2840.00	70	10	http://localhost:9000/nexus-media/public/pms/skus/PUMA-VN3-WHT-8/main.svg	0	\N	0	[{"key": "Color", "value": "White"}, {"key": "Size (US)", "value": "8"}]
 
-107	32	PUMA-VN3-WHT-9	2840.00	145	10	http://localhost:9000/nexus-media/public/catalog/skus/PUMA-VN3-WHT-9/main.svg	0	\N	0	[{"key": "Color", "value": "White"}, {"key": "Size (US)", "value": "9"}]
+107	32	PUMA-VN3-WHT-9	2840.00	145	10	http://localhost:9000/nexus-media/public/pms/skus/PUMA-VN3-WHT-9/main.svg	0	\N	0	[{"key": "Color", "value": "White"}, {"key": "Size (US)", "value": "9"}]
 
-109	33	TNF-VEND-BLK-9	2540.00	62	10	http://localhost:9000/nexus-media/public/catalog/skus/TNF-VEND-BLK-9/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Size (US)", "value": "9"}]
+109	33	TNF-VEND-BLK-9	2540.00	62	10	http://localhost:9000/nexus-media/public/pms/skus/TNF-VEND-BLK-9/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Size (US)", "value": "9"}]
 
-110	33	TNF-VEND-WHT-8	2540.00	18	10	http://localhost:9000/nexus-media/public/catalog/skus/TNF-VEND-WHT-8/main.svg	0	\N	0	[{"key": "Color", "value": "White"}, {"key": "Size (US)", "value": "8"}]
+110	33	TNF-VEND-WHT-8	2540.00	18	10	http://localhost:9000/nexus-media/public/pms/skus/TNF-VEND-WHT-8/main.svg	0	\N	0	[{"key": "Color", "value": "White"}, {"key": "Size (US)", "value": "8"}]
 
-111	33	TNF-VEND-WHT-9	2540.00	61	10	http://localhost:9000/nexus-media/public/catalog/skus/TNF-VEND-WHT-9/main.svg	0	\N	0	[{"key": "Color", "value": "White"}, {"key": "Size (US)", "value": "9"}]
+111	33	TNF-VEND-WHT-9	2540.00	61	10	http://localhost:9000/nexus-media/public/pms/skus/TNF-VEND-WHT-9/main.svg	0	\N	0	[{"key": "Color", "value": "White"}, {"key": "Size (US)", "value": "9"}]
 
-112	34	RAYBAN-AVCL-BLK	960.00	93	10	http://localhost:9000/nexus-media/public/catalog/skus/RAYBAN-AVCL-BLK/main.svg	0	860.00	0	[{"key": "Color", "value": "Black"}]
+112	34	RAYBAN-AVCL-BLK	960.00	93	10	http://localhost:9000/nexus-media/public/pms/skus/RAYBAN-AVCL-BLK/main.svg	0	860.00	0	[{"key": "Color", "value": "Black"}]
 
-113	34	RAYBAN-AVCL-SLV	980.00	151	10	http://localhost:9000/nexus-media/public/catalog/skus/RAYBAN-AVCL-SLV/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}]
+113	34	RAYBAN-AVCL-SLV	980.00	151	10	http://localhost:9000/nexus-media/public/pms/skus/RAYBAN-AVCL-SLV/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}]
 
-114	35	VANH-VHBLT-S	6090.00	145	10	http://localhost:9000/nexus-media/public/catalog/skus/VANH-VHBLT-S/main.svg	0	\N	0	[{"key": "Size", "value": "S"}]
+114	35	VANH-VHBLT-S	6090.00	145	10	http://localhost:9000/nexus-media/public/pms/skus/VANH-VHBLT-S/main.svg	0	\N	0	[{"key": "Size", "value": "S"}]
 
-116	35	VANH-VHBLT-L	6090.00	141	10	http://localhost:9000/nexus-media/public/catalog/skus/VANH-VHBLT-L/main.svg	0	\N	0	[{"key": "Size", "value": "L"}]
+116	35	VANH-VHBLT-L	6090.00	141	10	http://localhost:9000/nexus-media/public/pms/skus/VANH-VHBLT-L/main.svg	0	\N	0	[{"key": "Size", "value": "L"}]
 
-117	36	UNIQLO-RMSB-BLK	5250.00	41	10	http://localhost:9000/nexus-media/public/catalog/skus/UNIQLO-RMSB-BLK/main.svg	0	4720.00	0	[{"key": "Color", "value": "Black"}]
+117	36	UNIQLO-RMSB-BLK	5250.00	41	10	http://localhost:9000/nexus-media/public/pms/skus/UNIQLO-RMSB-BLK/main.svg	0	4720.00	0	[{"key": "Color", "value": "Black"}]
 
-118	36	UNIQLO-RMSB-SLV	5350.00	22	10	http://localhost:9000/nexus-media/public/catalog/skus/UNIQLO-RMSB-SLV/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}]
+118	36	UNIQLO-RMSB-SLV	5350.00	22	10	http://localhost:9000/nexus-media/public/pms/skus/UNIQLO-RMSB-SLV/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}]
 
-119	37	NIKE-HBPK-BLK	1150.00	120	10	http://localhost:9000/nexus-media/public/catalog/skus/NIKE-HBPK-BLK/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+119	37	NIKE-HBPK-BLK	1150.00	120	10	http://localhost:9000/nexus-media/public/pms/skus/NIKE-HBPK-BLK/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
 
-121	38	ADIDAS-3SCAP-M	3310.00	88	10	http://localhost:9000/nexus-media/public/catalog/skus/ADIDAS-3SCAP-M/main.svg	0	2910.00	0	[{"key": "Size", "value": "M"}]
+121	38	ADIDAS-3SCAP-M	3310.00	88	10	http://localhost:9000/nexus-media/public/pms/skus/ADIDAS-3SCAP-M/main.svg	0	2910.00	0	[{"key": "Size", "value": "M"}]
 
-122	38	ADIDAS-3SCAP-L	3310.00	139	10	http://localhost:9000/nexus-media/public/catalog/skus/ADIDAS-3SCAP-L/main.svg	0	\N	0	[{"key": "Size", "value": "L"}]
+122	38	ADIDAS-3SCAP-L	3310.00	139	10	http://localhost:9000/nexus-media/public/pms/skus/ADIDAS-3SCAP-L/main.svg	0	\N	0	[{"key": "Size", "value": "L"}]
 
-123	38	ADIDAS-3SCAP-XL	3310.00	70	10	http://localhost:9000/nexus-media/public/catalog/skus/ADIDAS-3SCAP-XL/main.svg	0	\N	0	[{"key": "Size", "value": "XL"}]
+123	38	ADIDAS-3SCAP-XL	3310.00	70	10	http://localhost:9000/nexus-media/public/pms/skus/ADIDAS-3SCAP-XL/main.svg	0	\N	0	[{"key": "Size", "value": "XL"}]
 
-124	39	IKEA-MALM6-STD	17780.00	140	10	http://localhost:9000/nexus-media/public/catalog/skus/IKEA-MALM6-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+124	39	IKEA-MALM6-STD	17780.00	140	10	http://localhost:9000/nexus-media/public/pms/skus/IKEA-MALM6-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
 
-126	40	IKEA-LACK-SLV	21960.00	85	10	http://localhost:9000/nexus-media/public/catalog/skus/IKEA-LACK-SLV/main.svg	0	18010.00	0	[{"key": "Color", "value": "Silver"}]
+126	40	IKEA-LACK-SLV	21960.00	85	10	http://localhost:9000/nexus-media/public/pms/skus/IKEA-LACK-SLV/main.svg	0	18010.00	0	[{"key": "Color", "value": "Silver"}]
 
-4	1	APPLE-IP17-SLV-256	57620.00	5	10	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-SLV-256/main.svg	0	47250.00	0	[{"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "256GB"}]
+4	1	APPLE-IP17-SLV-256	57620.00	5	10	http://localhost:9000/nexus-media/public/pms/skus/APPLE-IP17-SLV-256/main.svg	0	47250.00	0	[{"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "256GB"}]
 
-127	41	IKEA-BILLY-BLK	14620.00	32	10	http://localhost:9000/nexus-media/public/catalog/skus/IKEA-BILLY-BLK/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+127	41	IKEA-BILLY-BLK	14620.00	32	10	http://localhost:9000/nexus-media/public/pms/skus/IKEA-BILLY-BLK/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
 
-128	41	IKEA-BILLY-SLV	14910.00	89	10	http://localhost:9000/nexus-media/public/catalog/skus/IKEA-BILLY-SLV/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}]
+128	41	IKEA-BILLY-SLV	14910.00	89	10	http://localhost:9000/nexus-media/public/pms/skus/IKEA-BILLY-SLV/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}]
 
-129	42	PHILIPS-AF3K-4L	15620.00	75	10	http://localhost:9000/nexus-media/public/catalog/skus/PHILIPS-AF3K-4L/main.svg	0	\N	0	[{"key": "Capacity", "value": "4L"}]
+129	42	PHILIPS-AF3K-4L	15620.00	75	10	http://localhost:9000/nexus-media/public/pms/skus/PHILIPS-AF3K-4L/main.svg	0	\N	0	[{"key": "Capacity", "value": "4L"}]
 
-130	42	PHILIPS-AF3K-6L	15620.00	137	10	http://localhost:9000/nexus-media/public/catalog/skus/PHILIPS-AF3K-6L/main.svg	0	14060.00	0	[{"key": "Capacity", "value": "6L"}]
+130	42	PHILIPS-AF3K-6L	15620.00	137	10	http://localhost:9000/nexus-media/public/pms/skus/PHILIPS-AF3K-6L/main.svg	0	14060.00	0	[{"key": "Capacity", "value": "6L"}]
 
-132	44	BOSCH-BOSDW-12P	9130.00	118	10	http://localhost:9000/nexus-media/public/catalog/skus/BOSCH-BOSDW-12P/main.svg	0	\N	0	[{"key": "Capacity", "value": "12-place"}]
+132	44	BOSCH-BOSDW-12P	9130.00	118	10	http://localhost:9000/nexus-media/public/pms/skus/BOSCH-BOSDW-12P/main.svg	0	\N	0	[{"key": "Capacity", "value": "12-place"}]
 
-133	44	BOSCH-BOSDW-14P	9130.00	32	10	http://localhost:9000/nexus-media/public/catalog/skus/BOSCH-BOSDW-14P/main.svg	0	\N	0	[{"key": "Capacity", "value": "14-place"}]
+133	44	BOSCH-BOSDW-14P	9130.00	32	10	http://localhost:9000/nexus-media/public/pms/skus/BOSCH-BOSDW-14P/main.svg	0	\N	0	[{"key": "Capacity", "value": "14-place"}]
 
-134	45	PRESTIGE-AFPRO-4L	23130.00	70	10	http://localhost:9000/nexus-media/public/catalog/skus/PRESTIGE-AFPRO-4L/main.svg	0	\N	0	[{"key": "Capacity", "value": "4L"}]
+134	45	PRESTIGE-AFPRO-4L	23130.00	70	10	http://localhost:9000/nexus-media/public/pms/skus/PRESTIGE-AFPRO-4L/main.svg	0	\N	0	[{"key": "Capacity", "value": "4L"}]
 
-136	46	HAWKINS-CONT-3L	6850.00	76	10	http://localhost:9000/nexus-media/public/catalog/skus/HAWKINS-CONT-3L/main.svg	0	\N	0	[{"key": "Capacity", "value": "3L"}]
+136	46	HAWKINS-CONT-3L	6850.00	76	10	http://localhost:9000/nexus-media/public/pms/skus/HAWKINS-CONT-3L/main.svg	0	\N	0	[{"key": "Capacity", "value": "3L"}]
 
-140	48	LG-LGW65-8KG	14170.00	61	10	http://localhost:9000/nexus-media/public/catalog/skus/LG-LGW65-8KG/main.svg	0	\N	0	[{"key": "Capacity", "value": "8kg"}]
+140	48	LG-LGW65-8KG	14170.00	61	10	http://localhost:9000/nexus-media/public/pms/skus/LG-LGW65-8KG/main.svg	0	\N	0	[{"key": "Capacity", "value": "8kg"}]
 
-141	49	BOSCH-BOS8-6.5KG	4660.00	138	10	http://localhost:9000/nexus-media/public/catalog/skus/BOSCH-BOS8-6.5KG/main.svg	0	\N	0	[{"key": "Capacity", "value": "6.5kg"}]
+141	49	BOSCH-BOS8-6.5KG	4660.00	138	10	http://localhost:9000/nexus-media/public/pms/skus/BOSCH-BOS8-6.5KG/main.svg	0	\N	0	[{"key": "Capacity", "value": "6.5kg"}]
 
-142	49	BOSCH-BOS8-8KG	4660.00	19	10	http://localhost:9000/nexus-media/public/catalog/skus/BOSCH-BOS8-8KG/main.svg	0	\N	0	[{"key": "Capacity", "value": "8kg"}]
+142	49	BOSCH-BOS8-8KG	4660.00	19	10	http://localhost:9000/nexus-media/public/pms/skus/BOSCH-BOS8-8KG/main.svg	0	\N	0	[{"key": "Capacity", "value": "8kg"}]
 
-143	50	BAJAJ-MTF-BLK	44600.00	67	10	http://localhost:9000/nexus-media/public/catalog/skus/BAJAJ-MTF-BLK/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+143	50	BAJAJ-MTF-BLK	44600.00	67	10	http://localhost:9000/nexus-media/public/pms/skus/BAJAJ-MTF-BLK/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
 
-144	50	BAJAJ-MTF-SLV	45500.00	76	10	http://localhost:9000/nexus-media/public/catalog/skus/BAJAJ-MTF-SLV/main.svg	0	40040.00	0	[{"key": "Color", "value": "Silver"}]
+144	50	BAJAJ-MTF-SLV	45500.00	76	10	http://localhost:9000/nexus-media/public/pms/skus/BAJAJ-MTF-SLV/main.svg	0	40040.00	0	[{"key": "Color", "value": "Silver"}]
 
-146	51	HAVELLS-AQP-15L	7550.00	11	10	http://localhost:9000/nexus-media/public/catalog/skus/HAVELLS-AQP-15L/main.svg	0	\N	0	[{"key": "Capacity", "value": "15L"}]
+146	51	HAVELLS-AQP-15L	7550.00	11	10	http://localhost:9000/nexus-media/public/pms/skus/HAVELLS-AQP-15L/main.svg	0	\N	0	[{"key": "Capacity", "value": "15L"}]
 
-147	52	USHA-MAF-BLK	45620.00	133	10	http://localhost:9000/nexus-media/public/catalog/skus/USHA-MAF-BLK/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+147	52	USHA-MAF-BLK	45620.00	133	10	http://localhost:9000/nexus-media/public/pms/skus/USHA-MAF-BLK/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
 
-148	52	USHA-MAF-SLV	46530.00	144	10	http://localhost:9000/nexus-media/public/catalog/skus/USHA-MAF-SLV/main.svg	0	41880.00	0	[{"key": "Color", "value": "Silver"}]
+148	52	USHA-MAF-SLV	46530.00	144	10	http://localhost:9000/nexus-media/public/pms/skus/USHA-MAF-SLV/main.svg	0	41880.00	0	[{"key": "Color", "value": "Silver"}]
 
-149	53	BUTTERFLY-RB3-STD	6360.00	13	10	http://localhost:9000/nexus-media/public/catalog/skus/BUTTERFLY-RB3-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+149	53	BUTTERFLY-RB3-STD	6360.00	13	10	http://localhost:9000/nexus-media/public/pms/skus/BUTTERFLY-RB3-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
 
-151	54	CROMPTON-SEK-2L	2220.00	75	10	http://localhost:9000/nexus-media/public/catalog/skus/CROMPTON-SEK-2L/main.svg	0	\N	0	[{"key": "Capacity", "value": "2L"}]
+151	54	CROMPTON-SEK-2L	2220.00	75	10	http://localhost:9000/nexus-media/public/pms/skus/CROMPTON-SEK-2L/main.svg	0	\N	0	[{"key": "Capacity", "value": "2L"}]
 
-152	55	WONDERCHEF-GFP-24CM	5200.00	137	10	http://localhost:9000/nexus-media/public/catalog/skus/WONDERCHEF-GFP-24CM/main.svg	0	\N	0	[{"key": "Size", "value": "24cm"}]
+152	55	WONDERCHEF-GFP-24CM	5200.00	137	10	http://localhost:9000/nexus-media/public/pms/skus/WONDERCHEF-GFP-24CM/main.svg	0	\N	0	[{"key": "Size", "value": "24cm"}]
 
-153	55	WONDERCHEF-GFP-26CM	5200.00	63	10	http://localhost:9000/nexus-media/public/catalog/skus/WONDERCHEF-GFP-26CM/main.svg	0	4420.00	0	[{"key": "Size", "value": "26cm"}]
+153	55	WONDERCHEF-GFP-26CM	5200.00	63	10	http://localhost:9000/nexus-media/public/pms/skus/WONDERCHEF-GFP-26CM/main.svg	0	4420.00	0	[{"key": "Size", "value": "26cm"}]
 
-154	55	WONDERCHEF-GFP-28CM	5200.00	44	10	http://localhost:9000/nexus-media/public/catalog/skus/WONDERCHEF-GFP-28CM/main.svg	0	\N	0	[{"key": "Size", "value": "28cm"}]
+154	55	WONDERCHEF-GFP-28CM	5200.00	44	10	http://localhost:9000/nexus-media/public/pms/skus/WONDERCHEF-GFP-28CM/main.svg	0	\N	0	[{"key": "Size", "value": "28cm"}]
 
-156	56	PRESTIGE-ODP-26CM	4820.00	33	10	http://localhost:9000/nexus-media/public/catalog/skus/PRESTIGE-ODP-26CM/main.svg	0	\N	0	[{"key": "Size", "value": "26cm"}]
+156	56	PRESTIGE-ODP-26CM	4820.00	33	10	http://localhost:9000/nexus-media/public/pms/skus/PRESTIGE-ODP-26CM/main.svg	0	\N	0	[{"key": "Size", "value": "26cm"}]
 
-157	56	PRESTIGE-ODP-28CM	4820.00	52	10	http://localhost:9000/nexus-media/public/catalog/skus/PRESTIGE-ODP-28CM/main.svg	0	4340.00	0	[{"key": "Size", "value": "28cm"}]
+157	56	PRESTIGE-ODP-28CM	4820.00	52	10	http://localhost:9000/nexus-media/public/pms/skus/PRESTIGE-ODP-28CM/main.svg	0	4340.00	0	[{"key": "Size", "value": "28cm"}]
 
-158	57	HAWKINS-FNT-24CM	6970.00	94	10	http://localhost:9000/nexus-media/public/catalog/skus/HAWKINS-FNT-24CM/main.svg	0	\N	0	[{"key": "Size", "value": "24cm"}]
+158	57	HAWKINS-FNT-24CM	6970.00	94	10	http://localhost:9000/nexus-media/public/pms/skus/HAWKINS-FNT-24CM/main.svg	0	\N	0	[{"key": "Size", "value": "24cm"}]
 
-159	57	HAWKINS-FNT-26CM	6970.00	93	10	http://localhost:9000/nexus-media/public/catalog/skus/HAWKINS-FNT-26CM/main.svg	0	\N	0	[{"key": "Size", "value": "26cm"}]
+159	57	HAWKINS-FNT-26CM	6970.00	93	10	http://localhost:9000/nexus-media/public/pms/skus/HAWKINS-FNT-26CM/main.svg	0	\N	0	[{"key": "Size", "value": "26cm"}]
 
-161	58	ORDINARY-NOZ-STD	1230.00	141	10	http://localhost:9000/nexus-media/public/catalog/skus/ORDINARY-NOZ-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+161	58	ORDINARY-NOZ-STD	1230.00	141	10	http://localhost:9000/nexus-media/public/pms/skus/ORDINARY-NOZ-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
 
-162	59	NIVEA-NSOFT-30ML	2150.00	124	10	http://localhost:9000/nexus-media/public/catalog/skus/NIVEA-NSOFT-30ML/main.svg	0	1940.00	0	[{"key": "Pack Size", "value": "30ml"}]
+162	59	NIVEA-NSOFT-30ML	2150.00	124	10	http://localhost:9000/nexus-media/public/pms/skus/NIVEA-NSOFT-30ML/main.svg	0	1940.00	0	[{"key": "Pack Size", "value": "30ml"}]
 
-163	59	NIVEA-NSOFT-50ML	2150.00	24	10	http://localhost:9000/nexus-media/public/catalog/skus/NIVEA-NSOFT-50ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "50ml"}]
+163	59	NIVEA-NSOFT-50ML	2150.00	24	10	http://localhost:9000/nexus-media/public/pms/skus/NIVEA-NSOFT-50ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "50ml"}]
 
-164	60	CLINIQUE-MS100-30ML	900.00	115	10	http://localhost:9000/nexus-media/public/catalog/skus/CLINIQUE-MS100-30ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "30ml"}]
+164	60	CLINIQUE-MS100-30ML	900.00	115	10	http://localhost:9000/nexus-media/public/pms/skus/CLINIQUE-MS100-30ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "30ml"}]
 
-165	60	CLINIQUE-MS100-50ML	900.00	97	10	http://localhost:9000/nexus-media/public/catalog/skus/CLINIQUE-MS100-50ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "50ml"}]
+165	60	CLINIQUE-MS100-50ML	900.00	97	10	http://localhost:9000/nexus-media/public/pms/skus/CLINIQUE-MS100-50ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "50ml"}]
 
-167	61	NEUTRO-HWB-30ML	2340.00	65	10	http://localhost:9000/nexus-media/public/catalog/skus/NEUTRO-HWB-30ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "30ml"}]
+167	61	NEUTRO-HWB-30ML	2340.00	65	10	http://localhost:9000/nexus-media/public/pms/skus/NEUTRO-HWB-30ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "30ml"}]
 
-168	61	NEUTRO-HWB-50ML	2340.00	127	10	http://localhost:9000/nexus-media/public/catalog/skus/NEUTRO-HWB-50ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "50ml"}]
+168	61	NEUTRO-HWB-50ML	2340.00	127	10	http://localhost:9000/nexus-media/public/pms/skus/NEUTRO-HWB-50ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "50ml"}]
 
-169	61	NEUTRO-HWB-100ML	2340.00	95	10	http://localhost:9000/nexus-media/public/catalog/skus/NEUTRO-HWB-100ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "100ml"}]
+169	61	NEUTRO-HWB-100ML	2340.00	95	10	http://localhost:9000/nexus-media/public/pms/skus/NEUTRO-HWB-100ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "100ml"}]
 
-170	62	MAMAEARTH-VCFS-STD	2170.00	48	10	http://localhost:9000/nexus-media/public/catalog/skus/MAMAEARTH-VCFS-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+170	62	MAMAEARTH-VCFS-STD	2170.00	48	10	http://localhost:9000/nexus-media/public/pms/skus/MAMAEARTH-VCFS-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
 
-171	63	MINIMAL-SA2-STD	1840.00	70	10	http://localhost:9000/nexus-media/public/catalog/skus/MINIMAL-SA2-STD/main.svg	0	1620.00	0	[{"key": "Color", "value": "Black"}]
+171	63	MINIMAL-SA2-STD	1840.00	70	10	http://localhost:9000/nexus-media/public/pms/skus/MINIMAL-SA2-STD/main.svg	0	1620.00	0	[{"key": "Color", "value": "Black"}]
 
-173	64	FOREST-FTM-50ML	1450.00	106	10	http://localhost:9000/nexus-media/public/catalog/skus/FOREST-FTM-50ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "50ml"}]
+173	64	FOREST-FTM-50ML	1450.00	106	10	http://localhost:9000/nexus-media/public/pms/skus/FOREST-FTM-50ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "50ml"}]
 
-174	64	FOREST-FTM-100ML	1450.00	149	10	http://localhost:9000/nexus-media/public/catalog/skus/FOREST-FTM-100ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "100ml"}]
+174	64	FOREST-FTM-100ML	1450.00	149	10	http://localhost:9000/nexus-media/public/pms/skus/FOREST-FTM-100ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "100ml"}]
 
-175	65	PLUM-GTFW-30ML	2300.00	125	10	http://localhost:9000/nexus-media/public/catalog/skus/PLUM-GTFW-30ML/main.svg	0	1960.00	0	[{"key": "Pack Size", "value": "30ml"}]
+175	65	PLUM-GTFW-30ML	2300.00	125	10	http://localhost:9000/nexus-media/public/pms/skus/PLUM-GTFW-30ML/main.svg	0	1960.00	0	[{"key": "Pack Size", "value": "30ml"}]
 
-176	65	PLUM-GTFW-50ML	2300.00	150	10	http://localhost:9000/nexus-media/public/catalog/skus/PLUM-GTFW-50ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "50ml"}]
+176	65	PLUM-GTFW-50ML	2300.00	150	10	http://localhost:9000/nexus-media/public/pms/skus/PLUM-GTFW-50ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "50ml"}]
 
-178	66	LOREAL-TMatch-110	700.00	134	10	http://localhost:9000/nexus-media/public/catalog/skus/LOREAL-TMatch-110/main.svg	0	\N	0	[{"key": "Shade", "value": "110 Porcelain"}]
+178	66	LOREAL-TMatch-110	700.00	134	10	http://localhost:9000/nexus-media/public/pms/skus/LOREAL-TMatch-110/main.svg	0	\N	0	[{"key": "Shade", "value": "110 Porcelain"}]
 
-179	66	LOREAL-TMatch-120	700.00	115	10	http://localhost:9000/nexus-media/public/catalog/skus/LOREAL-TMatch-120/main.svg	0	\N	0	[{"key": "Shade", "value": "120 Classic Ivory"}]
+179	66	LOREAL-TMatch-120	700.00	115	10	http://localhost:9000/nexus-media/public/pms/skus/LOREAL-TMatch-120/main.svg	0	\N	0	[{"key": "Shade", "value": "120 Classic Ivory"}]
 
-180	66	LOREAL-TMatch-130	700.00	151	10	http://localhost:9000/nexus-media/public/catalog/skus/LOREAL-TMatch-130/main.svg	0	620.00	0	[{"key": "Shade", "value": "130 Buff Beige"}]
+180	66	LOREAL-TMatch-130	700.00	151	10	http://localhost:9000/nexus-media/public/pms/skus/LOREAL-TMatch-130/main.svg	0	620.00	0	[{"key": "Shade", "value": "130 Buff Beige"}]
 
-181	66	LOREAL-TMatch-220	700.00	42	10	http://localhost:9000/nexus-media/public/catalog/skus/LOREAL-TMatch-220/main.svg	0	\N	0	[{"key": "Shade", "value": "220 Natural Beige"}]
+181	66	LOREAL-TMatch-220	700.00	42	10	http://localhost:9000/nexus-media/public/pms/skus/LOREAL-TMatch-220/main.svg	0	\N	0	[{"key": "Shade", "value": "220 Natural Beige"}]
 
-183	67	MAYBELLINE-FMF-120	1660.00	137	10	http://localhost:9000/nexus-media/public/catalog/skus/MAYBELLINE-FMF-120/main.svg	0	\N	0	[{"key": "Shade", "value": "120 Classic Ivory"}]
+183	67	MAYBELLINE-FMF-120	1660.00	137	10	http://localhost:9000/nexus-media/public/pms/skus/MAYBELLINE-FMF-120/main.svg	0	\N	0	[{"key": "Shade", "value": "120 Classic Ivory"}]
 
-184	67	MAYBELLINE-FMF-130	1660.00	27	10	http://localhost:9000/nexus-media/public/catalog/skus/MAYBELLINE-FMF-130/main.svg	0	1490.00	0	[{"key": "Shade", "value": "130 Buff Beige"}]
+184	67	MAYBELLINE-FMF-130	1660.00	27	10	http://localhost:9000/nexus-media/public/pms/skus/MAYBELLINE-FMF-130/main.svg	0	1490.00	0	[{"key": "Shade", "value": "130 Buff Beige"}]
 
-185	67	MAYBELLINE-FMF-220	1660.00	122	10	http://localhost:9000/nexus-media/public/catalog/skus/MAYBELLINE-FMF-220/main.svg	0	\N	0	[{"key": "Shade", "value": "220 Natural Beige"}]
+185	67	MAYBELLINE-FMF-220	1660.00	122	10	http://localhost:9000/nexus-media/public/pms/skus/MAYBELLINE-FMF-220/main.svg	0	\N	0	[{"key": "Shade", "value": "220 Natural Beige"}]
 
-186	68	LAKME-9T5-110	2180.00	44	10	http://localhost:9000/nexus-media/public/catalog/skus/LAKME-9T5-110/main.svg	0	\N	0	[{"key": "Shade", "value": "110 Porcelain"}]
+186	68	LAKME-9T5-110	2180.00	44	10	http://localhost:9000/nexus-media/public/pms/skus/LAKME-9T5-110/main.svg	0	\N	0	[{"key": "Shade", "value": "110 Porcelain"}]
 
-188	68	LAKME-9T5-130	2180.00	69	10	http://localhost:9000/nexus-media/public/catalog/skus/LAKME-9T5-130/main.svg	0	\N	0	[{"key": "Shade", "value": "130 Buff Beige"}]
+188	68	LAKME-9T5-130	2180.00	69	10	http://localhost:9000/nexus-media/public/pms/skus/LAKME-9T5-130/main.svg	0	\N	0	[{"key": "Shade", "value": "130 Buff Beige"}]
 
-189	68	LAKME-9T5-220	2180.00	121	10	http://localhost:9000/nexus-media/public/catalog/skus/LAKME-9T5-220/main.svg	0	1960.00	0	[{"key": "Shade", "value": "220 Natural Beige"}]
+189	68	LAKME-9T5-220	2180.00	121	10	http://localhost:9000/nexus-media/public/pms/skus/LAKME-9T5-220/main.svg	0	1960.00	0	[{"key": "Shade", "value": "220 Natural Beige"}]
 
-190	69	NYKAA-SKGEN-110	1710.00	34	10	http://localhost:9000/nexus-media/public/catalog/skus/NYKAA-SKGEN-110/main.svg	0	\N	0	[{"key": "Shade", "value": "110 Porcelain"}]
+190	69	NYKAA-SKGEN-110	1710.00	34	10	http://localhost:9000/nexus-media/public/pms/skus/NYKAA-SKGEN-110/main.svg	0	\N	0	[{"key": "Shade", "value": "110 Porcelain"}]
 
-192	69	NYKAA-SKGEN-130	1710.00	158	10	http://localhost:9000/nexus-media/public/catalog/skus/NYKAA-SKGEN-130/main.svg	0	\N	0	[{"key": "Shade", "value": "130 Buff Beige"}]
+192	69	NYKAA-SKGEN-130	1710.00	158	10	http://localhost:9000/nexus-media/public/pms/skus/NYKAA-SKGEN-130/main.svg	0	\N	0	[{"key": "Shade", "value": "130 Buff Beige"}]
 
-193	69	NYKAA-SKGEN-220	1710.00	76	10	http://localhost:9000/nexus-media/public/catalog/skus/NYKAA-SKGEN-220/main.svg	0	1540.00	0	[{"key": "Shade", "value": "220 Natural Beige"}]
+193	69	NYKAA-SKGEN-220	1710.00	76	10	http://localhost:9000/nexus-media/public/pms/skus/NYKAA-SKGEN-220/main.svg	0	1540.00	0	[{"key": "Shade", "value": "220 Natural Beige"}]
 
-194	70	BIOTIQUE-BCC-30ML	2310.00	97	10	http://localhost:9000/nexus-media/public/catalog/skus/BIOTIQUE-BCC-30ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "30ml"}]
+194	70	BIOTIQUE-BCC-30ML	2310.00	97	10	http://localhost:9000/nexus-media/public/pms/skus/BIOTIQUE-BCC-30ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "30ml"}]
 
-195	70	BIOTIQUE-BCC-50ML	2310.00	155	10	http://localhost:9000/nexus-media/public/catalog/skus/BIOTIQUE-BCC-50ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "50ml"}]
+195	70	BIOTIQUE-BCC-50ML	2310.00	155	10	http://localhost:9000/nexus-media/public/pms/skus/BIOTIQUE-BCC-50ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "50ml"}]
 
-196	70	BIOTIQUE-BCC-100ML	2310.00	130	10	http://localhost:9000/nexus-media/public/catalog/skus/BIOTIQUE-BCC-100ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "100ml"}]
+196	70	BIOTIQUE-BCC-100ML	2310.00	130	10	http://localhost:9000/nexus-media/public/pms/skus/BIOTIQUE-BCC-100ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "100ml"}]
 
-198	71	DOVE-DIR-50ML	760.00	140	10	http://localhost:9000/nexus-media/public/catalog/skus/DOVE-DIR-50ML/main.svg	0	680.00	0	[{"key": "Pack Size", "value": "50ml"}]
+198	71	DOVE-DIR-50ML	760.00	140	10	http://localhost:9000/nexus-media/public/pms/skus/DOVE-DIR-50ML/main.svg	0	680.00	0	[{"key": "Pack Size", "value": "50ml"}]
 
-199	71	DOVE-DIR-100ML	760.00	121	10	http://localhost:9000/nexus-media/public/catalog/skus/DOVE-DIR-100ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "100ml"}]
+199	71	DOVE-DIR-100ML	760.00	121	10	http://localhost:9000/nexus-media/public/pms/skus/DOVE-DIR-100ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "100ml"}]
 
-200	72	LOREAL-ARS-30ML	1840.00	22	10	http://localhost:9000/nexus-media/public/catalog/skus/LOREAL-ARS-30ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "30ml"}]
+200	72	LOREAL-ARS-30ML	1840.00	22	10	http://localhost:9000/nexus-media/public/pms/skus/LOREAL-ARS-30ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "30ml"}]
 
-201	72	LOREAL-ARS-50ML	1840.00	51	10	http://localhost:9000/nexus-media/public/catalog/skus/LOREAL-ARS-50ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "50ml"}]
+201	72	LOREAL-ARS-50ML	1840.00	51	10	http://localhost:9000/nexus-media/public/pms/skus/LOREAL-ARS-50ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "50ml"}]
 
-203	73	MAMAEARTH-OHO-30ML	770.00	132	10	http://localhost:9000/nexus-media/public/catalog/skus/MAMAEARTH-OHO-30ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "30ml"}]
+203	73	MAMAEARTH-OHO-30ML	770.00	132	10	http://localhost:9000/nexus-media/public/pms/skus/MAMAEARTH-OHO-30ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "30ml"}]
 
-204	73	MAMAEARTH-OHO-50ML	770.00	76	10	http://localhost:9000/nexus-media/public/catalog/skus/MAMAEARTH-OHO-50ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "50ml"}]
+204	73	MAMAEARTH-OHO-50ML	770.00	76	10	http://localhost:9000/nexus-media/public/pms/skus/MAMAEARTH-OHO-50ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "50ml"}]
 
-205	73	MAMAEARTH-OHO-100ML	770.00	95	10	http://localhost:9000/nexus-media/public/catalog/skus/MAMAEARTH-OHO-100ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "100ml"}]
+205	73	MAMAEARTH-OHO-100ML	770.00	95	10	http://localhost:9000/nexus-media/public/pms/skus/MAMAEARTH-OHO-100ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "100ml"}]
 
-206	74	NIVEA-MSG-30ML	1570.00	122	10	http://localhost:9000/nexus-media/public/catalog/skus/NIVEA-MSG-30ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "30ml"}]
+206	74	NIVEA-MSG-30ML	1570.00	122	10	http://localhost:9000/nexus-media/public/pms/skus/NIVEA-MSG-30ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "30ml"}]
 
-208	74	NIVEA-MSG-100ML	1570.00	94	10	http://localhost:9000/nexus-media/public/catalog/skus/NIVEA-MSG-100ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "100ml"}]
+208	74	NIVEA-MSG-100ML	1570.00	94	10	http://localhost:9000/nexus-media/public/pms/skus/NIVEA-MSG-100ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "100ml"}]
 
-209	75	NYKAA-MBW-30ML	2440.00	69	10	http://localhost:9000/nexus-media/public/catalog/skus/NYKAA-MBW-30ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "30ml"}]
+209	75	NYKAA-MBW-30ML	2440.00	69	10	http://localhost:9000/nexus-media/public/pms/skus/NYKAA-MBW-30ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "30ml"}]
 
-210	75	NYKAA-MBW-50ML	2440.00	135	10	http://localhost:9000/nexus-media/public/catalog/skus/NYKAA-MBW-50ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "50ml"}]
+210	75	NYKAA-MBW-50ML	2440.00	135	10	http://localhost:9000/nexus-media/public/pms/skus/NYKAA-MBW-50ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "50ml"}]
 
-211	75	NYKAA-MBW-100ML	2440.00	55	10	http://localhost:9000/nexus-media/public/catalog/skus/NYKAA-MBW-100ML/main.svg	0	2000.00	0	[{"key": "Pack Size", "value": "100ml"}]
+211	75	NYKAA-MBW-100ML	2440.00	55	10	http://localhost:9000/nexus-media/public/pms/skus/NYKAA-MBW-100ML/main.svg	0	2000.00	0	[{"key": "Pack Size", "value": "100ml"}]
 
-212	76	PLUM-GTSG-30ML	320.00	110	10	http://localhost:9000/nexus-media/public/catalog/skus/PLUM-GTSG-30ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "30ml"}]
+212	76	PLUM-GTSG-30ML	320.00	110	10	http://localhost:9000/nexus-media/public/pms/skus/PLUM-GTSG-30ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "30ml"}]
 
-214	76	PLUM-GTSG-100ML	320.00	146	10	http://localhost:9000/nexus-media/public/catalog/skus/PLUM-GTSG-100ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "100ml"}]
+214	76	PLUM-GTSG-100ML	320.00	146	10	http://localhost:9000/nexus-media/public/pms/skus/PLUM-GTSG-100ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "100ml"}]
 
-215	77	UA-CA10-BLK-8	8630.00	44	10	http://localhost:9000/nexus-media/public/catalog/skus/UA-CA10-BLK-8/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Size (US)", "value": "8"}]
+215	77	UA-CA10-BLK-8	8630.00	44	10	http://localhost:9000/nexus-media/public/pms/skus/UA-CA10-BLK-8/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Size (US)", "value": "8"}]
 
-216	77	UA-CA10-BLK-9	8630.00	159	10	http://localhost:9000/nexus-media/public/catalog/skus/UA-CA10-BLK-9/main.svg	0	7590.00	0	[{"key": "Color", "value": "Black"}, {"key": "Size (US)", "value": "9"}]
+216	77	UA-CA10-BLK-9	8630.00	159	10	http://localhost:9000/nexus-media/public/pms/skus/UA-CA10-BLK-9/main.svg	0	7590.00	0	[{"key": "Color", "value": "Black"}, {"key": "Size (US)", "value": "9"}]
 
-217	77	UA-CA10-WHT-8	8630.00	105	10	http://localhost:9000/nexus-media/public/catalog/skus/UA-CA10-WHT-8/main.svg	0	\N	0	[{"key": "Color", "value": "White"}, {"key": "Size (US)", "value": "8"}]
+217	77	UA-CA10-WHT-8	8630.00	105	10	http://localhost:9000/nexus-media/public/pms/skus/UA-CA10-WHT-8/main.svg	0	\N	0	[{"key": "Color", "value": "White"}, {"key": "Size (US)", "value": "8"}]
 
-219	78	DECATHLON-KRC-BLK-8	2480.00	55	10	http://localhost:9000/nexus-media/public/catalog/skus/DECATHLON-KRC-BLK-8/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Size (US)", "value": "8"}]
+219	78	DECATHLON-KRC-BLK-8	2480.00	55	10	http://localhost:9000/nexus-media/public/pms/skus/DECATHLON-KRC-BLK-8/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Size (US)", "value": "8"}]
 
-220	78	DECATHLON-KRC-BLK-9	2480.00	62	10	http://localhost:9000/nexus-media/public/catalog/skus/DECATHLON-KRC-BLK-9/main.svg	0	2230.00	0	[{"key": "Color", "value": "Black"}, {"key": "Size (US)", "value": "9"}]
+220	78	DECATHLON-KRC-BLK-9	2480.00	62	10	http://localhost:9000/nexus-media/public/pms/skus/DECATHLON-KRC-BLK-9/main.svg	0	2230.00	0	[{"key": "Color", "value": "Black"}, {"key": "Size (US)", "value": "9"}]
 
-221	78	DECATHLON-KRC-WHT-8	2480.00	157	10	http://localhost:9000/nexus-media/public/catalog/skus/DECATHLON-KRC-WHT-8/main.svg	0	\N	0	[{"key": "Color", "value": "White"}, {"key": "Size (US)", "value": "8"}]
+221	78	DECATHLON-KRC-WHT-8	2480.00	157	10	http://localhost:9000/nexus-media/public/pms/skus/DECATHLON-KRC-WHT-8/main.svg	0	\N	0	[{"key": "Color", "value": "White"}, {"key": "Size (US)", "value": "8"}]
 
-222	78	DECATHLON-KRC-WHT-9	2480.00	147	10	http://localhost:9000/nexus-media/public/catalog/skus/DECATHLON-KRC-WHT-9/main.svg	0	\N	0	[{"key": "Color", "value": "White"}, {"key": "Size (US)", "value": "9"}]
+222	78	DECATHLON-KRC-WHT-9	2480.00	147	10	http://localhost:9000/nexus-media/public/pms/skus/DECATHLON-KRC-WHT-9/main.svg	0	\N	0	[{"key": "Color", "value": "White"}, {"key": "Size (US)", "value": "9"}]
 
-224	79	NIVIA-RACER-BLK-9	6930.00	12	10	http://localhost:9000/nexus-media/public/catalog/skus/NIVIA-RACER-BLK-9/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Size (US)", "value": "9"}]
+224	79	NIVIA-RACER-BLK-9	6930.00	12	10	http://localhost:9000/nexus-media/public/pms/skus/NIVIA-RACER-BLK-9/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Size (US)", "value": "9"}]
 
-225	79	NIVIA-RACER-WHT-8	6930.00	25	10	http://localhost:9000/nexus-media/public/catalog/skus/NIVIA-RACER-WHT-8/main.svg	0	6240.00	0	[{"key": "Color", "value": "White"}, {"key": "Size (US)", "value": "8"}]
+225	79	NIVIA-RACER-WHT-8	6930.00	25	10	http://localhost:9000/nexus-media/public/pms/skus/NIVIA-RACER-WHT-8/main.svg	0	6240.00	0	[{"key": "Color", "value": "White"}, {"key": "Size (US)", "value": "8"}]
 
-5	2	SAMSUNG-GS26-BLK-128	68520.00	50	10	http://localhost:9000/nexus-media/public/catalog/skus/SAMSUNG-GS26-BLK-128/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Storage", "value": "128GB"}]
+5	2	SAMSUNG-GS26-BLK-128	68520.00	50	10	http://localhost:9000/nexus-media/public/pms/skus/SAMSUNG-GS26-BLK-128/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Storage", "value": "128GB"}]
 
-227	80	VECTORX-SPRINT-BLK-8	4130.00	116	10	http://localhost:9000/nexus-media/public/catalog/skus/VECTORX-SPRINT-BLK-8/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Size (US)", "value": "8"}]
+227	80	VECTORX-SPRINT-BLK-8	4130.00	116	10	http://localhost:9000/nexus-media/public/pms/skus/VECTORX-SPRINT-BLK-8/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Size (US)", "value": "8"}]
 
-229	80	VECTORX-SPRINT-WHT-8	4130.00	72	10	http://localhost:9000/nexus-media/public/catalog/skus/VECTORX-SPRINT-WHT-8/main.svg	0	3510.00	0	[{"key": "Color", "value": "White"}, {"key": "Size (US)", "value": "8"}]
+229	80	VECTORX-SPRINT-WHT-8	4130.00	72	10	http://localhost:9000/nexus-media/public/pms/skus/VECTORX-SPRINT-WHT-8/main.svg	0	3510.00	0	[{"key": "Color", "value": "White"}, {"key": "Size (US)", "value": "8"}]
 
-230	80	VECTORX-SPRINT-WHT-9	4130.00	62	10	http://localhost:9000/nexus-media/public/catalog/skus/VECTORX-SPRINT-WHT-9/main.svg	0	\N	0	[{"key": "Color", "value": "White"}, {"key": "Size (US)", "value": "9"}]
+230	80	VECTORX-SPRINT-WHT-9	4130.00	62	10	http://localhost:9000/nexus-media/public/pms/skus/VECTORX-SPRINT-WHT-9/main.svg	0	\N	0	[{"key": "Color", "value": "White"}, {"key": "Size (US)", "value": "9"}]
 
-231	81	DECATHLON-ADJDB-STD	4500.00	118	10	http://localhost:9000/nexus-media/public/catalog/skus/DECATHLON-ADJDB-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+231	81	DECATHLON-ADJDB-STD	4500.00	118	10	http://localhost:9000/nexus-media/public/pms/skus/DECATHLON-ADJDB-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
 
-232	82	NIVIA-HD10-STD	2120.00	46	10	http://localhost:9000/nexus-media/public/catalog/skus/NIVIA-HD10-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+232	82	NIVIA-HD10-STD	2120.00	46	10	http://localhost:9000/nexus-media/public/pms/skus/NIVIA-HD10-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
 
-233	83	COSCO-RTSET-STD	7480.00	129	10	http://localhost:9000/nexus-media/public/catalog/skus/COSCO-RTSET-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+233	83	COSCO-RTSET-STD	7480.00	129	10	http://localhost:9000/nexus-media/public/pms/skus/COSCO-RTSET-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
 
-235	84	VECTORX-PTG-L	6750.00	22	10	http://localhost:9000/nexus-media/public/catalog/skus/VECTORX-PTG-L/main.svg	0	\N	0	[{"key": "Size", "value": "L"}]
+235	84	VECTORX-PTG-L	6750.00	22	10	http://localhost:9000/nexus-media/public/pms/skus/VECTORX-PTG-L/main.svg	0	\N	0	[{"key": "Size", "value": "L"}]
 
-236	84	VECTORX-PTG-XL	6750.00	83	10	http://localhost:9000/nexus-media/public/catalog/skus/VECTORX-PTG-XL/main.svg	0	\N	0	[{"key": "Size", "value": "XL"}]
+236	84	VECTORX-PTG-XL	6750.00	83	10	http://localhost:9000/nexus-media/public/pms/skus/VECTORX-PTG-XL/main.svg	0	\N	0	[{"key": "Size", "value": "XL"}]
 
-237	85	DECATHLON-BYM-BLK	5020.00	21	10	http://localhost:9000/nexus-media/public/catalog/skus/DECATHLON-BYM-BLK/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+237	85	DECATHLON-BYM-BLK	5020.00	21	10	http://localhost:9000/nexus-media/public/pms/skus/DECATHLON-BYM-BLK/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
 
-239	86	NIVIA-TPEM-BLK	1970.00	32	10	http://localhost:9000/nexus-media/public/catalog/skus/NIVIA-TPEM-BLK/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+239	86	NIVIA-TPEM-BLK	1970.00	32	10	http://localhost:9000/nexus-media/public/pms/skus/NIVIA-TPEM-BLK/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
 
-240	86	NIVIA-TPEM-SLV	2010.00	86	10	http://localhost:9000/nexus-media/public/catalog/skus/NIVIA-TPEM-SLV/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}]
+240	86	NIVIA-TPEM-SLV	2010.00	86	10	http://localhost:9000/nexus-media/public/pms/skus/NIVIA-TPEM-SLV/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}]
 
-241	87	COSCO-YBP-BLK	3270.00	98	10	http://localhost:9000/nexus-media/public/catalog/skus/COSCO-YBP-BLK/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+241	87	COSCO-YBP-BLK	3270.00	98	10	http://localhost:9000/nexus-media/public/pms/skus/COSCO-YBP-BLK/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
 
-242	87	COSCO-YBP-SLV	3330.00	66	10	http://localhost:9000/nexus-media/public/catalog/skus/COSCO-YBP-SLV/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}]
+242	87	COSCO-YBP-SLV	3330.00	66	10	http://localhost:9000/nexus-media/public/pms/skus/COSCO-YBP-SLV/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}]
 
-243	88	WILSON-PS97-STD	7760.00	143	10	http://localhost:9000/nexus-media/public/catalog/skus/WILSON-PS97-STD/main.svg	0	6980.00	0	[{"key": "Color", "value": "Black"}]
+243	88	WILSON-PS97-STD	7760.00	143	10	http://localhost:9000/nexus-media/public/pms/skus/WILSON-PS97-STD/main.svg	0	6980.00	0	[{"key": "Color", "value": "Black"}]
 
-245	90	SS-SSKYER-S8	1770.00	47	10	http://localhost:9000/nexus-media/public/catalog/skus/SS-SSKYER-S8/main.svg	0	\N	0	[{"key": "Size", "value": "8"}]
+245	90	SS-SSKYER-S8	1770.00	47	10	http://localhost:9000/nexus-media/public/pms/skus/SS-SSKYER-S8/main.svg	0	\N	0	[{"key": "Size", "value": "8"}]
 
-246	90	SS-SSKYER-S9	1770.00	142	10	http://localhost:9000/nexus-media/public/catalog/skus/SS-SSKYER-S9/main.svg	0	\N	0	[{"key": "Size", "value": "9"}]
+246	90	SS-SSKYER-S9	1770.00	142	10	http://localhost:9000/nexus-media/public/pms/skus/SS-SSKYER-S9/main.svg	0	\N	0	[{"key": "Size", "value": "9"}]
 
-247	90	SS-SSKYER-S10	1770.00	39	10	http://localhost:9000/nexus-media/public/catalog/skus/SS-SSKYER-S10/main.svg	0	1560.00	0	[{"key": "Size", "value": "10"}]
+247	90	SS-SSKYER-S10	1770.00	39	10	http://localhost:9000/nexus-media/public/pms/skus/SS-SSKYER-S10/main.svg	0	1560.00	0	[{"key": "Size", "value": "10"}]
 
-248	91	SG-SGP-S8	6600.00	42	10	http://localhost:9000/nexus-media/public/catalog/skus/SG-SGP-S8/main.svg	0	\N	0	[{"key": "Size", "value": "8"}]
+248	91	SG-SGP-S8	6600.00	42	10	http://localhost:9000/nexus-media/public/pms/skus/SG-SGP-S8/main.svg	0	\N	0	[{"key": "Size", "value": "8"}]
 
-249	91	SG-SGP-S9	6600.00	129	10	http://localhost:9000/nexus-media/public/catalog/skus/SG-SGP-S9/main.svg	0	\N	0	[{"key": "Size", "value": "9"}]
+249	91	SG-SGP-S9	6600.00	129	10	http://localhost:9000/nexus-media/public/pms/skus/SG-SGP-S9/main.svg	0	\N	0	[{"key": "Size", "value": "9"}]
 
-251	92	DECATHLON-QHB40-BLK	1510.00	31	10	http://localhost:9000/nexus-media/public/catalog/skus/DECATHLON-QHB40-BLK/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+251	92	DECATHLON-QHB40-BLK	1510.00	31	10	http://localhost:9000/nexus-media/public/pms/skus/DECATHLON-QHB40-BLK/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
 
-252	92	DECATHLON-QHB40-SLV	1540.00	45	10	http://localhost:9000/nexus-media/public/catalog/skus/DECATHLON-QHB40-SLV/main.svg	0	1390.00	0	[{"key": "Color", "value": "Silver"}]
+252	92	DECATHLON-QHB40-SLV	1540.00	45	10	http://localhost:9000/nexus-media/public/pms/skus/DECATHLON-QHB40-SLV/main.svg	0	1390.00	0	[{"key": "Color", "value": "Silver"}]
 
-253	93	NIVIA-STORM-STD	1910.00	76	10	http://localhost:9000/nexus-media/public/catalog/skus/NIVIA-STORM-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+253	93	NIVIA-STORM-STD	1910.00	76	10	http://localhost:9000/nexus-media/public/pms/skus/NIVIA-STORM-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
 
-255	95	WILSON-NBAOB-M	2370.00	69	10	http://localhost:9000/nexus-media/public/catalog/skus/WILSON-NBAOB-M/main.svg	0	\N	0	[{"key": "Size", "value": "M"}]
+255	95	WILSON-NBAOB-M	2370.00	69	10	http://localhost:9000/nexus-media/public/pms/skus/WILSON-NBAOB-M/main.svg	0	\N	0	[{"key": "Size", "value": "M"}]
 
-256	95	WILSON-NBAOB-L	2370.00	108	10	http://localhost:9000/nexus-media/public/catalog/skus/WILSON-NBAOB-L/main.svg	0	1940.00	0	[{"key": "Size", "value": "L"}]
+256	95	WILSON-NBAOB-L	2370.00	108	10	http://localhost:9000/nexus-media/public/pms/skus/WILSON-NBAOB-L/main.svg	0	1940.00	0	[{"key": "Size", "value": "L"}]
 
-257	95	WILSON-NBAOB-XL	2370.00	86	10	http://localhost:9000/nexus-media/public/catalog/skus/WILSON-NBAOB-XL/main.svg	0	\N	0	[{"key": "Size", "value": "XL"}]
+257	95	WILSON-NBAOB-XL	2370.00	86	10	http://localhost:9000/nexus-media/public/pms/skus/WILSON-NBAOB-XL/main.svg	0	\N	0	[{"key": "Size", "value": "XL"}]
 
-258	96	PRH-MNL-PB	1240.00	202	10	http://localhost:9000/nexus-media/public/catalog/skus/PRH-MNL-PB/main.svg	0	\N	0	[{"key": "Format", "value": "Paperback"}]
+258	96	PRH-MNL-PB	1240.00	202	10	http://localhost:9000/nexus-media/public/pms/skus/PRH-MNL-PB/main.svg	0	\N	0	[{"key": "Format", "value": "Paperback"}]
 
-259	96	PRH-MNL-HC	1270.00	97	10	http://localhost:9000/nexus-media/public/catalog/skus/PRH-MNL-HC/main.svg	0	\N	0	[{"key": "Format", "value": "Hardcover"}]
+259	96	PRH-MNL-HC	1270.00	97	10	http://localhost:9000/nexus-media/public/pms/skus/PRH-MNL-HC/main.svg	0	\N	0	[{"key": "Format", "value": "Hardcover"}]
 
-261	97	PRH-1984-PB	1440.00	166	10	http://localhost:9000/nexus-media/public/catalog/skus/PRH-1984-PB/main.svg	0	1300.00	0	[{"key": "Format", "value": "Paperback"}]
+261	97	PRH-1984-PB	1440.00	166	10	http://localhost:9000/nexus-media/public/pms/skus/PRH-1984-PB/main.svg	0	1300.00	0	[{"key": "Format", "value": "Paperback"}]
 
-262	97	PRH-1984-HC	1480.00	224	10	http://localhost:9000/nexus-media/public/catalog/skus/PRH-1984-HC/main.svg	0	\N	0	[{"key": "Format", "value": "Hardcover"}]
+262	97	PRH-1984-HC	1480.00	224	10	http://localhost:9000/nexus-media/public/pms/skus/PRH-1984-HC/main.svg	0	\N	0	[{"key": "Format", "value": "Hardcover"}]
 
-263	97	PRH-1984-KD	1380.00	160	10	http://localhost:9000/nexus-media/public/catalog/skus/PRH-1984-KD/main.svg	0	\N	0	[{"key": "Format", "value": "Kindle"}]
+263	97	PRH-1984-KD	1380.00	160	10	http://localhost:9000/nexus-media/public/pms/skus/PRH-1984-KD/main.svg	0	\N	0	[{"key": "Format", "value": "Kindle"}]
 
-264	98	RUPA-TSP-PB	1770.00	21	10	http://localhost:9000/nexus-media/public/catalog/skus/RUPA-TSP-PB/main.svg	0	\N	0	[{"key": "Format", "value": "Paperback"}]
+264	98	RUPA-TSP-PB	1770.00	21	10	http://localhost:9000/nexus-media/public/pms/skus/RUPA-TSP-PB/main.svg	0	\N	0	[{"key": "Format", "value": "Paperback"}]
 
-265	98	RUPA-TSP-HC	1820.00	116	10	http://localhost:9000/nexus-media/public/catalog/skus/RUPA-TSP-HC/main.svg	0	1490.00	0	[{"key": "Format", "value": "Hardcover"}]
+265	98	RUPA-TSP-HC	1820.00	116	10	http://localhost:9000/nexus-media/public/pms/skus/RUPA-TSP-HC/main.svg	0	1490.00	0	[{"key": "Format", "value": "Hardcover"}]
 
-267	99	ACK-MHB-PB	430.00	91	10	http://localhost:9000/nexus-media/public/catalog/skus/ACK-MHB-PB/main.svg	0	\N	0	[{"key": "Format", "value": "Paperback"}]
+267	99	ACK-MHB-PB	430.00	91	10	http://localhost:9000/nexus-media/public/pms/skus/ACK-MHB-PB/main.svg	0	\N	0	[{"key": "Format", "value": "Paperback"}]
 
-104	32	PUMA-VN3-BLK-8	2840.00	9	10	http://localhost:9000/nexus-media/public/catalog/skus/PUMA-VN3-BLK-8/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Size (US)", "value": "8"}]
+104	32	PUMA-VN3-BLK-8	2840.00	9	10	http://localhost:9000/nexus-media/public/pms/skus/PUMA-VN3-BLK-8/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Size (US)", "value": "8"}]
 
-268	99	ACK-MHB-HC	450.00	173	10	http://localhost:9000/nexus-media/public/catalog/skus/ACK-MHB-HC/main.svg	0	\N	0	[{"key": "Format", "value": "Hardcover"}]
+268	99	ACK-MHB-HC	450.00	173	10	http://localhost:9000/nexus-media/public/pms/skus/ACK-MHB-HC/main.svg	0	\N	0	[{"key": "Format", "value": "Hardcover"}]
 
-269	99	ACK-MHB-KD	420.00	243	10	http://localhost:9000/nexus-media/public/catalog/skus/ACK-MHB-KD/main.svg	0	\N	0	[{"key": "Format", "value": "Kindle"}]
+269	99	ACK-MHB-KD	420.00	243	10	http://localhost:9000/nexus-media/public/pms/skus/ACK-MHB-KD/main.svg	0	\N	0	[{"key": "Format", "value": "Kindle"}]
 
-270	100	PRH-AH-PB	1500.00	103	10	http://localhost:9000/nexus-media/public/catalog/skus/PRH-AH-PB/main.svg	0	1230.00	0	[{"key": "Format", "value": "Paperback"}]
+270	100	PRH-AH-PB	1500.00	103	10	http://localhost:9000/nexus-media/public/pms/skus/PRH-AH-PB/main.svg	0	1230.00	0	[{"key": "Format", "value": "Paperback"}]
 
-272	100	PRH-AH-KD	1440.00	87	10	http://localhost:9000/nexus-media/public/catalog/skus/PRH-AH-KD/main.svg	0	\N	0	[{"key": "Format", "value": "Kindle"}]
+272	100	PRH-AH-KD	1440.00	87	10	http://localhost:9000/nexus-media/public/pms/skus/PRH-AH-KD/main.svg	0	\N	0	[{"key": "Format", "value": "Kindle"}]
 
-273	101	MCGRAW-TLS-PB	440.00	173	10	http://localhost:9000/nexus-media/public/catalog/skus/MCGRAW-TLS-PB/main.svg	0	\N	0	[{"key": "Format", "value": "Paperback"}]
+273	101	MCGRAW-TLS-PB	440.00	173	10	http://localhost:9000/nexus-media/public/pms/skus/MCGRAW-TLS-PB/main.svg	0	\N	0	[{"key": "Format", "value": "Paperback"}]
 
-274	101	MCGRAW-TLS-HC	450.00	166	10	http://localhost:9000/nexus-media/public/catalog/skus/MCGRAW-TLS-HC/main.svg	0	370.00	0	[{"key": "Format", "value": "Hardcover"}]
+274	101	MCGRAW-TLS-HC	450.00	166	10	http://localhost:9000/nexus-media/public/pms/skus/MCGRAW-TLS-HC/main.svg	0	370.00	0	[{"key": "Format", "value": "Hardcover"}]
 
-275	101	MCGRAW-TLS-KD	420.00	179	10	http://localhost:9000/nexus-media/public/catalog/skus/MCGRAW-TLS-KD/main.svg	0	\N	0	[{"key": "Format", "value": "Kindle"}]
+275	101	MCGRAW-TLS-KD	420.00	179	10	http://localhost:9000/nexus-media/public/pms/skus/MCGRAW-TLS-KD/main.svg	0	\N	0	[{"key": "Format", "value": "Kindle"}]
 
-277	102	PEARSON-SSG-HC	1700.00	249	10	http://localhost:9000/nexus-media/public/catalog/skus/PEARSON-SSG-HC/main.svg	0	\N	0	[{"key": "Format", "value": "Hardcover"}]
+277	102	PEARSON-SSG-HC	1700.00	249	10	http://localhost:9000/nexus-media/public/pms/skus/PEARSON-SSG-HC/main.svg	0	\N	0	[{"key": "Format", "value": "Hardcover"}]
 
-278	102	PEARSON-SSG-KD	1580.00	118	10	http://localhost:9000/nexus-media/public/catalog/skus/PEARSON-SSG-KD/main.svg	0	\N	0	[{"key": "Format", "value": "Kindle"}]
+278	102	PEARSON-SSG-KD	1580.00	118	10	http://localhost:9000/nexus-media/public/pms/skus/PEARSON-SSG-KD/main.svg	0	\N	0	[{"key": "Format", "value": "Kindle"}]
 
-279	103	OREILLY-CC-PB	1600.00	56	10	http://localhost:9000/nexus-media/public/catalog/skus/OREILLY-CC-PB/main.svg	0	1440.00	0	[{"key": "Format", "value": "Paperback"}]
+279	103	OREILLY-CC-PB	1600.00	56	10	http://localhost:9000/nexus-media/public/pms/skus/OREILLY-CC-PB/main.svg	0	1440.00	0	[{"key": "Format", "value": "Paperback"}]
 
-280	103	OREILLY-CC-HC	1650.00	110	10	http://localhost:9000/nexus-media/public/catalog/skus/OREILLY-CC-HC/main.svg	0	\N	0	[{"key": "Format", "value": "Hardcover"}]
+280	103	OREILLY-CC-HC	1650.00	110	10	http://localhost:9000/nexus-media/public/pms/skus/OREILLY-CC-HC/main.svg	0	\N	0	[{"key": "Format", "value": "Hardcover"}]
 
-281	103	OREILLY-CC-KD	1540.00	160	10	http://localhost:9000/nexus-media/public/catalog/skus/OREILLY-CC-KD/main.svg	0	\N	0	[{"key": "Format", "value": "Kindle"}]
+281	103	OREILLY-CC-KD	1540.00	160	10	http://localhost:9000/nexus-media/public/pms/skus/OREILLY-CC-KD/main.svg	0	\N	0	[{"key": "Format", "value": "Kindle"}]
 
-283	104	OREILLY-DDIA-HC	1310.00	141	10	http://localhost:9000/nexus-media/public/catalog/skus/OREILLY-DDIA-HC/main.svg	0	1110.00	0	[{"key": "Format", "value": "Hardcover"}]
+283	104	OREILLY-DDIA-HC	1310.00	141	10	http://localhost:9000/nexus-media/public/pms/skus/OREILLY-DDIA-HC/main.svg	0	1110.00	0	[{"key": "Format", "value": "Hardcover"}]
 
-285	105	MCGRAW-CCIT-PB	1220.00	29	10	http://localhost:9000/nexus-media/public/catalog/skus/MCGRAW-CCIT-PB/main.svg	0	\N	0	[{"key": "Format", "value": "Paperback"}]
+285	105	MCGRAW-CCIT-PB	1220.00	29	10	http://localhost:9000/nexus-media/public/pms/skus/MCGRAW-CCIT-PB/main.svg	0	\N	0	[{"key": "Format", "value": "Paperback"}]
 
-287	105	MCGRAW-CCIT-KD	1180.00	81	10	http://localhost:9000/nexus-media/public/catalog/skus/MCGRAW-CCIT-KD/main.svg	0	\N	0	[{"key": "Format", "value": "Kindle"}]
+287	105	MCGRAW-CCIT-KD	1180.00	81	10	http://localhost:9000/nexus-media/public/pms/skus/MCGRAW-CCIT-KD/main.svg	0	\N	0	[{"key": "Format", "value": "Kindle"}]
 
-289	106	PEARSON-JPC-HC	1560.00	108	10	http://localhost:9000/nexus-media/public/catalog/skus/PEARSON-JPC-HC/main.svg	0	\N	0	[{"key": "Format", "value": "Hardcover"}]
+289	106	PEARSON-JPC-HC	1560.00	108	10	http://localhost:9000/nexus-media/public/pms/skus/PEARSON-JPC-HC/main.svg	0	\N	0	[{"key": "Format", "value": "Hardcover"}]
 
-290	106	PEARSON-JPC-KD	1450.00	121	10	http://localhost:9000/nexus-media/public/catalog/skus/PEARSON-JPC-KD/main.svg	0	\N	0	[{"key": "Format", "value": "Kindle"}]
+290	106	PEARSON-JPC-KD	1450.00	121	10	http://localhost:9000/nexus-media/public/pms/skus/PEARSON-JPC-KD/main.svg	0	\N	0	[{"key": "Format", "value": "Kindle"}]
 
-291	107	SCHAND-DSC-PB	1670.00	199	10	http://localhost:9000/nexus-media/public/catalog/skus/SCHAND-DSC-PB/main.svg	0	\N	0	[{"key": "Format", "value": "Paperback"}]
+291	107	SCHAND-DSC-PB	1670.00	199	10	http://localhost:9000/nexus-media/public/pms/skus/SCHAND-DSC-PB/main.svg	0	\N	0	[{"key": "Format", "value": "Paperback"}]
 
-292	107	SCHAND-DSC-HC	1720.00	50	10	http://localhost:9000/nexus-media/public/catalog/skus/SCHAND-DSC-HC/main.svg	0	1410.00	0	[{"key": "Format", "value": "Hardcover"}]
+292	107	SCHAND-DSC-HC	1720.00	50	10	http://localhost:9000/nexus-media/public/pms/skus/SCHAND-DSC-HC/main.svg	0	1410.00	0	[{"key": "Format", "value": "Hardcover"}]
 
-293	107	SCHAND-DSC-KD	1600.00	176	10	http://localhost:9000/nexus-media/public/catalog/skus/SCHAND-DSC-KD/main.svg	0	\N	0	[{"key": "Format", "value": "Kindle"}]
+293	107	SCHAND-DSC-KD	1600.00	176	10	http://localhost:9000/nexus-media/public/pms/skus/SCHAND-DSC-KD/main.svg	0	\N	0	[{"key": "Format", "value": "Kindle"}]
 
-295	108	ARIHANT-PYCP-HC	900.00	202	10	http://localhost:9000/nexus-media/public/catalog/skus/ARIHANT-PYCP-HC/main.svg	0	\N	0	[{"key": "Format", "value": "Hardcover"}]
+295	108	ARIHANT-PYCP-HC	900.00	202	10	http://localhost:9000/nexus-media/public/pms/skus/ARIHANT-PYCP-HC/main.svg	0	\N	0	[{"key": "Format", "value": "Hardcover"}]
 
-296	108	ARIHANT-PYCP-KD	840.00	96	10	http://localhost:9000/nexus-media/public/catalog/skus/ARIHANT-PYCP-KD/main.svg	0	\N	0	[{"key": "Format", "value": "Kindle"}]
+296	108	ARIHANT-PYCP-KD	840.00	96	10	http://localhost:9000/nexus-media/public/pms/skus/ARIHANT-PYCP-KD/main.svg	0	\N	0	[{"key": "Format", "value": "Kindle"}]
 
-297	109	MOLESKINE-MKNL-STD	560.00	139	10	http://localhost:9000/nexus-media/public/catalog/skus/MOLESKINE-MKNL-STD/main.svg	0	490.00	0	[{"key": "Color", "value": "Black"}]
+297	109	MOLESKINE-MKNL-STD	560.00	139	10	http://localhost:9000/nexus-media/public/pms/skus/MOLESKINE-MKNL-STD/main.svg	0	490.00	0	[{"key": "Color", "value": "Black"}]
 
-298	110	CROSSWORD-PRN-BLK	910.00	45	10	http://localhost:9000/nexus-media/public/catalog/skus/CROSSWORD-PRN-BLK/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+298	110	CROSSWORD-PRN-BLK	910.00	45	10	http://localhost:9000/nexus-media/public/pms/skus/CROSSWORD-PRN-BLK/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
 
-300	111	RUPA-EXJ-BLK	560.00	115	10	http://localhost:9000/nexus-media/public/catalog/skus/RUPA-EXJ-BLK/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+300	111	RUPA-EXJ-BLK	560.00	115	10	http://localhost:9000/nexus-media/public/pms/skus/RUPA-EXJ-BLK/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
 
-301	111	RUPA-EXJ-SLV	580.00	187	10	http://localhost:9000/nexus-media/public/catalog/skus/RUPA-EXJ-SLV/main.svg	0	490.00	0	[{"key": "Color", "value": "Silver"}]
+301	111	RUPA-EXJ-SLV	580.00	187	10	http://localhost:9000/nexus-media/public/pms/skus/RUPA-EXJ-SLV/main.svg	0	490.00	0	[{"key": "Color", "value": "Silver"}]
 
-302	112	SCHAND-GPN-STD	280.00	70	10	http://localhost:9000/nexus-media/public/catalog/skus/SCHAND-GPN-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+302	112	SCHAND-GPN-STD	280.00	70	10	http://localhost:9000/nexus-media/public/pms/skus/SCHAND-GPN-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
 
-303	113	ARIHANT-EPN-A6	1050.00	163	10	http://localhost:9000/nexus-media/public/catalog/skus/ARIHANT-EPN-A6/main.svg	0	\N	0	[{"key": "Size", "value": "A6"}]
+303	113	ARIHANT-EPN-A6	1050.00	163	10	http://localhost:9000/nexus-media/public/pms/skus/ARIHANT-EPN-A6/main.svg	0	\N	0	[{"key": "Size", "value": "A6"}]
 
-304	113	ARIHANT-EPN-A5	1050.00	233	10	http://localhost:9000/nexus-media/public/catalog/skus/ARIHANT-EPN-A5/main.svg	0	\N	0	[{"key": "Size", "value": "A5"}]
+304	113	ARIHANT-EPN-A5	1050.00	233	10	http://localhost:9000/nexus-media/public/pms/skus/ARIHANT-EPN-A5/main.svg	0	\N	0	[{"key": "Size", "value": "A5"}]
 
-306	115	NESTLE-NCF-100G	320.00	109	10	http://localhost:9000/nexus-media/public/catalog/skus/NESTLE-NCF-100G/main.svg	0	290.00	0	[{"key": "Pack Size", "value": "100g"}]
+306	115	NESTLE-NCF-100G	320.00	109	10	http://localhost:9000/nexus-media/public/pms/skus/NESTLE-NCF-100G/main.svg	0	290.00	0	[{"key": "Pack Size", "value": "100g"}]
 
-307	115	NESTLE-NCF-200G	320.00	121	10	http://localhost:9000/nexus-media/public/catalog/skus/NESTLE-NCF-200G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "200g"}]
+307	115	NESTLE-NCF-200G	320.00	121	10	http://localhost:9000/nexus-media/public/pms/skus/NESTLE-NCF-200G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "200g"}]
 
-308	115	NESTLE-NCF-500G	320.00	26	10	http://localhost:9000/nexus-media/public/catalog/skus/NESTLE-NCF-500G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "500g"}]
+308	115	NESTLE-NCF-500G	320.00	26	10	http://localhost:9000/nexus-media/public/pms/skus/NESTLE-NCF-500G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "500g"}]
 
-309	116	COKE-COKE-300ML	890.00	216	10	http://localhost:9000/nexus-media/public/catalog/skus/COKE-COKE-300ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "300ml"}]
+309	116	COKE-COKE-300ML	890.00	216	10	http://localhost:9000/nexus-media/public/pms/skus/COKE-COKE-300ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "300ml"}]
 
-311	116	COKE-COKE-1.25L	1090.00	8	10	http://localhost:9000/nexus-media/public/catalog/skus/COKE-COKE-1.25L/main.svg	0	\N	0	[{"key": "Pack Size", "value": "1.25L"}]
+311	116	COKE-COKE-1.25L	1090.00	8	10	http://localhost:9000/nexus-media/public/pms/skus/COKE-COKE-1.25L/main.svg	0	\N	0	[{"key": "Pack Size", "value": "1.25L"}]
 
-105	32	PUMA-VN3-BLK-9	2840.00	16	10	http://localhost:9000/nexus-media/public/catalog/skus/PUMA-VN3-BLK-9/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Size (US)", "value": "9"}]
+105	32	PUMA-VN3-BLK-9	2840.00	16	10	http://localhost:9000/nexus-media/public/pms/skus/PUMA-VN3-BLK-9/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Size (US)", "value": "9"}]
 
-312	116	COKE-COKE-2.25L	1290.00	118	10	http://localhost:9000/nexus-media/public/catalog/skus/COKE-COKE-2.25L/main.svg	0	\N	0	[{"key": "Pack Size", "value": "2.25L"}]
+312	116	COKE-COKE-2.25L	1290.00	118	10	http://localhost:9000/nexus-media/public/pms/skus/COKE-COKE-2.25L/main.svg	0	\N	0	[{"key": "Pack Size", "value": "2.25L"}]
 
-313	117	AMUL-ATMLK-500ML	650.00	22	10	http://localhost:9000/nexus-media/public/catalog/skus/AMUL-ATMLK-500ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "500ml"}]
+313	117	AMUL-ATMLK-500ML	650.00	22	10	http://localhost:9000/nexus-media/public/pms/skus/AMUL-ATMLK-500ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "500ml"}]
 
-314	117	AMUL-ATMLK-1L	770.00	102	10	http://localhost:9000/nexus-media/public/catalog/skus/AMUL-ATMLK-1L/main.svg	0	\N	0	[{"key": "Pack Size", "value": "1L"}]
+314	117	AMUL-ATMLK-1L	770.00	102	10	http://localhost:9000/nexus-media/public/pms/skus/AMUL-ATMLK-1L/main.svg	0	\N	0	[{"key": "Pack Size", "value": "1L"}]
 
-316	118	TATA-TTG-200G	420.00	246	10	http://localhost:9000/nexus-media/public/catalog/skus/TATA-TTG-200G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "200g"}]
+316	118	TATA-TTG-200G	420.00	246	10	http://localhost:9000/nexus-media/public/pms/skus/TATA-TTG-200G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "200g"}]
 
-317	118	TATA-TTG-500G	420.00	129	10	http://localhost:9000/nexus-media/public/catalog/skus/TATA-TTG-500G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "500g"}]
+317	118	TATA-TTG-500G	420.00	129	10	http://localhost:9000/nexus-media/public/pms/skus/TATA-TTG-500G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "500g"}]
 
-318	119	MOTHERDAIRY-TDMLK-500ML	480.00	168	10	http://localhost:9000/nexus-media/public/catalog/skus/MOTHERDAIRY-TDMLK-500ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "500ml"}]
+318	119	MOTHERDAIRY-TDMLK-500ML	480.00	168	10	http://localhost:9000/nexus-media/public/pms/skus/MOTHERDAIRY-TDMLK-500ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "500ml"}]
 
-319	119	MOTHERDAIRY-TDMLK-1L	570.00	14	10	http://localhost:9000/nexus-media/public/catalog/skus/MOTHERDAIRY-TDMLK-1L/main.svg	0	520.00	0	[{"key": "Pack Size", "value": "1L"}]
+319	119	MOTHERDAIRY-TDMLK-1L	570.00	14	10	http://localhost:9000/nexus-media/public/pms/skus/MOTHERDAIRY-TDMLK-1L/main.svg	0	520.00	0	[{"key": "Pack Size", "value": "1L"}]
 
-321	120	BRITANNIA-GDC-100G	340.00	35	10	http://localhost:9000/nexus-media/public/catalog/skus/BRITANNIA-GDC-100G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "100g"}]
+321	120	BRITANNIA-GDC-100G	340.00	35	10	http://localhost:9000/nexus-media/public/pms/skus/BRITANNIA-GDC-100G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "100g"}]
 
-322	120	BRITANNIA-GDC-200G	340.00	78	10	http://localhost:9000/nexus-media/public/catalog/skus/BRITANNIA-GDC-200G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "200g"}]
+322	120	BRITANNIA-GDC-200G	340.00	78	10	http://localhost:9000/nexus-media/public/pms/skus/BRITANNIA-GDC-200G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "200g"}]
 
-323	120	BRITANNIA-GDC-500G	340.00	12	10	http://localhost:9000/nexus-media/public/catalog/skus/BRITANNIA-GDC-500G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "500g"}]
+323	120	BRITANNIA-GDC-500G	340.00	12	10	http://localhost:9000/nexus-media/public/pms/skus/BRITANNIA-GDC-500G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "500g"}]
 
-324	121	PARLE-HSB-100G	190.00	199	10	http://localhost:9000/nexus-media/public/catalog/skus/PARLE-HSB-100G/main.svg	0	170.00	0	[{"key": "Pack Size", "value": "100g"}]
+324	121	PARLE-HSB-100G	190.00	199	10	http://localhost:9000/nexus-media/public/pms/skus/PARLE-HSB-100G/main.svg	0	170.00	0	[{"key": "Pack Size", "value": "100g"}]
 
-326	121	PARLE-HSB-500G	190.00	55	10	http://localhost:9000/nexus-media/public/catalog/skus/PARLE-HSB-500G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "500g"}]
+326	121	PARLE-HSB-500G	190.00	55	10	http://localhost:9000/nexus-media/public/pms/skus/PARLE-HSB-500G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "500g"}]
 
-327	122	ITC-SDF-100G	440.00	40	10	http://localhost:9000/nexus-media/public/catalog/skus/ITC-SDF-100G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "100g"}]
+327	122	ITC-SDF-100G	440.00	40	10	http://localhost:9000/nexus-media/public/pms/skus/ITC-SDF-100G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "100g"}]
 
-328	122	ITC-SDF-200G	440.00	39	10	http://localhost:9000/nexus-media/public/catalog/skus/ITC-SDF-200G/main.svg	0	370.00	0	[{"key": "Pack Size", "value": "200g"}]
+328	122	ITC-SDF-200G	440.00	39	10	http://localhost:9000/nexus-media/public/pms/skus/ITC-SDF-200G/main.svg	0	370.00	0	[{"key": "Pack Size", "value": "200g"}]
 
-329	122	ITC-SDF-500G	440.00	212	10	http://localhost:9000/nexus-media/public/catalog/skus/ITC-SDF-500G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "500g"}]
+329	122	ITC-SDF-500G	440.00	212	10	http://localhost:9000/nexus-media/public/pms/skus/ITC-SDF-500G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "500g"}]
 
-330	123	NESTLE-MUNCH-100G	410.00	89	10	http://localhost:9000/nexus-media/public/catalog/skus/NESTLE-MUNCH-100G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "100g"}]
+330	123	NESTLE-MUNCH-100G	410.00	89	10	http://localhost:9000/nexus-media/public/pms/skus/NESTLE-MUNCH-100G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "100g"}]
 
-332	123	NESTLE-MUNCH-500G	410.00	111	10	http://localhost:9000/nexus-media/public/catalog/skus/NESTLE-MUNCH-500G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "500g"}]
+332	123	NESTLE-MUNCH-500G	410.00	111	10	http://localhost:9000/nexus-media/public/pms/skus/NESTLE-MUNCH-500G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "500g"}]
 
-334	124	DABUR-REAL-1L	650.00	12	10	http://localhost:9000/nexus-media/public/catalog/skus/DABUR-REAL-1L/main.svg	0	\N	0	[{"key": "Pack Size", "value": "1L"}]
+334	124	DABUR-REAL-1L	650.00	12	10	http://localhost:9000/nexus-media/public/pms/skus/DABUR-REAL-1L/main.svg	0	\N	0	[{"key": "Pack Size", "value": "1L"}]
 
-335	124	DABUR-REAL-2L	750.00	154	10	http://localhost:9000/nexus-media/public/catalog/skus/DABUR-REAL-2L/main.svg	0	\N	0	[{"key": "Pack Size", "value": "2L"}]
+335	124	DABUR-REAL-2L	750.00	154	10	http://localhost:9000/nexus-media/public/pms/skus/DABUR-REAL-2L/main.svg	0	\N	0	[{"key": "Pack Size", "value": "2L"}]
 
-336	125	KELLOGG-KCF-100G	300.00	41	10	http://localhost:9000/nexus-media/public/catalog/skus/KELLOGG-KCF-100G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "100g"}]
+336	125	KELLOGG-KCF-100G	300.00	41	10	http://localhost:9000/nexus-media/public/pms/skus/KELLOGG-KCF-100G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "100g"}]
 
-338	125	KELLOGG-KCF-500G	300.00	199	10	http://localhost:9000/nexus-media/public/catalog/skus/KELLOGG-KCF-500G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "500g"}]
+338	125	KELLOGG-KCF-500G	300.00	199	10	http://localhost:9000/nexus-media/public/pms/skus/KELLOGG-KCF-500G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "500g"}]
 
-339	126	MTR-MPOHA-100G	640.00	21	10	http://localhost:9000/nexus-media/public/catalog/skus/MTR-MPOHA-100G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "100g"}]
+339	126	MTR-MPOHA-100G	640.00	21	10	http://localhost:9000/nexus-media/public/pms/skus/MTR-MPOHA-100G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "100g"}]
 
-340	126	MTR-MPOHA-200G	640.00	73	10	http://localhost:9000/nexus-media/public/catalog/skus/MTR-MPOHA-200G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "200g"}]
+340	126	MTR-MPOHA-200G	640.00	73	10	http://localhost:9000/nexus-media/public/pms/skus/MTR-MPOHA-200G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "200g"}]
 
-341	126	MTR-MPOHA-500G	640.00	157	10	http://localhost:9000/nexus-media/public/catalog/skus/MTR-MPOHA-500G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "500g"}]
+341	126	MTR-MPOHA-500G	640.00	157	10	http://localhost:9000/nexus-media/public/pms/skus/MTR-MPOHA-500G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "500g"}]
 
-343	127	AASHIRVAAD-MGA-200G	80.00	203	10	http://localhost:9000/nexus-media/public/catalog/skus/AASHIRVAAD-MGA-200G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "200g"}]
+343	127	AASHIRVAAD-MGA-200G	80.00	203	10	http://localhost:9000/nexus-media/public/pms/skus/AASHIRVAAD-MGA-200G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "200g"}]
 
-344	127	AASHIRVAAD-MGA-500G	80.00	230	10	http://localhost:9000/nexus-media/public/catalog/skus/AASHIRVAAD-MGA-500G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "500g"}]
+344	127	AASHIRVAAD-MGA-500G	80.00	230	10	http://localhost:9000/nexus-media/public/pms/skus/AASHIRVAAD-MGA-500G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "500g"}]
 
-345	128	TATA-SPOHA-100G	900.00	107	10	http://localhost:9000/nexus-media/public/catalog/skus/TATA-SPOHA-100G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "100g"}]
+345	128	TATA-SPOHA-100G	900.00	107	10	http://localhost:9000/nexus-media/public/pms/skus/TATA-SPOHA-100G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "100g"}]
 
-346	128	TATA-SPOHA-200G	900.00	61	10	http://localhost:9000/nexus-media/public/catalog/skus/TATA-SPOHA-200G/main.svg	0	810.00	0	[{"key": "Pack Size", "value": "200g"}]
+346	128	TATA-SPOHA-200G	900.00	61	10	http://localhost:9000/nexus-media/public/pms/skus/TATA-SPOHA-200G/main.svg	0	810.00	0	[{"key": "Pack Size", "value": "200g"}]
 
-347	128	TATA-SPOHA-500G	900.00	119	10	http://localhost:9000/nexus-media/public/catalog/skus/TATA-SPOHA-500G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "500g"}]
+347	128	TATA-SPOHA-500G	900.00	119	10	http://localhost:9000/nexus-media/public/pms/skus/TATA-SPOHA-500G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "500g"}]
 
-349	129	FORTUNE-FSO-1L	560.00	202	10	http://localhost:9000/nexus-media/public/catalog/skus/FORTUNE-FSO-1L/main.svg	0	\N	0	[{"key": "Pack Size", "value": "1L"}]
+349	129	FORTUNE-FSO-1L	560.00	202	10	http://localhost:9000/nexus-media/public/pms/skus/FORTUNE-FSO-1L/main.svg	0	\N	0	[{"key": "Pack Size", "value": "1L"}]
 
-350	129	FORTUNE-FSO-2L	650.00	62	10	http://localhost:9000/nexus-media/public/catalog/skus/FORTUNE-FSO-2L/main.svg	0	\N	0	[{"key": "Pack Size", "value": "2L"}]
+350	129	FORTUNE-FSO-2L	650.00	62	10	http://localhost:9000/nexus-media/public/pms/skus/FORTUNE-FSO-2L/main.svg	0	\N	0	[{"key": "Pack Size", "value": "2L"}]
 
-351	130	PATANJALI-DALIA-100G	640.00	91	10	http://localhost:9000/nexus-media/public/catalog/skus/PATANJALI-DALIA-100G/main.svg	0	580.00	0	[{"key": "Pack Size", "value": "100g"}]
+351	130	PATANJALI-DALIA-100G	640.00	91	10	http://localhost:9000/nexus-media/public/pms/skus/PATANJALI-DALIA-100G/main.svg	0	580.00	0	[{"key": "Pack Size", "value": "100g"}]
 
-352	130	PATANJALI-DALIA-200G	640.00	223	10	http://localhost:9000/nexus-media/public/catalog/skus/PATANJALI-DALIA-200G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "200g"}]
+352	130	PATANJALI-DALIA-200G	640.00	223	10	http://localhost:9000/nexus-media/public/pms/skus/PATANJALI-DALIA-200G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "200g"}]
 
-6	2	SAMSUNG-GS26-BLK-256	74000.00	110	10	http://localhost:9000/nexus-media/public/catalog/skus/SAMSUNG-GS26-BLK-256/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Storage", "value": "256GB"}]
+6	2	SAMSUNG-GS26-BLK-256	74000.00	110	10	http://localhost:9000/nexus-media/public/pms/skus/SAMSUNG-GS26-BLK-256/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Storage", "value": "256GB"}]
 
-354	131	UNILEVER-KTK-500ML	180.00	168	10	http://localhost:9000/nexus-media/public/catalog/skus/UNILEVER-KTK-500ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "500ml"}]
+354	131	UNILEVER-KTK-500ML	180.00	168	10	http://localhost:9000/nexus-media/public/pms/skus/UNILEVER-KTK-500ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "500ml"}]
 
-355	131	UNILEVER-KTK-1L	220.00	226	10	http://localhost:9000/nexus-media/public/catalog/skus/UNILEVER-KTK-1L/main.svg	0	200.00	0	[{"key": "Pack Size", "value": "1L"}]
+355	131	UNILEVER-KTK-1L	220.00	226	10	http://localhost:9000/nexus-media/public/pms/skus/UNILEVER-KTK-1L/main.svg	0	200.00	0	[{"key": "Pack Size", "value": "1L"}]
 
-356	131	UNILEVER-KTK-2L	250.00	232	10	http://localhost:9000/nexus-media/public/catalog/skus/UNILEVER-KTK-2L/main.svg	0	\N	0	[{"key": "Pack Size", "value": "2L"}]
+356	131	UNILEVER-KTK-2L	250.00	232	10	http://localhost:9000/nexus-media/public/pms/skus/UNILEVER-KTK-2L/main.svg	0	\N	0	[{"key": "Pack Size", "value": "2L"}]
 
-357	132	AMUL-PGHEE-500ML	380.00	50	10	http://localhost:9000/nexus-media/public/catalog/skus/AMUL-PGHEE-500ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "500ml"}]
+357	132	AMUL-PGHEE-500ML	380.00	50	10	http://localhost:9000/nexus-media/public/pms/skus/AMUL-PGHEE-500ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "500ml"}]
 
-358	132	AMUL-PGHEE-1L	460.00	139	10	http://localhost:9000/nexus-media/public/catalog/skus/AMUL-PGHEE-1L/main.svg	0	\N	0	[{"key": "Pack Size", "value": "1L"}]
+358	132	AMUL-PGHEE-1L	460.00	139	10	http://localhost:9000/nexus-media/public/pms/skus/AMUL-PGHEE-1L/main.svg	0	\N	0	[{"key": "Pack Size", "value": "1L"}]
 
-360	133	MOTHERDAIRY-PANEER-100G	430.00	49	10	http://localhost:9000/nexus-media/public/catalog/skus/MOTHERDAIRY-PANEER-100G/main.svg	0	370.00	0	[{"key": "Pack Size", "value": "100g"}]
+360	133	MOTHERDAIRY-PANEER-100G	430.00	49	10	http://localhost:9000/nexus-media/public/pms/skus/MOTHERDAIRY-PANEER-100G/main.svg	0	370.00	0	[{"key": "Pack Size", "value": "100g"}]
 
-361	133	MOTHERDAIRY-PANEER-200G	430.00	101	10	http://localhost:9000/nexus-media/public/catalog/skus/MOTHERDAIRY-PANEER-200G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "200g"}]
+361	133	MOTHERDAIRY-PANEER-200G	430.00	101	10	http://localhost:9000/nexus-media/public/pms/skus/MOTHERDAIRY-PANEER-200G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "200g"}]
 
-362	133	MOTHERDAIRY-PANEER-500G	430.00	239	10	http://localhost:9000/nexus-media/public/catalog/skus/MOTHERDAIRY-PANEER-500G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "500g"}]
+362	133	MOTHERDAIRY-PANEER-500G	430.00	239	10	http://localhost:9000/nexus-media/public/pms/skus/MOTHERDAIRY-PANEER-500G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "500g"}]
 
-364	134	3M-MFC-50ML	7080.00	38	10	http://localhost:9000/nexus-media/public/catalog/skus/3M-MFC-50ML/main.svg	0	6510.00	0	[{"key": "Pack Size", "value": "50ml"}]
+364	134	3M-MFC-50ML	7080.00	38	10	http://localhost:9000/nexus-media/public/pms/skus/3M-MFC-50ML/main.svg	0	6510.00	0	[{"key": "Pack Size", "value": "50ml"}]
 
-365	134	3M-MFC-100ML	7080.00	113	10	http://localhost:9000/nexus-media/public/catalog/skus/3M-MFC-100ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "100ml"}]
+365	134	3M-MFC-100ML	7080.00	113	10	http://localhost:9000/nexus-media/public/pms/skus/3M-MFC-100ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "100ml"}]
 
-366	135	BOSCHI-CAF-STD	7210.00	11	10	http://localhost:9000/nexus-media/public/catalog/skus/BOSCHI-CAF-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+366	135	BOSCHI-CAF-STD	7210.00	11	10	http://localhost:9000/nexus-media/public/pms/skus/BOSCHI-CAF-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
 
-367	136	TVS-CBC-STD	1970.00	143	10	http://localhost:9000/nexus-media/public/catalog/skus/TVS-CBC-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+367	136	TVS-CBC-STD	1970.00	143	10	http://localhost:9000/nexus-media/public/pms/skus/TVS-CBC-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
 
-368	137	CEAT-TVK-STD	8640.00	154	10	http://localhost:9000/nexus-media/public/catalog/skus/CEAT-TVK-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+368	137	CEAT-TVK-STD	8640.00	154	10	http://localhost:9000/nexus-media/public/pms/skus/CEAT-TVK-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
 
-370	139	MOTUL-XCESS-STD	7590.00	53	10	http://localhost:9000/nexus-media/public/catalog/skus/MOTUL-XCESS-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+370	139	MOTUL-XCESS-STD	7590.00	53	10	http://localhost:9000/nexus-media/public/pms/skus/MOTUL-XCESS-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
 
-371	140	GULF-FG530-STD	6640.00	115	10	http://localhost:9000/nexus-media/public/catalog/skus/GULF-FG530-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+371	140	GULF-FG530-STD	6640.00	115	10	http://localhost:9000/nexus-media/public/pms/skus/GULF-FG530-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
 
-372	141	3M-PRIT-30ML	8130.00	122	10	http://localhost:9000/nexus-media/public/catalog/skus/3M-PRIT-30ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "30ml"}]
+372	141	3M-PRIT-30ML	8130.00	122	10	http://localhost:9000/nexus-media/public/pms/skus/3M-PRIT-30ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "30ml"}]
 
-373	141	3M-PRIT-50ML	8130.00	49	10	http://localhost:9000/nexus-media/public/catalog/skus/3M-PRIT-50ML/main.svg	0	6670.00	0	[{"key": "Pack Size", "value": "50ml"}]
+373	141	3M-PRIT-50ML	8130.00	49	10	http://localhost:9000/nexus-media/public/pms/skus/3M-PRIT-50ML/main.svg	0	6670.00	0	[{"key": "Pack Size", "value": "50ml"}]
 
-375	142	MICHELIN-XM2P-R15	2850.00	59	10	http://localhost:9000/nexus-media/public/catalog/skus/MICHELIN-XM2P-R15/main.svg	0	\N	0	[{"key": "Size", "value": "195/65 R15"}]
+375	142	MICHELIN-XM2P-R15	2850.00	59	10	http://localhost:9000/nexus-media/public/pms/skus/MICHELIN-XM2P-R15/main.svg	0	\N	0	[{"key": "Size", "value": "195/65 R15"}]
 
-376	142	MICHELIN-XM2P-R16	2850.00	20	10	http://localhost:9000/nexus-media/public/catalog/skus/MICHELIN-XM2P-R16/main.svg	0	\N	0	[{"key": "Size", "value": "205/55 R16"}]
+376	142	MICHELIN-XM2P-R16	2850.00	20	10	http://localhost:9000/nexus-media/public/pms/skus/MICHELIN-XM2P-R16/main.svg	0	\N	0	[{"key": "Size", "value": "205/55 R16"}]
 
-377	142	MICHELIN-XM2P-R17	2850.00	116	10	http://localhost:9000/nexus-media/public/catalog/skus/MICHELIN-XM2P-R17/main.svg	0	\N	0	[{"key": "Size", "value": "215/60 R17"}]
+377	142	MICHELIN-XM2P-R17	2850.00	116	10	http://localhost:9000/nexus-media/public/pms/skus/MICHELIN-XM2P-R17/main.svg	0	\N	0	[{"key": "Size", "value": "215/60 R17"}]
 
-378	143	MRF-PERF-R15	8280.00	41	10	http://localhost:9000/nexus-media/public/catalog/skus/MRF-PERF-R15/main.svg	0	7620.00	0	[{"key": "Size", "value": "195/65 R15"}]
+378	143	MRF-PERF-R15	8280.00	41	10	http://localhost:9000/nexus-media/public/pms/skus/MRF-PERF-R15/main.svg	0	7620.00	0	[{"key": "Size", "value": "195/65 R15"}]
 
-380	143	MRF-PERF-R17	8280.00	121	10	http://localhost:9000/nexus-media/public/catalog/skus/MRF-PERF-R17/main.svg	0	\N	0	[{"key": "Size", "value": "215/60 R17"}]
+380	143	MRF-PERF-R17	8280.00	121	10	http://localhost:9000/nexus-media/public/pms/skus/MRF-PERF-R17/main.svg	0	\N	0	[{"key": "Size", "value": "215/60 R17"}]
 
-381	144	APOLLO-ALN4-R15	5830.00	144	10	http://localhost:9000/nexus-media/public/catalog/skus/APOLLO-ALN4-R15/main.svg	0	\N	0	[{"key": "Size", "value": "195/65 R15"}]
+381	144	APOLLO-ALN4-R15	5830.00	144	10	http://localhost:9000/nexus-media/public/pms/skus/APOLLO-ALN4-R15/main.svg	0	\N	0	[{"key": "Size", "value": "195/65 R15"}]
 
-9	3	GOOGLE-PX11-BLK-128	54640.00	89	10	http://localhost:9000/nexus-media/public/catalog/skus/GOOGLE-PX11-BLK-128/main.svg	0	49180.00	0	[{"key": "Color", "value": "Black"}, {"key": "Storage", "value": "128GB"}]
+9	3	GOOGLE-PX11-BLK-128	54640.00	89	10	http://localhost:9000/nexus-media/public/pms/skus/GOOGLE-PX11-BLK-128/main.svg	0	49180.00	0	[{"key": "Color", "value": "Black"}, {"key": "Storage", "value": "128GB"}]
 
-16	4	LAVA-TAB11-SLV-256	27700.00	17	10	http://localhost:9000/nexus-media/public/catalog/skus/LAVA-TAB11-SLV-256/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "256GB"}]
+16	4	LAVA-TAB11-SLV-256	27700.00	17	10	http://localhost:9000/nexus-media/public/pms/skus/LAVA-TAB11-SLV-256/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "256GB"}]
 
-22	6	MICRO-INN3-BLK-256	38750.00	114	10	http://localhost:9000/nexus-media/public/catalog/skus/MICRO-INN3-BLK-256/main.svg	0	31780.00	0	[{"key": "Color", "value": "Black"}, {"key": "Storage", "value": "256GB"}]
+22	6	MICRO-INN3-BLK-256	38750.00	114	10	http://localhost:9000/nexus-media/public/pms/skus/MICRO-INN3-BLK-256/main.svg	0	31780.00	0	[{"key": "Color", "value": "Black"}, {"key": "Storage", "value": "256GB"}]
 
-27	7	DELL-IN16P-32-1TB-BLK	136640.00	76	10	http://localhost:9000/nexus-media/public/catalog/skus/DELL-IN16P-32-1TB-BLK/main.svg	0	122980.00	0	[{"key": "RAM", "value": "32GB"}, {"key": "Color", "value": "Black"}, {"key": "Storage", "value": "1TB"}]
+27	7	DELL-IN16P-32-1TB-BLK	136640.00	76	10	http://localhost:9000/nexus-media/public/pms/skus/DELL-IN16P-32-1TB-BLK/main.svg	0	122980.00	0	[{"key": "RAM", "value": "32GB"}, {"key": "Color", "value": "Black"}, {"key": "Storage", "value": "1TB"}]
 
-3	1	APPLE-IP17-SLV-128	53430.00	83	10	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-SLV-128/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "128GB"}]
+3	1	APPLE-IP17-SLV-128	53430.00	83	10	http://localhost:9000/nexus-media/public/pms/skus/APPLE-IP17-SLV-128/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "128GB"}]
 
-33	9	ASUS-VBS16-16-512-BLK	61920.00	36	10	http://localhost:9000/nexus-media/public/catalog/skus/ASUS-VBS16-16-512-BLK/main.svg	0	\N	0	[{"key": "RAM", "value": "16GB"}, {"key": "Color", "value": "Black"}, {"key": "Storage", "value": "512GB"}]
+33	9	ASUS-VBS16-16-512-BLK	61920.00	36	10	http://localhost:9000/nexus-media/public/pms/skus/ASUS-VBS16-16-512-BLK/main.svg	0	\N	0	[{"key": "RAM", "value": "16GB"}, {"key": "Color", "value": "Black"}, {"key": "Storage", "value": "512GB"}]
 
-39	10	ONEPLUS-OPPAD3-SLV-128	43630.00	38	10	http://localhost:9000/nexus-media/public/catalog/skus/ONEPLUS-OPPAD3-SLV-128/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "128GB"}]
+39	10	ONEPLUS-OPPAD3-SLV-128	43630.00	38	10	http://localhost:9000/nexus-media/public/pms/skus/ONEPLUS-OPPAD3-SLV-128/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "128GB"}]
 
-44	12	NOTHING-EAR3-SLV	6930.00	9	10	http://localhost:9000/nexus-media/public/catalog/skus/NOTHING-EAR3-SLV/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}]
+44	12	NOTHING-EAR3-SLV	6930.00	9	10	http://localhost:9000/nexus-media/public/pms/skus/NOTHING-EAR3-SLV/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}]
 
-49	16	SONY-WH6-BLK	34990.00	8	10	http://localhost:9000/nexus-media/public/catalog/skus/SONY-WH6-BLK/main.svg	0	31490.00	0	[{"key": "Color", "value": "Black"}]
+49	16	SONY-WH6-BLK	34990.00	8	10	http://localhost:9000/nexus-media/public/pms/skus/SONY-WH6-BLK/main.svg	0	31490.00	0	[{"key": "Color", "value": "Black"}]
 
-53	18	SAMSUNG-ODG6-27-QHD	11010.00	58	10	http://localhost:9000/nexus-media/public/catalog/skus/SAMSUNG-ODG6-27-QHD/main.svg	0	\N	0	[{"key": "Resolution", "value": "2560x1440"}, {"key": "Size (inches)", "value": "27"}]
+53	18	SAMSUNG-ODG6-27-QHD	11010.00	58	10	http://localhost:9000/nexus-media/public/pms/skus/SAMSUNG-ODG6-27-QHD/main.svg	0	\N	0	[{"key": "Resolution", "value": "2560x1440"}, {"key": "Size (inches)", "value": "27"}]
 
-60	20	LEVIS-511SL-XL-BLK	4570.00	120	10	http://localhost:9000/nexus-media/public/catalog/skus/LEVIS-511SL-XL-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "XL"}, {"key": "Color", "value": "Black"}]
+60	20	LEVIS-511SL-XL-BLK	4570.00	120	10	http://localhost:9000/nexus-media/public/pms/skus/LEVIS-511SL-XL-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "XL"}, {"key": "Color", "value": "Black"}]
 
-65	22	PETEREN-PEFSH-S-BLK	2580.00	98	10	http://localhost:9000/nexus-media/public/catalog/skus/PETEREN-PEFSH-S-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "S"}, {"key": "Color", "value": "Black"}]
+65	22	PETEREN-PEFSH-S-BLK	2580.00	98	10	http://localhost:9000/nexus-media/public/pms/skus/PETEREN-PEFSH-S-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "S"}, {"key": "Color", "value": "Black"}]
 
-70	23	RAYMOND-RFT-M-BLK	6050.00	98	10	http://localhost:9000/nexus-media/public/catalog/skus/RAYMOND-RFT-M-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "M"}, {"key": "Color", "value": "Black"}]
+70	23	RAYMOND-RFT-M-BLK	6050.00	98	10	http://localhost:9000/nexus-media/public/pms/skus/RAYMOND-RFT-M-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "M"}, {"key": "Color", "value": "Black"}]
 
-76	25	ZARA-ZRBL-S-BLK	970.00	100	10	http://localhost:9000/nexus-media/public/catalog/skus/ZARA-ZRBL-S-BLK/main.svg	0	820.00	0	[{"key": "Size", "value": "S"}, {"key": "Color", "value": "Black"}]
+76	25	ZARA-ZRBL-S-BLK	970.00	100	10	http://localhost:9000/nexus-media/public/pms/skus/ZARA-ZRBL-S-BLK/main.svg	0	820.00	0	[{"key": "Size", "value": "S"}, {"key": "Color", "value": "Black"}]
 
-83	26	HM-HMD-XL-BLK	2500.00	150	10	http://localhost:9000/nexus-media/public/catalog/skus/HM-HMD-XL-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "XL"}, {"key": "Color", "value": "Black"}]
+83	26	HM-HMD-XL-BLK	2500.00	150	10	http://localhost:9000/nexus-media/public/pms/skus/HM-HMD-XL-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "XL"}, {"key": "Color", "value": "Black"}]
 
-87	27	FABIND-FBKRT-XL-BLK	2710.00	38	10	http://localhost:9000/nexus-media/public/catalog/skus/FABIND-FBKRT-XL-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "XL"}, {"key": "Color", "value": "Black"}]
+87	27	FABIND-FBKRT-XL-BLK	2710.00	38	10	http://localhost:9000/nexus-media/public/pms/skus/FABIND-FBKRT-XL-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "XL"}, {"key": "Color", "value": "Black"}]
 
-89	28	MANYAVAR-MVKRT-M-BLK	2550.00	93	10	http://localhost:9000/nexus-media/public/catalog/skus/MANYAVAR-MVKRT-M-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "M"}, {"key": "Color", "value": "Black"}]
+89	28	MANYAVAR-MVKRT-M-BLK	2550.00	93	10	http://localhost:9000/nexus-media/public/pms/skus/MANYAVAR-MVKRT-M-BLK/main.svg	0	\N	0	[{"key": "Size", "value": "M"}, {"key": "Color", "value": "Black"}]
 
-90	28	MANYAVAR-MVKRT-L-BLK	2550.00	149	10	http://localhost:9000/nexus-media/public/catalog/skus/MANYAVAR-MVKRT-L-BLK/main.svg	0	2300.00	0	[{"key": "Size", "value": "L"}, {"key": "Color", "value": "Black"}]
+90	28	MANYAVAR-MVKRT-L-BLK	2550.00	149	10	http://localhost:9000/nexus-media/public/pms/skus/MANYAVAR-MVKRT-L-BLK/main.svg	0	2300.00	0	[{"key": "Size", "value": "L"}, {"key": "Color", "value": "Black"}]
 
-97	30	NIKE-AM270-BLK-9	9820.00	95	10	http://localhost:9000/nexus-media/public/catalog/skus/NIKE-AM270-BLK-9/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Size (US)", "value": "9"}]
+97	30	NIKE-AM270-BLK-9	9820.00	95	10	http://localhost:9000/nexus-media/public/pms/skus/NIKE-AM270-BLK-9/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Size (US)", "value": "9"}]
 
-102	31	ADIDAS-UBLGT-WHT-8	8260.00	23	10	http://localhost:9000/nexus-media/public/catalog/skus/ADIDAS-UBLGT-WHT-8/main.svg	0	\N	0	[{"key": "Color", "value": "White"}, {"key": "Size (US)", "value": "8"}]
+102	31	ADIDAS-UBLGT-WHT-8	8260.00	23	10	http://localhost:9000/nexus-media/public/pms/skus/ADIDAS-UBLGT-WHT-8/main.svg	0	\N	0	[{"key": "Color", "value": "White"}, {"key": "Size (US)", "value": "8"}]
 
-108	33	TNF-VEND-BLK-8	2540.00	133	10	http://localhost:9000/nexus-media/public/catalog/skus/TNF-VEND-BLK-8/main.svg	0	2160.00	0	[{"key": "Color", "value": "Black"}, {"key": "Size (US)", "value": "8"}]
+108	33	TNF-VEND-BLK-8	2540.00	133	10	http://localhost:9000/nexus-media/public/pms/skus/TNF-VEND-BLK-8/main.svg	0	2160.00	0	[{"key": "Color", "value": "Black"}, {"key": "Size (US)", "value": "8"}]
 
-383	144	APOLLO-ALN4-R17	5830.00	78	10	http://localhost:9000/nexus-media/public/catalog/skus/APOLLO-ALN4-R17/main.svg	0	\N	0	[{"key": "Size", "value": "215/60 R17"}]
+383	144	APOLLO-ALN4-R17	5830.00	78	10	http://localhost:9000/nexus-media/public/pms/skus/APOLLO-ALN4-R17/main.svg	0	\N	0	[{"key": "Size", "value": "215/60 R17"}]
 
-385	145	CEAT-MILAZE-R16	11610.00	130	10	http://localhost:9000/nexus-media/public/catalog/skus/CEAT-MILAZE-R16/main.svg	0	\N	0	[{"key": "Size", "value": "205/55 R16"}]
+385	145	CEAT-MILAZE-R16	11610.00	130	10	http://localhost:9000/nexus-media/public/pms/skus/CEAT-MILAZE-R16/main.svg	0	\N	0	[{"key": "Size", "value": "205/55 R16"}]
 
-386	145	CEAT-MILAZE-R17	11610.00	126	10	http://localhost:9000/nexus-media/public/catalog/skus/CEAT-MILAZE-R17/main.svg	0	\N	0	[{"key": "Size", "value": "215/60 R17"}]
+386	145	CEAT-MILAZE-R17	11610.00	126	10	http://localhost:9000/nexus-media/public/pms/skus/CEAT-MILAZE-R17/main.svg	0	\N	0	[{"key": "Size", "value": "215/60 R17"}]
 
-387	146	TVS-EGRIP-R15	5380.00	132	10	http://localhost:9000/nexus-media/public/catalog/skus/TVS-EGRIP-R15/main.svg	0	4410.00	0	[{"key": "Size", "value": "195/65 R15"}]
+387	146	TVS-EGRIP-R15	5380.00	132	10	http://localhost:9000/nexus-media/public/pms/skus/TVS-EGRIP-R15/main.svg	0	4410.00	0	[{"key": "Size", "value": "195/65 R15"}]
 
-388	146	TVS-EGRIP-R16	5380.00	147	10	http://localhost:9000/nexus-media/public/catalog/skus/TVS-EGRIP-R16/main.svg	0	\N	0	[{"key": "Size", "value": "205/55 R16"}]
+388	146	TVS-EGRIP-R16	5380.00	147	10	http://localhost:9000/nexus-media/public/pms/skus/TVS-EGRIP-R16/main.svg	0	\N	0	[{"key": "Size", "value": "205/55 R16"}]
 
-390	147	BOSCHI-PSP-STD	3840.00	66	10	http://localhost:9000/nexus-media/public/catalog/skus/BOSCHI-PSP-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+390	147	BOSCHI-PSP-STD	3840.00	66	10	http://localhost:9000/nexus-media/public/pms/skus/BOSCHI-PSP-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
 
-391	148	CEAT-CBPS-STD	5420.00	103	10	http://localhost:9000/nexus-media/public/catalog/skus/CEAT-CBPS-STD/main.svg	0	4610.00	0	[{"key": "Color", "value": "Black"}]
+391	148	CEAT-CBPS-STD	5420.00	103	10	http://localhost:9000/nexus-media/public/pms/skus/CEAT-CBPS-STD/main.svg	0	4610.00	0	[{"key": "Color", "value": "Black"}]
 
-392	149	3M-CVC-BLK	3760.00	32	10	http://localhost:9000/nexus-media/public/catalog/skus/3M-CVC-BLK/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+392	149	3M-CVC-BLK	3760.00	32	10	http://localhost:9000/nexus-media/public/pms/skus/3M-CVC-BLK/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
 
-393	149	3M-CVC-SLV	3830.00	25	10	http://localhost:9000/nexus-media/public/catalog/skus/3M-CVC-SLV/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}]
+393	149	3M-CVC-SLV	3830.00	25	10	http://localhost:9000/nexus-media/public/pms/skus/3M-CVC-SLV/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}]
 
-396	151	CASTROL-EF-50ML	2770.00	43	10	http://localhost:9000/nexus-media/public/catalog/skus/CASTROL-EF-50ML/main.svg	0	2270.00	0	[{"key": "Pack Size", "value": "50ml"}]
+396	151	CASTROL-EF-50ML	2770.00	43	10	http://localhost:9000/nexus-media/public/pms/skus/CASTROL-EF-50ML/main.svg	0	2270.00	0	[{"key": "Pack Size", "value": "50ml"}]
 
-397	151	CASTROL-EF-100ML	2770.00	144	10	http://localhost:9000/nexus-media/public/catalog/skus/CASTROL-EF-100ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "100ml"}]
+397	151	CASTROL-EF-100ML	2770.00	144	10	http://localhost:9000/nexus-media/public/pms/skus/CASTROL-EF-100ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "100ml"}]
 
-398	152	MOTUL-CCLEAN-30ML	13020.00	67	10	http://localhost:9000/nexus-media/public/catalog/skus/MOTUL-CCLEAN-30ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "30ml"}]
+398	152	MOTUL-CCLEAN-30ML	13020.00	67	10	http://localhost:9000/nexus-media/public/pms/skus/MOTUL-CCLEAN-30ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "30ml"}]
 
-399	152	MOTUL-CCLEAN-50ML	13020.00	114	10	http://localhost:9000/nexus-media/public/catalog/skus/MOTUL-CCLEAN-50ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "50ml"}]
+399	152	MOTUL-CCLEAN-50ML	13020.00	114	10	http://localhost:9000/nexus-media/public/pms/skus/MOTUL-CCLEAN-50ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "50ml"}]
 
-115	35	VANH-VHBLT-M	6090.00	60	10	http://localhost:9000/nexus-media/public/catalog/skus/VANH-VHBLT-M/main.svg	0	\N	0	[{"key": "Size", "value": "M"}]
+115	35	VANH-VHBLT-M	6090.00	60	10	http://localhost:9000/nexus-media/public/pms/skus/VANH-VHBLT-M/main.svg	0	\N	0	[{"key": "Size", "value": "M"}]
 
-120	37	NIKE-HBPK-SLV	1170.00	73	10	http://localhost:9000/nexus-media/public/catalog/skus/NIKE-HBPK-SLV/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}]
+120	37	NIKE-HBPK-SLV	1170.00	73	10	http://localhost:9000/nexus-media/public/pms/skus/NIKE-HBPK-SLV/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}]
 
-125	40	IKEA-LACK-BLK	21530.00	80	10	http://localhost:9000/nexus-media/public/catalog/skus/IKEA-LACK-BLK/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+125	40	IKEA-LACK-BLK	21530.00	80	10	http://localhost:9000/nexus-media/public/pms/skus/IKEA-LACK-BLK/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
 
-131	43	DYSON-V15D-STD	10510.00	25	10	http://localhost:9000/nexus-media/public/catalog/skus/DYSON-V15D-STD/main.svg	0	\N	0	\N
+131	43	DYSON-V15D-STD	10510.00	25	10	http://localhost:9000/nexus-media/public/pms/skus/DYSON-V15D-STD/main.svg	0	\N	0	\N
 
-135	45	PRESTIGE-AFPRO-6L	23130.00	30	10	http://localhost:9000/nexus-media/public/catalog/skus/PRESTIGE-AFPRO-6L/main.svg	0	18970.00	0	[{"key": "Capacity", "value": "6L"}]
+135	45	PRESTIGE-AFPRO-6L	23130.00	30	10	http://localhost:9000/nexus-media/public/pms/skus/PRESTIGE-AFPRO-6L/main.svg	0	18970.00	0	[{"key": "Capacity", "value": "6L"}]
 
-7	2	SAMSUNG-GS26-SLV-128	69890.00	107	10	http://localhost:9000/nexus-media/public/catalog/skus/SAMSUNG-GS26-SLV-128/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "128GB"}]
+7	2	SAMSUNG-GS26-SLV-128	69890.00	107	10	http://localhost:9000/nexus-media/public/pms/skus/SAMSUNG-GS26-SLV-128/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "128GB"}]
 
-8	2	SAMSUNG-GS26-SLV-256	75370.00	85	10	http://localhost:9000/nexus-media/public/catalog/skus/SAMSUNG-GS26-SLV-256/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "256GB"}]
+8	2	SAMSUNG-GS26-SLV-256	75370.00	85	10	http://localhost:9000/nexus-media/public/pms/skus/SAMSUNG-GS26-SLV-256/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "256GB"}]
 
-10	3	GOOGLE-PX11-BLK-256	59010.00	50	10	http://localhost:9000/nexus-media/public/catalog/skus/GOOGLE-PX11-BLK-256/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Storage", "value": "256GB"}]
+10	3	GOOGLE-PX11-BLK-256	59010.00	50	10	http://localhost:9000/nexus-media/public/pms/skus/GOOGLE-PX11-BLK-256/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Storage", "value": "256GB"}]
 
-11	3	GOOGLE-PX11-SLV-128	55730.00	110	10	http://localhost:9000/nexus-media/public/catalog/skus/GOOGLE-PX11-SLV-128/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "128GB"}]
+11	3	GOOGLE-PX11-SLV-128	55730.00	110	10	http://localhost:9000/nexus-media/public/pms/skus/GOOGLE-PX11-SLV-128/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "128GB"}]
 
-12	3	GOOGLE-PX11-SLV-256	60100.00	99	10	http://localhost:9000/nexus-media/public/catalog/skus/GOOGLE-PX11-SLV-256/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "256GB"}]
+12	3	GOOGLE-PX11-SLV-256	60100.00	99	10	http://localhost:9000/nexus-media/public/pms/skus/GOOGLE-PX11-SLV-256/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "256GB"}]
 
-13	4	LAVA-TAB11-BLK-128	25180.00	75	10	http://localhost:9000/nexus-media/public/catalog/skus/LAVA-TAB11-BLK-128/main.svg	0	20650.00	0	[{"key": "Color", "value": "Black"}, {"key": "Storage", "value": "128GB"}]
+13	4	LAVA-TAB11-BLK-128	25180.00	75	10	http://localhost:9000/nexus-media/public/pms/skus/LAVA-TAB11-BLK-128/main.svg	0	20650.00	0	[{"key": "Color", "value": "Black"}, {"key": "Storage", "value": "128GB"}]
 
-14	4	LAVA-TAB11-BLK-256	27190.00	52	10	http://localhost:9000/nexus-media/public/catalog/skus/LAVA-TAB11-BLK-256/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Storage", "value": "256GB"}]
+14	4	LAVA-TAB11-BLK-256	27190.00	52	10	http://localhost:9000/nexus-media/public/pms/skus/LAVA-TAB11-BLK-256/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Storage", "value": "256GB"}]
 
-15	4	LAVA-TAB11-SLV-128	25680.00	20	10	http://localhost:9000/nexus-media/public/catalog/skus/LAVA-TAB11-SLV-128/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "128GB"}]
+15	4	LAVA-TAB11-SLV-128	25680.00	20	10	http://localhost:9000/nexus-media/public/pms/skus/LAVA-TAB11-SLV-128/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "128GB"}]
 
-17	5	ONEPLUS-OP14-BLK-128	40530.00	29	10	http://localhost:9000/nexus-media/public/catalog/skus/ONEPLUS-OP14-BLK-128/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Storage", "value": "128GB"}]
+17	5	ONEPLUS-OP14-BLK-128	40530.00	29	10	http://localhost:9000/nexus-media/public/pms/skus/ONEPLUS-OP14-BLK-128/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Storage", "value": "128GB"}]
 
-18	5	ONEPLUS-OP14-BLK-256	43780.00	115	10	http://localhost:9000/nexus-media/public/catalog/skus/ONEPLUS-OP14-BLK-256/main.svg	0	40280.00	0	[{"key": "Color", "value": "Black"}, {"key": "Storage", "value": "256GB"}]
+18	5	ONEPLUS-OP14-BLK-256	43780.00	115	10	http://localhost:9000/nexus-media/public/pms/skus/ONEPLUS-OP14-BLK-256/main.svg	0	40280.00	0	[{"key": "Color", "value": "Black"}, {"key": "Storage", "value": "256GB"}]
 
-19	5	ONEPLUS-OP14-SLV-128	41340.00	48	10	http://localhost:9000/nexus-media/public/catalog/skus/ONEPLUS-OP14-SLV-128/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "128GB"}]
+19	5	ONEPLUS-OP14-SLV-128	41340.00	48	10	http://localhost:9000/nexus-media/public/pms/skus/ONEPLUS-OP14-SLV-128/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "128GB"}]
 
-20	5	ONEPLUS-OP14-SLV-256	44590.00	112	10	http://localhost:9000/nexus-media/public/catalog/skus/ONEPLUS-OP14-SLV-256/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "256GB"}]
+20	5	ONEPLUS-OP14-SLV-256	44590.00	112	10	http://localhost:9000/nexus-media/public/pms/skus/ONEPLUS-OP14-SLV-256/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "256GB"}]
 
-21	6	MICRO-INN3-BLK-128	35880.00	90	10	http://localhost:9000/nexus-media/public/catalog/skus/MICRO-INN3-BLK-128/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Storage", "value": "128GB"}]
+21	6	MICRO-INN3-BLK-128	35880.00	90	10	http://localhost:9000/nexus-media/public/pms/skus/MICRO-INN3-BLK-128/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Storage", "value": "128GB"}]
 
-42	11	PORT-MUFFM2-SLV	18530.00	35	10	http://localhost:9000/nexus-media/public/catalog/skus/PORT-MUFFM2-SLV/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}]
+42	11	PORT-MUFFM2-SLV	18530.00	35	10	http://localhost:9000/nexus-media/public/pms/skus/PORT-MUFFM2-SLV/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}]
 
-286	105	MCGRAW-CCIT-HC	1260.00	211	10	http://localhost:9000/nexus-media/public/catalog/skus/MCGRAW-CCIT-HC/main.svg	0	\N	0	[{"key": "Format", "value": "Hardcover"}]
+286	105	MCGRAW-CCIT-HC	1260.00	211	10	http://localhost:9000/nexus-media/public/pms/skus/MCGRAW-CCIT-HC/main.svg	0	\N	0	[{"key": "Format", "value": "Hardcover"}]
 
-150	54	CROMPTON-SEK-1.5L	1740.00	8	10	http://localhost:9000/nexus-media/public/catalog/skus/CROMPTON-SEK-1.5L/main.svg	0	\N	0	[{"key": "Capacity", "value": "1.5L"}]
+150	54	CROMPTON-SEK-1.5L	1740.00	8	10	http://localhost:9000/nexus-media/public/pms/skus/CROMPTON-SEK-1.5L/main.svg	0	\N	0	[{"key": "Capacity", "value": "1.5L"}]
 
-155	56	PRESTIGE-ODP-24CM	4820.00	98	10	http://localhost:9000/nexus-media/public/catalog/skus/PRESTIGE-ODP-24CM/main.svg	0	\N	0	[{"key": "Size", "value": "24cm"}]
+155	56	PRESTIGE-ODP-24CM	4820.00	98	10	http://localhost:9000/nexus-media/public/pms/skus/PRESTIGE-ODP-24CM/main.svg	0	\N	0	[{"key": "Size", "value": "24cm"}]
 
-160	57	HAWKINS-FNT-28CM	6970.00	33	10	http://localhost:9000/nexus-media/public/catalog/skus/HAWKINS-FNT-28CM/main.svg	0	\N	0	[{"key": "Size", "value": "28cm"}]
+160	57	HAWKINS-FNT-28CM	6970.00	33	10	http://localhost:9000/nexus-media/public/pms/skus/HAWKINS-FNT-28CM/main.svg	0	\N	0	[{"key": "Size", "value": "28cm"}]
 
-166	60	CLINIQUE-MS100-100ML	900.00	94	10	http://localhost:9000/nexus-media/public/catalog/skus/CLINIQUE-MS100-100ML/main.svg	0	810.00	0	[{"key": "Pack Size", "value": "100ml"}]
+166	60	CLINIQUE-MS100-100ML	900.00	94	10	http://localhost:9000/nexus-media/public/pms/skus/CLINIQUE-MS100-100ML/main.svg	0	810.00	0	[{"key": "Pack Size", "value": "100ml"}]
 
-172	64	FOREST-FTM-30ML	1450.00	75	10	http://localhost:9000/nexus-media/public/catalog/skus/FOREST-FTM-30ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "30ml"}]
+172	64	FOREST-FTM-30ML	1450.00	75	10	http://localhost:9000/nexus-media/public/pms/skus/FOREST-FTM-30ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "30ml"}]
 
-177	65	PLUM-GTFW-100ML	2300.00	41	10	http://localhost:9000/nexus-media/public/catalog/skus/PLUM-GTFW-100ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "100ml"}]
+177	65	PLUM-GTFW-100ML	2300.00	41	10	http://localhost:9000/nexus-media/public/pms/skus/PLUM-GTFW-100ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "100ml"}]
 
-182	67	MAYBELLINE-FMF-110	1660.00	79	10	http://localhost:9000/nexus-media/public/catalog/skus/MAYBELLINE-FMF-110/main.svg	0	\N	0	[{"key": "Shade", "value": "110 Porcelain"}]
+182	67	MAYBELLINE-FMF-110	1660.00	79	10	http://localhost:9000/nexus-media/public/pms/skus/MAYBELLINE-FMF-110/main.svg	0	\N	0	[{"key": "Shade", "value": "110 Porcelain"}]
 
-187	68	LAKME-9T5-120	2180.00	107	10	http://localhost:9000/nexus-media/public/catalog/skus/LAKME-9T5-120/main.svg	0	\N	0	[{"key": "Shade", "value": "120 Classic Ivory"}]
+187	68	LAKME-9T5-120	2180.00	107	10	http://localhost:9000/nexus-media/public/pms/skus/LAKME-9T5-120/main.svg	0	\N	0	[{"key": "Shade", "value": "120 Classic Ivory"}]
 
-191	69	NYKAA-SKGEN-120	1710.00	8	10	http://localhost:9000/nexus-media/public/catalog/skus/NYKAA-SKGEN-120/main.svg	0	\N	0	[{"key": "Shade", "value": "120 Classic Ivory"}]
+191	69	NYKAA-SKGEN-120	1710.00	8	10	http://localhost:9000/nexus-media/public/pms/skus/NYKAA-SKGEN-120/main.svg	0	\N	0	[{"key": "Shade", "value": "120 Classic Ivory"}]
 
-197	71	DOVE-DIR-30ML	760.00	152	10	http://localhost:9000/nexus-media/public/catalog/skus/DOVE-DIR-30ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "30ml"}]
+197	71	DOVE-DIR-30ML	760.00	152	10	http://localhost:9000/nexus-media/public/pms/skus/DOVE-DIR-30ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "30ml"}]
 
-202	72	LOREAL-ARS-100ML	1840.00	149	10	http://localhost:9000/nexus-media/public/catalog/skus/LOREAL-ARS-100ML/main.svg	0	1620.00	0	[{"key": "Pack Size", "value": "100ml"}]
+202	72	LOREAL-ARS-100ML	1840.00	149	10	http://localhost:9000/nexus-media/public/pms/skus/LOREAL-ARS-100ML/main.svg	0	1620.00	0	[{"key": "Pack Size", "value": "100ml"}]
 
-207	74	NIVEA-MSG-50ML	1570.00	12	10	http://localhost:9000/nexus-media/public/catalog/skus/NIVEA-MSG-50ML/main.svg	0	1290.00	0	[{"key": "Pack Size", "value": "50ml"}]
+207	74	NIVEA-MSG-50ML	1570.00	12	10	http://localhost:9000/nexus-media/public/pms/skus/NIVEA-MSG-50ML/main.svg	0	1290.00	0	[{"key": "Pack Size", "value": "50ml"}]
 
-213	76	PLUM-GTSG-50ML	320.00	10	10	http://localhost:9000/nexus-media/public/catalog/skus/PLUM-GTSG-50ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "50ml"}]
+213	76	PLUM-GTSG-50ML	320.00	10	10	http://localhost:9000/nexus-media/public/pms/skus/PLUM-GTSG-50ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "50ml"}]
 
-218	77	UA-CA10-WHT-9	8630.00	115	10	http://localhost:9000/nexus-media/public/catalog/skus/UA-CA10-WHT-9/main.svg	0	\N	0	[{"key": "Color", "value": "White"}, {"key": "Size (US)", "value": "9"}]
+218	77	UA-CA10-WHT-9	8630.00	115	10	http://localhost:9000/nexus-media/public/pms/skus/UA-CA10-WHT-9/main.svg	0	\N	0	[{"key": "Color", "value": "White"}, {"key": "Size (US)", "value": "9"}]
 
-223	79	NIVIA-RACER-BLK-8	6930.00	57	10	http://localhost:9000/nexus-media/public/catalog/skus/NIVIA-RACER-BLK-8/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Size (US)", "value": "8"}]
+223	79	NIVIA-RACER-BLK-8	6930.00	57	10	http://localhost:9000/nexus-media/public/pms/skus/NIVIA-RACER-BLK-8/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Size (US)", "value": "8"}]
 
-228	80	VECTORX-SPRINT-BLK-9	4130.00	30	10	http://localhost:9000/nexus-media/public/catalog/skus/VECTORX-SPRINT-BLK-9/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Size (US)", "value": "9"}]
+228	80	VECTORX-SPRINT-BLK-9	4130.00	30	10	http://localhost:9000/nexus-media/public/pms/skus/VECTORX-SPRINT-BLK-9/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}, {"key": "Size (US)", "value": "9"}]
 
-138	47	KENT-KGR-STD	22540.00	111	10	http://localhost:9000/nexus-media/public/catalog/skus/KENT-KGR-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+138	47	KENT-KGR-STD	22540.00	111	10	http://localhost:9000/nexus-media/public/pms/skus/KENT-KGR-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
 
-139	48	LG-LGW65-6.5KG	14170.00	66	10	http://localhost:9000/nexus-media/public/catalog/skus/LG-LGW65-6.5KG/main.svg	0	12040.00	0	[{"key": "Capacity", "value": "6.5kg"}]
+139	48	LG-LGW65-6.5KG	14170.00	66	10	http://localhost:9000/nexus-media/public/pms/skus/LG-LGW65-6.5KG/main.svg	0	12040.00	0	[{"key": "Capacity", "value": "6.5kg"}]
 
-145	51	HAVELLS-AQP-10L	7550.00	75	10	http://localhost:9000/nexus-media/public/catalog/skus/HAVELLS-AQP-10L/main.svg	0	\N	0	[{"key": "Capacity", "value": "10L"}]
+145	51	HAVELLS-AQP-10L	7550.00	75	10	http://localhost:9000/nexus-media/public/pms/skus/HAVELLS-AQP-10L/main.svg	0	\N	0	[{"key": "Capacity", "value": "10L"}]
 
-250	91	SG-SGP-S10	6600.00	81	10	http://localhost:9000/nexus-media/public/catalog/skus/SG-SGP-S10/main.svg	0	\N	0	[{"key": "Size", "value": "10"}]
+250	91	SG-SGP-S10	6600.00	81	10	http://localhost:9000/nexus-media/public/pms/skus/SG-SGP-S10/main.svg	0	\N	0	[{"key": "Size", "value": "10"}]
 
-234	84	VECTORX-PTG-M	6750.00	23	10	http://localhost:9000/nexus-media/public/catalog/skus/VECTORX-PTG-M/main.svg	0	6080.00	0	[{"key": "Size", "value": "M"}]
+234	84	VECTORX-PTG-M	6750.00	23	10	http://localhost:9000/nexus-media/public/pms/skus/VECTORX-PTG-M/main.svg	0	6080.00	0	[{"key": "Size", "value": "M"}]
 
-238	85	DECATHLON-BYM-SLV	5120.00	31	10	http://localhost:9000/nexus-media/public/catalog/skus/DECATHLON-BYM-SLV/main.svg	0	4510.00	0	[{"key": "Color", "value": "Silver"}]
+238	85	DECATHLON-BYM-SLV	5120.00	31	10	http://localhost:9000/nexus-media/public/pms/skus/DECATHLON-BYM-SLV/main.svg	0	4510.00	0	[{"key": "Color", "value": "Silver"}]
 
-244	89	YONEX-A100Z-STD	3670.00	101	10	http://localhost:9000/nexus-media/public/catalog/skus/YONEX-A100Z-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+244	89	YONEX-A100Z-STD	3670.00	101	10	http://localhost:9000/nexus-media/public/pms/skus/YONEX-A100Z-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
 
-254	94	COSCO-CVB-STD	2460.00	117	10	http://localhost:9000/nexus-media/public/catalog/skus/COSCO-CVB-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+254	94	COSCO-CVB-STD	2460.00	117	10	http://localhost:9000/nexus-media/public/pms/skus/COSCO-CVB-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
 
-260	96	PRH-MNL-KD	1190.00	46	10	http://localhost:9000/nexus-media/public/catalog/skus/PRH-MNL-KD/main.svg	0	\N	0	[{"key": "Format", "value": "Kindle"}]
+260	96	PRH-MNL-KD	1190.00	46	10	http://localhost:9000/nexus-media/public/pms/skus/PRH-MNL-KD/main.svg	0	\N	0	[{"key": "Format", "value": "Kindle"}]
 
-266	98	RUPA-TSP-KD	1700.00	168	10	http://localhost:9000/nexus-media/public/catalog/skus/RUPA-TSP-KD/main.svg	0	\N	0	[{"key": "Format", "value": "Kindle"}]
+266	98	RUPA-TSP-KD	1700.00	168	10	http://localhost:9000/nexus-media/public/pms/skus/RUPA-TSP-KD/main.svg	0	\N	0	[{"key": "Format", "value": "Kindle"}]
 
-271	100	PRH-AH-HC	1540.00	47	10	http://localhost:9000/nexus-media/public/catalog/skus/PRH-AH-HC/main.svg	0	\N	0	[{"key": "Format", "value": "Hardcover"}]
+271	100	PRH-AH-HC	1540.00	47	10	http://localhost:9000/nexus-media/public/pms/skus/PRH-AH-HC/main.svg	0	\N	0	[{"key": "Format", "value": "Hardcover"}]
 
-276	102	PEARSON-SSG-PB	1650.00	72	10	http://localhost:9000/nexus-media/public/catalog/skus/PEARSON-SSG-PB/main.svg	0	\N	0	[{"key": "Format", "value": "Paperback"}]
+276	102	PEARSON-SSG-PB	1650.00	72	10	http://localhost:9000/nexus-media/public/pms/skus/PEARSON-SSG-PB/main.svg	0	\N	0	[{"key": "Format", "value": "Paperback"}]
 
-282	104	OREILLY-DDIA-PB	1270.00	51	10	http://localhost:9000/nexus-media/public/catalog/skus/OREILLY-DDIA-PB/main.svg	0	\N	0	[{"key": "Format", "value": "Paperback"}]
+282	104	OREILLY-DDIA-PB	1270.00	51	10	http://localhost:9000/nexus-media/public/pms/skus/OREILLY-DDIA-PB/main.svg	0	\N	0	[{"key": "Format", "value": "Paperback"}]
 
-284	104	OREILLY-DDIA-KD	1220.00	221	10	http://localhost:9000/nexus-media/public/catalog/skus/OREILLY-DDIA-KD/main.svg	0	\N	0	[{"key": "Format", "value": "Kindle"}]
+284	104	OREILLY-DDIA-KD	1220.00	221	10	http://localhost:9000/nexus-media/public/pms/skus/OREILLY-DDIA-KD/main.svg	0	\N	0	[{"key": "Format", "value": "Kindle"}]
 
-288	106	PEARSON-JPC-PB	1510.00	216	10	http://localhost:9000/nexus-media/public/catalog/skus/PEARSON-JPC-PB/main.svg	0	1330.00	0	[{"key": "Format", "value": "Paperback"}]
+288	106	PEARSON-JPC-PB	1510.00	216	10	http://localhost:9000/nexus-media/public/pms/skus/PEARSON-JPC-PB/main.svg	0	1330.00	0	[{"key": "Format", "value": "Paperback"}]
 
-294	108	ARIHANT-PYCP-PB	870.00	182	10	http://localhost:9000/nexus-media/public/catalog/skus/ARIHANT-PYCP-PB/main.svg	0	\N	0	[{"key": "Format", "value": "Paperback"}]
+294	108	ARIHANT-PYCP-PB	870.00	182	10	http://localhost:9000/nexus-media/public/pms/skus/ARIHANT-PYCP-PB/main.svg	0	\N	0	[{"key": "Format", "value": "Paperback"}]
 
-299	110	CROSSWORD-PRN-SLV	930.00	58	10	http://localhost:9000/nexus-media/public/catalog/skus/CROSSWORD-PRN-SLV/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}]
+299	110	CROSSWORD-PRN-SLV	930.00	58	10	http://localhost:9000/nexus-media/public/pms/skus/CROSSWORD-PRN-SLV/main.svg	0	\N	0	[{"key": "Color", "value": "Silver"}]
 
-305	114	PRH-RDJ-STD	700.00	135	10	http://localhost:9000/nexus-media/public/catalog/skus/PRH-RDJ-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
+305	114	PRH-RDJ-STD	700.00	135	10	http://localhost:9000/nexus-media/public/pms/skus/PRH-RDJ-STD/main.svg	0	\N	0	[{"key": "Color", "value": "Black"}]
 
-310	116	COKE-COKE-750ML	890.00	122	10	http://localhost:9000/nexus-media/public/catalog/skus/COKE-COKE-750ML/main.svg	0	730.00	0	[{"key": "Pack Size", "value": "750ml"}]
+310	116	COKE-COKE-750ML	890.00	122	10	http://localhost:9000/nexus-media/public/pms/skus/COKE-COKE-750ML/main.svg	0	730.00	0	[{"key": "Pack Size", "value": "750ml"}]
 
-315	118	TATA-TTG-100G	420.00	94	10	http://localhost:9000/nexus-media/public/catalog/skus/TATA-TTG-100G/main.svg	0	380.00	0	[{"key": "Pack Size", "value": "100g"}]
+315	118	TATA-TTG-100G	420.00	94	10	http://localhost:9000/nexus-media/public/pms/skus/TATA-TTG-100G/main.svg	0	380.00	0	[{"key": "Pack Size", "value": "100g"}]
 
-320	119	MOTHERDAIRY-TDMLK-2L	670.00	183	10	http://localhost:9000/nexus-media/public/catalog/skus/MOTHERDAIRY-TDMLK-2L/main.svg	0	\N	0	[{"key": "Pack Size", "value": "2L"}]
+320	119	MOTHERDAIRY-TDMLK-2L	670.00	183	10	http://localhost:9000/nexus-media/public/pms/skus/MOTHERDAIRY-TDMLK-2L/main.svg	0	\N	0	[{"key": "Pack Size", "value": "2L"}]
 
-325	121	PARLE-HSB-200G	190.00	6	10	http://localhost:9000/nexus-media/public/catalog/skus/PARLE-HSB-200G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "200g"}]
+325	121	PARLE-HSB-200G	190.00	6	10	http://localhost:9000/nexus-media/public/pms/skus/PARLE-HSB-200G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "200g"}]
 
-331	123	NESTLE-MUNCH-200G	410.00	49	10	http://localhost:9000/nexus-media/public/catalog/skus/NESTLE-MUNCH-200G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "200g"}]
+331	123	NESTLE-MUNCH-200G	410.00	49	10	http://localhost:9000/nexus-media/public/pms/skus/NESTLE-MUNCH-200G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "200g"}]
 
-333	124	DABUR-REAL-500ML	540.00	100	10	http://localhost:9000/nexus-media/public/catalog/skus/DABUR-REAL-500ML/main.svg	0	460.00	0	[{"key": "Pack Size", "value": "500ml"}]
+333	124	DABUR-REAL-500ML	540.00	100	10	http://localhost:9000/nexus-media/public/pms/skus/DABUR-REAL-500ML/main.svg	0	460.00	0	[{"key": "Pack Size", "value": "500ml"}]
 
-337	125	KELLOGG-KCF-200G	300.00	7	10	http://localhost:9000/nexus-media/public/catalog/skus/KELLOGG-KCF-200G/main.svg	0	260.00	0	[{"key": "Pack Size", "value": "200g"}]
+337	125	KELLOGG-KCF-200G	300.00	7	10	http://localhost:9000/nexus-media/public/pms/skus/KELLOGG-KCF-200G/main.svg	0	260.00	0	[{"key": "Pack Size", "value": "200g"}]
 
-342	127	AASHIRVAAD-MGA-100G	80.00	47	10	http://localhost:9000/nexus-media/public/catalog/skus/AASHIRVAAD-MGA-100G/main.svg	0	70.00	0	[{"key": "Pack Size", "value": "100g"}]
+342	127	AASHIRVAAD-MGA-100G	80.00	47	10	http://localhost:9000/nexus-media/public/pms/skus/AASHIRVAAD-MGA-100G/main.svg	0	70.00	0	[{"key": "Pack Size", "value": "100g"}]
 
-348	129	FORTUNE-FSO-500ML	470.00	144	10	http://localhost:9000/nexus-media/public/catalog/skus/FORTUNE-FSO-500ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "500ml"}]
+348	129	FORTUNE-FSO-500ML	470.00	144	10	http://localhost:9000/nexus-media/public/pms/skus/FORTUNE-FSO-500ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "500ml"}]
 
-353	130	PATANJALI-DALIA-500G	640.00	168	10	http://localhost:9000/nexus-media/public/catalog/skus/PATANJALI-DALIA-500G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "500g"}]
+353	130	PATANJALI-DALIA-500G	640.00	168	10	http://localhost:9000/nexus-media/public/pms/skus/PATANJALI-DALIA-500G/main.svg	0	\N	0	[{"key": "Pack Size", "value": "500g"}]
 
-359	132	AMUL-PGHEE-2L	540.00	92	10	http://localhost:9000/nexus-media/public/catalog/skus/AMUL-PGHEE-2L/main.svg	0	\N	0	[{"key": "Pack Size", "value": "2L"}]
+359	132	AMUL-PGHEE-2L	540.00	92	10	http://localhost:9000/nexus-media/public/pms/skus/AMUL-PGHEE-2L/main.svg	0	\N	0	[{"key": "Pack Size", "value": "2L"}]
 
-363	134	3M-MFC-30ML	7080.00	34	10	http://localhost:9000/nexus-media/public/catalog/skus/3M-MFC-30ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "30ml"}]
+363	134	3M-MFC-30ML	7080.00	34	10	http://localhost:9000/nexus-media/public/pms/skus/3M-MFC-30ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "30ml"}]
 
-369	138	CASTROL-MAG530-STD	2580.00	125	10	http://localhost:9000/nexus-media/public/catalog/skus/CASTROL-MAG530-STD/main.svg	0	2120.00	0	[{"key": "Color", "value": "Black"}]
+369	138	CASTROL-MAG530-STD	2580.00	125	10	http://localhost:9000/nexus-media/public/pms/skus/CASTROL-MAG530-STD/main.svg	0	2120.00	0	[{"key": "Color", "value": "Black"}]
 
-374	141	3M-PRIT-100ML	8130.00	23	10	http://localhost:9000/nexus-media/public/catalog/skus/3M-PRIT-100ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "100ml"}]
+374	141	3M-PRIT-100ML	8130.00	23	10	http://localhost:9000/nexus-media/public/pms/skus/3M-PRIT-100ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "100ml"}]
 
-379	143	MRF-PERF-R16	8280.00	150	10	http://localhost:9000/nexus-media/public/catalog/skus/MRF-PERF-R16/main.svg	0	\N	0	[{"key": "Size", "value": "205/55 R16"}]
+379	143	MRF-PERF-R16	8280.00	150	10	http://localhost:9000/nexus-media/public/pms/skus/MRF-PERF-R16/main.svg	0	\N	0	[{"key": "Size", "value": "205/55 R16"}]
 
-382	144	APOLLO-ALN4-R16	5830.00	112	10	http://localhost:9000/nexus-media/public/catalog/skus/APOLLO-ALN4-R16/main.svg	0	4780.00	0	[{"key": "Size", "value": "205/55 R16"}]
+382	144	APOLLO-ALN4-R16	5830.00	112	10	http://localhost:9000/nexus-media/public/pms/skus/APOLLO-ALN4-R16/main.svg	0	4780.00	0	[{"key": "Size", "value": "205/55 R16"}]
 
-384	145	CEAT-MILAZE-R15	11610.00	10	10	http://localhost:9000/nexus-media/public/catalog/skus/CEAT-MILAZE-R15/main.svg	0	\N	0	[{"key": "Size", "value": "195/65 R15"}]
+384	145	CEAT-MILAZE-R15	11610.00	10	10	http://localhost:9000/nexus-media/public/pms/skus/CEAT-MILAZE-R15/main.svg	0	\N	0	[{"key": "Size", "value": "195/65 R15"}]
 
-389	146	TVS-EGRIP-R17	5380.00	156	10	http://localhost:9000/nexus-media/public/catalog/skus/TVS-EGRIP-R17/main.svg	0	\N	0	[{"key": "Size", "value": "215/60 R17"}]
+389	146	TVS-EGRIP-R17	5380.00	156	10	http://localhost:9000/nexus-media/public/pms/skus/TVS-EGRIP-R17/main.svg	0	\N	0	[{"key": "Size", "value": "215/60 R17"}]
 
-395	151	CASTROL-EF-30ML	2770.00	111	10	http://localhost:9000/nexus-media/public/catalog/skus/CASTROL-EF-30ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "30ml"}]
+395	151	CASTROL-EF-30ML	2770.00	111	10	http://localhost:9000/nexus-media/public/pms/skus/CASTROL-EF-30ML/main.svg	0	\N	0	[{"key": "Pack Size", "value": "30ml"}]
 
-400	152	MOTUL-CCLEAN-100ML	13020.00	119	10	http://localhost:9000/nexus-media/public/catalog/skus/MOTUL-CCLEAN-100ML/main.svg	0	11980.00	0	[{"key": "Pack Size", "value": "100ml"}]
+400	152	MOTUL-CCLEAN-100ML	13020.00	119	10	http://localhost:9000/nexus-media/public/pms/skus/MOTUL-CCLEAN-100ML/main.svg	0	11980.00	0	[{"key": "Pack Size", "value": "100ml"}]
 
 \.
 
@@ -8143,7 +8143,7 @@ COPY marketing.sms_flash_promotion_session (id, name, start_time, end_time, stat
 COPY migration.flyway_schema_history (installed_rank, version, description, type, script, checksum, installed_by, installed_on, execution_time, success) FROM stdin;
 1	1	baseline	SQL	V1__baseline.sql	146656653	postgres	2026-09-25 11:17:39.702335	93	t
 
-2	2	seed full catalog	SQL	V2__seed_full_catalog.sql	-734177831	postgres	2026-09-25 12:13:07.03409	58	t
+2	2	seed full pms	SQL	V2__seed_full_catalog.sql	-734177831	postgres	2026-09-25 12:13:07.03409	58	t
 
 3	3	membership and admin	SQL	V3__membership_and_admin.sql	17031760	postgres	2026-09-25 12:13:07.158114	2	t
 
@@ -8168,24 +8168,24 @@ COPY migration.flyway_schema_history (installed_rank, version, description, type
 --
 
 COPY orders.oms_cart_item (id, product_id, product_sku_id, member_id, quantity, price, product_pic, product_name, product_sub_title, product_sku_code, member_nickname, create_date, modify_date, delete_status, product_category_id, product_brand, product_sn, product_attr) FROM stdin;
-19	1	2	1	1	56570.00	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-BLK-256/main.svg	iPhone 17 (Black, 256GB)	\N	APPLE-IP17-BLK-256	Customer One	2026-09-27 13:23:30.71045	1	\N
-21	1	3	1	1	53430.00	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-SLV-128/main.svg	iPhone 17 (Silver, 128GB)	\N	APPLE-IP17-SLV-128	Customer One	2026-09-27 13:23:37.33667	1	\N
-4	150	\N	1	97	4640.00	http://localhost:9000/nexus-media/public/catalog/products/150/main.svg	Portable Tyre Inflator	\N	\N	Customer One	2026-09-25 14:24:42.129	1	\N
-5	150	\N	1	1	4640.00	http://localhost:9000/nexus-media/public/catalog/products/150/main.svg	Portable Tyre Inflator	\N	\N	Customer One	2026-09-25 14:26:31.164	1	\N
-8	1	4	1	4	57620.00	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-SLV-256/main.svg	iPhone 17 (Silver, 256GB)	\N	\N	Customer One	2026-09-25 23:09:55.831	1	\N
-20	1	4	1	2	57620.00	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-SLV-256/main.svg	iPhone 17 (Silver, 256GB)	\N	APPLE-IP17-SLV-256	Customer One	2026-09-27 13:23:34.42814	1	\N
-6	1	2	1	4	56570.00	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-BLK-256/main.svg	iPhone 17 (Black, 256GB)	\N	\N	Customer One	2026-09-25 14:31:38.587	1	\N
-18	1	1	1	2	52380.00	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-BLK-128/main.svg	iPhone 17 (Black, 128GB)	\N	APPLE-IP17-BLK-128	Customer One	2026-09-27 13:23:26.192193	1	\N
-17	1	1	1	1	52380.00	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-BLK-128/main.svg	iPhone 17 (Black, 128GB)	\N	APPLE-IP17-BLK-128	Customer One	2026-09-27 13:13:34.827662	1	\N
-9	1	\N	1	12	56570.00	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-BLK-256/main.svg	iPhone 17 (Black, 256GB)	\N	\N	Customer One	2026-09-27 12:58:37.549046	1	\N
-11	1	\N	1	21	56570.00	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-BLK-256/main.svg	iPhone 17 (Black, 256GB)	\N	\N	Customer One	2026-09-27 13:01:54.033302	1	\N
-10	1	\N	1	2	56570.00	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-BLK-256/main.svg	iPhone 17 (Black, 256GB)	\N	\N	Customer One	2026-09-27 13:01:30.656942	1	\N
-16	1	2	1	12	56570.00	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-BLK-256/main.svg	iPhone 17 (Black, 256GB)	\N	APPLE-IP17-BLK-256	Customer One	2026-09-27 13:13:31.86371	1	\N
-12	1	2	1	1	56570.00	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-BLK-256/main.svg	iPhone 17 (Black, 256GB)	\N	APPLE-IP17-BLK-256	Customer One	2026-09-27 13:09:21.208676	1	\N
-13	1	4	1	2	57620.00	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-SLV-256/main.svg	iPhone 17 (Silver, 256GB)	\N	APPLE-IP17-SLV-256	Customer One	2026-09-27 13:09:25.557142	1	\N
-7	1	2	1	20	56570.00	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-BLK-256/main.svg	iPhone 17 (Black, 256GB)	\N	\N	Customer One	2026-09-25 23:02:21.602	1	\N
-15	1	1	1	22	52380.00	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-BLK-128/main.svg	iPhone 17 (Black, 128GB)	\N	APPLE-IP17-BLK-128	Customer One	2026-09-27 13:12:53.444645	1	\N
-14	1	2	1	18	56570.00	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-BLK-256/main.svg	iPhone 17 (Black, 256GB)	\N	APPLE-IP17-BLK-256	Customer One	2026-09-27 13:12:49.042026	1	\N
+19	1	2	1	1	56570.00	http://localhost:9000/nexus-media/public/pms/skus/APPLE-IP17-BLK-256/main.svg	iPhone 17 (Black, 256GB)	\N	APPLE-IP17-BLK-256	Customer One	2026-09-27 13:23:30.71045	1	\N
+21	1	3	1	1	53430.00	http://localhost:9000/nexus-media/public/pms/skus/APPLE-IP17-SLV-128/main.svg	iPhone 17 (Silver, 128GB)	\N	APPLE-IP17-SLV-128	Customer One	2026-09-27 13:23:37.33667	1	\N
+4	150	\N	1	97	4640.00	http://localhost:9000/nexus-media/public/pms/products/150/main.svg	Portable Tyre Inflator	\N	\N	Customer One	2026-09-25 14:24:42.129	1	\N
+5	150	\N	1	1	4640.00	http://localhost:9000/nexus-media/public/pms/products/150/main.svg	Portable Tyre Inflator	\N	\N	Customer One	2026-09-25 14:26:31.164	1	\N
+8	1	4	1	4	57620.00	http://localhost:9000/nexus-media/public/pms/skus/APPLE-IP17-SLV-256/main.svg	iPhone 17 (Silver, 256GB)	\N	\N	Customer One	2026-09-25 23:09:55.831	1	\N
+20	1	4	1	2	57620.00	http://localhost:9000/nexus-media/public/pms/skus/APPLE-IP17-SLV-256/main.svg	iPhone 17 (Silver, 256GB)	\N	APPLE-IP17-SLV-256	Customer One	2026-09-27 13:23:34.42814	1	\N
+6	1	2	1	4	56570.00	http://localhost:9000/nexus-media/public/pms/skus/APPLE-IP17-BLK-256/main.svg	iPhone 17 (Black, 256GB)	\N	\N	Customer One	2026-09-25 14:31:38.587	1	\N
+18	1	1	1	2	52380.00	http://localhost:9000/nexus-media/public/pms/skus/APPLE-IP17-BLK-128/main.svg	iPhone 17 (Black, 128GB)	\N	APPLE-IP17-BLK-128	Customer One	2026-09-27 13:23:26.192193	1	\N
+17	1	1	1	1	52380.00	http://localhost:9000/nexus-media/public/pms/skus/APPLE-IP17-BLK-128/main.svg	iPhone 17 (Black, 128GB)	\N	APPLE-IP17-BLK-128	Customer One	2026-09-27 13:13:34.827662	1	\N
+9	1	\N	1	12	56570.00	http://localhost:9000/nexus-media/public/pms/skus/APPLE-IP17-BLK-256/main.svg	iPhone 17 (Black, 256GB)	\N	\N	Customer One	2026-09-27 12:58:37.549046	1	\N
+11	1	\N	1	21	56570.00	http://localhost:9000/nexus-media/public/pms/skus/APPLE-IP17-BLK-256/main.svg	iPhone 17 (Black, 256GB)	\N	\N	Customer One	2026-09-27 13:01:54.033302	1	\N
+10	1	\N	1	2	56570.00	http://localhost:9000/nexus-media/public/pms/skus/APPLE-IP17-BLK-256/main.svg	iPhone 17 (Black, 256GB)	\N	\N	Customer One	2026-09-27 13:01:30.656942	1	\N
+16	1	2	1	12	56570.00	http://localhost:9000/nexus-media/public/pms/skus/APPLE-IP17-BLK-256/main.svg	iPhone 17 (Black, 256GB)	\N	APPLE-IP17-BLK-256	Customer One	2026-09-27 13:13:31.86371	1	\N
+12	1	2	1	1	56570.00	http://localhost:9000/nexus-media/public/pms/skus/APPLE-IP17-BLK-256/main.svg	iPhone 17 (Black, 256GB)	\N	APPLE-IP17-BLK-256	Customer One	2026-09-27 13:09:21.208676	1	\N
+13	1	4	1	2	57620.00	http://localhost:9000/nexus-media/public/pms/skus/APPLE-IP17-SLV-256/main.svg	iPhone 17 (Silver, 256GB)	\N	APPLE-IP17-SLV-256	Customer One	2026-09-27 13:09:25.557142	1	\N
+7	1	2	1	20	56570.00	http://localhost:9000/nexus-media/public/pms/skus/APPLE-IP17-BLK-256/main.svg	iPhone 17 (Black, 256GB)	\N	\N	Customer One	2026-09-25 23:02:21.602	1	\N
+15	1	1	1	22	52380.00	http://localhost:9000/nexus-media/public/pms/skus/APPLE-IP17-BLK-128/main.svg	iPhone 17 (Black, 128GB)	\N	APPLE-IP17-BLK-128	Customer One	2026-09-27 13:12:53.444645	1	\N
+14	1	2	1	18	56570.00	http://localhost:9000/nexus-media/public/pms/skus/APPLE-IP17-BLK-256/main.svg	iPhone 17 (Black, 256GB)	\N	APPLE-IP17-BLK-256	Customer One	2026-09-27 13:12:49.042026	1	\N
 \.
 
 
@@ -8214,13 +8214,13 @@ COPY orders.oms_order (id, member_id, coupon_id, order_sn, create_time, member_u
 --
 
 COPY orders.oms_order_item (id, order_id, order_sn, product_id, product_pic, product_name, product_brand, product_sn, product_price, product_quantity, product_sku_id, product_sku_code, product_category_id, promotion_name, promotion_amount, coupon_amount, points_discount_amount, real_amount, earned_points, product_attr) FROM stdin;
-6	6	202609270102000001	1	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-BLK-256/main.svg	iPhone 17 (Black, 256GB)	\N	\N	56570.00	12	\N	\N	No promotion	0.00
-7	7	202609270102000002	1	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-BLK-128/main.svg	iPhone 17 (Black, 128GB)	\N	\N	52380.00	1	1	APPLE-IP17-BLK-128	No promotion	0.00
-8	7	202609270102000002	1	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-BLK-256/main.svg	iPhone 17 (Black, 256GB)	\N	\N	56570.00	12	2	APPLE-IP17-BLK-256	No promotion	0.00
-9	8	202609270102000003	1	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-BLK-256/main.svg	iPhone 17 (Black, 256GB)	\N	\N	56570.00	1	2	APPLE-IP17-BLK-256	No promotion	0.00
-10	8	202609270102000003	1	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-SLV-128/main.svg	iPhone 17 (Silver, 128GB)	\N	\N	53430.00	1	3	APPLE-IP17-SLV-128	No promotion	0.00
-11	8	202609270102000003	1	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-SLV-256/main.svg	iPhone 17 (Silver, 256GB)	\N	\N	57620.00	2	4	APPLE-IP17-SLV-256	No promotion	0.00
-12	8	202609270102000003	1	http://localhost:9000/nexus-media/public/catalog/skus/APPLE-IP17-BLK-128/main.svg	iPhone 17 (Black, 128GB)	\N	\N	52380.00	2	1	APPLE-IP17-BLK-128	No promotion	0.00
+6	6	202609270102000001	1	http://localhost:9000/nexus-media/public/pms/skus/APPLE-IP17-BLK-256/main.svg	iPhone 17 (Black, 256GB)	\N	\N	56570.00	12	\N	\N	No promotion	0.00
+7	7	202609270102000002	1	http://localhost:9000/nexus-media/public/pms/skus/APPLE-IP17-BLK-128/main.svg	iPhone 17 (Black, 128GB)	\N	\N	52380.00	1	1	APPLE-IP17-BLK-128	No promotion	0.00
+8	7	202609270102000002	1	http://localhost:9000/nexus-media/public/pms/skus/APPLE-IP17-BLK-256/main.svg	iPhone 17 (Black, 256GB)	\N	\N	56570.00	12	2	APPLE-IP17-BLK-256	No promotion	0.00
+9	8	202609270102000003	1	http://localhost:9000/nexus-media/public/pms/skus/APPLE-IP17-BLK-256/main.svg	iPhone 17 (Black, 256GB)	\N	\N	56570.00	1	2	APPLE-IP17-BLK-256	No promotion	0.00
+10	8	202609270102000003	1	http://localhost:9000/nexus-media/public/pms/skus/APPLE-IP17-SLV-128/main.svg	iPhone 17 (Silver, 128GB)	\N	\N	53430.00	1	3	APPLE-IP17-SLV-128	No promotion	0.00
+11	8	202609270102000003	1	http://localhost:9000/nexus-media/public/pms/skus/APPLE-IP17-SLV-256/main.svg	iPhone 17 (Silver, 256GB)	\N	\N	57620.00	2	4	APPLE-IP17-SLV-256	No promotion	0.00
+12	8	202609270102000003	1	http://localhost:9000/nexus-media/public/pms/skus/APPLE-IP17-BLK-128/main.svg	iPhone 17 (Black, 128GB)	\N	\N	52380.00	2	1	APPLE-IP17-BLK-128	No promotion	0.00
 \.
 
 
@@ -8287,7 +8287,7 @@ COPY public.ai_chat_conversation (id, member_id, session_id, role, content, mode
 COPY public.flyway_schema_history (installed_rank, version, description, type, script, checksum, installed_by, installed_on, execution_time, success) FROM stdin;
 1	1	baseline	SQL	V1__baseline.sql	146656653	postgres	2026-09-27 01:38:11.920816	110	t
 
-2	2	seed full catalog	SQL	V2__seed_full_catalog.sql	-734177831	postgres	2026-09-27 01:38:12.089311	108	t
+2	2	seed full pms	SQL	V2__seed_full_catalog.sql	-734177831	postgres	2026-09-27 01:38:12.089311	108	t
 
 3	3	membership and admin	SQL	V3__membership_and_admin.sql	17031760	postgres	2026-09-27 01:38:12.283447	7	t
 
@@ -8519,16 +8519,16 @@ COPY public.pms_brand (id, name, show_status, logo) FROM stdin;
 --
 
 COPY public.pms_product (id, brand_id, product_category_id, product_attribute_category_id, name, pic, product_sn, delete_status, publish_status, new_status, recommend_status, verify_status, sort, sale, sub_title, unit, weight, service_ids, keywords, note, promotion_start_time, promotion_end_time, promotion_per_limit, promotion_type, brand_name, product_category_name, description, detail_html, detail_title, detail_desc, vendor_id) FROM stdin;
-1	1	2	1	iPhone 17	http://localhost:9000/nexus-media/public/catalog/products/1-iphone-17/main.webp	APP-IPH-1	0	1	1	1	1	0	500.00
-2	2	2	1	Galaxy S25	http://localhost:9000/nexus-media/public/catalog/products/2-galaxy-s25/main.webp	SAM-GAL-2	0	1	1	1	1	0	500.00
-3	1	3	2	MacBook Pro M5	http://localhost:9000/nexus-media/public/catalog/products/3-macbook-pro-m5/main.webp	APP-MAC-3	0	1	1	1	1	0	500.00
-4	17	13	4	Air Max 2026	http://localhost:9000/nexus-media/public/catalog/products/4-air-max-2026/main.webp	NIK-AIR-4	0	1	1	1	1	0	500.00
-5	18	13	4	Ultraboost 26	http://localhost:9000/nexus-media/public/catalog/products/5-ultraboost-26/main.webp	ADI-ULT-5	0	1	1	1	1	0	500.00
-6	73	33	7	Clean Code	http://localhost:9000/nexus-media/public/catalog/products/6-clean-code/main.webp	PEA-CLE-6	0	1	1	1	1	0	500.00
-7	81	36	8	Coca-Cola Zero	http://localhost:9000/nexus-media/public/catalog/products/7-coca-cola-zero/main.webp	COC-COC-7	0	1	1	1	1	0	500.00
-8	21	11	5	Supima Cotton T-Shirt	http://localhost:9000/nexus-media/public/catalog/products/8-supima-cotton-t-shirt/main.webp	UNI-SUP-8	0	1	1	1	1	0	500.00
-9	4	5	3	WH-1000XM6	http://localhost:9000/nexus-media/public/catalog/products/9-wh-1000xm6/main.webp	SON-WH--9	0	1	1	1	1	0	500.00
-10	35	18	10	V15 Detect Absolute	http://localhost:9000/nexus-media/public/catalog/products/10-v15-detect-absolute/main.webp	DYS-V15-10	0	1	1	1	1	0	500.00
+1	1	2	1	iPhone 17	http://localhost:9000/nexus-media/public/pms/products/1-iphone-17/main.webp	APP-IPH-1	0	1	1	1	1	0	500.00
+2	2	2	1	Galaxy S25	http://localhost:9000/nexus-media/public/pms/products/2-galaxy-s25/main.webp	SAM-GAL-2	0	1	1	1	1	0	500.00
+3	1	3	2	MacBook Pro M5	http://localhost:9000/nexus-media/public/pms/products/3-macbook-pro-m5/main.webp	APP-MAC-3	0	1	1	1	1	0	500.00
+4	17	13	4	Air Max 2026	http://localhost:9000/nexus-media/public/pms/products/4-air-max-2026/main.webp	NIK-AIR-4	0	1	1	1	1	0	500.00
+5	18	13	4	Ultraboost 26	http://localhost:9000/nexus-media/public/pms/products/5-ultraboost-26/main.webp	ADI-ULT-5	0	1	1	1	1	0	500.00
+6	73	33	7	Clean Code	http://localhost:9000/nexus-media/public/pms/products/6-clean-code/main.webp	PEA-CLE-6	0	1	1	1	1	0	500.00
+7	81	36	8	Coca-Cola Zero	http://localhost:9000/nexus-media/public/pms/products/7-coca-cola-zero/main.webp	COC-COC-7	0	1	1	1	1	0	500.00
+8	21	11	5	Supima Cotton T-Shirt	http://localhost:9000/nexus-media/public/pms/products/8-supima-cotton-t-shirt/main.webp	UNI-SUP-8	0	1	1	1	1	0	500.00
+9	4	5	3	WH-1000XM6	http://localhost:9000/nexus-media/public/pms/products/9-wh-1000xm6/main.webp	SON-WH--9	0	1	1	1	1	0	500.00
+10	35	18	10	V15 Detect Absolute	http://localhost:9000/nexus-media/public/pms/products/10-v15-detect-absolute/main.webp	DYS-V15-10	0	1	1	1	1	0	500.00
 \.
 
 
@@ -8875,25 +8875,25 @@ COPY public.pms_product_volume_discount (id, product_id, count, discount, price)
 --
 
 COPY public.pms_product_gallery (id, product_id, media_type, media_url, sort_order) FROM stdin;
-1	1	image	http://localhost:9000/nexus-media/public/catalog/products/1-iphone-17/main.webp	0
+1	1	image	http://localhost:9000/nexus-media/public/pms/products/1-iphone-17/main.webp	0
 
-2	2	image	http://localhost:9000/nexus-media/public/catalog/products/2-galaxy-s25/main.webp	0
+2	2	image	http://localhost:9000/nexus-media/public/pms/products/2-galaxy-s25/main.webp	0
 
-3	3	image	http://localhost:9000/nexus-media/public/catalog/products/3-macbook-pro-m5/main.webp	0
+3	3	image	http://localhost:9000/nexus-media/public/pms/products/3-macbook-pro-m5/main.webp	0
 
-4	4	image	http://localhost:9000/nexus-media/public/catalog/products/4-air-max-2026/main.webp	0
+4	4	image	http://localhost:9000/nexus-media/public/pms/products/4-air-max-2026/main.webp	0
 
-5	5	image	http://localhost:9000/nexus-media/public/catalog/products/5-ultraboost-26/main.webp	0
+5	5	image	http://localhost:9000/nexus-media/public/pms/products/5-ultraboost-26/main.webp	0
 
-6	6	image	http://localhost:9000/nexus-media/public/catalog/products/6-clean-code/main.webp	0
+6	6	image	http://localhost:9000/nexus-media/public/pms/products/6-clean-code/main.webp	0
 
-7	7	image	http://localhost:9000/nexus-media/public/catalog/products/7-coca-cola-zero/main.webp	0
+7	7	image	http://localhost:9000/nexus-media/public/pms/products/7-coca-cola-zero/main.webp	0
 
-8	8	image	http://localhost:9000/nexus-media/public/catalog/products/8-supima-cotton-t-shirt/main.webp	0
+8	8	image	http://localhost:9000/nexus-media/public/pms/products/8-supima-cotton-t-shirt/main.webp	0
 
-9	9	image	http://localhost:9000/nexus-media/public/catalog/products/9-wh-1000xm6/main.webp	0
+9	9	image	http://localhost:9000/nexus-media/public/pms/products/9-wh-1000xm6/main.webp	0
 
-10	10	image	http://localhost:9000/nexus-media/public/catalog/products/10-v15-detect-absolute/main.webp	0
+10	10	image	http://localhost:9000/nexus-media/public/pms/products/10-v15-detect-absolute/main.webp	0
 
 \.
 
@@ -8935,85 +8935,85 @@ COPY public.pms_review_attachments (id, review_id, media_type, media_url, thumbn
 --
 
 COPY public.pms_sku_stock (id, product_id, sku_code, price, stock, low_stock, pic, sale, promotion_price, lock_stock, sku_attributes) FROM stdin;
-1	1	APP-IPH-1-BLA-128	81851.00	12	5	http://localhost:9000/nexus-media/public/catalog/skus/APP-IPH-1-BLA-128/main.webp	0	\N	\N	[{"key": "Color", "value": "Black"}, {"key": "Storage", "value": "128GB"}]
+1	1	APP-IPH-1-BLA-128	81851.00	12	5	http://localhost:9000/nexus-media/public/pms/skus/APP-IPH-1-BLA-128/main.webp	0	\N	\N	[{"key": "Color", "value": "Black"}, {"key": "Storage", "value": "128GB"}]
 
-2	1	APP-IPH-1-BLA-256	81114.00	51	5	http://localhost:9000/nexus-media/public/catalog/skus/APP-IPH-1-BLA-256/main.webp	0	\N	\N	[{"key": "Color", "value": "Black"}, {"key": "Storage", "value": "256GB"}]
+2	1	APP-IPH-1-BLA-256	81114.00	51	5	http://localhost:9000/nexus-media/public/pms/skus/APP-IPH-1-BLA-256/main.webp	0	\N	\N	[{"key": "Color", "value": "Black"}, {"key": "Storage", "value": "256GB"}]
 
-3	1	APP-IPH-1-SIL-128	80023.00	10	5	http://localhost:9000/nexus-media/public/catalog/skus/APP-IPH-1-SIL-128/main.webp	0	\N	\N	[{"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "128GB"}]
+3	1	APP-IPH-1-SIL-128	80023.00	10	5	http://localhost:9000/nexus-media/public/pms/skus/APP-IPH-1-SIL-128/main.webp	0	\N	\N	[{"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "128GB"}]
 
-4	1	APP-IPH-1-SIL-256	82600.00	26	5	http://localhost:9000/nexus-media/public/catalog/skus/APP-IPH-1-SIL-256/main.webp	0	\N	\N	[{"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "256GB"}]
+4	1	APP-IPH-1-SIL-256	82600.00	26	5	http://localhost:9000/nexus-media/public/pms/skus/APP-IPH-1-SIL-256/main.webp	0	\N	\N	[{"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "256GB"}]
 
-5	2	SAM-GAL-2-PHA-256	75967.00	22	5	http://localhost:9000/nexus-media/public/catalog/skus/SAM-GAL-2-PHA-256/main.webp	0	\N	\N	[{"key": "Color", "value": "Phantom Black"}, {"key": "Storage", "value": "256GB"}]
+5	2	SAM-GAL-2-PHA-256	75967.00	22	5	http://localhost:9000/nexus-media/public/pms/skus/SAM-GAL-2-PHA-256/main.webp	0	\N	\N	[{"key": "Color", "value": "Phantom Black"}, {"key": "Storage", "value": "256GB"}]
 
-6	2	SAM-GAL-2-PHA-512	76304.00	82	5	http://localhost:9000/nexus-media/public/catalog/skus/SAM-GAL-2-PHA-512/main.webp	0	\N	\N	[{"key": "Color", "value": "Phantom Black"}, {"key": "Storage", "value": "512GB"}]
+6	2	SAM-GAL-2-PHA-512	76304.00	82	5	http://localhost:9000/nexus-media/public/pms/skus/SAM-GAL-2-PHA-512/main.webp	0	\N	\N	[{"key": "Color", "value": "Phantom Black"}, {"key": "Storage", "value": "512GB"}]
 
-7	2	SAM-GAL-2-CRE-256	79629.00	17	5	http://localhost:9000/nexus-media/public/catalog/skus/SAM-GAL-2-CRE-256/main.webp	0	\N	\N	[{"key": "Color", "value": "Cream"}, {"key": "Storage", "value": "256GB"}]
+7	2	SAM-GAL-2-CRE-256	79629.00	17	5	http://localhost:9000/nexus-media/public/pms/skus/SAM-GAL-2-CRE-256/main.webp	0	\N	\N	[{"key": "Color", "value": "Cream"}, {"key": "Storage", "value": "256GB"}]
 
-8	2	SAM-GAL-2-CRE-512	76532.00	39	5	http://localhost:9000/nexus-media/public/catalog/skus/SAM-GAL-2-CRE-512/main.webp	0	\N	\N	[{"key": "Color", "value": "Cream"}, {"key": "Storage", "value": "512GB"}]
+8	2	SAM-GAL-2-CRE-512	76532.00	39	5	http://localhost:9000/nexus-media/public/pms/skus/SAM-GAL-2-CRE-512/main.webp	0	\N	\N	[{"key": "Color", "value": "Cream"}, {"key": "Storage", "value": "512GB"}]
 
-9	3	APP-MAC-3-16G-512-SPA	154564.00	38	5	http://localhost:9000/nexus-media/public/catalog/skus/APP-MAC-3-16G-512-SPA/main.webp	0	\N	\N	[{"key": "RAM", "value": "16GB"}, {"key": "Storage", "value": "512GB"}, {"key": "Color", "value": "Space Gray"}]
+9	3	APP-MAC-3-16G-512-SPA	154564.00	38	5	http://localhost:9000/nexus-media/public/pms/skus/APP-MAC-3-16G-512-SPA/main.webp	0	\N	\N	[{"key": "RAM", "value": "16GB"}, {"key": "Storage", "value": "512GB"}, {"key": "Color", "value": "Space Gray"}]
 
-10	3	APP-MAC-3-16G-1TB-SPA	152879.00	42	5	http://localhost:9000/nexus-media/public/catalog/skus/APP-MAC-3-16G-1TB-SPA/main.webp	0	\N	\N	[{"key": "RAM", "value": "16GB"}, {"key": "Storage", "value": "1TB"}, {"key": "Color", "value": "Space Gray"}]
+10	3	APP-MAC-3-16G-1TB-SPA	152879.00	42	5	http://localhost:9000/nexus-media/public/pms/skus/APP-MAC-3-16G-1TB-SPA/main.webp	0	\N	\N	[{"key": "RAM", "value": "16GB"}, {"key": "Storage", "value": "1TB"}, {"key": "Color", "value": "Space Gray"}]
 
-11	3	APP-MAC-3-32G-512-SPA	150761.00	63	5	http://localhost:9000/nexus-media/public/catalog/skus/APP-MAC-3-32G-512-SPA/main.webp	0	\N	\N	[{"key": "RAM", "value": "32GB"}, {"key": "Storage", "value": "512GB"}, {"key": "Color", "value": "Space Gray"}]
+11	3	APP-MAC-3-32G-512-SPA	150761.00	63	5	http://localhost:9000/nexus-media/public/pms/skus/APP-MAC-3-32G-512-SPA/main.webp	0	\N	\N	[{"key": "RAM", "value": "32GB"}, {"key": "Storage", "value": "512GB"}, {"key": "Color", "value": "Space Gray"}]
 
-12	3	APP-MAC-3-32G-1TB-SPA	154147.00	31	5	http://localhost:9000/nexus-media/public/catalog/skus/APP-MAC-3-32G-1TB-SPA/main.webp	0	\N	\N	[{"key": "RAM", "value": "32GB"}, {"key": "Storage", "value": "1TB"}, {"key": "Color", "value": "Space Gray"}]
+12	3	APP-MAC-3-32G-1TB-SPA	154147.00	31	5	http://localhost:9000/nexus-media/public/pms/skus/APP-MAC-3-32G-1TB-SPA/main.webp	0	\N	\N	[{"key": "RAM", "value": "32GB"}, {"key": "Storage", "value": "1TB"}, {"key": "Color", "value": "Space Gray"}]
 
-13	4	NIK-AIR-4-8-BLA	12279.00	73	5	http://localhost:9000/nexus-media/public/catalog/skus/NIK-AIR-4-8-BLA/main.webp	0	\N	\N	[{"key": "Size (US)", "value": "8"}, {"key": "Color", "value": "Black"}]
+13	4	NIK-AIR-4-8-BLA	12279.00	73	5	http://localhost:9000/nexus-media/public/pms/skus/NIK-AIR-4-8-BLA/main.webp	0	\N	\N	[{"key": "Size (US)", "value": "8"}, {"key": "Color", "value": "Black"}]
 
-14	4	NIK-AIR-4-8-WHI	16734.00	23	5	http://localhost:9000/nexus-media/public/catalog/skus/NIK-AIR-4-8-WHI/main.webp	0	\N	\N	[{"key": "Size (US)", "value": "8"}, {"key": "Color", "value": "White"}]
+14	4	NIK-AIR-4-8-WHI	16734.00	23	5	http://localhost:9000/nexus-media/public/pms/skus/NIK-AIR-4-8-WHI/main.webp	0	\N	\N	[{"key": "Size (US)", "value": "8"}, {"key": "Color", "value": "White"}]
 
-15	4	NIK-AIR-4-9-BLA	12283.00	82	5	http://localhost:9000/nexus-media/public/catalog/skus/NIK-AIR-4-9-BLA/main.webp	0	\N	\N	[{"key": "Size (US)", "value": "9"}, {"key": "Color", "value": "Black"}]
+15	4	NIK-AIR-4-9-BLA	12283.00	82	5	http://localhost:9000/nexus-media/public/pms/skus/NIK-AIR-4-9-BLA/main.webp	0	\N	\N	[{"key": "Size (US)", "value": "9"}, {"key": "Color", "value": "Black"}]
 
-16	4	NIK-AIR-4-9-WHI	13567.00	93	5	http://localhost:9000/nexus-media/public/catalog/skus/NIK-AIR-4-9-WHI/main.webp	0	\N	\N	[{"key": "Size (US)", "value": "9"}, {"key": "Color", "value": "White"}]
+16	4	NIK-AIR-4-9-WHI	13567.00	93	5	http://localhost:9000/nexus-media/public/pms/skus/NIK-AIR-4-9-WHI/main.webp	0	\N	\N	[{"key": "Size (US)", "value": "9"}, {"key": "Color", "value": "White"}]
 
-17	4	NIK-AIR-4-10-BLA	12140.00	93	5	http://localhost:9000/nexus-media/public/catalog/skus/NIK-AIR-4-10-BLA/main.webp	0	\N	\N	[{"key": "Size (US)", "value": "10"}, {"key": "Color", "value": "Black"}]
+17	4	NIK-AIR-4-10-BLA	12140.00	93	5	http://localhost:9000/nexus-media/public/pms/skus/NIK-AIR-4-10-BLA/main.webp	0	\N	\N	[{"key": "Size (US)", "value": "10"}, {"key": "Color", "value": "Black"}]
 
-18	4	NIK-AIR-4-10-WHI	15736.00	73	5	http://localhost:9000/nexus-media/public/catalog/skus/NIK-AIR-4-10-WHI/main.webp	0	\N	\N	[{"key": "Size (US)", "value": "10"}, {"key": "Color", "value": "White"}]
+18	4	NIK-AIR-4-10-WHI	15736.00	73	5	http://localhost:9000/nexus-media/public/pms/skus/NIK-AIR-4-10-WHI/main.webp	0	\N	\N	[{"key": "Size (US)", "value": "10"}, {"key": "Color", "value": "White"}]
 
-19	5	ADI-ULT-5-7-COR	17246.00	92	5	http://localhost:9000/nexus-media/public/catalog/skus/ADI-ULT-5-7-COR/main.webp	0	\N	\N	[{"key": "Size (US)", "value": "7"}, {"key": "Color", "value": "Core Black"}]
+19	5	ADI-ULT-5-7-COR	17246.00	92	5	http://localhost:9000/nexus-media/public/pms/skus/ADI-ULT-5-7-COR/main.webp	0	\N	\N	[{"key": "Size (US)", "value": "7"}, {"key": "Color", "value": "Core Black"}]
 
-20	5	ADI-ULT-5-8-COR	15404.00	75	5	http://localhost:9000/nexus-media/public/catalog/skus/ADI-ULT-5-8-COR/main.webp	0	\N	\N	[{"key": "Size (US)", "value": "8"}, {"key": "Color", "value": "Core Black"}]
+20	5	ADI-ULT-5-8-COR	15404.00	75	5	http://localhost:9000/nexus-media/public/pms/skus/ADI-ULT-5-8-COR/main.webp	0	\N	\N	[{"key": "Size (US)", "value": "8"}, {"key": "Color", "value": "Core Black"}]
 
-21	5	ADI-ULT-5-9-COR	15237.00	60	5	http://localhost:9000/nexus-media/public/catalog/skus/ADI-ULT-5-9-COR/main.webp	0	\N	\N	[{"key": "Size (US)", "value": "9"}, {"key": "Color", "value": "Core Black"}]
+21	5	ADI-ULT-5-9-COR	15237.00	60	5	http://localhost:9000/nexus-media/public/pms/skus/ADI-ULT-5-9-COR/main.webp	0	\N	\N	[{"key": "Size (US)", "value": "9"}, {"key": "Color", "value": "Core Black"}]
 
-22	6	PEA-CLE-6-PAP	3429.00	15	5	http://localhost:9000/nexus-media/public/catalog/skus/PEA-CLE-6-PAP/main.webp	0	\N	\N	[{"key": "Format", "value": "Paperback"}]
+22	6	PEA-CLE-6-PAP	3429.00	15	5	http://localhost:9000/nexus-media/public/pms/skus/PEA-CLE-6-PAP/main.webp	0	\N	\N	[{"key": "Format", "value": "Paperback"}]
 
-23	6	PEA-CLE-6-HAR	4763.00	65	5	http://localhost:9000/nexus-media/public/catalog/skus/PEA-CLE-6-HAR/main.webp	0	\N	\N	[{"key": "Format", "value": "Hardcover"}]
+23	6	PEA-CLE-6-HAR	4763.00	65	5	http://localhost:9000/nexus-media/public/pms/skus/PEA-CLE-6-HAR/main.webp	0	\N	\N	[{"key": "Format", "value": "Hardcover"}]
 
-24	6	PEA-CLE-6-KIN	5471.00	93	5	http://localhost:9000/nexus-media/public/catalog/skus/PEA-CLE-6-KIN/main.webp	0	\N	\N	[{"key": "Format", "value": "Kindle"}]
+24	6	PEA-CLE-6-KIN	5471.00	93	5	http://localhost:9000/nexus-media/public/pms/skus/PEA-CLE-6-KIN/main.webp	0	\N	\N	[{"key": "Format", "value": "Kindle"}]
 
-25	7	COC-COC-7-300	3738.00	81	5	http://localhost:9000/nexus-media/public/catalog/skus/COC-COC-7-300/main.webp	0	\N	\N	[{"key": "Pack Size", "value": "300ml"}]
+25	7	COC-COC-7-300	3738.00	81	5	http://localhost:9000/nexus-media/public/pms/skus/COC-COC-7-300/main.webp	0	\N	\N	[{"key": "Pack Size", "value": "300ml"}]
 
-26	7	COC-COC-7-750	3147.00	42	5	http://localhost:9000/nexus-media/public/catalog/skus/COC-COC-7-750/main.webp	0	\N	\N	[{"key": "Pack Size", "value": "750ml"}]
+26	7	COC-COC-7-750	3147.00	42	5	http://localhost:9000/nexus-media/public/pms/skus/COC-COC-7-750/main.webp	0	\N	\N	[{"key": "Pack Size", "value": "750ml"}]
 
-27	7	COC-COC-7-1.2	2891.00	21	5	http://localhost:9000/nexus-media/public/catalog/skus/COC-COC-7-1.2/main.webp	0	\N	\N	[{"key": "Pack Size", "value": "1.25L"}]
+27	7	COC-COC-7-1.2	2891.00	21	5	http://localhost:9000/nexus-media/public/pms/skus/COC-COC-7-1.2/main.webp	0	\N	\N	[{"key": "Pack Size", "value": "1.25L"}]
 
-28	7	COC-COC-7-2.2	1211.00	10	5	http://localhost:9000/nexus-media/public/catalog/skus/COC-COC-7-2.2/main.webp	0	\N	\N	[{"key": "Pack Size", "value": "2.25L"}]
+28	7	COC-COC-7-2.2	1211.00	10	5	http://localhost:9000/nexus-media/public/pms/skus/COC-COC-7-2.2/main.webp	0	\N	\N	[{"key": "Pack Size", "value": "2.25L"}]
 
-29	8	UNI-SUP-8-S-WHI	2281.00	78	5	http://localhost:9000/nexus-media/public/catalog/skus/UNI-SUP-8-S-WHI/main.webp	0	\N	\N	[{"key": "Size", "value": "S"}, {"key": "Color", "value": "White"}]
+29	8	UNI-SUP-8-S-WHI	2281.00	78	5	http://localhost:9000/nexus-media/public/pms/skus/UNI-SUP-8-S-WHI/main.webp	0	\N	\N	[{"key": "Size", "value": "S"}, {"key": "Color", "value": "White"}]
 
-30	8	UNI-SUP-8-S-BLA	4276.00	78	5	http://localhost:9000/nexus-media/public/catalog/skus/UNI-SUP-8-S-BLA/main.webp	0	\N	\N	[{"key": "Size", "value": "S"}, {"key": "Color", "value": "Black"}]
+30	8	UNI-SUP-8-S-BLA	4276.00	78	5	http://localhost:9000/nexus-media/public/pms/skus/UNI-SUP-8-S-BLA/main.webp	0	\N	\N	[{"key": "Size", "value": "S"}, {"key": "Color", "value": "Black"}]
 
-31	8	UNI-SUP-8-M-WHI	4499.00	65	5	http://localhost:9000/nexus-media/public/catalog/skus/UNI-SUP-8-M-WHI/main.webp	0	\N	\N	[{"key": "Size", "value": "M"}, {"key": "Color", "value": "White"}]
+31	8	UNI-SUP-8-M-WHI	4499.00	65	5	http://localhost:9000/nexus-media/public/pms/skus/UNI-SUP-8-M-WHI/main.webp	0	\N	\N	[{"key": "Size", "value": "M"}, {"key": "Color", "value": "White"}]
 
-32	8	UNI-SUP-8-M-BLA	2641.00	20	5	http://localhost:9000/nexus-media/public/catalog/skus/UNI-SUP-8-M-BLA/main.webp	0	\N	\N	[{"key": "Size", "value": "M"}, {"key": "Color", "value": "Black"}]
+32	8	UNI-SUP-8-M-BLA	2641.00	20	5	http://localhost:9000/nexus-media/public/pms/skus/UNI-SUP-8-M-BLA/main.webp	0	\N	\N	[{"key": "Size", "value": "M"}, {"key": "Color", "value": "Black"}]
 
-33	8	UNI-SUP-8-L-WHI	5380.00	92	5	http://localhost:9000/nexus-media/public/catalog/skus/UNI-SUP-8-L-WHI/main.webp	0	\N	\N	[{"key": "Size", "value": "L"}, {"key": "Color", "value": "White"}]
+33	8	UNI-SUP-8-L-WHI	5380.00	92	5	http://localhost:9000/nexus-media/public/pms/skus/UNI-SUP-8-L-WHI/main.webp	0	\N	\N	[{"key": "Size", "value": "L"}, {"key": "Color", "value": "White"}]
 
-34	8	UNI-SUP-8-L-BLA	3220.00	23	5	http://localhost:9000/nexus-media/public/catalog/skus/UNI-SUP-8-L-BLA/main.webp	0	\N	\N	[{"key": "Size", "value": "L"}, {"key": "Color", "value": "Black"}]
+34	8	UNI-SUP-8-L-BLA	3220.00	23	5	http://localhost:9000/nexus-media/public/pms/skus/UNI-SUP-8-L-BLA/main.webp	0	\N	\N	[{"key": "Size", "value": "L"}, {"key": "Color", "value": "Black"}]
 
-35	8	UNI-SUP-8-XL-WHI	5464.00	44	5	http://localhost:9000/nexus-media/public/catalog/skus/UNI-SUP-8-XL-WHI/main.webp	0	\N	\N	[{"key": "Size", "value": "XL"}, {"key": "Color", "value": "White"}]
+35	8	UNI-SUP-8-XL-WHI	5464.00	44	5	http://localhost:9000/nexus-media/public/pms/skus/UNI-SUP-8-XL-WHI/main.webp	0	\N	\N	[{"key": "Size", "value": "XL"}, {"key": "Color", "value": "White"}]
 
-36	8	UNI-SUP-8-XL-BLA	3594.00	53	5	http://localhost:9000/nexus-media/public/catalog/skus/UNI-SUP-8-XL-BLA/main.webp	0	\N	\N	[{"key": "Size", "value": "XL"}, {"key": "Color", "value": "Black"}]
+36	8	UNI-SUP-8-XL-BLA	3594.00	53	5	http://localhost:9000/nexus-media/public/pms/skus/UNI-SUP-8-XL-BLA/main.webp	0	\N	\N	[{"key": "Size", "value": "XL"}, {"key": "Color", "value": "Black"}]
 
-37	9	SON-WH--9-BLA	29341.00	44	5	http://localhost:9000/nexus-media/public/catalog/skus/SON-WH--9-BLA/main.webp	0	\N	\N	[{"key": "Color", "value": "Black"}]
+37	9	SON-WH--9-BLA	29341.00	44	5	http://localhost:9000/nexus-media/public/pms/skus/SON-WH--9-BLA/main.webp	0	\N	\N	[{"key": "Color", "value": "Black"}]
 
-38	9	SON-WH--9-SIL	29771.00	78	5	http://localhost:9000/nexus-media/public/catalog/skus/SON-WH--9-SIL/main.webp	0	\N	\N	[{"key": "Color", "value": "Silver"}]
+38	9	SON-WH--9-SIL	29771.00	78	5	http://localhost:9000/nexus-media/public/pms/skus/SON-WH--9-SIL/main.webp	0	\N	\N	[{"key": "Color", "value": "Silver"}]
 
-39	9	SON-WH--9-BLU	25922.00	47	5	http://localhost:9000/nexus-media/public/catalog/skus/SON-WH--9-BLU/main.webp	0	\N	\N	[{"key": "Color", "value": "Blue"}]
+39	9	SON-WH--9-BLU	25922.00	47	5	http://localhost:9000/nexus-media/public/pms/skus/SON-WH--9-BLU/main.webp	0	\N	\N	[{"key": "Color", "value": "Blue"}]
 
-40	10	DYS-V15-10-YEL	56206.00	18	5	http://localhost:9000/nexus-media/public/catalog/skus/DYS-V15-10-YEL/main.webp	0	\N	\N	[{"key": "Color", "value": "Yellow/Nickel"}]
+40	10	DYS-V15-10-YEL	56206.00	18	5	http://localhost:9000/nexus-media/public/pms/skus/DYS-V15-10-YEL/main.webp	0	\N	\N	[{"key": "Color", "value": "Yellow/Nickel"}]
 
 \.
 
@@ -9400,122 +9400,122 @@ SELECT pg_catalog.setval('ai.ai_chat_conversation_id_seq', 4, true);
 
 
 --
--- Name: pms_brand_id_seq; Type: SEQUENCE SET; Schema: catalog; Owner: postgres
+-- Name: pms_brand_id_seq; Type: SEQUENCE SET; Schema: pms; Owner: postgres
 --
 
-SELECT pg_catalog.setval('catalog.pms_brand_id_seq', 105, true);
-
-
---
--- Name: pms_comment_id_seq; Type: SEQUENCE SET; Schema: catalog; Owner: postgres
---
-
-SELECT pg_catalog.setval('catalog.pms_comment_id_seq', 1, false);
+SELECT pg_catalog.setval('pms.pms_brand_id_seq', 105, true);
 
 
 --
--- Name: pms_comment_reply_id_seq; Type: SEQUENCE SET; Schema: catalog; Owner: postgres
+-- Name: pms_comment_id_seq; Type: SEQUENCE SET; Schema: pms; Owner: postgres
 --
 
-SELECT pg_catalog.setval('catalog.pms_comment_reply_id_seq', 1, false);
-
-
---
--- Name: pms_product_attribute_category_id_seq; Type: SEQUENCE SET; Schema: catalog; Owner: postgres
---
-
-SELECT pg_catalog.setval('catalog.pms_product_attribute_category_id_seq', 11, true);
+SELECT pg_catalog.setval('pms.pms_comment_id_seq', 1, false);
 
 
 --
--- Name: pms_product_attribute_id_seq; Type: SEQUENCE SET; Schema: catalog; Owner: postgres
+-- Name: pms_comment_reply_id_seq; Type: SEQUENCE SET; Schema: pms; Owner: postgres
 --
 
-SELECT pg_catalog.setval('catalog.pms_product_attribute_id_seq', 132, true);
-
-
---
--- Name: pms_product_attribute_value_id_seq; Type: SEQUENCE SET; Schema: catalog; Owner: postgres
---
-
-SELECT pg_catalog.setval('catalog.pms_product_attribute_value_id_seq', 74, true);
+SELECT pg_catalog.setval('pms.pms_comment_reply_id_seq', 1, false);
 
 
 --
--- Name: pms_product_category_attribute_relation_id_seq; Type: SEQUENCE SET; Schema: catalog; Owner: postgres
+-- Name: pms_product_attribute_category_id_seq; Type: SEQUENCE SET; Schema: pms; Owner: postgres
 --
 
-SELECT pg_catalog.setval('catalog.pms_product_category_attribute_relation_id_seq', 129, true);
-
-
---
--- Name: pms_product_category_id_seq; Type: SEQUENCE SET; Schema: catalog; Owner: postgres
---
-
-SELECT pg_catalog.setval('catalog.pms_product_category_id_seq', 44, true);
+SELECT pg_catalog.setval('pms.pms_product_attribute_category_id_seq', 11, true);
 
 
 --
--- Name: pms_product_spend_discount_id_seq; Type: SEQUENCE SET; Schema: catalog; Owner: postgres
+-- Name: pms_product_attribute_id_seq; Type: SEQUENCE SET; Schema: pms; Owner: postgres
 --
 
-SELECT pg_catalog.setval('catalog.pms_product_spend_discount_id_seq', 1, false);
-
-
---
--- Name: pms_product_id_seq; Type: SEQUENCE SET; Schema: catalog; Owner: postgres
---
-
-SELECT pg_catalog.setval('catalog.pms_product_id_seq', 11, true);
+SELECT pg_catalog.setval('pms.pms_product_attribute_id_seq', 132, true);
 
 
 --
--- Name: pms_product_volume_discount_id_seq; Type: SEQUENCE SET; Schema: catalog; Owner: postgres
+-- Name: pms_product_attribute_value_id_seq; Type: SEQUENCE SET; Schema: pms; Owner: postgres
 --
 
-SELECT pg_catalog.setval('catalog.pms_product_volume_discount_id_seq', 1, false);
-
-
---
--- Name: pms_product_gallery_id_seq; Type: SEQUENCE SET; Schema: catalog; Owner: postgres
---
-
-SELECT pg_catalog.setval('catalog.pms_product_gallery_id_seq', 11, true);
+SELECT pg_catalog.setval('pms.pms_product_attribute_value_id_seq', 74, true);
 
 
 --
--- Name: pms_product_audit_log_id_seq; Type: SEQUENCE SET; Schema: catalog; Owner: postgres
+-- Name: pms_product_category_attribute_relation_id_seq; Type: SEQUENCE SET; Schema: pms; Owner: postgres
 --
 
-SELECT pg_catalog.setval('catalog.pms_product_audit_log_id_seq', 1, false);
-
-
---
--- Name: pms_product_approval_history_id_seq; Type: SEQUENCE SET; Schema: catalog; Owner: postgres
---
-
-SELECT pg_catalog.setval('catalog.pms_product_approval_history_id_seq', 1, false);
+SELECT pg_catalog.setval('pms.pms_product_category_attribute_relation_id_seq', 129, true);
 
 
 --
--- Name: pms_review_id_seq; Type: SEQUENCE SET; Schema: catalog; Owner: postgres
+-- Name: pms_product_category_id_seq; Type: SEQUENCE SET; Schema: pms; Owner: postgres
 --
 
-SELECT pg_catalog.setval('catalog.pms_review_id_seq', 1, false);
-
-
---
--- Name: pms_review_attachments_id_seq; Type: SEQUENCE SET; Schema: catalog; Owner: postgres
---
-
-SELECT pg_catalog.setval('catalog.pms_review_attachments_id_seq', 1, false);
+SELECT pg_catalog.setval('pms.pms_product_category_id_seq', 44, true);
 
 
 --
--- Name: pms_sku_stock_id_seq; Type: SEQUENCE SET; Schema: catalog; Owner: postgres
+-- Name: pms_product_spend_discount_id_seq; Type: SEQUENCE SET; Schema: pms; Owner: postgres
 --
 
-SELECT pg_catalog.setval('catalog.pms_sku_stock_id_seq', 41, true);
+SELECT pg_catalog.setval('pms.pms_product_spend_discount_id_seq', 1, false);
+
+
+--
+-- Name: pms_product_id_seq; Type: SEQUENCE SET; Schema: pms; Owner: postgres
+--
+
+SELECT pg_catalog.setval('pms.pms_product_id_seq', 11, true);
+
+
+--
+-- Name: pms_product_volume_discount_id_seq; Type: SEQUENCE SET; Schema: pms; Owner: postgres
+--
+
+SELECT pg_catalog.setval('pms.pms_product_volume_discount_id_seq', 1, false);
+
+
+--
+-- Name: pms_product_gallery_id_seq; Type: SEQUENCE SET; Schema: pms; Owner: postgres
+--
+
+SELECT pg_catalog.setval('pms.pms_product_gallery_id_seq', 11, true);
+
+
+--
+-- Name: pms_product_audit_log_id_seq; Type: SEQUENCE SET; Schema: pms; Owner: postgres
+--
+
+SELECT pg_catalog.setval('pms.pms_product_audit_log_id_seq', 1, false);
+
+
+--
+-- Name: pms_product_approval_history_id_seq; Type: SEQUENCE SET; Schema: pms; Owner: postgres
+--
+
+SELECT pg_catalog.setval('pms.pms_product_approval_history_id_seq', 1, false);
+
+
+--
+-- Name: pms_review_id_seq; Type: SEQUENCE SET; Schema: pms; Owner: postgres
+--
+
+SELECT pg_catalog.setval('pms.pms_review_id_seq', 1, false);
+
+
+--
+-- Name: pms_review_attachments_id_seq; Type: SEQUENCE SET; Schema: pms; Owner: postgres
+--
+
+SELECT pg_catalog.setval('pms.pms_review_attachments_id_seq', 1, false);
+
+
+--
+-- Name: pms_sku_stock_id_seq; Type: SEQUENCE SET; Schema: pms; Owner: postgres
+--
+
+SELECT pg_catalog.setval('pms.pms_sku_stock_id_seq', 41, true);
 
 
 --
@@ -10131,138 +10131,138 @@ ALTER TABLE ONLY ai.vector_store
 
 
 --
--- Name: pms_brand pms_brand_pkey; Type: CONSTRAINT; Schema: catalog; Owner: postgres
+-- Name: pms_brand pms_brand_pkey; Type: CONSTRAINT; Schema: pms; Owner: postgres
 --
 
-ALTER TABLE ONLY catalog.pms_brand
+ALTER TABLE ONLY pms.pms_brand
     ADD CONSTRAINT pms_brand_pkey PRIMARY KEY (id);
 
 
 --
--- Name: pms_comment pms_comment_pkey; Type: CONSTRAINT; Schema: catalog; Owner: postgres
+-- Name: pms_comment pms_comment_pkey; Type: CONSTRAINT; Schema: pms; Owner: postgres
 --
 
-ALTER TABLE ONLY catalog.pms_comment
+ALTER TABLE ONLY pms.pms_comment
     ADD CONSTRAINT pms_comment_pkey PRIMARY KEY (id);
 
 
 --
--- Name: pms_comment_reply pms_comment_reply_pkey; Type: CONSTRAINT; Schema: catalog; Owner: postgres
+-- Name: pms_comment_reply pms_comment_reply_pkey; Type: CONSTRAINT; Schema: pms; Owner: postgres
 --
 
-ALTER TABLE ONLY catalog.pms_comment_reply
+ALTER TABLE ONLY pms.pms_comment_reply
     ADD CONSTRAINT pms_comment_reply_pkey PRIMARY KEY (id);
 
 
 --
--- Name: pms_product_attribute_category pms_product_attribute_category_pkey; Type: CONSTRAINT; Schema: catalog; Owner: postgres
+-- Name: pms_product_attribute_category pms_product_attribute_category_pkey; Type: CONSTRAINT; Schema: pms; Owner: postgres
 --
 
-ALTER TABLE ONLY catalog.pms_product_attribute_category
+ALTER TABLE ONLY pms.pms_product_attribute_category
     ADD CONSTRAINT pms_product_attribute_category_pkey PRIMARY KEY (id);
 
 
 --
--- Name: pms_product_attribute pms_product_attribute_pkey; Type: CONSTRAINT; Schema: catalog; Owner: postgres
+-- Name: pms_product_attribute pms_product_attribute_pkey; Type: CONSTRAINT; Schema: pms; Owner: postgres
 --
 
-ALTER TABLE ONLY catalog.pms_product_attribute
+ALTER TABLE ONLY pms.pms_product_attribute
     ADD CONSTRAINT pms_product_attribute_pkey PRIMARY KEY (id);
 
 
 --
--- Name: pms_product_attribute_value pms_product_attribute_value_pkey; Type: CONSTRAINT; Schema: catalog; Owner: postgres
+-- Name: pms_product_attribute_value pms_product_attribute_value_pkey; Type: CONSTRAINT; Schema: pms; Owner: postgres
 --
 
-ALTER TABLE ONLY catalog.pms_product_attribute_value
+ALTER TABLE ONLY pms.pms_product_attribute_value
     ADD CONSTRAINT pms_product_attribute_value_pkey PRIMARY KEY (id);
 
 
 --
--- Name: pms_product_category_attribute_relation pms_product_category_attribute_relation_pkey; Type: CONSTRAINT; Schema: catalog; Owner: postgres
+-- Name: pms_product_category_attribute_relation pms_product_category_attribute_relation_pkey; Type: CONSTRAINT; Schema: pms; Owner: postgres
 --
 
-ALTER TABLE ONLY catalog.pms_product_category_attribute_relation
+ALTER TABLE ONLY pms.pms_product_category_attribute_relation
     ADD CONSTRAINT pms_product_category_attribute_relation_pkey PRIMARY KEY (id);
 
 
 --
--- Name: pms_product_category pms_product_category_pkey; Type: CONSTRAINT; Schema: catalog; Owner: postgres
+-- Name: pms_product_category pms_product_category_pkey; Type: CONSTRAINT; Schema: pms; Owner: postgres
 --
 
-ALTER TABLE ONLY catalog.pms_product_category
+ALTER TABLE ONLY pms.pms_product_category
     ADD CONSTRAINT pms_product_category_pkey PRIMARY KEY (id);
 
 
 --
--- Name: pms_product_spend_discount pms_product_spend_discount_pkey; Type: CONSTRAINT; Schema: catalog; Owner: postgres
+-- Name: pms_product_spend_discount pms_product_spend_discount_pkey; Type: CONSTRAINT; Schema: pms; Owner: postgres
 --
 
-ALTER TABLE ONLY catalog.pms_product_spend_discount
+ALTER TABLE ONLY pms.pms_product_spend_discount
     ADD CONSTRAINT pms_product_spend_discount_pkey PRIMARY KEY (id);
 
 
 --
--- Name: pms_product_volume_discount pms_product_volume_discount_pkey; Type: CONSTRAINT; Schema: catalog; Owner: postgres
+-- Name: pms_product_volume_discount pms_product_volume_discount_pkey; Type: CONSTRAINT; Schema: pms; Owner: postgres
 --
 
-ALTER TABLE ONLY catalog.pms_product_volume_discount
+ALTER TABLE ONLY pms.pms_product_volume_discount
     ADD CONSTRAINT pms_product_volume_discount_pkey PRIMARY KEY (id);
 
 
 --
--- Name: pms_product_gallery pms_product_gallery_pkey; Type: CONSTRAINT; Schema: catalog; Owner: postgres
+-- Name: pms_product_gallery pms_product_gallery_pkey; Type: CONSTRAINT; Schema: pms; Owner: postgres
 --
 
-ALTER TABLE ONLY catalog.pms_product_gallery
+ALTER TABLE ONLY pms.pms_product_gallery
     ADD CONSTRAINT pms_product_gallery_pkey PRIMARY KEY (id);
 
 
 --
--- Name: pms_product_audit_log pms_product_audit_log_pkey; Type: CONSTRAINT; Schema: catalog; Owner: postgres
+-- Name: pms_product_audit_log pms_product_audit_log_pkey; Type: CONSTRAINT; Schema: pms; Owner: postgres
 --
 
-ALTER TABLE ONLY catalog.pms_product_audit_log
+ALTER TABLE ONLY pms.pms_product_audit_log
     ADD CONSTRAINT pms_product_audit_log_pkey PRIMARY KEY (id);
 
 
 --
--- Name: pms_product pms_product_pkey; Type: CONSTRAINT; Schema: catalog; Owner: postgres
+-- Name: pms_product pms_product_pkey; Type: CONSTRAINT; Schema: pms; Owner: postgres
 --
 
-ALTER TABLE ONLY catalog.pms_product
+ALTER TABLE ONLY pms.pms_product
     ADD CONSTRAINT pms_product_pkey PRIMARY KEY (id);
 
 
 --
--- Name: pms_product_approval_history pms_product_approval_history_pkey; Type: CONSTRAINT; Schema: catalog; Owner: postgres
+-- Name: pms_product_approval_history pms_product_approval_history_pkey; Type: CONSTRAINT; Schema: pms; Owner: postgres
 --
 
-ALTER TABLE ONLY catalog.pms_product_approval_history
+ALTER TABLE ONLY pms.pms_product_approval_history
     ADD CONSTRAINT pms_product_approval_history_pkey PRIMARY KEY (id);
 
 
 --
--- Name: pms_review_attachments pms_review_attachments_pkey; Type: CONSTRAINT; Schema: catalog; Owner: postgres
+-- Name: pms_review_attachments pms_review_attachments_pkey; Type: CONSTRAINT; Schema: pms; Owner: postgres
 --
 
-ALTER TABLE ONLY catalog.pms_review_attachments
+ALTER TABLE ONLY pms.pms_review_attachments
     ADD CONSTRAINT pms_review_attachments_pkey PRIMARY KEY (id);
 
 
 --
--- Name: pms_review pms_review_pkey; Type: CONSTRAINT; Schema: catalog; Owner: postgres
+-- Name: pms_review pms_review_pkey; Type: CONSTRAINT; Schema: pms; Owner: postgres
 --
 
-ALTER TABLE ONLY catalog.pms_review
+ALTER TABLE ONLY pms.pms_review
     ADD CONSTRAINT pms_review_pkey PRIMARY KEY (id);
 
 
 --
--- Name: pms_sku_stock pms_sku_stock_pkey; Type: CONSTRAINT; Schema: catalog; Owner: postgres
+-- Name: pms_sku_stock pms_sku_stock_pkey; Type: CONSTRAINT; Schema: pms; Owner: postgres
 --
 
-ALTER TABLE ONLY catalog.pms_sku_stock
+ALTER TABLE ONLY pms.pms_sku_stock
     ADD CONSTRAINT pms_sku_stock_pkey PRIMARY KEY (id);
 
 
@@ -11017,10 +11017,10 @@ CREATE INDEX idx_chat_session ON ai.ai_chat_conversation USING btree (session_id
 
 
 --
--- Name: idx_pms_product_publish_status; Type: INDEX; Schema: catalog; Owner: postgres
+-- Name: idx_pms_product_publish_status; Type: INDEX; Schema: pms; Owner: postgres
 --
 
-CREATE INDEX idx_pms_product_publish_status ON catalog.pms_product USING btree (publish_status, delete_status);
+CREATE INDEX idx_pms_product_publish_status ON pms.pms_product USING btree (publish_status, delete_status);
 
 
 --
@@ -11218,151 +11218,151 @@ ALTER TABLE ONLY ai.ai_chat_conversation
 --
 
 ALTER TABLE ONLY ai.pms_product_embedding
-    ADD CONSTRAINT fk_pms_product_embedding_product_id FOREIGN KEY (product_id) REFERENCES catalog.pms_product(id);
+    ADD CONSTRAINT fk_pms_product_embedding_product_id FOREIGN KEY (product_id) REFERENCES pms.pms_product(id);
 
 
 --
--- Name: pms_comment fk_pms_comment_product_id; Type: FK CONSTRAINT; Schema: catalog; Owner: postgres
+-- Name: pms_comment fk_pms_comment_product_id; Type: FK CONSTRAINT; Schema: pms; Owner: postgres
 --
 
-ALTER TABLE ONLY catalog.pms_comment
-    ADD CONSTRAINT fk_pms_comment_product_id FOREIGN KEY (product_id) REFERENCES catalog.pms_product(id);
-
-
---
--- Name: pms_comment_reply fk_pms_comment_reply_comment_id; Type: FK CONSTRAINT; Schema: catalog; Owner: postgres
---
-
-ALTER TABLE ONLY catalog.pms_comment_reply
-    ADD CONSTRAINT fk_pms_comment_reply_comment_id FOREIGN KEY (comment_id) REFERENCES catalog.pms_comment(id);
+ALTER TABLE ONLY pms.pms_comment
+    ADD CONSTRAINT fk_pms_comment_product_id FOREIGN KEY (product_id) REFERENCES pms.pms_product(id);
 
 
 --
--- Name: pms_product_attribute_value fk_pms_product_attribute_value_product_attribute_id; Type: FK CONSTRAINT; Schema: catalog; Owner: postgres
+-- Name: pms_comment_reply fk_pms_comment_reply_comment_id; Type: FK CONSTRAINT; Schema: pms; Owner: postgres
 --
 
-ALTER TABLE ONLY catalog.pms_product_attribute_value
-    ADD CONSTRAINT fk_pms_product_attribute_value_product_attribute_id FOREIGN KEY (product_attribute_id) REFERENCES catalog.pms_product_attribute(id);
-
-
---
--- Name: pms_product_attribute_value fk_pms_product_attribute_value_product_id; Type: FK CONSTRAINT; Schema: catalog; Owner: postgres
---
-
-ALTER TABLE ONLY catalog.pms_product_attribute_value
-    ADD CONSTRAINT fk_pms_product_attribute_value_product_id FOREIGN KEY (product_id) REFERENCES catalog.pms_product(id);
+ALTER TABLE ONLY pms.pms_comment_reply
+    ADD CONSTRAINT fk_pms_comment_reply_comment_id FOREIGN KEY (comment_id) REFERENCES pms.pms_comment(id);
 
 
 --
--- Name: pms_product fk_pms_product_brand_id; Type: FK CONSTRAINT; Schema: catalog; Owner: postgres
+-- Name: pms_product_attribute_value fk_pms_product_attribute_value_product_attribute_id; Type: FK CONSTRAINT; Schema: pms; Owner: postgres
 --
 
-ALTER TABLE ONLY catalog.pms_product
-    ADD CONSTRAINT fk_pms_product_brand_id FOREIGN KEY (brand_id) REFERENCES catalog.pms_brand(id);
-
-
---
--- Name: pms_product_category_attribute_relation fk_pms_product_category_attribute_relation_product_attribute_id; Type: FK CONSTRAINT; Schema: catalog; Owner: postgres
---
-
-ALTER TABLE ONLY catalog.pms_product_category_attribute_relation
-    ADD CONSTRAINT fk_pms_product_category_attribute_relation_product_attribute_id FOREIGN KEY (product_attribute_id) REFERENCES catalog.pms_product_attribute(id);
+ALTER TABLE ONLY pms.pms_product_attribute_value
+    ADD CONSTRAINT fk_pms_product_attribute_value_product_attribute_id FOREIGN KEY (product_attribute_id) REFERENCES pms.pms_product_attribute(id);
 
 
 --
--- Name: pms_product_category_attribute_relation fk_pms_product_category_attribute_relation_product_category_id; Type: FK CONSTRAINT; Schema: catalog; Owner: postgres
+-- Name: pms_product_attribute_value fk_pms_product_attribute_value_product_id; Type: FK CONSTRAINT; Schema: pms; Owner: postgres
 --
 
-ALTER TABLE ONLY catalog.pms_product_category_attribute_relation
-    ADD CONSTRAINT fk_pms_product_category_attribute_relation_product_category_id FOREIGN KEY (product_category_id) REFERENCES catalog.pms_product_category(id);
-
-
---
--- Name: pms_product_spend_discount fk_pms_product_spend_discount_product_id; Type: FK CONSTRAINT; Schema: catalog; Owner: postgres
---
-
-ALTER TABLE ONLY catalog.pms_product_spend_discount
-    ADD CONSTRAINT fk_pms_product_spend_discount_product_id FOREIGN KEY (product_id) REFERENCES catalog.pms_product(id);
+ALTER TABLE ONLY pms.pms_product_attribute_value
+    ADD CONSTRAINT fk_pms_product_attribute_value_product_id FOREIGN KEY (product_id) REFERENCES pms.pms_product(id);
 
 
 --
--- Name: pms_product_volume_discount fk_pms_product_volume_discount_product_id; Type: FK CONSTRAINT; Schema: catalog; Owner: postgres
+-- Name: pms_product fk_pms_product_brand_id; Type: FK CONSTRAINT; Schema: pms; Owner: postgres
 --
 
-ALTER TABLE ONLY catalog.pms_product_volume_discount
-    ADD CONSTRAINT fk_pms_product_volume_discount_product_id FOREIGN KEY (product_id) REFERENCES catalog.pms_product(id);
-
-
---
--- Name: pms_product_gallery fk_pms_product_gallery_product_id; Type: FK CONSTRAINT; Schema: catalog; Owner: postgres
---
-
-ALTER TABLE ONLY catalog.pms_product_gallery
-    ADD CONSTRAINT fk_pms_product_gallery_product_id FOREIGN KEY (product_id) REFERENCES catalog.pms_product(id);
+ALTER TABLE ONLY pms.pms_product
+    ADD CONSTRAINT fk_pms_product_brand_id FOREIGN KEY (brand_id) REFERENCES pms.pms_brand(id);
 
 
 --
--- Name: pms_product_audit_log fk_pms_product_audit_log_product_id; Type: FK CONSTRAINT; Schema: catalog; Owner: postgres
+-- Name: pms_product_category_attribute_relation fk_pms_product_category_attribute_relation_product_attribute_id; Type: FK CONSTRAINT; Schema: pms; Owner: postgres
 --
 
-ALTER TABLE ONLY catalog.pms_product_audit_log
-    ADD CONSTRAINT fk_pms_product_audit_log_product_id FOREIGN KEY (product_id) REFERENCES catalog.pms_product(id);
-
-
---
--- Name: pms_product fk_pms_product_product_category_id; Type: FK CONSTRAINT; Schema: catalog; Owner: postgres
---
-
-ALTER TABLE ONLY catalog.pms_product
-    ADD CONSTRAINT fk_pms_product_product_category_id FOREIGN KEY (product_category_id) REFERENCES catalog.pms_product_category(id);
+ALTER TABLE ONLY pms.pms_product_category_attribute_relation
+    ADD CONSTRAINT fk_pms_product_category_attribute_relation_product_attribute_id FOREIGN KEY (product_attribute_id) REFERENCES pms.pms_product_attribute(id);
 
 
 --
--- Name: pms_product_approval_history fk_pms_product_approval_history_product_id; Type: FK CONSTRAINT; Schema: catalog; Owner: postgres
+-- Name: pms_product_category_attribute_relation fk_pms_product_category_attribute_relation_product_category_id; Type: FK CONSTRAINT; Schema: pms; Owner: postgres
 --
 
-ALTER TABLE ONLY catalog.pms_product_approval_history
-    ADD CONSTRAINT fk_pms_product_approval_history_product_id FOREIGN KEY (product_id) REFERENCES catalog.pms_product(id);
-
-
---
--- Name: pms_review_attachments fk_pms_review_attachments_review_id; Type: FK CONSTRAINT; Schema: catalog; Owner: postgres
---
-
-ALTER TABLE ONLY catalog.pms_review_attachments
-    ADD CONSTRAINT fk_pms_review_attachments_review_id FOREIGN KEY (review_id) REFERENCES catalog.pms_review(id);
+ALTER TABLE ONLY pms.pms_product_category_attribute_relation
+    ADD CONSTRAINT fk_pms_product_category_attribute_relation_product_category_id FOREIGN KEY (product_category_id) REFERENCES pms.pms_product_category(id);
 
 
 --
--- Name: pms_review fk_pms_review_member_id; Type: FK CONSTRAINT; Schema: catalog; Owner: postgres
+-- Name: pms_product_spend_discount fk_pms_product_spend_discount_product_id; Type: FK CONSTRAINT; Schema: pms; Owner: postgres
 --
 
-ALTER TABLE ONLY catalog.pms_review
+ALTER TABLE ONLY pms.pms_product_spend_discount
+    ADD CONSTRAINT fk_pms_product_spend_discount_product_id FOREIGN KEY (product_id) REFERENCES pms.pms_product(id);
+
+
+--
+-- Name: pms_product_volume_discount fk_pms_product_volume_discount_product_id; Type: FK CONSTRAINT; Schema: pms; Owner: postgres
+--
+
+ALTER TABLE ONLY pms.pms_product_volume_discount
+    ADD CONSTRAINT fk_pms_product_volume_discount_product_id FOREIGN KEY (product_id) REFERENCES pms.pms_product(id);
+
+
+--
+-- Name: pms_product_gallery fk_pms_product_gallery_product_id; Type: FK CONSTRAINT; Schema: pms; Owner: postgres
+--
+
+ALTER TABLE ONLY pms.pms_product_gallery
+    ADD CONSTRAINT fk_pms_product_gallery_product_id FOREIGN KEY (product_id) REFERENCES pms.pms_product(id);
+
+
+--
+-- Name: pms_product_audit_log fk_pms_product_audit_log_product_id; Type: FK CONSTRAINT; Schema: pms; Owner: postgres
+--
+
+ALTER TABLE ONLY pms.pms_product_audit_log
+    ADD CONSTRAINT fk_pms_product_audit_log_product_id FOREIGN KEY (product_id) REFERENCES pms.pms_product(id);
+
+
+--
+-- Name: pms_product fk_pms_product_product_category_id; Type: FK CONSTRAINT; Schema: pms; Owner: postgres
+--
+
+ALTER TABLE ONLY pms.pms_product
+    ADD CONSTRAINT fk_pms_product_product_category_id FOREIGN KEY (product_category_id) REFERENCES pms.pms_product_category(id);
+
+
+--
+-- Name: pms_product_approval_history fk_pms_product_approval_history_product_id; Type: FK CONSTRAINT; Schema: pms; Owner: postgres
+--
+
+ALTER TABLE ONLY pms.pms_product_approval_history
+    ADD CONSTRAINT fk_pms_product_approval_history_product_id FOREIGN KEY (product_id) REFERENCES pms.pms_product(id);
+
+
+--
+-- Name: pms_review_attachments fk_pms_review_attachments_review_id; Type: FK CONSTRAINT; Schema: pms; Owner: postgres
+--
+
+ALTER TABLE ONLY pms.pms_review_attachments
+    ADD CONSTRAINT fk_pms_review_attachments_review_id FOREIGN KEY (review_id) REFERENCES pms.pms_review(id);
+
+
+--
+-- Name: pms_review fk_pms_review_member_id; Type: FK CONSTRAINT; Schema: pms; Owner: postgres
+--
+
+ALTER TABLE ONLY pms.pms_review
     ADD CONSTRAINT fk_pms_review_member_id FOREIGN KEY (member_id) REFERENCES users.ums_member(id);
 
 
 --
--- Name: pms_review fk_pms_review_parent_id; Type: FK CONSTRAINT; Schema: catalog; Owner: postgres
+-- Name: pms_review fk_pms_review_parent_id; Type: FK CONSTRAINT; Schema: pms; Owner: postgres
 --
 
-ALTER TABLE ONLY catalog.pms_review
-    ADD CONSTRAINT fk_pms_review_parent_id FOREIGN KEY (parent_id) REFERENCES catalog.pms_review(id);
-
-
---
--- Name: pms_review fk_pms_review_product_id; Type: FK CONSTRAINT; Schema: catalog; Owner: postgres
---
-
-ALTER TABLE ONLY catalog.pms_review
-    ADD CONSTRAINT fk_pms_review_product_id FOREIGN KEY (product_id) REFERENCES catalog.pms_product(id);
+ALTER TABLE ONLY pms.pms_review
+    ADD CONSTRAINT fk_pms_review_parent_id FOREIGN KEY (parent_id) REFERENCES pms.pms_review(id);
 
 
 --
--- Name: pms_sku_stock fk_pms_sku_stock_product_id; Type: FK CONSTRAINT; Schema: catalog; Owner: postgres
+-- Name: pms_review fk_pms_review_product_id; Type: FK CONSTRAINT; Schema: pms; Owner: postgres
 --
 
-ALTER TABLE ONLY catalog.pms_sku_stock
-    ADD CONSTRAINT fk_pms_sku_stock_product_id FOREIGN KEY (product_id) REFERENCES catalog.pms_product(id);
+ALTER TABLE ONLY pms.pms_review
+    ADD CONSTRAINT fk_pms_review_product_id FOREIGN KEY (product_id) REFERENCES pms.pms_product(id);
+
+
+--
+-- Name: pms_sku_stock fk_pms_sku_stock_product_id; Type: FK CONSTRAINT; Schema: pms; Owner: postgres
+--
+
+ALTER TABLE ONLY pms.pms_sku_stock
+    ADD CONSTRAINT fk_pms_sku_stock_product_id FOREIGN KEY (product_id) REFERENCES pms.pms_product(id);
 
 
 --
@@ -11370,7 +11370,7 @@ ALTER TABLE ONLY catalog.pms_sku_stock
 --
 
 ALTER TABLE ONLY marketing.sms_coupon_brand_relation
-    ADD CONSTRAINT fk_sms_coupon_brand_relation_brand_id FOREIGN KEY (brand_id) REFERENCES catalog.pms_brand(id);
+    ADD CONSTRAINT fk_sms_coupon_brand_relation_brand_id FOREIGN KEY (brand_id) REFERENCES pms.pms_brand(id);
 
 
 --
@@ -11418,7 +11418,7 @@ ALTER TABLE ONLY marketing.sms_coupon_product_category_relation
 --
 
 ALTER TABLE ONLY marketing.sms_coupon_product_category_relation
-    ADD CONSTRAINT fk_sms_coupon_product_category_relation_product_category_id FOREIGN KEY (product_category_id) REFERENCES catalog.pms_product_category(id);
+    ADD CONSTRAINT fk_sms_coupon_product_category_relation_product_category_id FOREIGN KEY (product_category_id) REFERENCES pms.pms_product_category(id);
 
 
 --
@@ -11434,7 +11434,7 @@ ALTER TABLE ONLY marketing.sms_coupon_product_relation
 --
 
 ALTER TABLE ONLY marketing.sms_coupon_product_relation
-    ADD CONSTRAINT fk_sms_coupon_product_relation_product_id FOREIGN KEY (product_id) REFERENCES catalog.pms_product(id);
+    ADD CONSTRAINT fk_sms_coupon_product_relation_product_id FOREIGN KEY (product_id) REFERENCES pms.pms_product(id);
 
 
 --
@@ -11466,7 +11466,7 @@ ALTER TABLE ONLY marketing.sms_flash_promotion_log
 --
 
 ALTER TABLE ONLY marketing.sms_flash_promotion_log
-    ADD CONSTRAINT fk_sms_flash_promotion_log_product_id FOREIGN KEY (product_id) REFERENCES catalog.pms_product(id);
+    ADD CONSTRAINT fk_sms_flash_promotion_log_product_id FOREIGN KEY (product_id) REFERENCES pms.pms_product(id);
 
 
 --
@@ -11498,7 +11498,7 @@ ALTER TABLE ONLY marketing.sms_flash_promotion_product_relation
 --
 
 ALTER TABLE ONLY marketing.sms_flash_promotion_product_relation
-    ADD CONSTRAINT fk_sms_flash_promotion_product_relation_product_id FOREIGN KEY (product_id) REFERENCES catalog.pms_product(id);
+    ADD CONSTRAINT fk_sms_flash_promotion_product_relation_product_id FOREIGN KEY (product_id) REFERENCES pms.pms_product(id);
 
 
 --
@@ -11530,7 +11530,7 @@ ALTER TABLE ONLY orders.oms_cart_item
 --
 
 ALTER TABLE ONLY orders.oms_cart_item
-    ADD CONSTRAINT fk_oms_cart_item_product_category_id FOREIGN KEY (product_category_id) REFERENCES catalog.pms_product_category(id);
+    ADD CONSTRAINT fk_oms_cart_item_product_category_id FOREIGN KEY (product_category_id) REFERENCES pms.pms_product_category(id);
 
 
 --
@@ -11538,7 +11538,7 @@ ALTER TABLE ONLY orders.oms_cart_item
 --
 
 ALTER TABLE ONLY orders.oms_cart_item
-    ADD CONSTRAINT fk_oms_cart_item_product_id FOREIGN KEY (product_id) REFERENCES catalog.pms_product(id);
+    ADD CONSTRAINT fk_oms_cart_item_product_id FOREIGN KEY (product_id) REFERENCES pms.pms_product(id);
 
 
 --
@@ -11546,7 +11546,7 @@ ALTER TABLE ONLY orders.oms_cart_item
 --
 
 ALTER TABLE ONLY orders.oms_cart_item
-    ADD CONSTRAINT fk_oms_cart_item_product_sku_id FOREIGN KEY (product_sku_id) REFERENCES catalog.pms_sku_stock(id);
+    ADD CONSTRAINT fk_oms_cart_item_product_sku_id FOREIGN KEY (product_sku_id) REFERENCES pms.pms_sku_stock(id);
 
 
 --
@@ -11578,7 +11578,7 @@ ALTER TABLE ONLY orders.oms_order_item
 --
 
 ALTER TABLE ONLY orders.oms_order_item
-    ADD CONSTRAINT fk_oms_order_item_product FOREIGN KEY (product_id) REFERENCES catalog.pms_product(id);
+    ADD CONSTRAINT fk_oms_order_item_product FOREIGN KEY (product_id) REFERENCES pms.pms_product(id);
 
 
 --
@@ -11586,7 +11586,7 @@ ALTER TABLE ONLY orders.oms_order_item
 --
 
 ALTER TABLE ONLY orders.oms_order_item
-    ADD CONSTRAINT fk_oms_order_item_product_category_id FOREIGN KEY (product_category_id) REFERENCES catalog.pms_product_category(id);
+    ADD CONSTRAINT fk_oms_order_item_product_category_id FOREIGN KEY (product_category_id) REFERENCES pms.pms_product_category(id);
 
 
 --
@@ -11594,7 +11594,7 @@ ALTER TABLE ONLY orders.oms_order_item
 --
 
 ALTER TABLE ONLY orders.oms_order_item
-    ADD CONSTRAINT fk_oms_order_item_product_id FOREIGN KEY (product_id) REFERENCES catalog.pms_product(id);
+    ADD CONSTRAINT fk_oms_order_item_product_id FOREIGN KEY (product_id) REFERENCES pms.pms_product(id);
 
 
 --
@@ -11602,7 +11602,7 @@ ALTER TABLE ONLY orders.oms_order_item
 --
 
 ALTER TABLE ONLY orders.oms_order_item
-    ADD CONSTRAINT fk_oms_order_item_product_sku_id FOREIGN KEY (product_sku_id) REFERENCES catalog.pms_sku_stock(id);
+    ADD CONSTRAINT fk_oms_order_item_product_sku_id FOREIGN KEY (product_sku_id) REFERENCES pms.pms_sku_stock(id);
 
 
 --
@@ -11650,7 +11650,7 @@ ALTER TABLE ONLY orders.oms_order_return_apply
 --
 
 ALTER TABLE ONLY orders.oms_order_return_apply
-    ADD CONSTRAINT fk_oms_order_return_apply_product_id FOREIGN KEY (product_id) REFERENCES catalog.pms_product(id);
+    ADD CONSTRAINT fk_oms_order_return_apply_product_id FOREIGN KEY (product_id) REFERENCES pms.pms_product(id);
 
 
 --
@@ -11722,7 +11722,7 @@ ALTER TABLE ONLY users.ums_member_product_category_relation
 --
 
 ALTER TABLE ONLY users.ums_member_product_category_relation
-    ADD CONSTRAINT fk_ums_member_product_category_relation_product_category_id FOREIGN KEY (product_category_id) REFERENCES catalog.pms_product_category(id);
+    ADD CONSTRAINT fk_ums_member_product_category_relation_product_category_id FOREIGN KEY (product_category_id) REFERENCES pms.pms_product_category(id);
 
 
 --

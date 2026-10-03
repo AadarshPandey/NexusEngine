@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "pms_product_category_attribute_relation", schema = "catalog")
+@Table(name = "pms_product_category_attribute_relation", schema = "pms")
 public class PmsProductCategoryAttributeRelation implements Serializable {
 
     private static final long serialVersionUID = 1L;

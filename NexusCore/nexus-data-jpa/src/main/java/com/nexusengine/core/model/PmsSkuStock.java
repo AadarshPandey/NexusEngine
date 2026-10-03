@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "pms_sku_stock", schema = "catalog")
+@Table(name = "pms_sku_stock", schema = "pms")
 public class PmsSkuStock implements Serializable {
 
     private static final long serialVersionUID = 1L;
