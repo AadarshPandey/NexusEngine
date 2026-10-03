@@ -36,14 +36,11 @@ public class OmsCompanyAddress implements Serializable {
     @Schema(title = "Phone")
     private String phone;
 
-    @Schema(title = "Province")
-    private String province;
+    @Schema(title = "State")
+    private String state;
 
     @Schema(title = "City")
     private String city;
-
-    @Schema(title = "Region")
-    private String region;
 
     @Column(name = "detail_address")
     @Schema(title = "Detail address")

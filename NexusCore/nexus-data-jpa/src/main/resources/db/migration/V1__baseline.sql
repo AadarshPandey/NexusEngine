@@ -205,9 +205,8 @@ CREATE TABLE IF NOT EXISTS oms_company_address (
     receive_status INTEGER,
     name VARCHAR(255),
     phone VARCHAR(255),
-    province VARCHAR(255),
+    state VARCHAR(255),
     city VARCHAR(255),
-    region VARCHAR(255),
     detail_address VARCHAR(255)
 );
 
@@ -242,9 +241,9 @@ CREATE TABLE IF NOT EXISTS oms_order (
     receiver_name VARCHAR(255),
     receiver_phone VARCHAR(255),
     receiver_post_code VARCHAR(255),
-    receiver_province VARCHAR(255),
+    receiver_state VARCHAR(255),
     receiver_city VARCHAR(255),
-    receiver_region VARCHAR(255),
+    receiver_
     receiver_detail_address VARCHAR(255),
     confirm_status INTEGER,
     delete_status INTEGER,
@@ -419,9 +418,8 @@ CREATE TABLE IF NOT EXISTS ums_member_receive_address (
     phone_number VARCHAR(255),
     default_status INTEGER,
     post_code VARCHAR(255),
-    province VARCHAR(255),
+    state VARCHAR(255),
     city VARCHAR(255),
-    region VARCHAR(255),
     detail_address VARCHAR(255)
 );
 

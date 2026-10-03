@@ -6,8 +6,7 @@ export type OmsCompanyAddress = {
   receiveStatus: number
   name: string
   phone: string
-  province: string
+  state: string
   city: string
-  region: string
   detailAddress: string
 }

@@ -8129,8 +8129,8 @@ COPY orders.oms_cart_item (id, product_id, product_sku_id, member_id, quantity, 
 -- Data for Name: oms_company_address; Type: TABLE DATA; Schema: orders; Owner: postgres
 --
 
-COPY orders.oms_company_address (id, address_name, send_status, receive_status, name, phone, province, city, region, detail_address) FROM stdin;
-1	Main Warehouse	1	1	Admin	1234567890	State	City	Region	123 Main St
+COPY orders.oms_company_address (id, address_name, send_status, receive_status, name, phone, state, city, detail_address) FROM stdin;
+1	Main Warehouse	1	1	Admin	1234567890	State	City	123 Main St
 \.
 
 
