@@ -96,8 +96,8 @@ const FlashList: React.FC = () => {
                 <TableCell>
                   <Switch size="small" checked={row.status === 1} onChange={() => handleStatusChange(row.id!, row.status)} />
                 </TableCell>
-                <TableCell>{row.startDate ? dayjs(row.startDate).format('YYYY-MM-DD') : 'N/A'}</TableCell>
-                <TableCell>{row.endDate ? dayjs(row.endDate).format('YYYY-MM-DD') : 'N/A'}</TableCell>
+                <TableCell>{row.startDate ? dayjs(row.startDate).format('DD/MM/YYYY') : 'N/A'}</TableCell>
+                <TableCell>{row.endDate ? dayjs(row.endDate).format('DD/MM/YYYY') : 'N/A'}</TableCell>
                 <TableCell align="center">
                   <Button size="small" onClick={() => navigate(`/sms/selectSession?flashPromotionId=${row.id}`)}>Manage Sessions</Button>
                   <Button size="small" color="primary" onClick={() => openDialog(row)}>Edit</Button>
