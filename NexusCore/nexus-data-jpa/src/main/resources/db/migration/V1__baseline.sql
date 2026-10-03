@@ -158,34 +158,7 @@ CREATE TABLE IF NOT EXISTS pms_sku_stock (
     sku_attributes JSONB
 );
 
-CREATE TABLE IF NOT EXISTS pms_comment (
-    id BIGSERIAL PRIMARY KEY,
-    product_id BIGINT,
-    member_nick_name VARCHAR(255),
-    product_name VARCHAR(255),
-    star INTEGER,
-    member_ip VARCHAR(255),
-    create_time TIMESTAMP,
-    show_status INTEGER,
-    
-    likes_count INTEGER,
-    dislike_count INTEGER,
-    dislike_count INTEGER,
-    pics VARCHAR(255),
-    member_icon VARCHAR(255),
-    reply_count INTEGER,
-    content VARCHAR(255)
-);
 
-CREATE TABLE IF NOT EXISTS pms_comment_reply (
-    id BIGSERIAL PRIMARY KEY,
-    comment_id BIGINT,
-    member_nick_name VARCHAR(255),
-    member_icon VARCHAR(255),
-    content VARCHAR(255),
-    create_time TIMESTAMP,
-    type INTEGER
-);
 
 
 CREATE TABLE IF NOT EXISTS pms_review (

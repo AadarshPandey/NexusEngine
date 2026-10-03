@@ -61,7 +61,6 @@ BEGIN
         JOIN pg_class t ON d.refobjid = t.oid
         JOIN pg_namespace n ON n.oid = t.relnamespace
         WHERE s.relkind = 'S' 
-          AND t.relname = 'pms_comment' 
           AND n.nspname = 'catalog' -- because table is already moved
     LOOP
         EXECUTE 'ALTER SEQUENCE ' || seq_record.sequence_name || ' SET SCHEMA catalog';
@@ -91,7 +90,6 @@ BEGIN
         JOIN pg_class t ON d.refobjid = t.oid
         JOIN pg_namespace n ON n.oid = t.relnamespace
         WHERE s.relkind = 'S' 
-          AND t.relname = 'pms_comment_reply' 
           AND n.nspname = 'catalog' -- because table is already moved
     LOOP
         EXECUTE 'ALTER SEQUENCE ' || seq_record.sequence_name || ' SET SCHEMA catalog';

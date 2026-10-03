@@ -12,10 +12,6 @@ export type PmsProductAttribute = {
   inputType?: number
   inputList?: string
   sort?: number
-  filterType?: number
-  searchType?: number
-  relatedStatus?: number
-  handAddStatus?: number
   type?: number
 }
 
@@ -40,7 +36,6 @@ export type PmsProductAttributeValue = {
 
 export interface ProductAttrVo extends Pick<
   PmsProductAttribute,
-  'id' | 'name' | 'handAddStatus' | 'inputList'
 > {
   values?: string[]
   options?: string[]

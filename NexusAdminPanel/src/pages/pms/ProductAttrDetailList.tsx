@@ -53,10 +53,6 @@ const ProductAttrDetailList: React.FC = () => {
         inputType: 0,
         inputList: '',
         sort: 0,
-        filterType: 0,
-        searchType: 0,
-        relatedStatus: 0,
-        handAddStatus: 0
       });
     }
     setDialogOpen(true);

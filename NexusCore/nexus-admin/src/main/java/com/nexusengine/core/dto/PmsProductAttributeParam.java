@@ -17,10 +17,6 @@ public record PmsProductAttributeParam(
     @FlagValidator({"0","1"}) @Schema(title = "Input type") Integer inputType,
     @Schema(title = "Input list") String inputList,
     Integer sort,
-    @Schema(title = "Filter type") @FlagValidator({"0","1"}) Integer filterType,
-    @Schema(title = "Search type") @FlagValidator({"0","1","2"}) Integer searchType,
-    @Schema(title = "Related status") @FlagValidator({"0","1"}) Integer relatedStatus,
-    @Schema(title = "Hand add status") @FlagValidator({"0","1"}) Integer handAddStatus,
     @Schema(title = "Type") @FlagValidator({"0","1"}) Integer type
 ) {
 }

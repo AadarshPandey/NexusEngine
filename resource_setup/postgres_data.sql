@@ -2451,85 +2451,26 @@ ALTER SEQUENCE public.pms_brand_id_seq OWNED BY public.pms_brand.id;
 -- Name: pms_comment; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE public.pms_comment (
-    id bigint NOT NULL,
-    product_id bigint,
-    member_nick_name character varying(255),
-    product_name character varying(255),
-    star integer,
-    member_ip character varying(255),
-    create_time timestamp without time zone,
-    show_status integer,
-    
-    likes_count integer,
-    dislike_count integer,
-    dislike_count integer,
-    pics character varying(255),
-    member_icon character varying(255),
-    reply_count integer,
-    content character varying(255)
-);
 
 
-ALTER TABLE public.pms_comment OWNER TO postgres;
 
 --
 -- Name: pms_comment_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE public.pms_comment_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER SEQUENCE public.pms_comment_id_seq OWNER TO postgres;
-
---
--- Name: pms_comment_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE public.pms_comment_id_seq OWNED BY public.pms_comment.id;
 
 
 --
 -- Name: pms_comment_reply; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE public.pms_comment_reply (
-    id bigint NOT NULL,
-    comment_id bigint,
-    member_nick_name character varying(255),
-    member_icon character varying(255),
-    content character varying(255),
-    create_time timestamp without time zone,
-    type integer
-);
 
 
-ALTER TABLE public.pms_comment_reply OWNER TO postgres;
 
 --
 -- Name: pms_comment_reply_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE public.pms_comment_reply_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER SEQUENCE public.pms_comment_reply_id_seq OWNER TO postgres;
-
---
--- Name: pms_comment_reply_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE public.pms_comment_reply_id_seq OWNED BY public.pms_comment_reply.id;
 
 
 --
@@ -2571,10 +2512,6 @@ CREATE TABLE public.pms_product_attribute (
     input_type integer,
     input_list character varying(255),
     sort integer,
-    filter_type integer,
-    search_type integer,
-    related_status integer,
-    hand_add_status integer,
     type integer
 );
 
@@ -5428,16 +5365,12 @@ COPY catalog.pms_brand (id, name, show_status, logo) FROM stdin;
 -- Data for Name: pms_comment; Type: TABLE DATA; Schema: catalog; Owner: postgres
 --
 
-COPY catalog.pms_comment (id, product_id, member_nick_name, product_name, star, member_ip, create_time, show_status, likes_count, dislike_count, pics, member_icon, reply_count, content) FROM stdin;
-\.
 
 
 --
 -- Data for Name: pms_comment_reply; Type: TABLE DATA; Schema: catalog; Owner: postgres
 --
 
-COPY catalog.pms_comment_reply (id, comment_id, member_nick_name, member_icon, content, create_time, type) FROM stdin;
-\.
 
 
 --
@@ -5604,271 +5537,139 @@ COPY catalog.pms_product (id, brand_id, product_category_id, product_attribute_c
 -- Data for Name: pms_product_attribute; Type: TABLE DATA; Schema: catalog; Owner: postgres
 --
 
-COPY catalog.pms_product_attribute (id, product_attribute_category_id, name, select_type, input_type, input_list, sort, filter_type, search_type, related_status, hand_add_status, type) FROM stdin;
-34	9	Layout	0	1	Standard	0	0	0	0	0	1
-
-35	9	Switch Type	0	1	Premium Material	0	0	0	0	0	1
-
-36	11	Size	0	1	L,M,S,XL,L,M,XL	0	0	0	0	0	0
-
-37	11	Color	0	1	Black,Standard	0	0	0	0	0	0
-
-38	11	Material	0	1	Premium Material	0	0	0	0	0	1
-
-39	11	Fit	0	1	Standard	0	0	0	0	0	1
-
-40	12	Size	0	1	L,M,S,XL	0	0	0	0	0	0
-
-41	12	Color	0	1	Black	0	0	0	0	0	0
-
-42	12	Material	0	1	Premium Material	0	0	0	0	0	1
-
-43	12	Fit	0	1	Standard	0	0	0	0	0	1
-
-44	13	Color	0	1	Black,Silver,Standard	0	0	0	0	0	0
-
-45	13	Size	0	1	L,M,S,L,M,XL,Standard	0	0	0	0	0	0
-
-46	13	Material	0	1	Premium Material	0	0	0	0	0	1
-
-47	14	Size (US)	0	1	Standard	0	0	0	0	0	0
-
-48	14	Color	0	1	Black,White	0	0	0	0	0	0
-
-49	14	Material	0	1	Premium Material	0	0	0	0	0	1
-
-50	14	Shoe Type	0	1	Premium Material	0	0	0	0	0	1
-
-51	16	Size	0	1	24cm,26cm,28cm,Standard	0	0	0	0	0	0
-
-52	16	Capacity	0	1	1.5L,2L,Standard	0	0	0	0	0	0
-
-53	16	Material	0	1	Premium Material	0	0	0	0	0	1
-
-54	16	Color	0	1	Standard	0	0	0	0	0	1
-
-55	17	Color	0	1	Black,Black,Silver	0	0	0	0	0	0
-
-56	17	Material	0	1	Premium Material	0	0	0	0	0	1
-
-57	17	Dimensions	0	1	Standard Size	0	0	0	0	0	1
-
-58	18	Capacity	0	1	10L,15L,6.5kg,8kg,Standard	0	0	0	0	0	0
-
-59	18	Color	0	1	Black,Silver,Standard	0	0	0	0	0	0
-
-60	18	Power Consumption	0	1	Standard	0	0	0	0	0	1
-
-61	19	Capacity	0	1	12-place,14-place,3L,5L,4L,6L,Standard	0	0	0	0	0	0
-
-62	19	Color	0	1	Black,Standard	0	0	0	0	0	0
-
-63	19	Power Consumption	0	1	Standard	0	0	0	0	0	1
-
-64	21	Skin Type	0	1	Premium Material	0	0	0	0	0	1
-
-65	21	Ingredient	0	1	Premium Material	0	0	0	0	0	1
-
-66	21	Pack Size	0	1	Standard	0	0	0	0	0	0
-
-67	21	SPF	0	1	Standard	0	0	0	0	0	1
-
-68	22	Pack Size	0	1	Standard	0	0	0	0	0	0
-
-69	22	Skin Type	0	1	Premium Material	0	0	0	0	0	1
-
-70	22	Ingredient	0	1	Premium Material	0	0	0	0	0	1
-
-71	23	Shade	0	1	110 Porcelain,120 Classic Ivory,130 Buff Beige,220 Natural Beige,Standard	0	0	0	0	0	0
-
-72	23	Finish	0	1	Matte Finish	0	0	0	0	0	1
-
-73	23	Skin Type	0	1	Premium Material	0	0	0	0	0	1
-
-74	24	Pack Size	0	1	Standard	0	0	0	0	0	0
-
-75	24	Hair Type	0	1	Premium Material	0	0	0	0	0	1
-
-76	24	Ingredient	0	1	Premium Material	0	0	0	0	0	1
-
-77	26	Weight	0	1	Standard	0	0	0	0	0	1
-
-78	26	Material	0	1	Premium Material	0	0	0	0	0	1
-
-79	26	Size	0	1	Standard Size	0	0	0	0	0	1
-
-80	26	Color	0	1	Standard	0	0	0	0	0	1
-
-81	27	Color	0	1	Black,Silver	0	0	0	0	0	0
-
-82	27	Material	0	1	Premium Material	0	0	0	0	0	1
-
-83	27	Size	0	1	Standard Size	0	0	0	0	0	1
-
-84	28	Size (US)	0	1	Standard	0	0	0	0	0	0
-
-85	28	Color	0	1	Black,White	0	0	0	0	0	0
-
-86	28	Cushioning	0	1	Standard	0	0	0	0	0	1
-
-87	28	Shoe Type	0	1	Premium Material	0	0	0	0	0	1
-
-88	29	Size	0	1	10,8,9,L,M,XL,Standard	0	0	0	0	0	0
-
-89	29	Material	0	1	Premium Material	0	0	0	0	0	1
-
-90	29	Color	0	1	Black,Black,Silver,Standard	0	0	0	0	0	0
-
-91	29	Sport Type	0	1	Premium Material	0	0	0	0	0	1
-
-92	31	Format	0	1	Hardcover,Kindle,Paperback	0	0	0	0	0	0
-
-93	31	Language	0	1	Standard	0	0	0	0	0	1
-
-94	31	Publication Year	0	1	Standard	0	0	0	0	0	1
-
-95	31	Author	0	1	Standard	0	0	0	0	0	1
-
-96	32	Format	0	1	Hardcover,Kindle,Paperback	0	0	0	0	0	0
-
-97	32	Language	0	1	Standard	0	0	0	0	0	1
-
-98	32	Publication Year	0	1	Standard	0	0	0	0	0	1
-
-99	32	Author	0	1	Standard	0	0	0	0	0	1
-
-100	33	Size	0	1	A5,A6,Standard	0	0	0	0	0	0
-
-101	33	Color	0	1	Black,Black,Silver,Standard	0	0	0	0	0	0
-
-102	33	Paper Type	0	1	Premium Material	0	0	0	0	0	1
-
-103	33	Page Count	0	1	Standard	0	0	0	0	0	1
-
-1	2	Color	0	1	Black,Silver	0	0	0	0	0	0
-
-2	2	Strap Size	0	1	Standard Size	0	0	0	0	0	1
-
-3	2	Display Size	0	1	Standard Size	0	0	0	0	0	1
-
-4	2	GPS	0	1	Yes	0	0	0	0	0	1
-
-5	2	Water Resistance	0	1	Yes	0	0	0	0	0	1
-
-6	3	RAM	0	1	16GB,32GB	0	0	0	0	0	0
-
-7	3	Storage	0	1	1TB,512GB	0	0	0	0	0	0
-
-8	3	Color	0	1	Black,Silver	0	0	0	0	0	0
-
-9	3	Processor	0	1	Latest Gen Processor	0	0	0	0	0	1
-
-10	3	Screen Size	0	1	Standard Size	0	0	0	0	0	1
-
-11	4	Color	0	1	Black	0	0	0	0	0	0
-
-12	4	Resolution	0	1	4K UHD	0	0	0	0	0	1
-
-13	4	Sensor Type	0	1	Premium Material	0	0	0	0	0	1
-
-14	4	Connectivity	0	1	Standard	0	0	0	0	0	1
-
-15	5	Size (inches)	0	1	Standard	0	0	0	0	0	0
-
-16	5	Resolution	0	1	2560x1440,3840x2160	0	0	0	0	0	0
-
-17	5	Refresh Rate	0	1	Standard	0	0	0	0	0	1
-
-18	5	Panel Type	0	1	Premium Material	0	0	0	0	0	1
-
-19	6	Color	0	1	Black,Silver	0	0	0	0	0	0
-
-20	6	Storage	0	1	128GB,256GB	0	0	0	0	0	0
-
-21	6	RAM	0	1	Standard	0	0	0	0	0	1
-
-22	6	Screen Size	0	1	Standard Size	0	0	0	0	0	1
-
-23	6	Camera	0	1	Advanced Dual Camera	0	0	0	0	0	1
-
-24	7	Color	0	1	Black,Black,Silver	0	0	0	0	0	0
-
-25	7	Connectivity	0	1	Standard	0	0	0	0	0	1
-
-26	7	ANC	0	1	Yes	0	0	0	0	0	1
-
-27	7	Battery Life	0	1	24 Hours	0	0	0	0	0	1
-
-28	8	Color	0	1	Black,Silver	0	0	0	0	0	0
-
-29	8	Storage	0	1	128GB,256GB	0	0	0	0	0	0
-
-30	8	RAM	0	1	Standard	0	0	0	0	0	1
-
-31	8	Screen Size	0	1	Standard Size	0	0	0	0	0	1
-
-32	9	Color	0	1	Black,Silver	0	0	0	0	0	0
-
-33	9	Connectivity	0	1	Standard	0	0	0	0	0	1
-
-130	1	Color	1	1	Black,White	0	1	1	1	0	0
-
-131	1	Storage	1	1	64GB,128GB	0	1	1	1	0	1
-
-104	34	Format	0	1	Hardcover,Kindle,Paperback	0	0	0	0	0	0
-
-105	34	Language	0	1	Standard	0	0	0	0	0	1
-
-106	34	Publication Year	0	1	Standard	0	0	0	0	0	1
-
-107	34	Author	0	1	Standard	0	0	0	0	0	1
-
-108	36	Pack Size	0	1	Standard	0	0	0	0	0	0
-
-109	36	Vegetarian	0	1	Standard	0	0	0	0	0	1
-
-110	36	Brand Origin	0	1	Standard	0	0	0	0	0	1
-
-111	37	Pack Size	0	1	Standard	0	0	0	0	0	0
-
-112	37	Beverage Type	0	1	Premium Material	0	0	0	0	0	1
-
-113	37	Flavor	0	1	Standard	0	0	0	0	0	1
-
-114	38	Pack Size	0	1	Standard	0	0	0	0	0	0
-
-115	38	Flavor	0	1	Standard	0	0	0	0	0	1
-
-116	38	Vegetarian	0	1	Standard	0	0	0	0	0	1
-
-117	39	Pack Size	0	1	Standard	0	0	0	0	0	0
-
-118	39	Ingredients	0	1	Premium Material	0	0	0	0	0	1
-
-119	39	Vegetarian	0	1	Standard	0	0	0	0	0	1
-
-120	41	Color	0	1	Black,Black,Silver,Standard	0	0	0	0	0	0
-
-121	41	Size	0	1	100ml,30ml,50ml,Standard	0	0	0	0	0	0
-
-122	41	Material	0	1	Premium Material	0	0	0	0	0	1
-
-123	41	Compatibility	0	1	Standard	0	0	0	0	0	1
-
-124	42	Size	0	1	195/65 R15,205/55 R16,215/60 R17,Standard	0	0	0	0	0	0
-
-125	42	Vehicle Compatibility	0	1	Standard	0	0	0	0	0	1
-
-126	42	Part Type	0	1	Premium Material	0	0	0	0	0	1
-
-127	43	Pack Size	0	1	Standard	0	0	0	0	0	0
-
-128	43	Product Type	0	1	Premium Material	0	0	0	0	0	1
-
-129	43	Suitable For	0	1	Standard	0	0	0	0	0	1
-
-132	1	TestAttr	0	1	\N	0	0	0	0	0	0
-
+COPY catalog.pms_product_attribute (id, product_attribute_category_id, name, select_type, input_type, input_list, sort, type) FROM stdin;
+34	9	Layout	0	1	Standard	0	1
+35	9	Switch Type	0	1	Premium Material	0	1
+36	11	Size	0	1	L,M,S,XL,L,M,XL	0	0
+37	11	Color	0	1	Black,Standard	0	0
+38	11	Material	0	1	Premium Material	0	1
+39	11	Fit	0	1	Standard	0	1
+40	12	Size	0	1	L,M,S,XL	0	0
+41	12	Color	0	1	Black	0	0
+42	12	Material	0	1	Premium Material	0	1
+43	12	Fit	0	1	Standard	0	1
+44	13	Color	0	1	Black,Silver,Standard	0	0
+45	13	Size	0	1	L,M,S,L,M,XL,Standard	0	0
+46	13	Material	0	1	Premium Material	0	1
+47	14	Size (US)	0	1	Standard	0	0
+48	14	Color	0	1	Black,White	0	0
+49	14	Material	0	1	Premium Material	0	1
+50	14	Shoe Type	0	1	Premium Material	0	1
+51	16	Size	0	1	24cm,26cm,28cm,Standard	0	0
+52	16	Capacity	0	1	1.5L,2L,Standard	0	0
+53	16	Material	0	1	Premium Material	0	1
+54	16	Color	0	1	Standard	0	1
+55	17	Color	0	1	Black,Black,Silver	0	0
+56	17	Material	0	1	Premium Material	0	1
+57	17	Dimensions	0	1	Standard Size	0	1
+58	18	Capacity	0	1	10L,15L,6.5kg,8kg,Standard	0	0
+59	18	Color	0	1	Black,Silver,Standard	0	0
+60	18	Power Consumption	0	1	Standard	0	1
+61	19	Capacity	0	1	12-place,14-place,3L,5L,4L,6L,Standard	0	0
+62	19	Color	0	1	Black,Standard	0	0
+63	19	Power Consumption	0	1	Standard	0	1
+64	21	Skin Type	0	1	Premium Material	0	1
+65	21	Ingredient	0	1	Premium Material	0	1
+66	21	Pack Size	0	1	Standard	0	0
+67	21	SPF	0	1	Standard	0	1
+68	22	Pack Size	0	1	Standard	0	0
+69	22	Skin Type	0	1	Premium Material	0	1
+70	22	Ingredient	0	1	Premium Material	0	1
+71	23	Shade	0	1	110 Porcelain,120 Classic Ivory,130 Buff Beige,220 Natural Beige,Standard	0	0
+72	23	Finish	0	1	Matte Finish	0	1
+73	23	Skin Type	0	1	Premium Material	0	1
+74	24	Pack Size	0	1	Standard	0	0
+75	24	Hair Type	0	1	Premium Material	0	1
+76	24	Ingredient	0	1	Premium Material	0	1
+77	26	Weight	0	1	Standard	0	1
+78	26	Material	0	1	Premium Material	0	1
+79	26	Size	0	1	Standard Size	0	1
+80	26	Color	0	1	Standard	0	1
+81	27	Color	0	1	Black,Silver	0	0
+82	27	Material	0	1	Premium Material	0	1
+83	27	Size	0	1	Standard Size	0	1
+84	28	Size (US)	0	1	Standard	0	0
+85	28	Color	0	1	Black,White	0	0
+86	28	Cushioning	0	1	Standard	0	1
+87	28	Shoe Type	0	1	Premium Material	0	1
+88	29	Size	0	1	10,8,9,L,M,XL,Standard	0	0
+89	29	Material	0	1	Premium Material	0	1
+90	29	Color	0	1	Black,Black,Silver,Standard	0	0
+91	29	Sport Type	0	1	Premium Material	0	1
+92	31	Format	0	1	Hardcover,Kindle,Paperback	0	0
+93	31	Language	0	1	Standard	0	1
+94	31	Publication Year	0	1	Standard	0	1
+95	31	Author	0	1	Standard	0	1
+96	32	Format	0	1	Hardcover,Kindle,Paperback	0	0
+97	32	Language	0	1	Standard	0	1
+98	32	Publication Year	0	1	Standard	0	1
+99	32	Author	0	1	Standard	0	1
+100	33	Size	0	1	A5,A6,Standard	0	0
+101	33	Color	0	1	Black,Black,Silver,Standard	0	0
+102	33	Paper Type	0	1	Premium Material	0	1
+103	33	Page Count	0	1	Standard	0	1
+1	2	Color	0	1	Black,Silver	0	0
+2	2	Strap Size	0	1	Standard Size	0	1
+3	2	Display Size	0	1	Standard Size	0	1
+4	2	GPS	0	1	Yes	0	1
+5	2	Water Resistance	0	1	Yes	0	1
+6	3	RAM	0	1	16GB,32GB	0	0
+7	3	Storage	0	1	1TB,512GB	0	0
+8	3	Color	0	1	Black,Silver	0	0
+9	3	Processor	0	1	Latest Gen Processor	0	1
+10	3	Screen Size	0	1	Standard Size	0	1
+11	4	Color	0	1	Black	0	0
+12	4	Resolution	0	1	4K UHD	0	1
+13	4	Sensor Type	0	1	Premium Material	0	1
+14	4	Connectivity	0	1	Standard	0	1
+15	5	Size (inches)	0	1	Standard	0	0
+16	5	Resolution	0	1	2560x1440,3840x2160	0	0
+17	5	Refresh Rate	0	1	Standard	0	1
+18	5	Panel Type	0	1	Premium Material	0	1
+19	6	Color	0	1	Black,Silver	0	0
+20	6	Storage	0	1	128GB,256GB	0	0
+21	6	RAM	0	1	Standard	0	1
+22	6	Screen Size	0	1	Standard Size	0	1
+23	6	Camera	0	1	Advanced Dual Camera	0	1
+24	7	Color	0	1	Black,Black,Silver	0	0
+25	7	Connectivity	0	1	Standard	0	1
+26	7	ANC	0	1	Yes	0	1
+27	7	Battery Life	0	1	24 Hours	0	1
+28	8	Color	0	1	Black,Silver	0	0
+29	8	Storage	0	1	128GB,256GB	0	0
+30	8	RAM	0	1	Standard	0	1
+31	8	Screen Size	0	1	Standard Size	0	1
+32	9	Color	0	1	Black,Silver	0	0
+33	9	Connectivity	0	1	Standard	0	1
+130	1	Color	1	1	Black,White	0	0
+131	1	Storage	1	1	64GB,128GB	0	1
+104	34	Format	0	1	Hardcover,Kindle,Paperback	0	0
+105	34	Language	0	1	Standard	0	1
+106	34	Publication Year	0	1	Standard	0	1
+107	34	Author	0	1	Standard	0	1
+108	36	Pack Size	0	1	Standard	0	0
+109	36	Vegetarian	0	1	Standard	0	1
+110	36	Brand Origin	0	1	Standard	0	1
+111	37	Pack Size	0	1	Standard	0	0
+112	37	Beverage Type	0	1	Premium Material	0	1
+113	37	Flavor	0	1	Standard	0	1
+114	38	Pack Size	0	1	Standard	0	0
+115	38	Flavor	0	1	Standard	0	1
+116	38	Vegetarian	0	1	Standard	0	1
+117	39	Pack Size	0	1	Standard	0	0
+118	39	Ingredients	0	1	Premium Material	0	1
+119	39	Vegetarian	0	1	Standard	0	1
+120	41	Color	0	1	Black,Black,Silver,Standard	0	0
+121	41	Size	0	1	100ml,30ml,50ml,Standard	0	0
+122	41	Material	0	1	Premium Material	0	1
+123	41	Compatibility	0	1	Standard	0	1
+124	42	Size	0	1	195/65 R15,205/55 R16,215/60 R17,Standard	0	0
+125	42	Vehicle Compatibility	0	1	Standard	0	1
+126	42	Part Type	0	1	Premium Material	0	1
+127	43	Pack Size	0	1	Standard	0	0
+128	43	Product Type	0	1	Premium Material	0	1
+129	43	Suitable For	0	1	Standard	0	1
+132	1	TestAttr	0	1	\N	0	0
 \.
 
 
@@ -8705,16 +8506,12 @@ COPY public.pms_brand (id, name, show_status, logo) FROM stdin;
 -- Data for Name: pms_comment; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.pms_comment (id, product_id, member_nick_name, product_name, star, member_ip, create_time, show_status, likes_count, dislike_count, pics, member_icon, reply_count, content) FROM stdin;
-\.
 
 
 --
 -- Data for Name: pms_comment_reply; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.pms_comment_reply (id, comment_id, member_nick_name, member_icon, content, create_time, type) FROM stdin;
-\.
 
 
 --
@@ -8739,7 +8536,7 @@ COPY public.pms_product (id, brand_id, product_category_id, product_attribute_ca
 -- Data for Name: pms_product_attribute; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.pms_product_attribute (id, product_attribute_category_id, name, select_type, input_type, input_list, sort, filter_type, search_type, related_status, hand_add_status, type) FROM stdin;
+COPY public.pms_product_attribute (id, product_attribute_category_id, name, select_type, input_type, input_list, sort, type) FROM stdin;
 1	1	Color	1	1	Value1,Value2	0	1	1	1	0	0
 
 2	1	Storage	1	1	Value1,Value2	0	1	1	1	0	0

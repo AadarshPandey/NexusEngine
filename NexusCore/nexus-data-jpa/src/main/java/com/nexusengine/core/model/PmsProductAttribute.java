@@ -40,24 +40,6 @@ public class PmsProductAttribute implements Serializable {
     private String inputList;
 
     @Schema(title = "Sort")
-    private Integer sort;
-
-    @Column(name = "filter_type")
-    @Schema(title = "Filter type")
-    private Integer filterType;
-
-    @Column(name = "search_type")
-    @Schema(title = "Search type")
-    private Integer searchType;
-
-    @Column(name = "related_status")
-    @Schema(title = "Related status")
-    private Integer relatedStatus;
-
-    @Column(name = "hand_add_status")
-    @Schema(title = "Hand add status")
-    private Integer handAddStatus;
-
-    @Schema(title = "Type")
+    private Integer sort;@Schema(title = "Type")
     private Integer type;
 }
