@@ -1,30 +1,36 @@
-import re
+import os
 
-def fix(filepath):
-    with open(filepath, 'r') as f:
-        content = f.read()
-
-    original = content
-    content = content.replace('getMinPoint()', 'getMinOrderAmount()')
-    content = content.replace('setMinPoint', 'setMinOrderAmount')
+def clean_file(filepath, strings_to_remove):
+    with open(filepath, 'r') as f: lines = f.readlines()
+    new_lines = []
     
-    # In UmsMemberCouponServiceImpl: if (now.isBefore(coupon.getEnableTime()))
-    # Since enable_time is gone, we should use startTime
-    content = content.replace('getEnableTime()', 'getStartTime()')
+    skip_next = False
+    in_block_to_delete = False
+    braces_depth = 0
+    
+    for line in lines:
+        if any(s in line for s in strings_to_remove):
+            continue
+            
+        # specifically for order.setReceiverProvince etc in OmsOrderServiceImpl
+        if 'setReceiverProvince(' in line or 'setReceiverCity(' in line or 'setReceiverRegion(' in line:
+            continue
+            
+        new_lines.append(line)
 
-    # In SmsCouponServiceImpl:
-    # smsCoupon.setCount(smsCoupon.getPublishCount());
-    # smsCoupon.setUseCount(0);
-    # Since publishCount is gone, the admin should just supply count directly, or maybe they were copying it. Let's comment out or change it.
-    if 'SmsCouponServiceImpl.java' in filepath:
-        content = re.sub(r'smsCoupon\.setCount\(smsCoupon\.getPublishCount\(\)\);\n?', '', content)
-        content = re.sub(r'smsCoupon\.setUseCount\(0\);\n?', '', content)
+    with open(filepath, 'w') as f:
+        f.write(''.join(new_lines))
 
-    if content != original:
-        with open(filepath, 'w') as f:
-            f.write(content)
-        print(f"Fixed {filepath}")
+strings_to_remove_portal = [
+    '.setPaymentId(', '.setEarnedPoints(', '.setPointsDiscountAmount(', 
+    '.setPromotionInfo(', '.setMemberUsername(', '.setSourceType(', 
+    '.setReceiverProvince(', '.setReceiverCity(', '.setReceiverRegion(', 
+    '.setAutoConfirmDay(', 'orderParam.usePoints()', 'calcEarnedPoints(',
+    'calcPointsAmount(', '.getPointsDiscountAmount(', '.getEarnedPoints(',
+    'member.getPoints()', 'memberService.updatePoints(', 'getUsedPoints(', '.setUsedPoints('
+]
 
-fix('./NexusCore/nexus-portal/src/main/java/com/nexusengine/core/portal/service/impl/UmsMemberCouponServiceImpl.java')
-fix('./NexusCore/nexus-admin/src/main/java/com/nexusengine/core/service/impl/SmsCouponServiceImpl.java')
-fix('./NexusCore/nexus-portal/src/test/java/com/nexusengine/core/portal/TestFixtures.java')
+clean_file('./NexusCore/nexus-portal/src/main/java/com/nexusengine/core/portal/service/impl/OmsPortalOrderServiceImpl.java', strings_to_remove_portal)
+clean_file('./NexusCore/nexus-admin/src/main/java/com/nexusengine/core/service/impl/OmsOrderServiceImpl.java', ['.setReceiverProvince(', '.setReceiverCity(', '.setReceiverRegion(', 'admin.getVendorId()', 'findByVendorIdOrderByCreateTimeDesc'])
+
+print("Cleaned!")

@@ -6,33 +6,20 @@ export type OmsOrder = {
   couponId?: number
   orderSn?: string
   createTime: string
-  memberUsername?: string
   totalAmount: number
   payAmount: number
   freightAmount: number
   promotionAmount?: number
-  pointsDiscountAmount?: number
   couponAmount?: number
   discountAmount: number
   payType: number
-  sourceType: number
   status: number
   orderType: number
   deliveryCompany?: string
   deliverySn?: string
-  autoConfirmDay?: number
-  promotionInfo: string
-  billType?: number
-  billHeader?: string
-  billContent?: string
-  billReceiverPhone?: string
-  billReceiverEmail?: string
   receiverName?: string
   receiverPhone?: string
   receiverPostCode?: string
-  receiverProvince: string
-  receiverCity?: string
-  receiverRegion?: string
   receiverDetailAddress?: string
   note?: string
   confirmStatus?: number
@@ -62,7 +49,6 @@ export type OmsOrderItem = {
   promotionName: string
   promotionAmount: number
   couponAmount: number
-  pointsDiscountAmount: number
   realAmount: number
   giftIntegration: number
   giftGrowth: number
@@ -83,7 +69,6 @@ export type OrderQueryParam = PageParam & {
   receiverKeyword?: string
   status?: number
   orderType?: number
-  sourceType?: number
   createTime?: string
 }
 
@@ -104,9 +89,6 @@ export type OmsReceiverInfoParam = {
   receiverPhone?: string
   receiverPostCode?: string
   receiverDetailAddress?: string
-  receiverProvince?: string
-  receiverCity?: string
-  receiverRegion?: string
   status: number
 }
 

@@ -53,7 +53,7 @@ const ReturnApplyList: React.FC = () => {
               <TableRow key={apply.id} hover>
                 <TableCell>{apply.id}</TableCell>
                 <TableCell>{new Date(apply.createTime).toLocaleString()}</TableCell>
-                <TableCell>{apply.memberUsername}</TableCell>
+                <TableCell>N/A</TableCell>
                 <TableCell>₹{apply.returnAmount?.toFixed(2)}</TableCell>
                 <TableCell>{getStatusChip(apply.status)}</TableCell>
                 <TableCell>{apply.handleTime ? new Date(apply.handleTime).toLocaleString() : 'N/A'}</TableCell>

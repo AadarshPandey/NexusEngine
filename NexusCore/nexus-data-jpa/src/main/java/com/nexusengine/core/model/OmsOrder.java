@@ -43,10 +43,6 @@ public class OmsOrder implements Serializable {
     @Schema(title = "Create time")
     private LocalDateTime createTime;
 
-    @Column(name = "member_username")
-    @Schema(title = "Member username")
-    private String memberUsername;
-
     @Column(name = "total_amount")
     @Schema(title = "Total amount")
     private BigDecimal totalAmount;
@@ -63,10 +59,6 @@ public class OmsOrder implements Serializable {
     @Schema(title = "Promotion amount")
     private BigDecimal promotionAmount;
 
-    @Column(name = "points_discount_amount")
-    @Schema(title = "Integration amount")
-    private BigDecimal pointsDiscountAmount;
-
     @Column(name = "coupon_amount")
     @Schema(title = "Coupon amount")
     private BigDecimal couponAmount;
@@ -78,10 +70,6 @@ public class OmsOrder implements Serializable {
     @Column(name = "pay_type")
     @Schema(title = "Pay type")
     private Integer payType;
-
-    @Column(name = "source_type")
-    @Schema(title = "Source type")
-    private Integer sourceType;
 
     @Schema(title = "Status")
     private Integer status;
@@ -98,37 +86,6 @@ public class OmsOrder implements Serializable {
     @Schema(title = "Delivery sn")
     private String deliverySn;
 
-    @Column(name = "auto_confirm_day")
-    @Schema(title = "Auto confirm day")
-    private Integer autoConfirmDay;
-
-    @Schema(title = "Integration")
-    private Integer earnedPoints;
-
-    @Column(name = "promotion_info")
-    @Schema(title = "Promotion info")
-    private String promotionInfo;
-
-    @Column(name = "bill_type")
-    @Schema(title = "Bill type")
-    private Integer billType;
-
-    @Column(name = "bill_header")
-    @Schema(title = "Bill header")
-    private String billHeader;
-
-    @Column(name = "bill_content")
-    @Schema(title = "Bill content")
-    private String billContent;
-
-    @Column(name = "bill_receiver_phone")
-    @Schema(title = "Bill receiver phone")
-    private String billReceiverPhone;
-
-    @Column(name = "bill_receiver_email")
-    @Schema(title = "Bill receiver email")
-    private String billReceiverEmail;
-
     @Column(name = "receiver_name")
     @Schema(title = "Receiver name")
     private String receiverName;
@@ -140,18 +97,6 @@ public class OmsOrder implements Serializable {
     @Column(name = "receiver_post_code")
     @Schema(title = "Receiver post code")
     private String receiverPostCode;
-
-    @Column(name = "receiver_province")
-    @Schema(title = "Receiver province")
-    private String receiverProvince;
-
-    @Column(name = "receiver_city")
-    @Schema(title = "Receiver city")
-    private String receiverCity;
-
-    @Column(name = "receiver_region")
-    @Schema(title = "Receiver region")
-    private String receiverRegion;
 
     @Column(name = "receiver_detail_address")
     @Schema(title = "Receiver detail address")
@@ -167,14 +112,6 @@ public class OmsOrder implements Serializable {
     @Column(name = "delete_status")
     @Schema(title = "Delete status")
     private Integer deleteStatus;
-
-    @Column(name = "used_points")
-    @Schema(title = "Use integration")
-    private Integer usedPoints;
-
-    @Column(name = "payment_id")
-    @Schema(title = "Payment ID")
-    private String paymentId;
 
     @Column(name = "payment_time")
     @Schema(title = "Payment time")
@@ -195,8 +132,4 @@ public class OmsOrder implements Serializable {
     @Column(name = "modify_time")
     @Schema(title = "Modify time")
     private LocalDateTime modifyTime;
-
-    @Column(name = "vendor_id")
-    @Schema(title = "Vendor ID")
-    private Long vendorId;
 }

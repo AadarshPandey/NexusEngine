@@ -165,7 +165,6 @@ const Profile: React.FC = () => {
           orderId: refundOrder.id,
           productId: item.productId,
           orderSn: refundOrder.orderSn,
-          memberUsername: memberInfo?.username,
           returnName: memberInfo?.nickname || memberInfo?.username,
           returnPhone: memberInfo?.phone || '',
           productPic: item.productPic,

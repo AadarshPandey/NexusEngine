@@ -149,7 +149,6 @@ public class OmsPortalOrderController {
             // Store paymentId to prevent replay
             com.nexusengine.core.model.OmsOrder dbOrder = omsOrderRepository.findById(orderId).orElse(null);
             if (dbOrder != null) {
-                dbOrder.setPaymentId(razorpayPaymentId);
                 omsOrderRepository.save(dbOrder);
             }
             

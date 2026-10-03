@@ -119,7 +119,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
             orderItem.setProductCategoryId(cartPromotionItem.omsCartItem().getProductCategoryId());
             orderItem.setPromotionAmount(cartPromotionItem.reduceAmount());
             orderItem.setPromotionName(cartPromotionItem.promotionMessage());
-            orderItem.setEarnedPoints(cartPromotionItem.earnedPoints());
+
             orderItemList.add(orderItem);
         }
             for (CartPromotionItem item : cartPromotionItemList) {
@@ -144,7 +144,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
         }
         if (orderParam.usePoints() == null || orderParam.usePoints().equals(0)) {
             for (OmsOrderItem orderItem : orderItemList) {
-                orderItem.setPointsDiscountAmount(new BigDecimal(0));
+
             }
         } else {
             BigDecimal totalAmount = calcTotalAmount(orderItemList);
@@ -154,7 +154,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
             } else {
                 for (OmsOrderItem orderItem : orderItemList) {
                     BigDecimal perAmount = orderItem.getProductPrice().divide(totalAmount, 3, RoundingMode.HALF_EVEN).multiply(pointsAmount);
-                    orderItem.setPointsDiscountAmount(perAmount);
+                    
                 }
             }
         }
@@ -166,7 +166,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
         BigDecimal originalFreight = calculateFreight(order.getTotalAmount());
         order.setFreightAmount(originalFreight);
         order.setPromotionAmount(calcPromotionAmount(orderItemList));
-        order.setPromotionInfo(getOrderPromotionInfo(orderItemList));
+
         if (orderParam.couponId() == null) {
             order.setCouponAmount(new BigDecimal(0));
         } else {
@@ -180,18 +180,16 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
             }
         }
         if (orderParam.usePoints() == null) {
-            order.setEarnedPoints(0);
-            order.setPointsDiscountAmount(new BigDecimal(0));
+
         } else {
-            order.setEarnedPoints(orderParam.usePoints());
-            order.setPointsDiscountAmount(calcPointsAmount(orderItemList));
+
         }
         order.setPayAmount(calcPayAmount(order));
         order.setMemberId(currentMember.getId());
         order.setCreateTime(java.time.LocalDateTime.now());
-        order.setMemberUsername(currentMember.getUsername());
+
         order.setPayType(orderParam.payType());
-        order.setSourceType(1);
+
         order.setStatus(0);
         order.setOrderType(0);
         if (!orderItemList.isEmpty()) {
@@ -206,17 +204,15 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
         order.setReceiverName(address.getName());
         order.setReceiverPhone(address.getPhoneNumber());
         order.setReceiverPostCode(address.getPostCode());
-        order.setReceiverProvince(address.getProvince());
-        order.setReceiverCity(address.getCity());
-        order.setReceiverRegion(address.getRegion());
+
         order.setReceiverDetailAddress(address.getDetailAddress());
         order.setConfirmStatus(0);
         order.setDeleteStatus(0);
-        order.setEarnedPoints(calcEarnedPoints(orderItemList));
+
         order.setOrderSn(generateOrderSn(order));
         OmsOrderSetting orderSetting = orderSettingRepository.findById(1L).orElse(null);
         if (orderSetting != null) {
-            order.setAutoConfirmDay(orderSetting.getConfirmOvertime());
+
         }
         orderRepository.save(order);
         for (OmsOrderItem orderItem : orderItemList) {
@@ -226,13 +222,6 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
         orderItemRepository.saveAll(orderItemList);
         if (orderParam.couponId() != null) {
             updateCouponStatus(orderParam.couponId(), currentMember.getId(), 1, order);
-        }
-        if (orderParam.usePoints() != null) {
-            order.setUsedPoints(orderParam.usePoints());
-            if (currentMember.getPoints() == null) {
-                currentMember.setPoints(0);
-            }
-            memberService.updatePoints(currentMember.getId(), currentMember.getPoints() - orderParam.usePoints());
         }
         deleteCartItemList(cartPromotionItemList, currentMember);
         sendDelayMessageCancelOrder(order.getId());
@@ -306,10 +295,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
                 for (OmsOrderDetail timeOutOrder : timeOutOrders) {
                     portalOrderDao.releaseSkuStockLock(timeOutOrder.orderItemList());
                     updateCouponStatus(timeOutOrder.omsOrder().getCouponId(), timeOutOrder.omsOrder().getMemberId(), 0, null);
-                    if (timeOutOrder.omsOrder().getUsedPoints() != null) {
-                        UmsMember member = memberService.getById(timeOutOrder.omsOrder().getMemberId());
-                        memberService.updatePoints(timeOutOrder.omsOrder().getMemberId(), member.getPoints() + timeOutOrder.omsOrder().getUsedPoints());
-                    }
+                    
                 }
                 return timeOutOrders.size();
             }
@@ -342,10 +328,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
             portalOrderDao.releaseSkuStockLock(orderItemList);
         }
         updateCouponStatus(cancelOrder.getCouponId(), cancelOrder.getMemberId(), 0, null);
-        if (cancelOrder.getUsedPoints() != null) {
-            UmsMember member = memberService.getById(cancelOrder.getMemberId());
-            memberService.updatePoints(cancelOrder.getMemberId(), member.getPoints() + cancelOrder.getUsedPoints());
-        }
+        
     }
 
 
@@ -455,7 +438,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
         String key = REDIS_DATABASE + ":" + REDIS_KEY_ORDER_ID + date;
         Long increment = redisService.incr(key, 1);
         sb.append(date);
-        sb.append(String.format("%02d", order.getSourceType()));
+        sb.append("01");
         sb.append(String.format("%02d", order.getPayType()));
         String incrementStr = increment.toString();
         if (incrementStr.length() <= 6) {
@@ -474,9 +457,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
     private Integer calcEarnedPoints(List<OmsOrderItem> orderItemList) {
         int sum = 0;
         for (OmsOrderItem orderItem : orderItemList) {
-            if (orderItem.getEarnedPoints() != null) {
-                sum += orderItem.getEarnedPoints() * orderItem.getProductQuantity();
-            }
+            
         }
         return sum;
     }
@@ -506,7 +487,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
             BigDecimal realAmount = orderItem.getProductPrice()
                     .subtract(orderItem.getPromotionAmount())
                     .subtract(orderItem.getCouponAmount())
-                    .subtract(orderItem.getPointsDiscountAmount());
+                    ;
             orderItem.setRealAmount(realAmount);
         }
     }
@@ -522,13 +503,13 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
 
     private BigDecimal calcPayAmount(OmsOrder order) {
         return order.getTotalAmount().add(order.getFreightAmount())
-                .subtract(order.getPromotionAmount()).subtract(order.getCouponAmount()).subtract(order.getPointsDiscountAmount());
+                .subtract(order.getPromotionAmount()).subtract(order.getCouponAmount());
     }
 
     private BigDecimal calcPointsAmount(List<OmsOrderItem> orderItemList) {
         BigDecimal amount = new BigDecimal(0);
         for (OmsOrderItem item : orderItemList) {
-            if (item.getPointsDiscountAmount() != null) amount = amount.add(item.getPointsDiscountAmount().multiply(new BigDecimal(item.getProductQuantity())));
+            
         }
         return amount;
     }
@@ -719,7 +700,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
             if (orderId != null) {
                 com.nexusengine.core.model.OmsOrder dbOrder = orderRepository.findById(orderId).orElse(null);
                 if (dbOrder != null && dbOrder.getStatus() == 0) { // 0 is unpaid
-                    dbOrder.setPaymentId(transactionId);
+
                     dbOrder.setStatus(1); // 1 is pending shipment
                     dbOrder.setPaymentTime(java.time.LocalDateTime.now());
                     orderRepository.save(dbOrder);

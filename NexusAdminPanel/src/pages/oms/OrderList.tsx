@@ -79,8 +79,7 @@ const OrderList: React.FC = () => {
   const filteredOrders = orders.filter(order => {
     if (searchId && order.id.toString() !== searchId && !order.orderSn?.includes(searchId)) return false;
     if (searchSn && !order.orderSn?.includes(searchSn)) return false;
-    if (searchMember && !order.memberUsername?.toLowerCase().includes(searchMember.toLowerCase())) return false;
-    if (searchAmount && order.totalAmount?.toString() !== searchAmount) return false;
+        if (searchAmount && order.totalAmount?.toString() !== searchAmount) return false;
     if (searchPayType !== '' && order.payType !== searchPayType) return false;
     if (searchStatus !== '' && order.status !== searchStatus) return false;
     if (searchDate && !order.createTime?.startsWith(searchDate)) return false;
@@ -160,7 +159,7 @@ const OrderList: React.FC = () => {
               <TableRow key={order.id} hover>
                 <TableCell>{order.id}</TableCell>
                 <TableCell>{order.orderSn}</TableCell>
-                <TableCell>{order.memberUsername}</TableCell>
+                <TableCell>N/A</TableCell>
                 <TableCell>₹{order.totalAmount?.toFixed(2)}</TableCell>
                 <TableCell>{order.payType === 1 ? 'Alipay' : order.payType === 2 ? 'Razorpay' : 'Unpaid'}</TableCell>
                 <TableCell>{getStatusChip(order.status)}</TableCell>

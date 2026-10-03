@@ -57,11 +57,6 @@ CREATE TABLE IF NOT EXISTS pms_product (
     brand_name VARCHAR(255),
     description VARCHAR(255),
     detail_html VARCHAR(255),
-    vendor_id BIGINT
-);
-
-CREATE TABLE IF NOT EXISTS pms_product_gallery (
-    id BIGSERIAL PRIMARY KEY,
     product_id BIGINT NOT NULL,
     media_type VARCHAR(50),
     media_url VARCHAR(255) NOT NULL,
@@ -216,49 +211,30 @@ CREATE TABLE IF NOT EXISTS oms_order (
     coupon_id BIGINT,
     order_sn VARCHAR(255),
     create_time TIMESTAMP,
-    member_username VARCHAR(255),
     total_amount NUMERIC(19,2),
     pay_amount NUMERIC(19,2),
     freight_amount NUMERIC(19,2),
-    promotion_amount NUMERIC(19,2),
-    points_discount_amount NUMERIC(19,2),
+    promotion_amount NUMERIC(19,2),2),
     coupon_amount NUMERIC(19,2),
     discount_amount NUMERIC(19,2),
     pay_type INTEGER,
-    source_type INTEGER,
     status INTEGER,
     order_type INTEGER,
     delivery_company VARCHAR(255),
     delivery_sn VARCHAR(255),
-    auto_confirm_day INTEGER,
-    earned_points INTEGER,
-    promotion_info VARCHAR(255),
-    bill_type INTEGER,
-    bill_header VARCHAR(255),
-    bill_content VARCHAR(255),
-    bill_receiver_phone VARCHAR(255),
-    bill_receiver_email VARCHAR(255),
     receiver_name VARCHAR(255),
     receiver_phone VARCHAR(255),
     receiver_post_code VARCHAR(255),
     receiver_state VARCHAR(255),
-    receiver_city VARCHAR(255),
     receiver_
     receiver_detail_address VARCHAR(255),
     confirm_status INTEGER,
     delete_status INTEGER,
-    used_points INTEGER,
-    payment_id VARCHAR(255),
     payment_time TIMESTAMP,
     delivery_time TIMESTAMP,
     receive_time TIMESTAMP,
     comment_time TIMESTAMP,
     modify_time TIMESTAMP,
-    vendor_id BIGINT
-);
-
-CREATE TABLE IF NOT EXISTS oms_order_item (
-    id BIGSERIAL PRIMARY KEY,
     order_id BIGINT,
     order_sn VARCHAR(255),
     product_id BIGINT,
@@ -271,10 +247,8 @@ CREATE TABLE IF NOT EXISTS oms_order_item (
     product_category_id BIGINT,
     promotion_name VARCHAR(255),
     promotion_amount NUMERIC(19,2),
-    coupon_amount NUMERIC(19,2),
-    points_discount_amount NUMERIC(19,2),
+    coupon_amount NUMERIC(19,2),2),
     real_amount NUMERIC(19,2),
-    earned_points INTEGER,
     product_attr VARCHAR(255)
 );
 
@@ -294,7 +268,6 @@ CREATE TABLE IF NOT EXISTS oms_order_return_apply (
     product_id BIGINT,
     order_sn VARCHAR(255),
     create_time TIMESTAMP,
-    member_username VARCHAR(255),
     return_amount NUMERIC(19,2),
     return_name VARCHAR(255),
     return_phone VARCHAR(255),
@@ -357,11 +330,6 @@ CREATE TABLE IF NOT EXISTS ums_admin (
     create_time TIMESTAMP,
     login_time TIMESTAMP,
     status INTEGER,
-    vendor_id BIGINT
-);
-
-CREATE TABLE IF NOT EXISTS ums_admin_login_log (
-    id BIGSERIAL PRIMARY KEY,
     admin_id BIGINT,
     create_time TIMESTAMP,
     ip VARCHAR(255),
@@ -388,7 +356,6 @@ CREATE TABLE IF NOT EXISTS ums_member (
     gender INTEGER,
     birthday TIMESTAMP,
     personalized_signature VARCHAR(255),
-    source_type INTEGER,
     points INTEGER,
     bonus_draws_remaining INTEGER,
     lifetime_points INTEGER

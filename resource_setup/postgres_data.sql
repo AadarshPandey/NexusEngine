@@ -8138,7 +8138,7 @@ COPY orders.oms_company_address (id, address_name, send_status, receive_status, 
 -- Data for Name: oms_order; Type: TABLE DATA; Schema: orders; Owner: postgres
 --
 
-COPY orders.oms_order (id, member_id, coupon_id, order_sn, create_time, member_username, total_amount, pay_amount, freight_amount, promotion_amount, points_discount_amount, coupon_amount, discount_amount, pay_type, source_type, status, order_type, delivery_company, delivery_sn, auto_confirm_day, earned_points, promotion_info, bill_type, bill_header, bill_content, bill_receiver_phone, bill_receiver_email, receiver_name, receiver_phone, receiver_post_code, receiver_province, receiver_city, receiver_region, receiver_detail_address, note, confirm_status, delete_status, used_points, payment_id, payment_time, delivery_time, receive_time, comment_time, modify_time, vendor_id) FROM stdin;
+COPY orders.oms_order (id, member_id, coupon_id, order_sn, create_time, total_amount, pay_amount, freight_amount, promotion_amount, coupon_amount, discount_amount, pay_type, status, order_type, delivery_company, delivery_sn, receiver_name, receiver_phone, receiver_post_code, receiver_detail_address, note, confirm_status, delete_status, payment_time, delivery_time, receive_time, comment_time, modify_time) FROM stdin;
 6	1	\N	202609270102000001	2026-09-27 12:59:38.215765	customer1	678840.00	679039.00	199.00	0.00	0.00	0.00	2	0
 7	1	\N	202609270102000002	2026-09-27 13:14:12.125836	customer1	731220.00	731419.00	199.00	0.00	0.00	0.00	2	0
 8	1	\N	202609270102000003	2026-09-27 13:24:14.169148	customer1	330000.00	330199.00	199.00	0.00	0.00	0.00	2	0
@@ -8149,7 +8149,7 @@ COPY orders.oms_order (id, member_id, coupon_id, order_sn, create_time, member_u
 -- Data for Name: oms_order_item; Type: TABLE DATA; Schema: orders; Owner: postgres
 --
 
-COPY orders.oms_order_item (id, order_id, order_sn, product_id, product_pic, product_name, product_brand, product_sn, product_price, product_quantity, product_sku_id, product_sku_code, product_category_id, promotion_name, promotion_amount, coupon_amount, points_discount_amount, real_amount, earned_points, product_attr) FROM stdin;
+COPY orders.oms_order_item (id, order_id, order_sn, product_id, product_pic, product_name, product_brand, product_sn, product_price, product_quantity, product_sku_id, product_sku_code, product_category_id, promotion_name, promotion_amount, coupon_amount, real_amount, product_attr) FROM stdin;
 6	6	202609270102000001	1	http://localhost:9000/nexus-media/public/pms/skus/APPLE-IP17-BLK-256/main.svg	iPhone 17 (Black, 256GB)	\N	\N	56570.00	12	\N	\N	No promotion	0.00
 7	7	202609270102000002	1	http://localhost:9000/nexus-media/public/pms/skus/APPLE-IP17-BLK-128/main.svg	iPhone 17 (Black, 128GB)	\N	\N	52380.00	1	1	APPLE-IP17-BLK-128	No promotion	0.00
 8	7	202609270102000002	1	http://localhost:9000/nexus-media/public/pms/skus/APPLE-IP17-BLK-256/main.svg	iPhone 17 (Black, 256GB)	\N	\N	56570.00	12	2	APPLE-IP17-BLK-256	No promotion	0.00

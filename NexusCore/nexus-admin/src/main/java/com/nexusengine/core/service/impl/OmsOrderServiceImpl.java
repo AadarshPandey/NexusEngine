@@ -28,10 +28,7 @@ public class OmsOrderServiceImpl implements OmsOrderService {
     public List<OmsOrder> list(OmsOrderQueryParam queryParam, Integer pageSize, Integer pageNum) {
         String username = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getName();
         com.nexusengine.core.model.UmsAdmin admin = adminService.getAdminByUsername(username);
-        Long vendorId = admin != null ? admin.getVendorId() : null;
-        if (vendorId != null) {
-            return orderRepository.findByVendorIdOrderByCreateTimeDesc(vendorId);
-        }
+        
         return orderRepository.findAll(org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.DESC, "createTime"));
     }
 
@@ -107,9 +104,7 @@ public class OmsOrderServiceImpl implements OmsOrderService {
         order.setReceiverPhone(receiverInfoParam.receiverPhone());
         order.setReceiverPostCode(receiverInfoParam.receiverPostCode());
         order.setReceiverDetailAddress(receiverInfoParam.receiverDetailAddress());
-        order.setReceiverProvince(receiverInfoParam.receiverProvince());
-        order.setReceiverCity(receiverInfoParam.receiverCity());
-        order.setReceiverRegion(receiverInfoParam.receiverRegion());
+
         order.setModifyTime(java.time.LocalDateTime.now());
         orderRepository.save(order);
         OmsOrderOperateHistory h = new OmsOrderOperateHistory();

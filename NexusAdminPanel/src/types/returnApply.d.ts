@@ -8,7 +8,6 @@ export type OmsOrderReturnApply = {
   productId: number
   orderSn: string
   createTime: string
-  memberUsername: string
   returnAmount: number
   returnName: string
   returnPhone: string
