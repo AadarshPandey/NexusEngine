@@ -63,7 +63,7 @@ const ReturnApplyDetail: React.FC = () => {
             <Typography color="text.secondary">Order SN: <Typography component="span" color="text.primary">{detail.orderSn}</Typography></Typography>
           </Grid>
           <Grid size={{xs: 12, sm: 6}}>
-            <Typography color="text.secondary">Customer: <Typography component="span" color="text.primary">N/A</Typography></Typography>
+            
           </Grid>
           <Grid size={{xs: 12, sm: 6}}>
             <Typography component="div" color="text.secondary">Status: 

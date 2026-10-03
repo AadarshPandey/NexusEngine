@@ -111,11 +111,9 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
             orderItem.setProductPic(cartPromotionItem.omsCartItem().getProductPic());
             orderItem.setProductAttr(cartPromotionItem.omsCartItem().getProductAttr());
             orderItem.setProductBrand(cartPromotionItem.omsCartItem().getProductBrand());
-            orderItem.setProductSn(cartPromotionItem.omsCartItem().getProductSn());
             orderItem.setProductPrice(cartPromotionItem.omsCartItem().getPrice());
             orderItem.setProductQuantity(cartPromotionItem.omsCartItem().getQuantity());
             orderItem.setProductSkuId(cartPromotionItem.omsCartItem().getProductSkuId());
-            orderItem.setProductSkuCode(cartPromotionItem.omsCartItem().getProductSkuCode());
             orderItem.setProductCategoryId(cartPromotionItem.omsCartItem().getProductCategoryId());
             orderItem.setPromotionAmount(cartPromotionItem.reduceAmount());
             orderItem.setPromotionName(cartPromotionItem.promotionMessage());
@@ -217,7 +215,6 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
         orderRepository.save(order);
         for (OmsOrderItem orderItem : orderItemList) {
             orderItem.setOrderId(order.getId());
-            orderItem.setOrderSn(order.getOrderSn());
         }
         orderItemRepository.saveAll(orderItemList);
         if (orderParam.couponId() != null) {

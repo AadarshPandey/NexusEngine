@@ -8149,7 +8149,7 @@ COPY orders.oms_order (id, member_id, coupon_id, order_sn, create_time, total_am
 -- Data for Name: oms_order_item; Type: TABLE DATA; Schema: orders; Owner: postgres
 --
 
-COPY orders.oms_order_item (id, order_id, order_sn, product_id, product_pic, product_name, product_brand, product_sn, product_price, product_quantity, product_sku_id, product_sku_code, product_category_id, promotion_name, promotion_amount, coupon_amount, real_amount, product_attr) FROM stdin;
+COPY orders.oms_order_item (id, order_id, product_id, product_pic, product_name, product_brand, product_price, product_quantity, product_sku_id, product_category_id, promotion_name, promotion_amount, coupon_amount, real_amount, product_attr) FROM stdin;
 6	6	202609270102000001	1	http://localhost:9000/nexus-media/public/pms/skus/APPLE-IP17-BLK-256/main.svg	iPhone 17 (Black, 256GB)	\N	\N	56570.00	12	\N	\N	No promotion	0.00
 7	7	202609270102000002	1	http://localhost:9000/nexus-media/public/pms/skus/APPLE-IP17-BLK-128/main.svg	iPhone 17 (Black, 128GB)	\N	\N	52380.00	1	1	APPLE-IP17-BLK-128	No promotion	0.00
 8	7	202609270102000002	1	http://localhost:9000/nexus-media/public/pms/skus/APPLE-IP17-BLK-256/main.svg	iPhone 17 (Black, 256GB)	\N	\N	56570.00	12	2	APPLE-IP17-BLK-256	No promotion	0.00

@@ -41,7 +41,7 @@ const ReturnApplyList: React.FC = () => {
             <TableRow sx={{ bgcolor: 'grey.50' }}>
               <TableCell>Service ID</TableCell>
               <TableCell>Applied Time</TableCell>
-              <TableCell>User</TableCell>
+              
               <TableCell>Return Amount</TableCell>
               <TableCell>Application Status</TableCell>
               <TableCell>Processing Time</TableCell>
@@ -53,7 +53,7 @@ const ReturnApplyList: React.FC = () => {
               <TableRow key={apply.id} hover>
                 <TableCell>{apply.id}</TableCell>
                 <TableCell>{new Date(apply.createTime).toLocaleString()}</TableCell>
-                <TableCell>N/A</TableCell>
+                
                 <TableCell>₹{apply.returnAmount?.toFixed(2)}</TableCell>
                 <TableCell>{getStatusChip(apply.status)}</TableCell>
                 <TableCell>{apply.handleTime ? new Date(apply.handleTime).toLocaleString() : 'N/A'}</TableCell>
@@ -64,7 +64,7 @@ const ReturnApplyList: React.FC = () => {
             ))}
             {applies.length === 0 && (
               <TableRow>
-                <TableCell colSpan={7} align="center" sx={{ py: 5 }}>No return applications found.</TableCell>
+                <TableCell colSpan={6} align="center" sx={{ py: 5 }}>No return applications found.</TableCell>
               </TableRow>
             )}
           </TableBody>

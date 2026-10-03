@@ -11,7 +11,7 @@ const OrderList: React.FC = () => {
   // Search states
   const [searchId, setSearchId] = useState('');
   const [searchSn, setSearchSn] = useState('');
-  const [searchMember, setSearchMember] = useState('');
+  
   const [searchAmount, setSearchAmount] = useState('');
   const [searchPayType, setSearchPayType] = useState<number | ''>('');
   const [searchStatus, setSearchStatus] = useState<number | ''>('');
@@ -69,7 +69,7 @@ const OrderList: React.FC = () => {
   const resetSearch = () => {
     setSearchId('');
     setSearchSn('');
-    setSearchMember('');
+    
     setSearchAmount('');
     setSearchPayType('');
     setSearchStatus('');
@@ -99,9 +99,7 @@ const OrderList: React.FC = () => {
           <Grid size={{xs: 12, sm: 6, md: 3, lg: 2}}>
             <TextField fullWidth label="Serial Number" size="small" value={searchSn} onChange={e => setSearchSn(e.target.value)} />
           </Grid>
-          <Grid size={{xs: 12, sm: 6, md: 3, lg: 2}}>
-            <TextField fullWidth label="Member User" size="small" value={searchMember} onChange={e => setSearchMember(e.target.value)} />
-          </Grid>
+          
           <Grid size={{xs: 12, sm: 6, md: 3, lg: 2}}>
             <TextField fullWidth label="Total Amount" size="small" value={searchAmount} onChange={e => setSearchAmount(e.target.value)} />
           </Grid>
@@ -146,7 +144,7 @@ const OrderList: React.FC = () => {
             <TableRow sx={{ bgcolor: 'grey.50' }}>
               <TableCell>Order ID</TableCell>
               <TableCell>Order Serial Number</TableCell>
-              <TableCell>Member User</TableCell>
+              
               <TableCell>Total Amount</TableCell>
               <TableCell>Payment Type</TableCell>
               <TableCell>Status</TableCell>
@@ -159,7 +157,7 @@ const OrderList: React.FC = () => {
               <TableRow key={order.id} hover>
                 <TableCell>{order.id}</TableCell>
                 <TableCell>{order.orderSn}</TableCell>
-                <TableCell>N/A</TableCell>
+                
                 <TableCell>₹{order.totalAmount?.toFixed(2)}</TableCell>
                 <TableCell>{order.payType === 1 ? 'Alipay' : order.payType === 2 ? 'Razorpay' : 'Unpaid'}</TableCell>
                 <TableCell>{getStatusChip(order.status)}</TableCell>
@@ -171,7 +169,7 @@ const OrderList: React.FC = () => {
             ))}
             {filteredOrders.length === 0 && (
               <TableRow>
-                <TableCell colSpan={8} align="center" sx={{ py: 5 }}>No orders found.</TableCell>
+                <TableCell colSpan={7} align="center" sx={{ py: 5 }}>No orders found.</TableCell>
               </TableRow>
             )}
           </TableBody>

@@ -132,4 +132,5 @@ public class OmsOrder implements Serializable {
     @Column(name = "modify_time")
     @Schema(title = "Modify time")
     private LocalDateTime modifyTime;
+
 }

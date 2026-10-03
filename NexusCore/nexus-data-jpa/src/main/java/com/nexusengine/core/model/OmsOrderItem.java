@@ -27,10 +27,6 @@ public class OmsOrderItem implements Serializable {
     @jakarta.persistence.JoinColumn(name = "order_id", insertable = false, updatable = false)
     private OmsOrder order;
 
-    @Column(name = "order_sn")
-    @Schema(title = "Order sn")
-    private String orderSn;
-
     @Column(name = "product_id")
     private Long productId;
     @com.fasterxml.jackson.annotation.JsonIgnore
@@ -47,9 +43,6 @@ public class OmsOrderItem implements Serializable {
     @Column(name = "product_brand")
     private String productBrand;
 
-    @Column(name = "product_sn")
-    private String productSn;
-
     @Column(name = "product_price")
     @Schema(title = "Product price")
     private BigDecimal productPrice;
@@ -61,10 +54,6 @@ public class OmsOrderItem implements Serializable {
     @Column(name = "product_sku_id")
     @Schema(title = "Product sku id")
     private Long productSkuId;
-
-    @Column(name = "product_sku_code")
-    @Schema(title = "Product sku code")
-    private String productSkuCode;
 
     @Column(name = "product_category_id")
     @Schema(title = "Product category id")

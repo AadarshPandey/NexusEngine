@@ -3,6 +3,7 @@ import type { PageParam } from './common'
 export type OmsOrder = {
   id: number
   memberId?: number
+  memberUsername?: string
   couponId?: number
   orderSn?: string
   createTime: string
@@ -35,16 +36,13 @@ export type OmsOrder = {
 export type OmsOrderItem = {
   id: number
   orderId: number
-  orderSn: string
   productId: number
   productPic: string
   productName: string
   productBrand: string
-  productSn: string
   productPrice: number
   productQuantity: number
   productSkuId: number
-  productSkuCode: string
   productCategoryId: number
   promotionName: string
   promotionAmount: number

@@ -135,9 +135,7 @@ public class OmsPortalOrderController {
             if (orderDetail.omsOrder().getStatus() != 0) {
                  return CommonResult.failed("Order already paid or closed");
             }
-            if (omsOrderRepository.existsByPaymentId(razorpayPaymentId)) {
-                return CommonResult.failed("Payment ID already used");
-            }
+            
             
             boolean isValid = razorpayPaymentGatewayService.verifySignature(razorpayOrderId, razorpayPaymentId, razorpaySignature);
             if (!isValid) return CommonResult.failed("Invalid signature");
