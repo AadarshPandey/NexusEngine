@@ -70,15 +70,7 @@ const CouponList: React.FC = () => {
     }
   };
 
-  const formatPlatform = (platform: number) => {
-    switch (platform) {
-      case 0: return 'All Platforms';
-      case 1: return 'Mobile App';
-      case 2: return 'PC Web';
-      default: return 'Unknown';
-    }
-  };
-
+  
   return (
     <Box sx={{ p: 3 }}>
       {/* Search and Filter */}
@@ -133,8 +125,7 @@ const CouponList: React.FC = () => {
                 <TableCell>ID</TableCell>
                 <TableCell>Coupon Name</TableCell>
                 <TableCell>Type</TableCell>
-                <TableCell>Platform</TableCell>
-                <TableCell>Value</TableCell>
+                                <TableCell>Value</TableCell>
                 <TableCell>Minimum Spend</TableCell>
                 <TableCell>Valid Range</TableCell>
                 <TableCell>Status</TableCell>
@@ -152,9 +143,8 @@ const CouponList: React.FC = () => {
                     <TableCell>{row.id}</TableCell>
                     <TableCell>{row.name}</TableCell>
                     <TableCell>{formatType(row.type)}</TableCell>
-                    <TableCell>{formatPlatform(row.platform)}</TableCell>
-                    <TableCell>₹{row.amount}</TableCell>
-                    <TableCell>₹{row.minPoint}</TableCell>
+                                        <TableCell>₹{row.amount}</TableCell>
+                    <TableCell>₹{row.minOrderAmount}</TableCell>
                     <TableCell>
                       <Typography variant="caption" display="block">
                         {row.startTime ? dayjs(row.startTime).format('YYYY-MM-DD') : 'N/A'}

@@ -21,7 +21,7 @@ export function getOrderListAPI(params: OrderQueryParam) {
 
 /**
  */
-export function orderUpdateCloseAPI(params: { ids: string; note: string }) {
+export function orderUpdateCloseAPI(params: { ids: string;  }) {
   return http({
     url: '/order/update/close',
     method: 'post',
@@ -80,7 +80,7 @@ export function orderUpdateMoneyInfoAPI(data: OmsMoneyInfoParam) {
 
 /**
  */
-export function orderUpdateNoteAPI(params: { id: number; note: string; status: number }) {
+export function orderUpdateNoteAPI(params: { id: number;  status: number }) {
   return http({
     url: '/order/update/note',
     method: 'post',
@@ -88,7 +88,7 @@ export function orderUpdateNoteAPI(params: { id: number; note: string; status: n
   })
 }
 
-export function orderUpdateStatusAPI(params: { ids: string; status: number; note?: string }) {
+export function orderUpdateStatusAPI(params: { ids: string; status: number;  }) {
   return http({
     url: '/order/update/status',
     method: 'post',

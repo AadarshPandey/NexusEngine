@@ -25,9 +25,7 @@ public class SmsCoupon implements Serializable {
 
     private String name;
 
-    @Schema(title = "Platform")
-    private Integer platform;
-
+    
     @Schema(title = "Count")
     private Integer count;
 
@@ -38,9 +36,9 @@ public class SmsCoupon implements Serializable {
     @Schema(title = "Per limit")
     private Integer perLimit;
 
-    @Column(name = "min_point")
+    @Column(name = "min_order_amount")
     @Schema(title = "Min point")
-    private BigDecimal minPoint;
+    private BigDecimal minOrderAmount;
 
     @Column(name = "start_time")
     private LocalDateTime startTime;
@@ -52,25 +50,14 @@ public class SmsCoupon implements Serializable {
     @Schema(title = "Use type")
     private Integer useType;
 
-    @Schema(title = "Note")
-    private String note;
-
-    @Column(name = "publish_count")
-    @Schema(title = "Publish count")
-    private Integer publishCount;
-
-    @Column(name = "use_count")
-    @Schema(title = "Use count")
-    private Integer useCount;
-
+    
+    
+    
     @Column(name = "receive_count")
     @Schema(title = "Receive count")
     private Integer receiveCount;
 
-    @Column(name = "enable_time")
-    @Schema(title = "Enable time")
-    private LocalDateTime enableTime;
-
+    
     @Schema(title = "Code")
     private String code;
 

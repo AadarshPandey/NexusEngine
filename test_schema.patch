@@ -1,0 +1,7 @@
+--- ./NexusCore/nexus-application/src/main/resources/application.yml
++++ ./NexusCore/nexus-application/src/main/resources/application.yml
+@@ -47,2 +47,3 @@
+     vectorstore:
+       pgvector:
++        schema-name: ai
+         initialize-schema: true

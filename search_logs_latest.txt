@@ -1,0 +1,152 @@
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.1.1)
+
+2026-10-02T18:53:59.556Z  INFO 1 --- [nexus-search] [           main] c.n.core.search.NexusSearchApplication   : Starting NexusSearchApplication v1.0-SNAPSHOT using Java 25.0.4.1 with PID 1 (/app/app.jar started by root in /app)
+2026-10-02T18:53:59.560Z  INFO 1 --- [nexus-search] [           main] c.n.core.search.NexusSearchApplication   : The following 1 profile is active: "prod"
+2026-10-02T18:54:00.187Z  INFO 1 --- [nexus-search] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2026-10-02T18:54:00.187Z  INFO 1 --- [nexus-search] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-10-02T18:54:00.415Z  INFO 1 --- [nexus-search] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 219 ms. Found 50 JPA repository interfaces.
+2026-10-02T18:54:00.700Z  INFO 1 --- [nexus-search] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2026-10-02T18:54:00.701Z  INFO 1 --- [nexus-search] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Reactive Elasticsearch repositories in DEFAULT mode.
+2026-10-02T18:54:00.714Z  INFO 1 --- [nexus-search] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 11 ms. Found 0 Reactive Elasticsearch repository interfaces.
+2026-10-02T18:54:00.719Z  INFO 1 --- [nexus-search] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2026-10-02T18:54:00.719Z  INFO 1 --- [nexus-search] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Elasticsearch repositories in DEFAULT mode.
+2026-10-02T18:54:00.724Z  INFO 1 --- [nexus-search] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 3 ms. Found 1 Elasticsearch repository interface.
+2026-10-02T18:54:01.365Z  INFO 1 --- [nexus-search] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8081 (http)
+2026-10-02T18:54:01.375Z  INFO 1 --- [nexus-search] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-10-02T18:54:01.376Z  INFO 1 --- [nexus-search] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.24]
+2026-10-02T18:54:01.394Z  INFO 1 --- [nexus-search] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1783 ms
+2026-10-02T18:54:01.712Z  INFO 1 --- [nexus-search] [           main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-10-02T18:54:01.755Z  INFO 1 --- [nexus-search] [           main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.4.5.Final
+2026-10-02T18:54:01.950Z  INFO 1 --- [nexus-search] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-10-02T18:54:02.070Z  INFO 1 --- [nexus-search] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@11896af6
+2026-10-02T18:54:02.072Z  INFO 1 --- [nexus-search] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-10-02T18:54:02.123Z  INFO 1 --- [nexus-search] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:postgresql://postgres:5432/nexuscore]
+	Database driver: PostgreSQL JDBC Driver
+	Database dialect: PostgreSQLDialect
+	Database version: 17.11
+	Default catalog/schema: nexuscore/public
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: none
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-10-02T18:54:02.291Z  INFO 1 --- [nexus-search] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-10-02T18:54:03.472Z  INFO 1 --- [nexus-search] [           main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-10-02T18:54:03.548Z  INFO 1 --- [nexus-search] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-10-02T18:54:03.985Z  WARN 1 --- [nexus-search] [           main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'productChangeConsumer' defined in URL [jar:nested:/app/app.jar/!BOOT-INF/classes/!/com/nexusengine/core/search/component/ProductChangeConsumer.class]: Unsatisfied dependency expressed through constructor parameter 0: Error creating bean with name 'esProductServiceImpl' defined in URL [jar:nested:/app/app.jar/!BOOT-INF/classes/!/com/nexusengine/core/search/service/impl/EsProductServiceImpl.class]: Unsatisfied dependency expressed through constructor parameter 0: Error creating bean with name 'esProductRepository' defined in com.nexusengine.core.search.repository.EsProductRepository defined in @EnableElasticsearchRepositories declared on DataElasticsearchRepositoriesRegistrar.EnableElasticsearchRepositoriesConfiguration: Failed to instantiate [org.springframework.data.elasticsearch.repository.support.SimpleElasticsearchRepository]: Constructor threw exception
+2026-10-02T18:54:03.990Z  INFO 1 --- [nexus-search] [           main] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-10-02T18:54:03.993Z  INFO 1 --- [nexus-search] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-10-02T18:54:03.997Z  INFO 1 --- [nexus-search] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-10-02T18:54:04.000Z  INFO 1 --- [nexus-search] [           main] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2026-10-02T18:54:04.011Z  INFO 1 --- [nexus-search] [           main] .s.b.a.l.ConditionEvaluationReportLogger : 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2026-10-02T18:54:04.025Z ERROR 1 --- [nexus-search] [           main] o.s.boot.SpringApplication               : Application run failed
+
+org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'productChangeConsumer' defined in URL [jar:nested:/app/app.jar/!BOOT-INF/classes/!/com/nexusengine/core/search/component/ProductChangeConsumer.class]: Unsatisfied dependency expressed through constructor parameter 0: Error creating bean with name 'esProductServiceImpl' defined in URL [jar:nested:/app/app.jar/!BOOT-INF/classes/!/com/nexusengine/core/search/service/impl/EsProductServiceImpl.class]: Unsatisfied dependency expressed through constructor parameter 0: Error creating bean with name 'esProductRepository' defined in com.nexusengine.core.search.repository.EsProductRepository defined in @EnableElasticsearchRepositories declared on DataElasticsearchRepositoriesRegistrar.EnableElasticsearchRepositoriesConfiguration: Failed to instantiate [org.springframework.data.elasticsearch.repository.support.SimpleElasticsearchRepository]: Constructor threw exception
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:804)
+	at org.springframework.beans.factory.support.ConstructorResolver.autowireConstructor(ConstructorResolver.java:240)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(AbstractAutowireCapableBeanFactory.java:1380)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1219)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:565)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:525)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:333)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:371)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:331)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:196)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.instantiateSingleton(DefaultListableBeanFactory.java:1225)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingleton(DefaultListableBeanFactory.java:1191)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:1121)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:994)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:621)
+	at org.springframework.boot.web.server.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:143)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:756)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:445)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:321)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1365)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1354)
+	at com.nexusengine.core.search.NexusSearchApplication.main(NexusSearchApplication.java:10)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:106)
+	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:64)
+	at org.springframework.boot.loader.launch.JarLauncher.main(JarLauncher.java:40)
+Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'esProductServiceImpl' defined in URL [jar:nested:/app/app.jar/!BOOT-INF/classes/!/com/nexusengine/core/search/service/impl/EsProductServiceImpl.class]: Unsatisfied dependency expressed through constructor parameter 0: Error creating bean with name 'esProductRepository' defined in com.nexusengine.core.search.repository.EsProductRepository defined in @EnableElasticsearchRepositories declared on DataElasticsearchRepositoriesRegistrar.EnableElasticsearchRepositoriesConfiguration: Failed to instantiate [org.springframework.data.elasticsearch.repository.support.SimpleElasticsearchRepository]: Constructor threw exception
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:804)
+	at org.springframework.beans.factory.support.ConstructorResolver.autowireConstructor(ConstructorResolver.java:240)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(AbstractAutowireCapableBeanFactory.java:1380)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1219)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:565)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:525)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:333)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:371)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:331)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:201)
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:229)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1769)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1658)
+	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:912)
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:791)
+	... 26 common frames omitted
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'esProductRepository' defined in com.nexusengine.core.search.repository.EsProductRepository defined in @EnableElasticsearchRepositories declared on DataElasticsearchRepositoriesRegistrar.EnableElasticsearchRepositoriesConfiguration: Failed to instantiate [org.springframework.data.elasticsearch.repository.support.SimpleElasticsearchRepository]: Constructor threw exception
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1815)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:603)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:525)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:333)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:371)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:331)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:201)
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:229)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1769)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1658)
+	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:912)
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:791)
+	... 40 common frames omitted
+Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [org.springframework.data.elasticsearch.repository.support.SimpleElasticsearchRepository]: Constructor threw exception
+	at org.springframework.beans.BeanUtils.instantiateClass(BeanUtils.java:220)
+	at org.springframework.data.repository.core.support.RepositoryFactorySupport.instantiateClass(RepositoryFactorySupport.java:623)
+	at org.springframework.data.repository.core.support.RepositoryFactorySupport.getTargetRepositoryViaReflection(RepositoryFactorySupport.java:600)
+	at org.springframework.data.elasticsearch.repository.support.ElasticsearchRepositoryFactory.getTargetRepository(ElasticsearchRepositoryFactory.java:81)
+	at org.springframework.data.repository.core.support.RepositoryFactorySupport.getRepository(RepositoryFactorySupport.java:359)
+	at org.springframework.data.repository.core.support.RepositoryFactoryBeanSupport.lambda$afterPropertiesSet$1(RepositoryFactoryBeanSupport.java:361)
+	at org.springframework.data.util.Lazy.getNullable(Lazy.java:136)
+	at org.springframework.data.util.Lazy.get(Lazy.java:114)
+	at org.springframework.data.repository.core.support.RepositoryFactoryBeanSupport.afterPropertiesSet(RepositoryFactoryBeanSupport.java:370)
+	at org.springframework.data.elasticsearch.repository.support.ElasticsearchRepositoryFactoryBean.afterPropertiesSet(ElasticsearchRepositoryFactoryBean.java:69)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1862)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1811)
+	... 51 common frames omitted
+Caused by: java.lang.NoClassDefFoundError: io/opentelemetry/semconv/DbAttributes
+	at co.elastic.clients.transport.instrumentation.OpenTelemetryForElasticsearch$OTelContext.<init>(OpenTelemetryForElasticsearch.java:187)
+	at co.elastic.clients.transport.instrumentation.OpenTelemetryForElasticsearch.newContext(OpenTelemetryForElasticsearch.java:160)
+	at co.elastic.clients.transport.ElasticsearchTransportBase.performRequest(ElasticsearchTransportBase.java:146)
+	at co.elastic.clients.elasticsearch.indices.ElasticsearchIndicesClient.exists(ElasticsearchIndicesClient.java:1227)
+	at org.springframework.data.elasticsearch.client.elc.IndicesTemplate.lambda$doExists$0(IndicesTemplate.java:180)
+	at org.springframework.data.elasticsearch.client.elc.ChildTemplate.execute(ChildTemplate.java:71)
+	at org.springframework.data.elasticsearch.client.elc.IndicesTemplate.doExists(IndicesTemplate.java:180)
+	at org.springframework.data.elasticsearch.client.elc.IndicesTemplate.exists(IndicesTemplate.java:172)
+	at org.springframework.data.elasticsearch.repository.support.SimpleElasticsearchRepository.createIndexAndMappingIfNeeded(SimpleElasticsearchRepository.java:93)
+	at org.springframework.data.elasticsearch.repository.support.SimpleElasticsearchRepository.<init>(SimpleElasticsearchRepository.java:87)
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:483)
+	at org.springframework.beans.BeanUtils.instantiateClass(BeanUtils.java:207)
+	... 62 common frames omitted
+Caused by: java.lang.ClassNotFoundException: io.opentelemetry.semconv.DbAttributes
+	at java.base/java.net.URLClassLoader.findClass(URLClassLoader.java:377)
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:557)
+	at org.springframework.boot.loader.net.protocol.jar.JarUrlClassLoader.loadClass(JarUrlClassLoader.java:107)
+	at org.springframework.boot.loader.launch.LaunchedClassLoader.loadClass(LaunchedClassLoader.java:91)
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:490)
+	... 76 common frames omitted
+

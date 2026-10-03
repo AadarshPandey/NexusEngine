@@ -29,14 +29,11 @@ const CouponAdd: React.FC = () => {
   const [formData, setFormData] = useState<SmsCouponExt>({
     type: 0,
     name: '',
-    platform: 0,
-    amount: 0,
+        amount: 0,
     perLimit: 1,
-    minPoint: 0,
+    minOrderAmount: 0,
     useType: 0,
-    publishCount: 100,
-    note: '',
-  });
+          });
 
   const handleSubmit = async () => {
     setSaving(true);
@@ -45,8 +42,7 @@ const CouponAdd: React.FC = () => {
         ...formData,
         startTime: formData.startTime ? new Date(formData.startTime).toISOString() : undefined,
         endTime: formData.endTime ? new Date(formData.endTime).toISOString() : undefined,
-        enableTime: formData.enableTime ? new Date(formData.enableTime).toISOString() : undefined,
-      };
+              };
       await couponCreateAPI(payload);
       setSnackbar({ open: true, message: 'Coupon created successfully', severity: 'success' });
       setTimeout(() => navigate('/sms/coupon'), 1000);
@@ -89,9 +85,7 @@ const CouponAdd: React.FC = () => {
               <FormControl fullWidth>
                 <InputLabel>Platform</InputLabel>
                 <Select
-                  value={formData.platform}
                   label="Platform"
-                  onChange={(e) => setFormData({ ...formData, platform: Number(e.target.value) })}
                 >
                   <MenuItem value={0}>All Platforms</MenuItem>
                   <MenuItem value={1}>Mobile App</MenuItem>
@@ -112,20 +106,14 @@ const CouponAdd: React.FC = () => {
               <TextField
                 label="Minimum Spend"
                 type="number"
-                value={formData.minPoint || 0}
-                onChange={e => setFormData({ ...formData, minPoint: Number(e.target.value) })}
+                value={formData.minOrderAmount || 0}
+                onChange={e => setFormData({ ...formData, minOrderAmount: Number(e.target.value) })}
                 fullWidth
               />
             </Box>
 
             <Box sx={{ display: 'flex', gap: 2 }}>
-              <TextField
-                label="Publish Count"
-                type="number"
-                value={formData.publishCount || 0}
-                onChange={e => setFormData({ ...formData, publishCount: Number(e.target.value) })}
-                fullWidth
-              />
+              
               <TextField
                 label="Per User Limit"
                 type="number"
@@ -149,13 +137,7 @@ const CouponAdd: React.FC = () => {
             </FormControl>
 
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DateTimePicker
-              label="Enable Time"
-              format="DD/MM/YYYY HH:mm"
-              value={formData.enableTime ? dayjs(formData.enableTime) : null}
-              onChange={(newValue) => setFormData({ ...formData, enableTime: newValue ? newValue.format('YYYY-MM-DDTHH:mm') : '' })}
-              slotProps={{ textField: { fullWidth: true, sx: { mb: 2 } } }}
-            />
+            
 
             <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
               <DateTimePicker
@@ -175,14 +157,7 @@ const CouponAdd: React.FC = () => {
             </Box>
           </LocalizationProvider>
 
-            <TextField
-              label="Note"
-              multiline
-              rows={3}
-              value={formData.note || ''}
-              onChange={e => setFormData({ ...formData, note: e.target.value })}
-              fullWidth
-            />
+            
 
             <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, mt: 2 }}>
               <Button variant="outlined" onClick={() => navigate('/sms/coupon')}>Cancel</Button>

@@ -23,9 +23,7 @@ public class SmsCouponServiceImpl implements SmsCouponService {
     @Override
     public int create(SmsCouponParam couponParam) {
         SmsCoupon smsCoupon = couponParam.smsCoupon();
-        smsCoupon.setCount(smsCoupon.getPublishCount());
-        smsCoupon.setUseCount(0);
-        smsCoupon.setReceiveCount(0);
+                        smsCoupon.setReceiveCount(0);
         couponRepository.save(smsCoupon);
         if (smsCoupon.getUseType().equals(2)) {
             for (SmsCouponProductRelation rel : couponParam.productRelationList()) {

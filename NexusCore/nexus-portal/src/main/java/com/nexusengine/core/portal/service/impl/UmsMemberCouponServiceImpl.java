@@ -53,7 +53,7 @@ public class UmsMemberCouponServiceImpl implements UmsMemberCouponService {
                     Asserts.fail("Coupon is out of stock");
                 }
                 LocalDateTime now = java.time.LocalDateTime.now();
-                if (now.isBefore(coupon.getEnableTime())) {
+                if (now.isBefore(coupon.getStartTime())) {
                     Asserts.fail("Coupon is not yet available");
                 }
                 long count = couponHistoryRepository.countByCouponIdAndMemberId(couponId, currentMember.getId());
@@ -125,11 +125,11 @@ public class UmsMemberCouponServiceImpl implements UmsMemberCouponService {
         for (SmsCouponHistoryDetail couponHistoryDetail : allList) {
             if (couponHistoryDetail.coupon() == null) continue;
             Integer useType = couponHistoryDetail.coupon().getUseType();
-            BigDecimal minPoint = couponHistoryDetail.coupon().getMinPoint();
+            BigDecimal minOrderAmount = couponHistoryDetail.coupon().getMinOrderAmount();
             LocalDateTime endTime = couponHistoryDetail.coupon().getEndTime();
             if (useType.equals(0)) {
                 BigDecimal totalAmount = calcTotalAmount(cartItemList);
-                if (now.isBefore(endTime) && totalAmount.subtract(minPoint).intValue() >= 0) {
+                if (now.isBefore(endTime) && totalAmount.subtract(minOrderAmount).intValue() >= 0) {
                     enableList.add(couponHistoryDetail);
                 } else {
                     disableList.add(couponHistoryDetail);
@@ -138,7 +138,7 @@ public class UmsMemberCouponServiceImpl implements UmsMemberCouponService {
                 List<Long> productCategoryIds = couponHistoryDetail.categoryRelationList().stream()
                         .map(SmsCouponProductCategoryRelation::getProductCategoryId).collect(Collectors.toList());
                 BigDecimal totalAmount = calcTotalAmountByProductCategoryId(cartItemList, productCategoryIds);
-                if (now.isBefore(endTime) && totalAmount.intValue() > 0 && totalAmount.subtract(minPoint).intValue() >= 0) {
+                if (now.isBefore(endTime) && totalAmount.intValue() > 0 && totalAmount.subtract(minOrderAmount).intValue() >= 0) {
                     enableList.add(couponHistoryDetail);
                 } else {
                     disableList.add(couponHistoryDetail);
@@ -147,7 +147,7 @@ public class UmsMemberCouponServiceImpl implements UmsMemberCouponService {
                 List<Long> productIds = couponHistoryDetail.productRelationList().stream()
                         .map(SmsCouponProductRelation::getProductId).collect(Collectors.toList());
                 BigDecimal totalAmount = calcTotalAmountByProductId(cartItemList, productIds);
-                if (now.isBefore(endTime) && totalAmount.intValue() > 0 && totalAmount.subtract(minPoint).intValue() >= 0) {
+                if (now.isBefore(endTime) && totalAmount.intValue() > 0 && totalAmount.subtract(minOrderAmount).intValue() >= 0) {
                     enableList.add(couponHistoryDetail);
                 } else {
                     disableList.add(couponHistoryDetail);

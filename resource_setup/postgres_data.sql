@@ -466,7 +466,6 @@ CREATE TABLE pms.pms_product (
     weight numeric(19,2),
     service_ids character varying(255),
     keywords character varying(255),
-    note character varying(255),
     promotion_start_time timestamp without time zone,
     promotion_end_time timestamp without time zone,
     promotion_per_limit integer,
@@ -1044,19 +1043,14 @@ CREATE TABLE marketing.sms_coupon (
     id bigint NOT NULL,
     type integer,
     name character varying(255),
-    platform integer,
     count integer,
     amount numeric(19,2),
     per_limit integer,
-    min_point numeric(19,2),
+    min_order_amount numeric(19,2),
     start_time timestamp without time zone,
     end_time timestamp without time zone,
     use_type integer,
-    note character varying(255),
-    publish_count integer,
-    use_count integer,
     receive_count integer,
-    enable_time timestamp without time zone,
     code character varying(255),
     max_discount_amount numeric(10,2) DEFAULT NULL::numeric,
     version integer DEFAULT 0,
@@ -1096,38 +1090,24 @@ COMMENT ON COLUMN marketing.sms_coupon.is_public IS 'Whether coupon can be claim
 
 
 --
--- Name: sms_coupon_brand_relation; Type: TABLE; Schema: marketing; Owner: postgres
 --
 
-CREATE TABLE marketing.sms_coupon_brand_relation (
-    id bigint NOT NULL,
-    coupon_id bigint NOT NULL,
-    brand_id bigint NOT NULL,
-    brand_name character varying(200) DEFAULT NULL::character varying
-);
 
-
-ALTER TABLE marketing.sms_coupon_brand_relation OWNER TO postgres;
-
---
--- Name: TABLE sms_coupon_brand_relation; Type: COMMENT; Schema: marketing; Owner: postgres
---
-
-COMMENT ON TABLE marketing.sms_coupon_brand_relation IS 'Coupon-brand relation';
 
 
 --
--- Name: COLUMN sms_coupon_brand_relation.brand_name; Type: COMMENT; Schema: marketing; Owner: postgres
 --
 
-COMMENT ON COLUMN marketing.sms_coupon_brand_relation.brand_name IS 'Brand name (denormalized)';
 
 
 --
--- Name: sms_coupon_brand_relation_id_seq; Type: SEQUENCE; Schema: marketing; Owner: postgres
 --
 
-CREATE SEQUENCE marketing.sms_coupon_brand_relation_id_seq
+
+
+--
+--
+
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1135,13 +1115,10 @@ CREATE SEQUENCE marketing.sms_coupon_brand_relation_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE marketing.sms_coupon_brand_relation_id_seq OWNER TO postgres;
 
 --
--- Name: sms_coupon_brand_relation_id_seq; Type: SEQUENCE OWNED BY; Schema: marketing; Owner: postgres
 --
 
-ALTER SEQUENCE marketing.sms_coupon_brand_relation_id_seq OWNED BY marketing.sms_coupon_brand_relation.id;
 
 
 --
@@ -1602,7 +1579,6 @@ CREATE TABLE orders.oms_order (
     receiver_city character varying(255),
     receiver_region character varying(255),
     receiver_detail_address character varying(255),
-    note character varying(255),
     confirm_status integer,
     delete_status integer,
     used_points integer,
@@ -1700,7 +1676,6 @@ CREATE TABLE orders.oms_order_operate_history (
     operate_man character varying(255),
     create_time timestamp without time zone,
     order_status integer,
-    note character varying(255)
 );
 
 
@@ -1754,11 +1729,9 @@ CREATE TABLE orders.oms_order_return_apply (
     reason character varying(255),
     description character varying(255),
     proof_pics character varying(255),
-    handle_note character varying(255),
     handle_man character varying(255),
     receive_man character varying(255),
     receive_time timestamp without time zone,
-    receive_note character varying(255)
 );
 
 
@@ -2085,7 +2058,6 @@ CREATE TABLE public.oms_order (
     receiver_city character varying(255),
     receiver_region character varying(255),
     receiver_detail_address character varying(255),
-    note character varying(255),
     confirm_status integer,
     delete_status integer,
     used_points integer,
@@ -2183,7 +2155,6 @@ CREATE TABLE public.oms_order_operate_history (
     operate_man character varying(255),
     create_time timestamp without time zone,
     order_status integer,
-    note character varying(255)
 );
 
 
@@ -2237,11 +2208,9 @@ CREATE TABLE public.oms_order_return_apply (
     reason character varying(255),
     description character varying(255),
     proof_pics character varying(255),
-    handle_note character varying(255),
     handle_man character varying(255),
     receive_man character varying(255),
     receive_time timestamp without time zone,
-    receive_note character varying(255)
 );
 
 
@@ -3030,19 +2999,14 @@ CREATE TABLE public.sms_coupon (
     id bigint NOT NULL,
     type integer,
     name character varying(255),
-    platform integer,
     count integer,
     amount numeric(19,2),
     per_limit integer,
-    min_point numeric(19,2),
+    min_order_amount numeric(19,2),
     start_time timestamp without time zone,
     end_time timestamp without time zone,
     use_type integer,
-    note character varying(255),
-    publish_count integer,
-    use_count integer,
     receive_count integer,
-    enable_time timestamp without time zone,
     code character varying(255),
     max_discount_amount numeric(10,2) DEFAULT NULL::numeric,
     version integer DEFAULT 0,
@@ -3082,38 +3046,24 @@ COMMENT ON COLUMN public.sms_coupon.is_public IS 'Whether coupon can be claimed 
 
 
 --
--- Name: sms_coupon_brand_relation; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE public.sms_coupon_brand_relation (
-    id bigint NOT NULL,
-    coupon_id bigint NOT NULL,
-    brand_id bigint NOT NULL,
-    brand_name character varying(200) DEFAULT NULL::character varying
-);
 
-
-ALTER TABLE public.sms_coupon_brand_relation OWNER TO postgres;
-
---
--- Name: TABLE sms_coupon_brand_relation; Type: COMMENT; Schema: public; Owner: postgres
---
-
-COMMENT ON TABLE public.sms_coupon_brand_relation IS 'Coupon-brand relation';
 
 
 --
--- Name: COLUMN sms_coupon_brand_relation.brand_name; Type: COMMENT; Schema: public; Owner: postgres
 --
 
-COMMENT ON COLUMN public.sms_coupon_brand_relation.brand_name IS 'Brand name (denormalized)';
 
 
 --
--- Name: sms_coupon_brand_relation_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE public.sms_coupon_brand_relation_id_seq
+
+
+--
+--
+
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -3121,13 +3071,10 @@ CREATE SEQUENCE public.sms_coupon_brand_relation_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.sms_coupon_brand_relation_id_seq OWNER TO postgres;
 
 --
--- Name: sms_coupon_brand_relation_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
-ALTER SEQUENCE public.sms_coupon_brand_relation_id_seq OWNED BY public.sms_coupon_brand_relation.id;
 
 
 --
@@ -3454,7 +3401,6 @@ CREATE TABLE public.sys_banner (
     click_count integer,
     order_count integer,
     url character varying(255),
-    note character varying(255),
     sort integer
 );
 
@@ -3493,7 +3439,6 @@ CREATE TABLE public.ums_admin (
     icon character varying(255),
     email character varying(255),
     nick_name character varying(255),
-    note character varying(255),
     create_time timestamp without time zone,
     login_time timestamp without time zone,
     status integer,
@@ -4002,7 +3947,6 @@ CREATE TABLE system.sys_banner (
     click_count integer,
     order_count integer,
     url character varying(255),
-    note character varying(255),
     sort integer
 );
 
@@ -4041,7 +3985,6 @@ CREATE TABLE users.ums_admin (
     icon character varying(255),
     email character varying(255),
     nick_name character varying(255),
-    note character varying(255),
     create_time timestamp without time zone,
     login_time timestamp without time zone,
     status integer,
@@ -4662,10 +4605,8 @@ ALTER TABLE ONLY marketing.sms_coupon ALTER COLUMN id SET DEFAULT nextval('marke
 
 
 --
--- Name: sms_coupon_brand_relation id; Type: DEFAULT; Schema: marketing; Owner: postgres
 --
 
-ALTER TABLE ONLY marketing.sms_coupon_brand_relation ALTER COLUMN id SET DEFAULT nextval('marketing.sms_coupon_brand_relation_id_seq'::regclass);
 
 
 --
@@ -4970,10 +4911,8 @@ ALTER TABLE ONLY public.sms_coupon ALTER COLUMN id SET DEFAULT nextval('public.s
 
 
 --
--- Name: sms_coupon_brand_relation id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.sms_coupon_brand_relation ALTER COLUMN id SET DEFAULT nextval('public.sms_coupon_brand_relation_id_seq'::regclass);
 
 
 --
@@ -8067,17 +8006,14 @@ COPY integration.outbox_event (id, aggregate_type, aggregate_id, type, payload, 
 -- Data for Name: sms_coupon; Type: TABLE DATA; Schema: marketing; Owner: postgres
 --
 
-COPY marketing.sms_coupon (id, type, name, platform, count, amount, per_limit, min_point, start_time, end_time, use_type, note, publish_count, use_count, receive_count, enable_time, code, max_discount_amount, version, stackable, is_public) FROM stdin;
+COPY marketing.sms_coupon (id, type, name, count, amount, per_limit, min_order_amount, start_time, end_time, use_type, receive_count, code, max_discount_amount, version, stackable, is_public) FROM stdin;
 1	0	Welcome Promo	\N	99	10.00	1	0.00	2026-09-25 12:50:41.059784	2026-10-25 12:50:41.059784	0	\N	\N	WELCOME10
 \.
 
 
 --
--- Data for Name: sms_coupon_brand_relation; Type: TABLE DATA; Schema: marketing; Owner: postgres
 --
 
-COPY marketing.sms_coupon_brand_relation (id, coupon_id, brand_id, brand_name) FROM stdin;
-\.
 
 
 --
@@ -9022,16 +8958,13 @@ COPY public.pms_sku_stock (id, product_id, sku_code, price, stock, low_stock, pi
 -- Data for Name: sms_coupon; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.sms_coupon (id, type, name, platform, count, amount, per_limit, min_point, start_time, end_time, use_type, note, publish_count, use_count, receive_count, enable_time, code, max_discount_amount, version, stackable, is_public) FROM stdin;
+COPY public.sms_coupon (id, type, name, count, amount, per_limit, min_order_amount, start_time, end_time, use_type, receive_count, code, max_discount_amount, version, stackable, is_public) FROM stdin;
 \.
 
 
 --
--- Data for Name: sms_coupon_brand_relation; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.sms_coupon_brand_relation (id, coupon_id, brand_id, brand_name) FROM stdin;
-\.
 
 
 --
@@ -9526,10 +9459,8 @@ SELECT pg_catalog.setval('integration.outbox_event_id_seq', 8, true);
 
 
 --
--- Name: sms_coupon_brand_relation_id_seq; Type: SEQUENCE SET; Schema: marketing; Owner: postgres
 --
 
-SELECT pg_catalog.setval('marketing.sms_coupon_brand_relation_id_seq', 1, false);
 
 
 --
@@ -9848,10 +9779,8 @@ SELECT pg_catalog.setval('public.pms_sku_stock_id_seq', 41, true);
 
 
 --
--- Name: sms_coupon_brand_relation_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.sms_coupon_brand_relation_id_seq', 1, false);
 
 
 --
@@ -10275,11 +10204,8 @@ ALTER TABLE ONLY integration.outbox_event
 
 
 --
--- Name: sms_coupon_brand_relation sms_coupon_brand_relation_pkey; Type: CONSTRAINT; Schema: marketing; Owner: postgres
 --
 
-ALTER TABLE ONLY marketing.sms_coupon_brand_relation
-    ADD CONSTRAINT sms_coupon_brand_relation_pkey PRIMARY KEY (id);
 
 
 --
@@ -10683,11 +10609,8 @@ ALTER TABLE ONLY public.pms_sku_stock
 
 
 --
--- Name: sms_coupon_brand_relation sms_coupon_brand_relation_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.sms_coupon_brand_relation
-    ADD CONSTRAINT sms_coupon_brand_relation_pkey PRIMARY KEY (id);
 
 
 --
@@ -11041,7 +10964,6 @@ CREATE INDEX idx_coupon_history_member_status ON marketing.sms_coupon_history US
 -- Name: idx_coupon_id; Type: INDEX; Schema: marketing; Owner: postgres
 --
 
-CREATE INDEX idx_coupon_id ON marketing.sms_coupon_brand_relation USING btree (coupon_id);
 
 
 --
@@ -11132,7 +11054,6 @@ CREATE INDEX idx_coupon_history_member_status ON public.sms_coupon_history USING
 -- Name: idx_coupon_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
-CREATE INDEX idx_coupon_id ON public.sms_coupon_brand_relation USING btree (coupon_id);
 
 
 --
@@ -11366,19 +11287,13 @@ ALTER TABLE ONLY pms.pms_sku_stock
 
 
 --
--- Name: sms_coupon_brand_relation fk_sms_coupon_brand_relation_brand_id; Type: FK CONSTRAINT; Schema: marketing; Owner: postgres
 --
 
-ALTER TABLE ONLY marketing.sms_coupon_brand_relation
-    ADD CONSTRAINT fk_sms_coupon_brand_relation_brand_id FOREIGN KEY (brand_id) REFERENCES pms.pms_brand(id);
 
 
 --
--- Name: sms_coupon_brand_relation fk_sms_coupon_brand_relation_coupon_id; Type: FK CONSTRAINT; Schema: marketing; Owner: postgres
 --
 
-ALTER TABLE ONLY marketing.sms_coupon_brand_relation
-    ADD CONSTRAINT fk_sms_coupon_brand_relation_coupon_id FOREIGN KEY (coupon_id) REFERENCES marketing.sms_coupon(id);
 
 
 --

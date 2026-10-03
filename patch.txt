@@ -1,0 +1,41 @@
+                        <IconButton size="small" onClick={() => handleLike(reply.id)}>
+                          <ThumbUpOutlinedIcon fontSize="small" sx={{ fontSize: 16 }} />
+                        </IconButton>
+                        <Typography variant="caption">{reply.likeCount || 0}</Typography>
+                        
+                        <Button size="small" sx={{ ml: 1 }} onClick={() => { setReplyingTo(replyingTo === reply.id ? null : reply.id); setReplyMediaList([]); }}>
+                          {replyingTo === reply.id ? 'Cancel' : 'Reply'}
+                        </Button>
+                      </Box>
+                      <Typography variant="body2">{reply.content}</Typography>
+                      <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mt: 1 }}>
+                        {reply.mediaList && reply.mediaList.map((m, i) => (
+                          <Box key={i}>
+                            {m.mediaType === 'IMAGE' ? (
+                              <img src={m.mediaUrl.startsWith('http') ? m.mediaUrl : (import.meta.env.VITE_API_BASE_URL || '/api') + m.mediaUrl} alt="reply" style={{ maxWidth: 150 }} />
+                            ) : (
+                              <video src={m.mediaUrl.startsWith('http') ? m.mediaUrl : (import.meta.env.VITE_API_BASE_URL || '/api') + m.mediaUrl} controls style={{ maxWidth: 200 }} />
+                            )}
+                          </Box>
+                        ))}
+                      </Box>
+                      
+                      <Collapse in={replyingTo === reply.id} timeout="auto" unmountOnExit sx={{ width: '100%', mt: 2 }}>
+                        <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+                          <TextField 
+                            fullWidth 
+                            size="small" 
+                            placeholder="Write a reply..." 
+                            value={replyText}
+                            onChange={e => setReplyText(e.target.value)}
+                          />
+                          <IconButton color="primary" component="label" size="small">
+                            <input hidden accept="image/*,video/*" type="file" onChange={(e) => handleUpload(e, true)} />
+                            <PhotoCamera fontSize="small" />
+                          </IconButton>
+                          <Button variant="contained" onClick={() => handleReplySubmit(reply.id)}>Reply</Button>
+                        </Box>
+                        {replyMediaList.map((_m, i) => (
+                          <Typography key={i} variant="caption" sx={{ display: 'block', mt: 0.5 }}>Reply Media {i + 1} Attached</Typography>
+                        ))}
+                      </Collapse>

@@ -53,7 +53,6 @@ CREATE TABLE IF NOT EXISTS pms_product (
     weight NUMERIC(19,2),
     service_ids VARCHAR(255),
     keywords VARCHAR(255),
-    note VARCHAR(255),
     promotion_start_time TIMESTAMP,
     promotion_end_time TIMESTAMP,
     promotion_per_limit INTEGER,
@@ -256,7 +255,6 @@ CREATE TABLE IF NOT EXISTS oms_order (
     receiver_city VARCHAR(255),
     receiver_region VARCHAR(255),
     receiver_detail_address VARCHAR(255),
-    note VARCHAR(255),
     confirm_status INTEGER,
     delete_status INTEGER,
     used_points INTEGER,
@@ -324,7 +322,6 @@ CREATE TABLE IF NOT EXISTS oms_order_return_apply (
     reason VARCHAR(255),
     description VARCHAR(255),
     proof_pics VARCHAR(255),
-    handle_note VARCHAR(255),
     handle_man VARCHAR(255),
     receive_man VARCHAR(255),
     receive_time TIMESTAMP,
@@ -371,7 +368,6 @@ CREATE TABLE IF NOT EXISTS ums_admin (
     icon VARCHAR(255),
     email VARCHAR(255),
     nick_name VARCHAR(255),
-    note VARCHAR(255),
     create_time TIMESTAMP,
     login_time TIMESTAMP,
     status INTEGER,
@@ -500,19 +496,14 @@ CREATE TABLE IF NOT EXISTS sms_coupon (
     id BIGSERIAL PRIMARY KEY,
     type INTEGER,
     name VARCHAR(255),
-    platform INTEGER,
     count INTEGER,
     amount NUMERIC(19,2),
     per_limit INTEGER,
-    min_point NUMERIC(19,2),
+    min_order_amount NUMERIC(19,2),
     start_time TIMESTAMP,
     end_time TIMESTAMP,
     use_type INTEGER,
-    note VARCHAR(255),
-    publish_count INTEGER,
-    use_count INTEGER,
     receive_count INTEGER,
-    enable_time TIMESTAMP,
     code VARCHAR(255)
 );
 
@@ -557,7 +548,6 @@ CREATE TABLE IF NOT EXISTS promotional_banner (
     click_count INTEGER,
     order_count INTEGER,
     url VARCHAR(255),
-    note VARCHAR(255),
     sort INTEGER
 );
 

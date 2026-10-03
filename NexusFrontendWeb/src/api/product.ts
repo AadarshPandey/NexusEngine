@@ -55,20 +55,15 @@ export interface SmsCoupon {
   id: number;
   type: number;
   name: string;
-  platform: number;
-  count: number;
+    count: number;
   amount: number;
   perLimit: number;
-  minPoint: number;
+  minOrderAmount: number;
   startTime: string;
   endTime: string;
   useType: number;
-  note: string;
-  publishCount: number;
-  useCount: number;
-  receiveCount: number;
-  enableTime: string;
-  code: string;
+        receiveCount: number;
+    code: string;
 }
 
 export interface PmsPortalProductDetail {

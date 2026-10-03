@@ -33,13 +33,13 @@ public final class TestFixtures {
         SecurityContextHolder.clearContext();
     }
 
-    public static SmsCoupon coupon(Integer type, BigDecimal amount, BigDecimal minPoint, Integer limit) {
+    public static SmsCoupon coupon(Integer type, BigDecimal amount, BigDecimal minOrderAmount, Integer limit) {
         SmsCoupon coupon = new SmsCoupon();
         coupon.setId(10L);
         coupon.setName("Test Coupon");
         coupon.setType(type); // 0=fixed, 1=percentage, 2=free shipping
         coupon.setAmount(amount);
-        coupon.setMinPoint(minPoint);
+        coupon.setMinOrderAmount(minOrderAmount);
         coupon.setPerLimit(limit);
         coupon.setCount(100);
         coupon.setStartTime(LocalDateTime.now().minusSeconds(10));

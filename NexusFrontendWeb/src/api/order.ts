@@ -64,11 +64,10 @@ export interface SmsCoupon {
   type: number;
   name: string;
   amount: number;
-  minPoint: number;
+  minOrderAmount: number;
   useType: number;
   endTime: string;
-  enableTime: string;
-  maxDiscountAmount?: number;
+    maxDiscountAmount?: number;
 }
 
 export interface SmsCouponProductRelation {
@@ -153,8 +152,7 @@ export interface OmsOrderDetail {
   receiverCity: string;
   receiverRegion: string;
   receiverDetailAddress: string;
-  note: string;
-  confirmStatus: number;
+    confirmStatus: number;
   deleteStatus: number;
   useIntegration: number;
   paymentTime: string;

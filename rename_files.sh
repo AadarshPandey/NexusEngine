@@ -1,0 +1,15 @@
+cd ./NexusCore/nexus-data-jpa/src/main/java/com/nexusengine/core/model
+mv PmsProductFullReduction.java PmsProductSpendDiscount.java
+mv PmsProductLadder.java PmsProductVolumeDiscount.java
+mv PmsProductOperateLog.java PmsProductAuditLog.java
+mv PmsProductVerifyRecord.java PmsProductApprovalHistory.java
+mv PmsProductMedia.java PmsProductGallery.java
+mv PmsReviewMedia.java PmsReviewAttachment.java
+
+cd ../repository
+mv PmsProductFullReductionRepository.java PmsProductSpendDiscountRepository.java
+mv PmsProductLadderRepository.java PmsProductVolumeDiscountRepository.java
+mv PmsProductOperateLogRepository.java PmsProductAuditLogRepository.java
+mv PmsProductVerifyRecordRepository.java PmsProductApprovalHistoryRepository.java
+mv PmsProductMediaRepository.java PmsProductGalleryRepository.java
+mv PmsReviewMediaRepository.java PmsReviewAttachmentRepository.java

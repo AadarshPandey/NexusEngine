@@ -3,16 +3,7 @@ ALTER TABLE sms_coupon ADD COLUMN max_discount_amount DECIMAL(10,2) DEFAULT NULL
 COMMENT ON COLUMN sms_coupon.max_discount_amount IS 'Maximum discount for percentage coupons (cap)';
 
 -- 2. Add brand coupon support (use_type = 3)
-CREATE TABLE sms_coupon_brand_relation (
-    id          BIGSERIAL PRIMARY KEY,
-    coupon_id   BIGINT       NOT NULL,
-    brand_id    BIGINT       NOT NULL,
-    brand_name  VARCHAR(200) DEFAULT NULL
-);
-COMMENT ON TABLE sms_coupon_brand_relation IS 'Coupon-brand relation';
-COMMENT ON COLUMN sms_coupon_brand_relation.brand_name IS 'Brand name (denormalized)';
 
-CREATE INDEX idx_coupon_id ON sms_coupon_brand_relation(coupon_id);
 
 -- 3. Add optimistic locking for coupon stock
 ALTER TABLE sms_coupon ADD COLUMN version INT DEFAULT 0;
