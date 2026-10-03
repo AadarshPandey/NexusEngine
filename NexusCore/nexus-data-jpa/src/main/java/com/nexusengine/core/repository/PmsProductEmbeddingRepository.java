@@ -12,6 +12,6 @@ import java.util.List;
 @Repository
 public interface PmsProductEmbeddingRepository extends JpaRepository<PmsProductEmbedding, Long> {
 
-    @Query(value = "SELECT product_id FROM pms_product_embedding ORDER BY embedding <=> CAST(:vector AS vector) LIMIT :limit", nativeQuery = true)
+    @Query(value = "SELECT product_id FROM ai.pms_product_embedding ORDER BY embedding <=> CAST(:vector AS vector) LIMIT :limit", nativeQuery = true)
     List<Long> findNearestProducts(@Param("vector") String vector, @Param("limit") int limit);
 }
