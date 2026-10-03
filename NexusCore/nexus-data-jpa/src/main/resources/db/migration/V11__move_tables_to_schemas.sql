@@ -6,7 +6,7 @@ CREATE SCHEMA IF NOT EXISTS users;
 CREATE SCHEMA IF NOT EXISTS marketing;
 CREATE SCHEMA IF NOT EXISTS ai;
 CREATE SCHEMA IF NOT EXISTS system;
-CREATE SCHEMA IF NOT EXISTS integration;
+CREATE SCHEMA IF NOT EXISTS messaging;
 CREATE SCHEMA IF NOT EXISTS migration;
 
 DO $$
@@ -1571,9 +1571,9 @@ DO $$
 BEGIN
     IF EXISTS (
         SELECT 1 FROM information_schema.tables 
-        WHERE table_schema='public' AND table_name='outbox_event'
+        WHERE table_schema='public' AND table_name='staged_event'
     ) THEN
-        ALTER TABLE public.outbox_event SET SCHEMA integration;
+        ALTER TABLE public.staged_event SET SCHEMA messaging;
     END IF;
 END $$;
 
@@ -1589,10 +1589,10 @@ BEGIN
         JOIN pg_class t ON d.refobjid = t.oid
         JOIN pg_namespace n ON n.oid = t.relnamespace
         WHERE s.relkind = 'S' 
-          AND t.relname = 'outbox_event' 
-          AND n.nspname = 'integration' -- because table is already moved
+          AND t.relname = 'staged_event' 
+          AND n.nspname = 'messaging' -- because table is already moved
     LOOP
-        EXECUTE 'ALTER SEQUENCE ' || seq_record.sequence_name || ' SET SCHEMA integration';
+        EXECUTE 'ALTER SEQUENCE ' || seq_record.sequence_name || ' SET SCHEMA messaging';
     END LOOP;
 END $$;
 

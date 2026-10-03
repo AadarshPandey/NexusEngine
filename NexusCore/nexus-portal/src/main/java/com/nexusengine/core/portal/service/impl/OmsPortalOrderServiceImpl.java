@@ -55,7 +55,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
     private final OmsOrderSettingRepository orderSettingRepository;
     private final PmsProductRepository productRepository;
     private final org.redisson.api.RedissonClient redissonClient;
-    private final com.nexusengine.core.repository.OutboxEventRepository outboxEventRepository;
+    private final com.nexusengine.core.repository.StagedEventRepository stagedEventRepository;
     private final com.nexusengine.core.repository.OmsOrderReturnApplyRepository returnApplyRepository;
 
     @Override
@@ -356,7 +356,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
         if (orderSetting == null) return;
         
         long delayTimes = orderSetting.getNormalOrderOvertime() * 60 * 1000;
-        com.nexusengine.core.model.OutboxEvent event = new com.nexusengine.core.model.OutboxEvent();
+        com.nexusengine.core.model.StagedEvent event = new com.nexusengine.core.model.StagedEvent();
         event.setAggregateType("Order");
         event.setAggregateId(String.valueOf(orderId));
         event.setType("CancelOrder");
@@ -364,7 +364,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
         event.setStatus("PENDING");
         event.setCreatedAt(java.time.LocalDateTime.now());
         
-        outboxEventRepository.save(event);
+        stagedEventRepository.save(event);
     }
 
     @Override

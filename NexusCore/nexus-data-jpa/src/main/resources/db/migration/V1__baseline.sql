@@ -565,7 +565,7 @@ CREATE TABLE IF NOT EXISTS sys_banner (
 -- SYS (System & Events)
 -- ==========================================
 
-CREATE TABLE IF NOT EXISTS outbox_event (
+CREATE TABLE IF NOT EXISTS staged_event (
     id BIGSERIAL PRIMARY KEY,
     aggregate_type VARCHAR(255) NOT NULL,
     aggregate_id VARCHAR(255) NOT NULL,

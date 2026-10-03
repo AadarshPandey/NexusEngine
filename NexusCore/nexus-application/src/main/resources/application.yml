@@ -8,7 +8,7 @@ spring:
       - io.awspring.cloud.autoconfigure.s3.S3AutoConfiguration
   flyway:
     default-schema: migration
-    schemas: migration,catalog,orders,users,marketing,ai,system,integration
+    schemas: migration,catalog,orders,users,marketing,ai,system,messaging
     enabled: true
     baseline-on-migrate: true
     baseline-version: 0

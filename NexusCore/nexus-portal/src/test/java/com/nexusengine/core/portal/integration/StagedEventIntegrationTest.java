@@ -1,9 +1,9 @@
 package com.nexusengine.core.portal.integration;
 
-import com.nexusengine.core.model.OutboxEvent;
-import com.nexusengine.core.portal.component.OutboxEventProcessor;
+import com.nexusengine.core.model.StagedEvent;
+import com.nexusengine.core.portal.component.StagedEventProcessor;
 import com.nexusengine.core.portal.integration.config.TestcontainersConfig;
-import com.nexusengine.core.repository.OutboxEventRepository;
+import com.nexusengine.core.repository.StagedEventRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,23 +21,23 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 @Import(TestcontainersConfig.class)
 @ActiveProfiles("test")
 @Testcontainers
-public class OutboxEventIntegrationTest {
+public class StagedEventIntegrationTest {
 
-    private final OutboxEventRepository outboxEventRepository;
-    private final OutboxEventProcessor outboxEventProcessor;
+    private final StagedEventRepository stagedEventRepository;
+    private final StagedEventProcessor stagedEventProcessor;
 
     @Autowired
-    OutboxEventIntegrationTest(OutboxEventRepository outboxEventRepository, OutboxEventProcessor outboxEventProcessor) {
-        this.outboxEventRepository = outboxEventRepository;
-        this.outboxEventProcessor = outboxEventProcessor;
+    StagedEventIntegrationTest(StagedEventRepository stagedEventRepository, StagedEventProcessor stagedEventProcessor) {
+        this.stagedEventRepository = stagedEventRepository;
+        this.stagedEventProcessor = stagedEventProcessor;
     }
 
 
 
 
     @Test
-    void outboxEvent_PendingToSent_PublishesToRabbitMQ() {
-        OutboxEvent event = new OutboxEvent();
+    void stagedEvent_PendingToSent_PublishesToRabbitMQ() {
+        StagedEvent event = new StagedEvent();
         event.setType("CancelOrder");
         event.setAggregateType("Order");
         event.setAggregateId("9999");
@@ -46,14 +46,14 @@ public class OutboxEventIntegrationTest {
         event.setRetryCount(0);
         event.setCreatedAt(LocalDateTime.now());
         
-        event = outboxEventRepository.save(event);
+        event = stagedEventRepository.save(event);
         Long eventId = event.getId();
 
         // Processor is scheduled, but we can call it manually for the test
-        outboxEventProcessor.processOutboxEvents();
+        stagedEventProcessor.processStagedEvents();
 
         await().atMost(10, SECONDS).untilAsserted(() -> {
-            OutboxEvent processedEvent = outboxEventRepository.findById(eventId).orElseThrow();
+            StagedEvent processedEvent = stagedEventRepository.findById(eventId).orElseThrow();
             assertThat(processedEvent.getStatus()).isEqualTo("SENT");
         });
     }

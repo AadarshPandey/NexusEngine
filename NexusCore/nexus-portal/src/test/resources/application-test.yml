@@ -5,7 +5,7 @@ spring:
     show-sql: true
   flyway:
     default-schema: migration
-    schemas: migration,catalog,orders,users,marketing,ai,system,integration
+    schemas: migration,catalog,orders,users,marketing,ai,system,messaging
     enabled: false
   ai:
     openai:

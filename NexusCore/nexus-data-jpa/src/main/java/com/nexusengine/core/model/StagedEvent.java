@@ -8,8 +8,8 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
-@Table(name = "outbox_event", schema = "integration")
-public class OutboxEvent {
+@Table(name = "staged_event", schema = "messaging")
+public class StagedEvent {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
