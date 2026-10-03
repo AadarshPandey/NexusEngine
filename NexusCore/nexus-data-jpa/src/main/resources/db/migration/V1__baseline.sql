@@ -20,7 +20,6 @@ CREATE TABLE IF NOT EXISTS pms_product_category (
     product_unit VARCHAR(255),
     nav_status INTEGER,
     show_status INTEGER,
-    sort INTEGER,
     icon VARCHAR(255),
     keywords VARCHAR(255),
     description VARCHAR(255)
@@ -39,14 +38,12 @@ CREATE TABLE IF NOT EXISTS pms_product (
     product_category_id BIGINT,
     product_attribute_category_id BIGINT,
     name VARCHAR(255),
-    pic VARCHAR(255),
-    product_sn VARCHAR(255),
+    pic VARCHAR(255),,
     delete_status INTEGER,
     publish_status INTEGER,
     new_status INTEGER,
     recommend_status INTEGER,
     verify_status INTEGER,
-    sort INTEGER,
     sale INTEGER,
     sub_title VARCHAR(255),
     unit VARCHAR(255),
@@ -58,7 +55,6 @@ CREATE TABLE IF NOT EXISTS pms_product (
     promotion_per_limit INTEGER,
     promotion_type INTEGER,
     brand_name VARCHAR(255),
-    product_category_name VARCHAR(255),
     description VARCHAR(255),
     detail_html VARCHAR(255),
     vendor_id BIGINT
@@ -79,7 +75,6 @@ CREATE TABLE IF NOT EXISTS pms_product_attribute (
     select_type INTEGER,
     input_type INTEGER,
     input_list VARCHAR(255),
-    sort INTEGER,
     filter_type INTEGER,
     search_type INTEGER,
     related_status INTEGER,
@@ -194,7 +189,6 @@ CREATE TABLE IF NOT EXISTS oms_cart_item (
     quantity INTEGER,
     price NUMERIC(19,2),
     product_pic VARCHAR(255),
-    product_name VARCHAR(255),
     product_sub_title VARCHAR(255),
     product_sku_code VARCHAR(255),
     member_nickname VARCHAR(255),
@@ -202,8 +196,7 @@ CREATE TABLE IF NOT EXISTS oms_cart_item (
     modify_date TIMESTAMP,
     delete_status INTEGER,
     product_category_id BIGINT,
-    product_brand VARCHAR(255),
-    product_sn VARCHAR(255),
+    product_brand VARCHAR(255),,
     product_attr VARCHAR(255)
 );
 
@@ -273,9 +266,7 @@ CREATE TABLE IF NOT EXISTS oms_order_item (
     order_sn VARCHAR(255),
     product_id BIGINT,
     product_pic VARCHAR(255),
-    product_name VARCHAR(255),
-    product_brand VARCHAR(255),
-    product_sn VARCHAR(255),
+    product_brand VARCHAR(255),,
     product_price NUMERIC(19,2),
     product_quantity INTEGER,
     product_sku_id BIGINT,
@@ -313,7 +304,6 @@ CREATE TABLE IF NOT EXISTS oms_order_return_apply (
     status INTEGER,
     handle_time TIMESTAMP,
     product_pic VARCHAR(255),
-    product_name VARCHAR(255),
     product_brand VARCHAR(255),
     product_attr VARCHAR(255),
     product_count INTEGER,
@@ -331,7 +321,6 @@ CREATE TABLE IF NOT EXISTS oms_order_return_apply (
 CREATE TABLE IF NOT EXISTS oms_order_return_reason (
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(255),
-    sort INTEGER,
     status INTEGER,
     create_time TIMESTAMP
 );
@@ -444,7 +433,6 @@ CREATE TABLE IF NOT EXISTS ums_menu (
     create_time TIMESTAMP,
     title VARCHAR(255),
     level INTEGER,
-    sort INTEGER,
     name VARCHAR(255),
     icon VARCHAR(255),
     hidden INTEGER
@@ -525,16 +513,12 @@ CREATE TABLE IF NOT EXISTS sms_coupon_product_category_relation (
     id BIGSERIAL PRIMARY KEY,
     coupon_id BIGINT,
     product_category_id BIGINT,
-    product_category_name VARCHAR(255),
-    parent_category_name VARCHAR(255)
 );
 
 CREATE TABLE IF NOT EXISTS sms_coupon_product_relation (
     id BIGSERIAL PRIMARY KEY,
     coupon_id BIGINT,
     product_id BIGINT,
-    product_name VARCHAR(255),
-    product_sn VARCHAR(255)
 );
 
 CREATE TABLE IF NOT EXISTS promotional_banner (

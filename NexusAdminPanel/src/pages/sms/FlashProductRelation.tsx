@@ -58,7 +58,6 @@ const FlashProductRelation: React.FC = () => {
               <TableCell>Flash Price</TableCell>
               <TableCell>Redis Allocated Stock</TableCell>
               <TableCell>Per-User Limit</TableCell>
-              <TableCell>Sort</TableCell>
               <TableCell align="center">Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -78,7 +77,6 @@ const FlashProductRelation: React.FC = () => {
                 <TableCell>
                   <TextField size="small" defaultValue={row.flashPromotionLimit} sx={{ width: 80 }} />
                 </TableCell>
-                <TableCell>{row.sort}</TableCell>
                 <TableCell align="center">
                   <Button size="small" color="primary">Save Config</Button>
                   <Button size="small" color="error">Unbind</Button>
@@ -87,7 +85,7 @@ const FlashProductRelation: React.FC = () => {
             ))}
             {list.length === 0 && (
               <TableRow>
-                <TableCell colSpan={8} align="center" sx={{ py: 5 }}>No products configured for this session.</TableCell>
+                <TableCell colSpan={7} align="center" sx={{ py: 5 }}>No products configured for this session.</TableCell>
               </TableRow>
             )}
           </TableBody>

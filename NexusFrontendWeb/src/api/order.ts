@@ -45,6 +45,7 @@ export interface OmsOrderReturnApply {
   productPic: string;
   productName: string;
   productBrand: string;
+  productSn: string;
   productAttr: string;
   productCount: number;
   productPrice: number;
@@ -74,16 +75,12 @@ export interface SmsCouponProductRelation {
   id: number;
   couponId: number;
   productId: number;
-  productName: string;
-  productSn: string;
 }
 
 export interface SmsCouponProductCategoryRelation {
   id: number;
   couponId: number;
   productCategoryId: number;
-  productCategoryName: string;
-  parentCategoryName: string;
 }
 
 export interface SmsCouponHistoryDetail {

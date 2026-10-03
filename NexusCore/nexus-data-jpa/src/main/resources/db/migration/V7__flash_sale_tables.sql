@@ -31,7 +31,6 @@ CREATE TABLE sms_flash_promotion_product_relation (
     flash_promotion_price           DECIMAL(10,2)   NOT NULL,
     flash_promotion_count           INTEGER         NOT NULL,   -- Total flash stock
     flash_promotion_limit           INTEGER         DEFAULT 1,  -- Per-user limit
-    sort                            INTEGER         DEFAULT 0,
     UNIQUE(flash_promotion_id, flash_promotion_session_id, product_id)
 );
 COMMENT ON TABLE sms_flash_promotion_product_relation IS 'Products in a specific flash session with flash pricing';

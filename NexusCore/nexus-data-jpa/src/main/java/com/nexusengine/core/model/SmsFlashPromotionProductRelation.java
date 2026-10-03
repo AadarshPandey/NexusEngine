@@ -45,7 +45,4 @@ public class SmsFlashPromotionProductRelation implements Serializable {
 
     @Column(name = "flash_promotion_limit")
     private Integer flashPromotionLimit;
-
-    @Column(name = "sort")
-    private Integer sort;
 }

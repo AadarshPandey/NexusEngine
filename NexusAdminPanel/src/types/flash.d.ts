@@ -29,7 +29,6 @@ export type SmsFlashPromotionProductRelation = {
   flashPromotionPrice?: number
   flashPromotionCount?: number
   flashPromotionLimit?: number
-  sort?: number
   product?: PmsProduct
 }
 

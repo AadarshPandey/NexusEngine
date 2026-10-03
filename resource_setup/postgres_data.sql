@@ -8028,7 +8028,7 @@ COPY marketing.sms_coupon_history (id, coupon_id, member_id, coupon_code, member
 -- Data for Name: sms_coupon_product_category_relation; Type: TABLE DATA; Schema: marketing; Owner: postgres
 --
 
-COPY marketing.sms_coupon_product_category_relation (id, coupon_id, product_category_id, product_category_name, parent_category_name) FROM stdin;
+COPY marketing.sms_coupon_product_category_relation (id, coupon_id, product_category_id) FROM stdin;
 \.
 
 
@@ -8036,7 +8036,7 @@ COPY marketing.sms_coupon_product_category_relation (id, coupon_id, product_cate
 -- Data for Name: sms_coupon_product_relation; Type: TABLE DATA; Schema: marketing; Owner: postgres
 --
 
-COPY marketing.sms_coupon_product_relation (id, coupon_id, product_id, product_name, product_sn) FROM stdin;
+COPY marketing.sms_coupon_product_relation (id, coupon_id, product_id) FROM stdin;
 \.
 
 
@@ -8060,7 +8060,7 @@ COPY marketing.sms_flash_promotion_log (id, member_id, product_id, flash_promoti
 -- Data for Name: sms_flash_promotion_product_relation; Type: TABLE DATA; Schema: marketing; Owner: postgres
 --
 
-COPY marketing.sms_flash_promotion_product_relation (id, flash_promotion_id, flash_promotion_session_id, product_id, flash_promotion_price, flash_promotion_count, flash_promotion_limit, sort) FROM stdin;
+COPY marketing.sms_flash_promotion_product_relation (id, flash_promotion_id, flash_promotion_session_id, product_id, flash_promotion_price, flash_promotion_count, flash_promotion_limit) FROM stdin;
 \.
 
 
