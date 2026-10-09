@@ -67,7 +67,7 @@ const AdminList: React.FC = () => {
   const [isEdit, setIsEdit] = useState(false);
   const [formData, setFormData] = useState<UmsAdmin>({
     username: '',
-    password: '',
+    passwordHash: '',
     nickName: '',
     email: '',
     status: 1,
@@ -136,10 +136,10 @@ const AdminList: React.FC = () => {
   };
 
   const handleStatusChange = async (row: UmsAdmin) => {
-    const newStatus = row.status === 1 ? 0 : 1;
+    const isNewArrival = row.status === 1 ? 0 : 1;
     try {
-      await adminUpdateStatusByIdAPI(row.id!, { status: newStatus });
-      setList((prev) => prev.map((item) => (item.id === row.id ? { ...item, status: newStatus } : item)));
+      await adminUpdateStatusByIdAPI(row.id!, { status: isNewArrival });
+      setList((prev) => prev.map((item) => (item.id === row.id ? { ...item, status: isNewArrival } : item)));
       setSnackbar({ open: true, message: 'Status updated', severity: 'success' });
     } catch {
       setSnackbar({ open: true, message: 'Failed to update status', severity: 'error' });
@@ -149,13 +149,13 @@ const AdminList: React.FC = () => {
   // Form handling
   const openAddDialog = () => {
     setIsEdit(false);
-    setFormData({ username: '', password: '', nickName: '', email: '', status: 1, note: '' });
+    setFormData({ username: '', passwordHash: '', nickName: '', email: '', status: 1, note: '' });
     setFormDialogOpen(true);
   };
 
   const openEditDialog = (row: UmsAdmin) => {
     setIsEdit(true);
-    setFormData({ ...row, password: '' }); // Don't pre-fill password for security
+    setFormData({ ...row, passwordHash: '' }); // Don't pre-fill passwordHash for security
     setFormDialogOpen(true);
   };
 
@@ -191,7 +191,7 @@ const AdminList: React.FC = () => {
   const handleRoleSubmit = async () => {
     if (!activeAdminId) return;
     try {
-      await adminRoleUpdateAPI({ adminId: activeAdminId, roleIds: selectedRoles.join(',') });
+      await adminRoleUpdateAPI({ adminUserId: activeAdminId, roleIds: selectedRoles.join(',') });
       setSnackbar({ open: true, message: 'Roles allocated successfully', severity: 'success' });
       setRoleDialogOpen(false);
     } catch {
@@ -288,8 +288,8 @@ const AdminList: React.FC = () => {
                     <TableCell sx={{ fontWeight: 500 }}>{row.username}</TableCell>
                     <TableCell>{row.nickName}</TableCell>
                     <TableCell>{row.email}</TableCell>
-                    <TableCell>{formatTime(row.createTime)}</TableCell>
-                    <TableCell>{formatTime(row.loginTime)}</TableCell>
+                    <TableCell>{formatTime(row.createdAt)}</TableCell>
+                    <TableCell>{formatTime(row.lastLoginAt)}</TableCell>
                     <TableCell align="center">
                       <Switch
                         checked={row.status === 1}
@@ -373,9 +373,9 @@ const AdminList: React.FC = () => {
             />
             <TextField
               label={isEdit ? "Password (leave blank to keep current)" : "Password"}
-              type="password"
-              value={formData.password || ''}
-              onChange={e => setFormData({ ...formData, password: e.target.value })}
+              type="passwordHash"
+              value={formData.passwordHash || ''}
+              onChange={e => setFormData({ ...formData, passwordHash: e.target.value })}
               fullWidth
               required={!isEdit}
             />
@@ -421,7 +421,7 @@ const AdminList: React.FC = () => {
               {allRoles.map((role) => (
                 <MenuItem key={role.id} value={role.id}>
                   <Checkbox checked={selectedRoles.indexOf(role.id!) > -1} />
-                  <ListItemText primary={role.name} secondary={role.description} />
+                  <ListItemText primary={role.name} secondary={role.customerComment} />
                 </MenuItem>
               ))}
             </Select>

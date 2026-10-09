@@ -3,6 +3,7 @@ package com.nexusengine.core.model;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import java.io.Serializable;
+import java.time.OffsetDateTime;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,38 +11,49 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "ums_menu", schema = "users")
+@Table(name = "console_menu", schema = "iam")
 public class UmsMenu implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Id
+        @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    
+private Long id;
 
-    @Column(name = "parent_id")
+        @Column(name = "parent_id")
     @Schema(title = "Parent id")
-    private Long parentId;
+    
+private Long parentId;
 
-    @Column(name = "create_time")
+        @Column(name = "created_at")
     @Schema(title = "Create time")
-    private LocalDateTime createTime;
+    
+private OffsetDateTime createTime;
 
-    @Schema(title = "Title")
-    private String title;
+        @Schema(title = "Title")
+    
+private String title;
 
-    @Schema(title = "Level")
-    private Integer level;
+            @Schema(title = "Level")
+    @Column(name = "depth")
+    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.SMALLINT)
+private Integer level;
 
-    @Schema(title = "Sort")
-    private Integer sort;
+            @Schema(title = "Sort")
+    @Column(name = "display_order")
+private Integer sort;
 
-    @Schema(title = "Name")
-    private String name;
+            @Schema(title = "Name")
+    @Column(name = "route_name")
+private String name;
 
-    @Schema(title = "Icon")
-    private String icon;
+        @Schema(title = "Icon")
+    
+private String icon;
 
-    @Schema(title = "Hidden")
-    private Integer hidden;
+            @Schema(title = "Hidden")
+    @Column(name = "is_hidden")
+    @jakarta.persistence.Convert(converter = com.nexusengine.core.model.converter.IntegerToBooleanConverter.class)
+private Integer hidden;
 }

@@ -35,7 +35,7 @@ public class UmsMemberCouponController {
     @Operation(summary = "Add Operation")
     @PostMapping("/add/{couponId}")
 
-    public CommonResult add(@PathVariable Long couponId) {
+    public CommonResult add(@PathVariable("couponId") Long couponId) {
         memberCouponService.add(couponId);
         return CommonResult.success(null,"Success");
     }
@@ -65,7 +65,7 @@ public class UmsMemberCouponController {
             in = ParameterIn.PATH,schema = @Schema(type = "integer",defaultValue = "1",allowableValues = {"0","1"}))
     @GetMapping("/list/cart/{type}")
 
-    public CommonResult<List<SmsCouponHistoryDetail>> listCart(@PathVariable Integer type) {
+    public CommonResult<List<SmsCouponHistoryDetail>> listCart(@PathVariable("type") Integer type) {
         List<CartPromotionItem> cartPromotionItemList = cartItemService.listPromotion(memberService.getCurrentMember().getId(), null);
         List<SmsCouponHistoryDetail> couponHistoryList = memberCouponService.listCart(cartPromotionItemList, type);
         return CommonResult.success(couponHistoryList);
@@ -74,7 +74,7 @@ public class UmsMemberCouponController {
     @Operation(summary = "List by product Operation")
     @GetMapping("/listByProduct/{productId}")
 
-    public CommonResult<List<SmsCoupon>> listByProduct(@PathVariable Long productId) {
+    public CommonResult<List<SmsCoupon>> listByProduct(@PathVariable("productId") Long productId) {
         List<SmsCoupon> couponHistoryList = memberCouponService.listByProduct(productId);
         return CommonResult.success(couponHistoryList);
     }

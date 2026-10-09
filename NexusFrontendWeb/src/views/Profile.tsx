@@ -36,19 +36,19 @@ const Profile: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [openAddAddress, setOpenAddAddress] = useState(false);
   const [newAddress, setNewAddress] = useState<Partial<UmsMemberReceiveAddress> & { coordinates?: string }>({
-    name: '', phoneNumber: '', province: '', city: '', region: '', detailAddress: '', postCode: '', coordinates: ''
+    name: '', recipientPhone: '', state: '', city: '', district: '', addressLine: '', postalCode: '', coordinates: ''
   });
 
   // Refund dialog states
   const [openRefundDialog, setOpenRefundDialog] = useState(false);
   const [openEditProfile, setOpenEditProfile] = useState(false);
-  const [editProfileData, setEditProfileData] = useState({ nickname: '', phone: '', icon: '' });
+  const [editProfileData, setEditProfileData] = useState({ displayName: '', contactPhone: '', iconUrl: '' });
 
   const handleEditProfileOpen = () => {
     setEditProfileData({
-      nickname: memberInfo?.nickname || '',
-      phone: memberInfo?.phone || '',
-      icon: memberInfo?.icon || ''
+      displayName: memberInfo?.displayName || '',
+      contactPhone: memberInfo?.contactPhone || '',
+      iconUrl: memberInfo?.iconUrl || ''
     });
     setOpenEditProfile(true);
   };
@@ -105,13 +105,13 @@ const Profile: React.FC = () => {
     try {
       const addressToSave = { ...newAddress };
       if (addressToSave.coordinates) {
-        addressToSave.detailAddress = `${addressToSave.detailAddress} [Coords: ${addressToSave.coordinates}]`;
+        addressToSave.addressLine = `${addressToSave.addressLine} [Coords: ${addressToSave.coordinates}]`;
       }
       await addAddress(addressToSave);
       setOpenAddAddress(false);
       const addressRes = await fetchAddressList();
       setAddresses(addressRes.data || []);
-      setNewAddress({ name: '', phoneNumber: '', province: '', city: '', region: '', detailAddress: '', postCode: '', coordinates: '' });
+      setNewAddress({ name: '', recipientPhone: '', state: '', city: '', district: '', addressLine: '', postalCode: '', coordinates: '' });
       alert('Address added successfully!');
     } catch (error) {
       alert('Failed to add address');
@@ -139,8 +139,8 @@ const Profile: React.FC = () => {
     const currentIndex = selectedRefundItems.findIndex((i) => i.id === item.id);
     const newSelected = [...selectedRefundItems];
     if (currentIndex === -1) {
-      const totalReturnedQty = refundOrder?.returnApplyList?.filter((r: import('../api/order').OmsOrderReturnApply) => r.productId === item.productId).reduce((sum, r) => sum + (r.productCount || 0), 0) || 0;
-      const maxReturnableQty = item.productQuantity - totalReturnedQty;
+      const totalReturnedQty = refundOrder?.returnApplyList?.filter((r: import('../api/order').OmsOrderReturnApply) => r.orderLineId === item.orderLineId).reduce((sum, r) => sum + (r.quantity || 0), 0) || 0;
+      const maxReturnableQty = item.quantity - totalReturnedQty;
       newSelected.push({ ...item, returnQuantity: maxReturnableQty });
     } else {
       newSelected.splice(currentIndex, 1);
@@ -154,7 +154,7 @@ const Profile: React.FC = () => {
       return;
     }
     if (!refundReason.trim()) {
-      alert('Please provide a reason for the refund.');
+      alert('Please provide a reasonId for the refund.');
       return;
     }
     if (!refundOrder) return;
@@ -163,19 +163,19 @@ const Profile: React.FC = () => {
       await Promise.all(selectedRefundItems.map(item => 
         submitReturnApply({
           orderId: refundOrder.id,
-          productId: item.productId,
-          orderSn: refundOrder.orderSn,
-          returnName: memberInfo?.nickname || memberInfo?.username,
-          returnPhone: memberInfo?.phone || '',
-          productPic: item.productPic,
+          orderLineId: item.orderLineId,
+          orderNumber: refundOrder.orderNumber,
+          contactName: memberInfo?.displayName || memberInfo?.username,
+          contactPhone: memberInfo?.contactPhone || '',
+          productImageUrl: item.productImageUrl,
           productName: item.productName,
-          productBrand: item.productBrand,
-          productAttr: item.productAttr,
-          productCount: item.returnQuantity,
-          productPrice: item.productPrice,
-          productRealPrice: (item.realAmount / item.productQuantity) * item.returnQuantity,
-          reason: refundReason,
-          description: refundReason
+          brandName: item.brandName,
+          skuAttributes: item.skuAttributes,
+          quantity: item.returnQuantity,
+          unitPrice: item.unitPrice,
+          unitRefundAmount: (item.lineTotalAmount / item.quantity) * item.returnQuantity,
+          reasonId: refundReason,
+          customerComment: refundReason
         })
       ));
       alert('Refund application(s) submitted successfully!');
@@ -208,12 +208,12 @@ const Profile: React.FC = () => {
       <Box sx={{ flex: 1 }}>
         <Paper sx={{ p: 4, textAlign: 'center' }}>
           <Avatar 
-            src={memberInfo?.icon?.includes('file') ? 'https://via.placeholder.com/100' : (memberInfo?.icon || 'https://via.placeholder.com/100')} 
+            src={memberInfo?.iconUrl?.includes('file') ? 'https://via.placeholder.com/100' : (memberInfo?.iconUrl || 'https://via.placeholder.com/100')} 
             sx={{ width: 100, height: 100, mx: 'auto', mb: 2 }} 
           />
-          <Typography variant="h5" gutterBottom>{memberInfo?.nickname || authUser?.username}</Typography>
+          <Typography variant="h5" gutterBottom>{memberInfo?.displayName || authUser?.username}</Typography>
           <Divider sx={{ my: 2 }} />
-          <Typography variant="body2">Points: {memberInfo?.points || 0}</Typography>
+          <Typography variant="body2">Points: {memberInfo?.pointsBalance || 0}</Typography>
         </Paper>
       </Box>
 
@@ -259,14 +259,14 @@ const Profile: React.FC = () => {
                   </TableHead>
                   <TableBody>
                     {orders.map((order) => {
-                      const totalOrderQty = order.orderItemList?.reduce((sum: number, item: import('../api/order').OmsOrderItem) => sum + item.productQuantity, 0) || 0;
-                      const totalReturnedQty = order.returnApplyList?.reduce((sum: number, r: import('../api/order').OmsOrderReturnApply) => sum + (r.productCount || 0), 0) || 0;
+                      const totalOrderQty = order.orderItemList?.reduce((sum: number, item: import('../api/order').OmsOrderItem) => sum + item.quantity, 0) || 0;
+                      const totalReturnedQty = order.returnApplyList?.reduce((sum: number, r: import('../api/order').OmsOrderReturnApply) => sum + (r.quantity || 0), 0) || 0;
                       const isOrderFullyRefunded = totalOrderQty > 0 && totalReturnedQty >= totalOrderQty;
 
                       return (
                       <TableRow key={order.id}>
-                        <TableCell>{order.orderSn}</TableCell>
-                        <TableCell>{new Date(order.createTime).toLocaleDateString()}</TableCell>
+                        <TableCell>{order.orderNumber}</TableCell>
+                        <TableCell>{new Date(order.createdAt).toLocaleDateString()}</TableCell>
                         <TableCell>
                           <Typography variant="body2">
                             {isOrderFullyRefunded ? 'Refunded' :
@@ -289,7 +289,7 @@ const Profile: React.FC = () => {
                             Ordered: {totalOrderQty} | Refunded: {totalReturnedQty} | Remaining: {Math.max(0, totalOrderQty - totalReturnedQty)}
                           </Typography>
                         </TableCell>
-                        <TableCell align="right">₹{order.totalAmount?.toFixed(2)}</TableCell>
+                        <TableCell align="right">₹{order.subtotalAmount?.toFixed(2)}</TableCell>
                         <TableCell align="center">
                           {order.status === 0 && (
                             <Button 
@@ -302,7 +302,7 @@ const Profile: React.FC = () => {
                                   
                                   // 1. Get Razorpay Order details from backend
                                   const res = await createRazorpayOrder(order.id);
-                                  const { razorpayOrderId, keyId, amount } = res.data;
+                                  const { razorpayOrderId, keyId, discountValue } = res.data;
 
                                   // 2. Load Razorpay script dynamically
                                   const loadScript = (src: string) => new Promise((resolve) => {
@@ -325,10 +325,10 @@ const Profile: React.FC = () => {
                                   // 3. Open Razorpay Checkout
                                   const options: RazorpayOptions = {
                                     key: keyId, 
-                                    amount: amount, 
+                                    discountValue: discountValue, 
                                     currency: 'INR',
                                     name: 'Nexus Engine',
-                                    description: `Payment for Order #${order.orderSn}`,
+                                    customerComment: `Payment for Order #${order.orderNumber}`,
                                     order_id: razorpayOrderId,
                                     handler: async function (response: RazorpayResponse) {
                                       try {
@@ -346,7 +346,7 @@ const Profile: React.FC = () => {
                                       }
                                     },
                                     prefill: {
-                                      name: memberInfo?.nickname || memberInfo?.username || 'Test Customer',
+                                      name: memberInfo?.displayName || memberInfo?.username || 'Test Customer',
                                       email: 'test@example.com',
                                       contact: '9000090000'
                                     },
@@ -354,7 +354,7 @@ const Profile: React.FC = () => {
                                   };
                                   const rzp = new window.Razorpay(options);
                                   rzp.on('payment.failed', function (response: RazorpayFailedResponse){
-                                    alert(`Payment Failed: ${response.error.description}`);
+                                    alert(`Payment Failed: ${response.error.customerComment}`);
                                   });
                                   rzp.open();
                                   
@@ -398,9 +398,9 @@ const Profile: React.FC = () => {
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                 {addresses.map((address) => (
                   <Paper key={address.id} variant="outlined" sx={{ p: 2 }}>
-                    <Typography sx={{ fontWeight: 'bold' }}>{address.name} ({address.phoneNumber})</Typography>
+                    <Typography sx={{ fontWeight: 'bold' }}>{address.name} ({address.recipientPhone})</Typography>
                     <Typography color="text.secondary">
-                      {[address.detailAddress, address.region, address.city, address.province].filter(Boolean).join(', ')} - PIN: {address.postCode}
+                      {[address.addressLine, address.district, address.city, address.state].filter(Boolean).join(', ')} - PIN: {address.postalCode}
                     </Typography>
                   </Paper>
                 ))}
@@ -416,9 +416,9 @@ const Profile: React.FC = () => {
         <DialogContent>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
             <TextField label="Name" fullWidth value={newAddress.name} onChange={e => setNewAddress({...newAddress, name: e.target.value})} />
-            <TextField label="Phone Number" fullWidth value={newAddress.phoneNumber} onChange={e => setNewAddress({...newAddress, phoneNumber: e.target.value})} />
-            <TextField label="Full Address" fullWidth multiline rows={3} value={newAddress.detailAddress} onChange={e => setNewAddress({...newAddress, detailAddress: e.target.value})} />
-            <TextField label="PIN Code" fullWidth value={newAddress.postCode} onChange={e => setNewAddress({...newAddress, postCode: e.target.value})} />
+            <TextField label="Phone Number" fullWidth value={newAddress.recipientPhone} onChange={e => setNewAddress({...newAddress, recipientPhone: e.target.value})} />
+            <TextField label="Full Address" fullWidth multiline rows={3} value={newAddress.addressLine} onChange={e => setNewAddress({...newAddress, addressLine: e.target.value})} />
+            <TextField label="PIN Code" fullWidth value={newAddress.postalCode} onChange={e => setNewAddress({...newAddress, postalCode: e.target.value})} />
             <TextField label="Geographic Coordinates (Lat, Long)" fullWidth value={newAddress.coordinates} onChange={e => setNewAddress({...newAddress, coordinates: e.target.value})} />
           </Box>
         </DialogContent>
@@ -432,12 +432,12 @@ const Profile: React.FC = () => {
         <DialogTitle>{refundOrder?.status === 3 ? 'Request Refund' : 'Request Cancellation'}</DialogTitle>
         <DialogContent>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-            Select the items you wish to return and provide a reason.
+            Select the items you wish to return and provide a reasonId.
           </Typography>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             {refundOrder?.orderItemList?.map((item: import('../api/order').OmsOrderItem) => {
-              const totalReturnedQty = refundOrder?.returnApplyList?.filter((r: import('../api/order').OmsOrderReturnApply) => r.productId === item.productId).reduce((sum, r) => sum + (r.productCount || 0), 0) || 0;
-              const maxReturnableQty = item.productQuantity - totalReturnedQty;
+              const totalReturnedQty = refundOrder?.returnApplyList?.filter((r: import('../api/order').OmsOrderReturnApply) => r.orderLineId === item.orderLineId).reduce((sum, r) => sum + (r.quantity || 0), 0) || 0;
+              const maxReturnableQty = item.quantity - totalReturnedQty;
               const isFullyReturned = maxReturnableQty <= 0;
               const isSelected = selectedRefundItems.some(i => i.id === item.id);
               return (
@@ -458,11 +458,11 @@ const Profile: React.FC = () => {
                     if (!isFullyReturned) handleRefundItemToggle(item);
                   }}
                 >
-                  <img src={item.productPic?.includes('file') ? 'https://via.placeholder.com/60' : (item.productPic || 'https://via.placeholder.com/60')} alt={item.productName} style={{ width: 60, height: 60, objectFit: 'cover' }} />
+                  <img src={item.productImageUrl?.includes('file') ? 'https://via.placeholder.com/60' : (item.productImageUrl || 'https://via.placeholder.com/60')} alt={item.productName} style={{ width: 60, height: 60, objectFit: 'cover' }} />
                   <Box sx={{ flex: 1 }}>
                     <Typography variant="subtitle2">{item.productName}</Typography>
-                    <Typography variant="body2" color="text.secondary">{item.productAttr}</Typography>
-                    <Typography variant="body2">Qty: {item.productQuantity} | ₹{item.realAmount}</Typography>
+                    <Typography variant="body2" color="text.secondary">{item.skuAttributes}</Typography>
+                    <Typography variant="body2">Qty: {item.quantity} | ₹{item.lineTotalAmount}</Typography>
                     {totalReturnedQty > 0 && isFullyReturned && (
                       <Typography variant="caption" color="error" sx={{ fontWeight: 'bold' }}>Refund Requested (Fully)</Typography>
                     )}
@@ -509,9 +509,9 @@ const Profile: React.FC = () => {
                 label="Reason for Refund"
                 onChange={e => setRefundReason(e.target.value)}
               >
-                {returnReasonsList.map((reason) => (
-                  <MenuItem key={reason.id} value={reason.name}>
-                    {reason.name}
+                {returnReasonsList.map((reasonId) => (
+                  <MenuItem key={reasonId.id} value={reasonId.name}>
+                    {reasonId.name}
                   </MenuItem>
                 ))}
               </Select>
@@ -536,11 +536,11 @@ const Profile: React.FC = () => {
         <DialogTitle>Edit Profile</DialogTitle>
         <DialogContent>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
-            <TextField label="Nickname" fullWidth value={editProfileData.nickname} onChange={e => setEditProfileData({...editProfileData, nickname: e.target.value})} />
+            <TextField label="Nickname" fullWidth value={editProfileData.displayName} onChange={e => setEditProfileData({...editProfileData, displayName: e.target.value})} />
             
             
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              <Avatar src={editProfileData.icon} sx={{ width: 64, height: 64 }} />
+              <Avatar src={editProfileData.iconUrl} sx={{ width: 64, height: 64 }} />
               <input 
                 type="file" 
                 accept="image/*" 
@@ -563,7 +563,7 @@ const Profile: React.FC = () => {
                       });
                       const data = await res.json();
                       if (data.code === 200) {
-                        setEditProfileData({...editProfileData, icon: data.data});
+                        setEditProfileData({...editProfileData, iconUrl: data.data});
                       } else {
                         alert('Upload failed: ' + data.message);
                       }

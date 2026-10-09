@@ -2,7 +2,7 @@ export type OmsOrderReturnReason = {
   /** ID */
   id?: number
   name: string
-  sort: number
+  displayOrder: number
   status: number
-  createTime?: string
+  createdAt?: string
 }

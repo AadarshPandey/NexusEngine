@@ -3,6 +3,7 @@ package com.nexusengine.core.model;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import java.io.Serializable;
+import java.time.OffsetDateTime;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,22 +11,26 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "ums_resource_category", schema = "users")
+@Table(name = "permission_group", schema = "iam")
 public class UmsResourceCategory implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Id
+        @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    
+private Long id;
 
-    @Column(name = "create_time")
+        @Column(name = "created_at")
     @Schema(title = "Create time")
-    private LocalDateTime createTime;
+    
+private OffsetDateTime createTime;
 
-    @Schema(title = "Name")
-    private String name;
+        @Schema(title = "Name")
+    
+private String name;
 
-    @Schema(title = "Sort")
-    private Integer sort;
+            @Schema(title = "Sort")
+    @Column(name = "display_order")
+private Integer sort;
 }

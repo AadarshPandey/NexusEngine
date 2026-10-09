@@ -52,8 +52,8 @@ const AllocResource: React.FC = () => {
     }).catch(console.error);
   }, [roleId, navigate]);
 
-  const handleToggleCategory = (categoryId: number) => {
-    const categoryResources = resources.filter(r => r.categoryId === categoryId).map(r => r.id!);
+  const handleToggleCategory = (permissionGroupId: number) => {
+    const categoryResources = resources.filter(r => r.permissionGroupId === permissionGroupId).map(r => r.id!);
     const allSelected = categoryResources.every(id => selectedResourceIds.includes(id));
     
     let newSelected = [...selectedResourceIds];
@@ -110,7 +110,7 @@ const AllocResource: React.FC = () => {
 
           <List disablePadding>
             {categories.map((category) => {
-              const catResources = resources.filter(r => r.categoryId === category.id);
+              const catResources = resources.filter(r => r.permissionGroupId === category.id);
               if (catResources.length === 0) return null;
               
               const isAllSelected = catResources.length > 0 && catResources.every(r => selectedResourceIds.includes(r.id!));

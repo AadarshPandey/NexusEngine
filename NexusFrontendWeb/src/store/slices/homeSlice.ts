@@ -6,20 +6,20 @@ export const loadHomeData = createAsyncThunk('home/loadData', async () => {
   const contentResponse = await fetchHomeContent();
   const recommendResponse = await fetchRecommendProductList(8, 1);
   return {
-    content: contentResponse.data,
+    body: contentResponse.data,
     recommendations: recommendResponse.data,
   };
 });
 
 interface HomeState {
-  content: HomeContentResult | null;
+  body: HomeContentResult | null;
   recommendations: PmsProduct[];
   loading: boolean;
   error: string | null;
 }
 
 const initialState: HomeState = {
-  content: null,
+  body: null,
   recommendations: [],
   loading: false,
   error: null,
@@ -37,7 +37,7 @@ export const homeSlice = createSlice({
       })
       .addCase(loadHomeData.fulfilled, (state, action) => {
         state.loading = false;
-        state.content = action.payload.content;
+        state.body = action.payload.body;
         state.recommendations = action.payload.recommendations;
       })
       .addCase(loadHomeData.rejected, (state, action) => {

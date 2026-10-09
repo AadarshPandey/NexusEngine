@@ -16,10 +16,10 @@ export function getHomeNewProductListAPI(params: NewProductQueryParam) {
  */
 export function homeNewProductUpdateRecommendStatusAPI(params: {
   ids: string
-  recommendStatus: number
+  isFeatured: number
 }) {
   return http({
-    url: '/home/newProduct/update/recommendStatus',
+    url: '/home/newProduct/update/isFeatured',
     method: 'post',
     params: params,
   })
@@ -47,9 +47,9 @@ export function homeNewProductCreateAPI(data: SmsHomeNewProduct[]) {
 
 /**
  */
-export function homeNewProductUpdateSortByIdAPI(params: { id: number; sort: number }) {
+export function homeNewProductUpdateSortByIdAPI(params: { id: number; displayOrder: number }) {
   return http({
-    url: '/home/newProduct/update/sort/' + params.id,
+    url: '/home/newProduct/update/displayOrder/' + params.id,
     method: 'post',
     params: params,
   })

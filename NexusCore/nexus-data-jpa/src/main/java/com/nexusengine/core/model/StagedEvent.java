@@ -4,33 +4,41 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "staged_event", schema = "messaging")
+@Table(name = "outbox_event", schema = "messaging")
 public class StagedEvent {
-    @Id
+        @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    
+private Long id;
 
-    @Column(nullable = false)
-    private String aggregateType;
+        @Column(nullable = false)
+    
+private String aggregateType;
 
-    @Column(nullable = false)
-    private String aggregateId;
+        @Column(nullable = false)
+    
+private String aggregateId;
 
-    @Column(nullable = false)
-    private String type;
+    @Column(name = "event_type", nullable = false)
+private String type;
 
-    @Column(columnDefinition = "TEXT")
-    private String payload;
+        @Column(columnDefinition = "TEXT")
+    
+private String payload;
 
-    @Column(nullable = false)
-    private String status; // PENDING, SENT, FAILED
+        @Column(nullable = false)
+    
+private String status; // PENDING, SENT, FAILED
 
-    @Column(columnDefinition = "INTEGER DEFAULT 0")
+        
+    
+@Column(name = "attempt_count", columnDefinition = "INTEGER DEFAULT 0")
     private Integer retryCount = 0;
 
-    private LocalDateTime createdAt;
+    private OffsetDateTime createdAt;
 }

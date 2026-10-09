@@ -33,7 +33,7 @@ const Cart: React.FC = () => {
     );
   }
 
-  const totalPrice = items.reduce((total, item) => total + (item.price * item.quantity), 0);
+  const totalPrice = items.reduce((total, item) => total + (item.listPrice * item.quantity), 0);
 
   return (
     <Box sx={{ mt: 4 }}>
@@ -61,10 +61,10 @@ const Cart: React.FC = () => {
                   {items.map((item) => (
                     <TableRow key={item.id}>
                       <TableCell sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                        <img src={item.productPic?.includes('file') ? 'https://via.placeholder.com/50' : (item.productPic || 'https://via.placeholder.com/50')} alt={item.productName} style={{ width: 50, height: 50, objectFit: 'contain' }} />
+                        <img src={item.productImageUrl?.includes('file') ? 'https://via.placeholder.com/50' : (item.productImageUrl || 'https://via.placeholder.com/50')} alt={item.productName} style={{ width: 50, height: 50, objectFit: 'contain' }} />
                         <Typography variant="body2">{item.productName}</Typography>
                       </TableCell>
-                      <TableCell align="right">₹{item.price?.toFixed(2)}</TableCell>
+                      <TableCell align="right">₹{item.listPrice?.toFixed(2)}</TableCell>
                       <TableCell align="center">
                         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -87,7 +87,7 @@ const Cart: React.FC = () => {
                           )}
                         </Box>
                       </TableCell>
-                      <TableCell align="right">₹{(item.price * item.quantity).toFixed(2)}</TableCell>
+                      <TableCell align="right">₹{(item.listPrice * item.quantity).toFixed(2)}</TableCell>
                       <TableCell align="right">
                         <IconButton color="error" onClick={() => dispatch(removeCartItem(item.id))}>
                           <DeleteIcon />

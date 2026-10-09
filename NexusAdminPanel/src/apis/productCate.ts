@@ -13,9 +13,9 @@ export function getProductCategoryListWithChildrenAPI() {
 
 /**
  */
-export function getProductCategoryListAPI(parentId: number, params: PageParam) {
+export function getProductCategoryListAPI(parentReviewId: number, params: PageParam) {
   return http<CommonPage<PmsProductCategory>>({
-    url: '/productCategory/list/' + parentId,
+    url: '/productCategory/list/' + parentReviewId,
     method: 'get',
     params: params,
   })
@@ -61,9 +61,9 @@ export function getProductCategoryByIdAPI(id: number) {
 
 /**
  */
-export function productCategoryUpdateShowStatusAPI(params: { ids: string; showStatus: number }) {
+export function productCategoryUpdateShowStatusAPI(params: { ids: string; isVisible: number }) {
   return http({
-    url: '/productCategory/update/showStatus',
+    url: '/productCategory/update/isVisible',
     method: 'post',
     params: params,
   })
@@ -71,9 +71,9 @@ export function productCategoryUpdateShowStatusAPI(params: { ids: string; showSt
 
 /**
  */
-export function productCategoryUpdateNavStatusAPI(params: { ids: string; navStatus: number }) {
+export function productCategoryUpdateNavStatusAPI(params: { ids: string; isInNavigation: number }) {
   return http({
-    url: '/productCategory/update/navStatus',
+    url: '/productCategory/update/isInNavigation',
     method: 'post',
     params: params,
   })

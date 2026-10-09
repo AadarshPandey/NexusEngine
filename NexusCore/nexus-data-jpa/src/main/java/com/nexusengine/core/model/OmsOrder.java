@@ -3,6 +3,7 @@ package com.nexusengine.core.model;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import java.io.Serializable;
+import java.time.OffsetDateTime;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import lombok.Getter;
@@ -11,126 +12,160 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "oms_order", schema = "orders")
+@Table(name = "customer_order", schema = "ordering")
 public class OmsOrder implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Id
+        @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Schema(title = "Id")
-    private Long id;
+    
+private Long id;
 
-    @Column(name = "member_id")
-    private Long memberId;
-    @com.fasterxml.jackson.annotation.JsonIgnore
+        @Column(name = "member_id")
+    
+private Long memberId;
+        @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "member_id", insertable = false, updatable = false)
-    private UmsMember member;
+    
+private UmsMember member;
 
-    @Column(name = "coupon_id")
-    private Long couponId;
-    @com.fasterxml.jackson.annotation.JsonIgnore
+        @Column(name = "coupon_id")
+    
+private Long couponId;
+        @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "coupon_id", insertable = false, updatable = false)
-    private SmsCoupon coupon;
+    
+private SmsCoupon coupon;
 
-    @Column(name = "order_sn")
+        @Column(name = "order_number")
     @Schema(title = "Order sn")
-    private String orderSn;
+    
+private String orderSn;
 
-    @Column(name = "create_time")
+        @Column(name = "created_at")
     @Schema(title = "Create time")
-    private LocalDateTime createTime;
+    
+private OffsetDateTime createTime;
 
-    @Column(name = "total_amount")
+        @Column(name = "subtotal_amount")
     @Schema(title = "Total amount")
-    private BigDecimal totalAmount;
+    
+private BigDecimal totalAmount;
 
-    @Column(name = "pay_amount")
+        @Column(name = "grand_total_amount")
     @Schema(title = "Pay amount")
-    private BigDecimal payAmount;
+    
+private BigDecimal payAmount;
 
-    @Column(name = "freight_amount")
+        @Column(name = "shipping_amount")
     @Schema(title = "Freight amount")
-    private BigDecimal freightAmount;
+    
+private BigDecimal freightAmount;
 
-    @Column(name = "promotion_amount")
+        @Column(name = "promotion_discount_amount")
     @Schema(title = "Promotion amount")
-    private BigDecimal promotionAmount;
+    
+private BigDecimal promotionAmount;
 
-    @Column(name = "coupon_amount")
+        @Column(name = "coupon_discount_amount")
     @Schema(title = "Coupon amount")
-    private BigDecimal couponAmount;
+    
+private BigDecimal couponAmount;
 
-    @Column(name = "discount_amount")
+        @Column(name = "manual_adjustment_amount")
     @Schema(title = "Discount amount")
-    private BigDecimal discountAmount;
+    
+private BigDecimal discountAmount;
 
-    @Column(name = "pay_type")
+        @Column(name = "payment_method")
     @Schema(title = "Pay type")
-    private Integer payType;
+    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.SMALLINT)
+private Integer payType;
 
-    @Schema(title = "Status")
-    private Integer status;
+        @Schema(title = "Status")
+    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.SMALLINT)
+private Integer status;
 
-    @Column(name = "order_type")
+        @Column(name = "order_type")
     @Schema(title = "Order type")
-    private Integer orderType;
+    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.SMALLINT)
+private Integer orderType;
 
-    @Column(name = "delivery_company")
+        @Column(name = "carrier_name")
     @Schema(title = "Delivery company")
-    private String deliveryCompany;
+    
+private String deliveryCompany;
 
-    @Column(name = "delivery_sn")
+        @Column(name = "tracking_number")
     @Schema(title = "Delivery sn")
-    private String deliverySn;
+    
+private String deliverySn;
 
-    @Column(name = "receiver_name")
+        @Column(name = "recipient_name")
     @Schema(title = "Receiver name")
-    private String receiverName;
+    
+private String receiverName;
 
-    @Column(name = "receiver_phone")
+        @Column(name = "recipient_phone")
     @Schema(title = "Receiver phone")
-    private String receiverPhone;
+    
+private String receiverPhone;
 
-    @Column(name = "receiver_post_code")
+        @Column(name = "shipping_postal_code")
     @Schema(title = "Receiver post code")
-    private String receiverPostCode;
+    
+private String receiverPostCode;
 
-    @Column(name = "receiver_detail_address")
+        @Column(name = "shipping_address_line")
     @Schema(title = "Receiver detail address")
-    private String receiverDetailAddress;
+    
+private String receiverDetailAddress;
 
-    @Schema(title = "Note")
-    private String note;
+            @Schema(title = "Note")
+    @Column(name = "customer_note")
+private String note;
 
-    @Column(name = "confirm_status")
+        @Column(name = "is_receipt_confirmed")
     @Schema(title = "Confirm status")
-    private Integer confirmStatus;
+    @jakarta.persistence.Convert(converter = com.nexusengine.core.model.converter.IntegerToBooleanConverter.class)
+private Integer confirmStatus;
 
-    @Column(name = "delete_status")
+        @Convert(converter = com.nexusengine.core.model.converter.IntegerToDeletedAtConverter.class)
+    @Column(name = "deleted_at")
     @Schema(title = "Delete status")
-    private Integer deleteStatus;
+    
+private Integer deleteStatus;
 
-    @Column(name = "payment_time")
+        @Column(name = "paid_at")
     @Schema(title = "Payment time")
-    private LocalDateTime paymentTime;
+    
+private OffsetDateTime paymentTime;
 
-    @Column(name = "delivery_time")
+        @Column(name = "shipped_at")
     @Schema(title = "Delivery time")
-    private LocalDateTime deliveryTime;
+    
+private OffsetDateTime deliveryTime;
 
-    @Column(name = "receive_time")
+        @Column(name = "delivered_at")
     @Schema(title = "Receive time")
-    private LocalDateTime receiveTime;
+    
+private OffsetDateTime receiveTime;
 
-    @Column(name = "comment_time")
+        @Column(name = "reviewed_at")
     @Schema(title = "Comment time")
-    private LocalDateTime commentTime;
+    
+private OffsetDateTime commentTime;
 
-    @Column(name = "modify_time")
+        @Column(name = "updated_at")
     @Schema(title = "Modify time")
-    private LocalDateTime modifyTime;
+    
+private OffsetDateTime modifyTime;
 
+
+    @jakarta.persistence.Version
+    private Integer version;
 }

@@ -51,7 +51,7 @@ public class EsProductDao {
             esProduct.setBrandId(product.getBrandId());
             esProduct.setBrandName(product.getBrandName());
             esProduct.setProductCategoryId(product.getProductCategoryId());
-            esProduct.setPic(product.getPic());
+            esProduct.setPic(product.getPrimaryImageUrl());
             esProduct.setName(product.getName());
             esProduct.setKeywords(product.getKeywords());
             esProduct.setPrice(BigDecimal.ZERO); // FAANG Refactor: Delegated to SKU

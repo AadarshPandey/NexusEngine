@@ -39,10 +39,10 @@ public class OmsCartItemServiceImpl implements OmsCartItemService {
         cartItem.setDeleteStatus(0);
         OmsCartItem existCartItem = getCartItem(cartItem);
         if (existCartItem == null) {
-            cartItem.setCreateDate(java.time.LocalDateTime.now());
+            cartItem.setCreateDate(java.time.OffsetDateTime.now());
             cartItemRepository.save(cartItem);
         } else {
-            existCartItem.setModifyDate(java.time.LocalDateTime.now());
+            existCartItem.setModifyDate(java.time.OffsetDateTime.now());
             existCartItem.setQuantity(existCartItem.getQuantity() + cartItem.getQuantity());
             cartItemRepository.save(existCartItem);
         }
@@ -111,7 +111,7 @@ public class OmsCartItemServiceImpl implements OmsCartItemService {
         OmsCartItem updateCart = cartItemRepository.findById(cartItem.getId()).orElse(null);
         UmsMember currentMember = memberService.getCurrentMember();
         if (updateCart != null && updateCart.getMemberId().equals(currentMember.getId())) {
-            updateCart.setModifyDate(java.time.LocalDateTime.now());
+            updateCart.setModifyDate(java.time.OffsetDateTime.now());
             updateCart.setDeleteStatus(1);
             cartItemRepository.save(updateCart);
         }

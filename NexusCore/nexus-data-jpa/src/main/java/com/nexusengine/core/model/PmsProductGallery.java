@@ -8,26 +8,32 @@ import java.io.Serializable;
 @Getter
 @Setter
 @Entity
-@Table(name = "pms_product_gallery", schema = "pms")
+@Table(name = "product_media", schema = "catalog")
 public class PmsProductGallery implements Serializable {
-    @Id
+        @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    
+private Long id;
 
-    @Column(name = "product_id", nullable = false)
-    private Long productId;
-    @com.fasterxml.jackson.annotation.JsonIgnore
+        @Column(name = "product_id", nullable = false)
+    
+private Long productId;
+        @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "product_id", insertable = false, updatable = false)
     @com.fasterxml.jackson.annotation.JsonBackReference
-    private PmsProduct product;
+    
+private PmsProduct product;
 
-    @Column(name = "media_type", length = 50)
-    private String mediaType;
+        @Column(name = "media_type", length = 50)
+    
+private String mediaType;
 
-    @Column(name = "media_url", nullable = false)
-    private String mediaUrl;
+        @Column(name = "url", nullable = false)
+    
+private String mediaUrl;
 
-    @Column(name = "sort_order")
-    private Integer sortOrder;
+        @Column(name = "display_order")
+    
+private Integer sortOrder;
 }

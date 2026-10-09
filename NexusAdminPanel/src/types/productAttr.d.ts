@@ -6,12 +6,11 @@ export type ProductAttrInfo = {
 export type PmsProductAttribute = {
   /** ID */
   id?: number
-  productAttributeCategoryId?: number
+  productTypeId?: number
   name: string
-  selectType?: number
-  inputType?: number
-  inputList?: string
-  sort?: number
+  selectionMode?: number
+  inputMode?: number
+  allowedValues?: string
   type?: number
 }
 
@@ -29,8 +28,8 @@ export type PmsProductAttributeCategoryExt = PmsProductAttributeCategory & {
 export type PmsProductAttributeValue = {
   /** ID */
   id?: number
-  productId?: number
-  productAttributeId?: number
+  orderLineId?: number
+  attributeId?: number
   value?: string
 }
 
@@ -43,12 +42,12 @@ export interface ProductAttrVo extends Pick<
 
 export interface ProductParamVo extends Pick<
   PmsProductAttribute,
-  'id' | 'name' | 'inputType' | 'inputList'
+  'id' | 'name' | 'inputMode' | 'allowedValues'
 > {
   value?: string
 }
 
 export type ProductAttrPicVo = {
   name?: string
-  pic?: string
+  primaryImageUrl?: string
 }

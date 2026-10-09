@@ -1,12 +1,12 @@
 export type OmsCompanyAddress = {
   /** ID */
   id?: number
-  addressName: string
-  sendStatus: number
-  receiveStatus: number
+  label: string
+  isDefaultShipFrom: number
+  isDefaultReturnTo: number
   name: string
-  phone: string
+  contactPhone: string
   state: string
   city: string
-  detailAddress: string
+  addressLine: string
 }

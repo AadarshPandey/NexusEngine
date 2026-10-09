@@ -41,20 +41,20 @@ import { getDashboardInfoAPI, type DashboardInfo } from '@/apis/dashboard';
 interface StatCardProps {
   title: string;
   value: string;
-  icon: React.ReactNode;
+  iconUrl: React.ReactNode;
   color: string;
   trend?: string;
   trendUp?: boolean;
 }
 
-const StatCard: React.FC<StatCardProps> = ({ title, value, icon, color, trend, trendUp }) => (
+const StatCard: React.FC<StatCardProps> = ({ title, value, iconUrl, color, trend, trendUp }) => (
   <Card
     sx={{
       height: '100%',
       position: 'relative',
       overflow: 'hidden',
       '&::after': {
-        content: '""',
+        body: '""',
         position: 'absolute',
         top: 0,
         right: 0,
@@ -108,7 +108,7 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, icon, color, trend, t
             boxShadow: `0 4px 14px ${alpha(color, 0.35)}`,
           }}
         >
-          {React.cloneElement(icon as React.ReactElement<any>, {
+          {React.cloneElement(iconUrl as React.ReactElement<any>, {
             style: { color: '#fff', fontSize: 24 }
           })}
         </Box>
@@ -120,11 +120,11 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, icon, color, trend, t
 // Pending item
 interface PendingItemProps {
   label: string;
-  count: number;
-  icon: React.ReactNode;
+  minQuantity: number;
+  iconUrl: React.ReactNode;
 }
 
-const PendingItem: React.FC<PendingItemProps> = ({ label, count, icon }) => (
+const PendingItem: React.FC<PendingItemProps> = ({ label, minQuantity, iconUrl }) => (
   <Box
     sx={{
       display: 'flex',
@@ -138,13 +138,13 @@ const PendingItem: React.FC<PendingItemProps> = ({ label, count, icon }) => (
     }}
   >
     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-      {React.cloneElement(icon as React.ReactElement<any>, {
+      {React.cloneElement(iconUrl as React.ReactElement<any>, {
         style: { fontSize: 18, color: 'var(--text-secondary)' }
       })}
       <Typography sx={{ fontSize: '0.8125rem', color: 'text.primary' }}>{label}</Typography>
     </Box>
     <Chip
-      label={count}
+      label={minQuantity}
       size="small"
       sx={{
         backgroundColor: alpha('#EF4444', 0.1),
@@ -193,7 +193,7 @@ const Dashboard: React.FC = () => {
           <StatCard
             title="Today's Orders"
             value={dashboardData.todayOrders.toLocaleString()}
-            icon={<ShoppingCart />}
+            iconUrl={<ShoppingCart />}
             color="#6366F1"
             trend="+12.5%"
             trendUp={true}
@@ -203,7 +203,7 @@ const Dashboard: React.FC = () => {
           <StatCard
             title="Today's Revenue"
             value={`₹${dashboardData.todayRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
-            icon={<AttachMoney />}
+            iconUrl={<AttachMoney />}
             color="#10B981"
             trend="+8.3%"
             trendUp={true}
@@ -213,7 +213,7 @@ const Dashboard: React.FC = () => {
           <StatCard
             title="Yesterday's Revenue"
             value={`₹${dashboardData.yesterdayRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
-            icon={<AttachMoney />}
+            iconUrl={<AttachMoney />}
             color="#F59E0B"
             trend="-3.1%"
             trendUp={false}
@@ -223,7 +223,7 @@ const Dashboard: React.FC = () => {
           <StatCard
             title="Total Products"
             value={dashboardData.totalProducts.toLocaleString()}
-            icon={<Inventory2 />}
+            iconUrl={<Inventory2 />}
             color="#EC4899"
           />
         </Grid>
@@ -241,7 +241,7 @@ const Dashboard: React.FC = () => {
                     Order Statistics
                   </Typography>
                   <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                    Order count and revenue trends
+                    Order minQuantity and revenue trends
                   </Typography>
                 </Box>
               </Box>
@@ -332,15 +332,15 @@ const Dashboard: React.FC = () => {
                 Pending Tasks
               </Typography>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
-                <PendingItem label="Awaiting Payment" count={dashboardData.pendingTasks.awaitingPayment} icon={<Receipt />} />
-                <PendingItem label="Awaiting Shipment" count={dashboardData.pendingTasks.awaitingShipment} icon={<LocalShipping />} />
-                <PendingItem label="Shipped Orders" count={dashboardData.pendingTasks.shippedOrders} icon={<LocalShipping />} />
-                <PendingItem label="Completed Orders" count={dashboardData.pendingTasks.completedOrders} icon={<ShoppingCart />} />
-                <PendingItem label="Awaiting Confirmation" count={dashboardData.pendingTasks.awaitingConfirmation} icon={<ShoppingCart />} />
-                <PendingItem label="Pending Returns" count={dashboardData.pendingTasks.pendingReturns} icon={<AssignmentReturn />} />
-                <PendingItem label="Pending Refunds" count={dashboardData.pendingTasks.pendingRefunds} icon={<AttachMoney />} />
-                <PendingItem label="Out of Stock Items" count={dashboardData.pendingTasks.outOfStockItems} icon={<NewReleases />} />
-                <PendingItem label="Expiring Ads" count={dashboardData.pendingTasks.expiringAds} icon={<Campaign />} />
+                <PendingItem label="Awaiting Payment" minQuantity={dashboardData.pendingTasks.awaitingPayment} iconUrl={<Receipt />} />
+                <PendingItem label="Awaiting Shipment" minQuantity={dashboardData.pendingTasks.awaitingShipment} iconUrl={<LocalShipping />} />
+                <PendingItem label="Shipped Orders" minQuantity={dashboardData.pendingTasks.shippedOrders} iconUrl={<LocalShipping />} />
+                <PendingItem label="Completed Orders" minQuantity={dashboardData.pendingTasks.completedOrders} iconUrl={<ShoppingCart />} />
+                <PendingItem label="Awaiting Confirmation" minQuantity={dashboardData.pendingTasks.awaitingConfirmation} iconUrl={<ShoppingCart />} />
+                <PendingItem label="Pending Returns" minQuantity={dashboardData.pendingTasks.pendingReturns} iconUrl={<AssignmentReturn />} />
+                <PendingItem label="Pending Refunds" minQuantity={dashboardData.pendingTasks.pendingRefunds} iconUrl={<AttachMoney />} />
+                <PendingItem label="Out of Stock Items" minQuantity={dashboardData.pendingTasks.outOfStockItems} iconUrl={<NewReleases />} />
+                <PendingItem label="Expiring Ads" minQuantity={dashboardData.pendingTasks.expiringAds} iconUrl={<Campaign />} />
               </Box>
             </CardContent>
           </Card>
@@ -359,7 +359,7 @@ const Dashboard: React.FC = () => {
                 {[
                   { label: 'Unlisted', value: dashboardData.productOverview.unlisted, color: '#EF4444' },
                   { label: 'Listed', value: dashboardData.productOverview.listed, color: '#10B981' },
-                  { label: 'Low Stock', value: dashboardData.productOverview.lowStock, color: '#F59E0B' },
+                  { label: 'Low Stock', value: dashboardData.productOverview.lowStockThreshold, color: '#F59E0B' },
                   { label: 'Total', value: dashboardData.productOverview.total, color: '#6366F1' },
                 ].map((item) => (
                   <Grid size={{ xs: 6, sm: 3 }} key={item.label}>

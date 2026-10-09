@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "sms_coupon_product_relation", schema = "marketing")
+@Table(name = "coupon_product", schema = "promotion")
 public class SmsCouponProductRelation implements Serializable {
 
     private static final long serialVersionUID = 1L;

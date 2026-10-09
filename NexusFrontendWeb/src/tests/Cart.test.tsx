@@ -26,14 +26,14 @@ describe('Cart Component', () => {
     expect(screen.getByText('Your cart is empty.')).toBeInTheDocument();
   });
 
-  it('renders cart items and total price', () => {
+  it('renders cart items and total listPrice', () => {
     const store = configureStore({
       reducer: {
         auth: () => ({ isAuthenticated: true }),
         cart: () => ({
           items: [
-            { id: 1, productName: 'Test Product 1', price: 10, quantity: 2 },
-            { id: 2, productName: 'Test Product 2', price: 20, quantity: 1 },
+            { id: 1, productName: 'Test Product 1', listPrice: 10, quantity: 2 },
+            { id: 2, productName: 'Test Product 2', listPrice: 20, quantity: 1 },
           ],
           totalQuantity: 3,
           loading: false

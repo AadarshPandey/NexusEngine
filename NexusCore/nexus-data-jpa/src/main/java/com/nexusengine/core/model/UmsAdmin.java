@@ -3,6 +3,7 @@ package com.nexusengine.core.model;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import java.io.Serializable;
+import java.time.OffsetDateTime;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,45 +11,56 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "ums_admin", schema = "users")
+@Table(name = "admin_user", schema = "iam")
 public class UmsAdmin implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Id
+        @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    
+private Long id;
 
     private String username;
 
-    @com.fasterxml.jackson.annotation.JsonIgnore
-    private String password;
+            @com.fasterxml.jackson.annotation.JsonIgnore
+    @Column(name = "password_hash")
+private String password;
 
-    @Schema(title = "Icon")
-    private String icon;
+            @Schema(title = "Icon")
+    @Column(name = "avatar_url")
+private String icon;
 
-    @Schema(title = "Email")
-    private String email;
+        @Schema(title = "Email")
+    
+private String email;
 
-    @Column(name = "nick_name")
+        @Column(name = "nick_name")
     @Schema(title = "Nick name")
-    private String nickName;
+    
+private String nickName;
 
-    @Schema(title = "Note")
-    private String note;
+        @Schema(title = "Note")
+    
+private String note;
 
-    @Column(name = "create_time")
+        @Column(name = "created_at")
     @Schema(title = "Create time")
-    private LocalDateTime createTime;
+    
+private OffsetDateTime createTime;
 
-    @Column(name = "login_time")
+        @Column(name = "last_login_at")
     @Schema(title = "Login time")
-    private LocalDateTime loginTime;
+    
+private OffsetDateTime loginTime;
 
-    @Schema(title = "Status")
-    private Integer status;
+            @Schema(title = "Status")
+    @Column(name = "is_enabled")
+    @jakarta.persistence.Convert(converter = com.nexusengine.core.model.converter.IntegerToBooleanConverter.class)
+private Integer status;
 
-    @Column(name = "vendor_id")
+        @Column(name = "vendor_id")
     @Schema(title = "Vendor ID")
-    private Long vendorId;
+    
+private Long vendorId;
 }

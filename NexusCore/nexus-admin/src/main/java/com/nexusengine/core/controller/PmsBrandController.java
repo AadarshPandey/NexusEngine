@@ -77,10 +77,10 @@ public class PmsBrandController {
     @GetMapping("/list")
 
     public CommonResult<CommonPage<PmsBrand>> getList(@RequestParam(value = "keyword", required = false) String keyword,
-                                                      @RequestParam(value = "showStatus",required = false) Integer showStatus,
+                                                      @RequestParam(value = "isVisible",required = false) Integer isVisible,
                                                       @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
                                                       @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize) {
-        org.springframework.data.domain.Page<PmsBrand> brandList = brandService.listBrand(keyword,showStatus,pageNum, pageSize);
+        org.springframework.data.domain.Page<PmsBrand> brandList = brandService.listBrand(keyword,isVisible,pageNum, pageSize);
         return CommonResult.success(CommonPage.restPage(brandList));
     }
 
@@ -103,11 +103,11 @@ public class PmsBrandController {
         }
     }
 
-    @PostMapping("/update/showStatus")
+    @PostMapping("/update/isVisible")
 
-    public CommonResult updateShowStatus(@RequestParam("ids") List<Long> ids,
-                                   @RequestParam("showStatus") Integer showStatus) {
-        int count = brandService.updateShowStatus(ids, showStatus);
+    public CommonResult updateIsVisible(@RequestParam("ids") List<Long> ids,
+                                   @RequestParam("isVisible") Integer isVisible) {
+        int count = brandService.updateIsVisible(ids, isVisible);
         if (count > 0) {
             return CommonResult.success(count);
         } else {

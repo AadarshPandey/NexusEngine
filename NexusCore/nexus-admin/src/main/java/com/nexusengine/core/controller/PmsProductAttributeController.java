@@ -33,7 +33,7 @@ public class PmsProductAttributeController {
     @Parameters({@Parameter(name = "type", description = "0 for attribute, 1 for parameter", required = true,in = ParameterIn.QUERY, schema = @Schema(type = "integer"))})
     @GetMapping("/list/{cid}")
 
-    public CommonResult<CommonPage<PmsProductAttribute>> getList(@PathVariable Long cid,
+    public CommonResult<CommonPage<PmsProductAttribute>> getList(@PathVariable("cid") Long cid,
                                                                  @RequestParam(value = "type") Integer type,
                                                                  @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
                                                                  @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
@@ -56,7 +56,7 @@ public class PmsProductAttributeController {
     @Operation(summary = "Update Operation")
     @PostMapping("/update/{id}")
 
-    public CommonResult update(@PathVariable Long id, @RequestBody PmsProductAttributeParam productAttributeParam) {
+    public CommonResult update(@PathVariable("id") Long id, @RequestBody PmsProductAttributeParam productAttributeParam) {
         int count = productAttributeService.update(id, productAttributeParam);
         if (count > 0) {
             return CommonResult.success(count);
@@ -68,7 +68,7 @@ public class PmsProductAttributeController {
     @Operation(summary = "Get item Operation")
     @GetMapping("/{id}")
 
-    public CommonResult<PmsProductAttribute> getItem(@PathVariable Long id) {
+    public CommonResult<PmsProductAttribute> getItem(@PathVariable("id") Long id) {
         PmsProductAttribute productAttribute = productAttributeService.getItem(id);
         return CommonResult.success(productAttribute);
     }
@@ -88,7 +88,7 @@ public class PmsProductAttributeController {
     @Operation(summary = "Get attr info Operation")
     @GetMapping("/attrInfo/{productCategoryId}")
 
-    public CommonResult<List<ProductAttrInfo>> getAttrInfo(@PathVariable Long productCategoryId) {
+    public CommonResult<List<ProductAttrInfo>> getAttrInfo(@PathVariable("productCategoryId") Long productCategoryId) {
         List<ProductAttrInfo> productAttrInfoList = productAttributeService.getProductAttrInfo(productCategoryId);
         return CommonResult.success(productAttrInfoList);
     }

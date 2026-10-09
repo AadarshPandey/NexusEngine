@@ -53,7 +53,7 @@ public class OmsPortalOrderController {
             in = ParameterIn.QUERY, schema = @Schema(type = "integer",defaultValue = "-1",allowableValues = {"-1","0","1","2","3","4"}))
     @GetMapping("/list")
 
-    public CommonResult<CommonPage<OmsOrderDetail>> list(@RequestParam Integer status,
+    public CommonResult<CommonPage<OmsOrderDetail>> list(@RequestParam("status") Integer status,
                                                    @RequestParam(required = false, defaultValue = "1") Integer pageNum,
                                                    @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
         CommonPage<OmsOrderDetail> orderPage = portalOrderService.list(status,pageNum,pageSize);
@@ -63,7 +63,7 @@ public class OmsPortalOrderController {
     @Operation(summary = "Detail Operation")
     @GetMapping("/detail/{orderId}")
 
-    public CommonResult<OmsOrderDetail> detail(@PathVariable Long orderId) {
+    public CommonResult<OmsOrderDetail> detail(@PathVariable("orderId") Long orderId) {
         OmsOrderDetail orderDetail = portalOrderService.detail(orderId);
         return CommonResult.success(orderDetail);
     }
@@ -96,7 +96,7 @@ public class OmsPortalOrderController {
     @Operation(summary = "Create Razorpay Order")
     @PostMapping("/createRazorpayOrder")
 
-    public CommonResult<Map<String, String>> createRazorpayOrder(@RequestParam Long orderId) {
+    public CommonResult<Map<String, String>> createRazorpayOrder(@RequestParam("orderId") Long orderId) {
         try {
             OmsOrderDetail orderDetail = portalOrderService.detail(orderId);
             if (orderDetail == null) return CommonResult.failed("Order not found");
@@ -120,10 +120,10 @@ public class OmsPortalOrderController {
     @Operation(summary = "Verify Razorpay Payment")
     @PostMapping("/verifyRazorpayPayment")
 
-    public CommonResult verifyRazorpayPayment(@RequestParam Long orderId, 
-                                              @RequestParam String razorpayPaymentId,
-                                              @RequestParam String razorpayOrderId,
-                                              @RequestParam String razorpaySignature) {
+    public CommonResult verifyRazorpayPayment(@RequestParam("orderId") Long orderId, 
+                                              @RequestParam("razorpayPaymentId") String razorpayPaymentId,
+                                              @RequestParam("razorpayOrderId") String razorpayOrderId,
+                                              @RequestParam("razorpaySignature") String razorpaySignature) {
         try {
             com.nexusengine.core.portal.domain.OmsOrderDetail orderDetail = portalOrderService.detail(orderId);
             if (orderDetail == null) return CommonResult.failed("Order not found");

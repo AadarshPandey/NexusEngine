@@ -10,51 +10,66 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "pms_sku_stock", schema = "pms")
+@Table(name = "product_sku", schema = "catalog")
 public class PmsSkuStock implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Id
+        @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    
+private Long id;
 
-    @Column(name = "product_id")
-    private Long productId;
-    @com.fasterxml.jackson.annotation.JsonIgnore
+        @Column(name = "product_id")
+    
+private Long productId;
+        @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "product_id", insertable = false, updatable = false)
-    private PmsProduct product;
+    
+private PmsProduct product;
 
-    @Column(name = "sku_code")
+        @Column(name = "sku_code")
     @Schema(title = "Sku code")
-    private String skuCode;
+    
+private String skuCode;
 
-    private BigDecimal price;
+            @Column(name = "list_price")
+private BigDecimal price;
 
-    @Schema(title = "Stock")
-    private Integer stock;
+            @Schema(title = "Stock")
+    @Column(name = "on_hand_qty")
+private Integer stock;
 
-    @Column(name = "low_stock")
+        @Column(name = "low_stock_threshold")
     @Schema(title = "Low stock")
-    private Integer lowStock;
+    
+private Integer lowStock;
 
-    @Schema(title = "Pic")
-    private String pic;
+            @Schema(title = "Pic")
+    @Column(name = "image_url")
+private String pic;
 
-    @Schema(title = "Sale")
-    private Integer sale;
+            @Schema(title = "Sale")
+    @Column(name = "units_sold")
+private Integer sale;
 
-    @Column(name = "promotion_price")
+        @Column(name = "sale_price")
     @Schema(title = "Promotion price")
-    private BigDecimal promotionPrice;
+    
+private BigDecimal promotionPrice;
 
-    @Column(name = "lock_stock")
+        @Column(name = "reserved_qty")
     @Schema(title = "Lock stock")
-    private Integer lockStock;
+    
+private Integer lockStock;
 
-    @Schema(title = "Sp data")
+        @Schema(title = "Sp data")
     @Column(name = "sku_attributes", columnDefinition = "jsonb")
     @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.JSON)
-    private String spData;
+    
+private String spData;
+
+    @jakarta.persistence.Version
+    private Integer version;
 }

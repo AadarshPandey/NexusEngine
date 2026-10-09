@@ -8,7 +8,7 @@ import { MemoryRouter } from 'react-router';
 
 // Mock the API calls
 vi.mock('../api/member', () => ({
-  fetchMemberInfo: vi.fn().mockResolvedValue({ data: { username: 'testuser', nickname: 'Test Nickname' } }),
+  fetchMemberInfo: vi.fn().mockResolvedValue({ data: { username: 'testuser', displayName: 'Test Nickname' } }),
   fetchAddressList: vi.fn().mockResolvedValue({ data: [] }),
 }));
 vi.mock('../api/order', () => ({
@@ -41,7 +41,7 @@ describe('Profile Component', () => {
     expect(ordersTab).toBeInTheDocument();
     expect(addressTab).toBeInTheDocument();
 
-    // Verify Tab 1 (Account Info) content
+    // Verify Tab 1 (Account Info) body
     expect(screen.getByText('Personal Information')).toBeInTheDocument();
 
     // Switch to Tab 2 (Orders)

@@ -36,7 +36,7 @@ public class UmsMemberReceiveAddressController {
     @Operation(summary = "Delete Operation")
     @PostMapping("/delete/{id}")
 
-    public CommonResult delete(@PathVariable Long id) {
+    public CommonResult delete(@PathVariable("id") Long id) {
         int count = memberReceiveAddressService.delete(id);
         if (count > 0) {
             return CommonResult.success(count);
@@ -47,7 +47,7 @@ public class UmsMemberReceiveAddressController {
     @Operation(summary = "Update Operation")
     @PostMapping("/update/{id}")
 
-    public CommonResult update(@PathVariable Long id, @RequestBody UmsMemberReceiveAddress address) {
+    public CommonResult update(@PathVariable("id") Long id, @RequestBody UmsMemberReceiveAddress address) {
         int count = memberReceiveAddressService.update(id, address);
         if (count > 0) {
             return CommonResult.success(count);
@@ -66,7 +66,7 @@ public class UmsMemberReceiveAddressController {
     @Operation(summary = "Get item Operation")
     @GetMapping("/{id}")
 
-    public CommonResult<UmsMemberReceiveAddress> getItem(@PathVariable Long id) {
+    public CommonResult<UmsMemberReceiveAddress> getItem(@PathVariable("id") Long id) {
         UmsMemberReceiveAddress address = memberReceiveAddressService.getItem(id);
         return CommonResult.success(address);
     }

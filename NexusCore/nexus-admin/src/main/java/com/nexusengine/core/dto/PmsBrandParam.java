@@ -13,7 +13,7 @@ import jakarta.validation.constraints.NotEmpty;
  */
 public record PmsBrandParam(
     @NotEmpty @Schema(title =  "Name",requiredMode = Schema.RequiredMode.REQUIRED) String name,
-    @FlagValidator(value = {"0","1"}, message = "Message") @Schema(title =  "Show status") Integer showStatus,
+    @FlagValidator(value = {"0","1"}, message = "Message") @Schema(title =  "Visible status") Integer isVisible,
     @NotEmpty @Schema(title =  "Logo",requiredMode = Schema.RequiredMode.REQUIRED) String logo
 ) {
 }

@@ -7,7 +7,7 @@ import { useNavigate, useSearchParams } from 'react-router';
 const SelectSession: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const flashPromotionId = searchParams.get('flashPromotionId');
+  const flashSaleId = searchParams.get('flashSaleId');
   const [sessions, setSessions] = useState<SmsFlashPromotionSession[]>([]);
   const [errorMsg, setErrorMsg] = useState<string>('');
 
@@ -75,13 +75,13 @@ const SelectSession: React.FC = () => {
                 <TableRow key={session.id}>
                   <TableCell>{session.id}</TableCell>
                   <TableCell>{session.name}</TableCell>
-                  <TableCell>{formatTime(session.startTime)}</TableCell>
-                  <TableCell>{formatTime(session.endTime)}</TableCell>
+                  <TableCell>{formatTime(session.startsAt)}</TableCell>
+                  <TableCell>{formatTime(session.endsAt)}</TableCell>
                   <TableCell align="center">
                     <Button 
                       variant="contained" 
                       size="small" 
-                      onClick={() => navigate(`/sms/flashProductRelation?flashPromotionId=${flashPromotionId}&flashPromotionSessionId=${session.id}`)}
+                      onClick={() => navigate(`/sms/flashProductRelation?flashSaleId=${flashSaleId}&slotId=${session.id}`)}
                     >
                       Product List
                     </Button>

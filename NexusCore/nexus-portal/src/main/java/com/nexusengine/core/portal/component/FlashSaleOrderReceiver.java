@@ -56,7 +56,7 @@ public class FlashSaleOrderReceiver {
             // (b) Create OmsOrder + OmsOrderItem
             com.nexusengine.core.model.OmsOrder order = new com.nexusengine.core.model.OmsOrder();
             order.setMemberId(message.memberId());
-            order.setCreateTime(java.time.LocalDateTime.now());
+            order.setCreateTime(java.time.OffsetDateTime.now());
             order.setStatus(0);
             order.setDeleteStatus(0);
             order.setOrderType(1); // 1 = flash sale
@@ -78,7 +78,7 @@ public class FlashSaleOrderReceiver {
             logEntry.setOrderId(order.getId());
             logEntry.setQuantity(message.quantity());
             logEntry.setStatus("SUCCESS");
-            logEntry.setCreateTime(java.time.LocalDateTime.now());
+            logEntry.setCreateTime(java.time.OffsetDateTime.now());
             flashPromotionLogRepository.save(logEntry);
 
             log.info("Successfully persisted flash order to database for member: {}", message.memberId());
@@ -94,7 +94,7 @@ public class FlashSaleOrderReceiver {
             logEntry.setSessionId(message.flashPromotionSessionId());
             logEntry.setQuantity(message.quantity());
             logEntry.setStatus("FAILED");
-            logEntry.setCreateTime(java.time.LocalDateTime.now());
+            logEntry.setCreateTime(java.time.OffsetDateTime.now());
             flashPromotionLogRepository.save(logEntry);
             
             try {

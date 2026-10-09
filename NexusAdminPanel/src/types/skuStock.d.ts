@@ -1,14 +1,14 @@
 export type PmsSkuStock = {
   /** ID */
   id?: number
-  productId?: number
+  orderLineId?: number
   skuCode?: string
-  price?: number
-  stock?: number
-  lowStock?: number
-  pic?: string
-  sale?: number
-  promotionPrice?: number
-  lockStock?: number
+  listPrice?: number
+  onHandQty?: number
+  lowStockThreshold?: number
+  primaryImageUrl?: string
+  unitsSold?: number
+  salePrice?: number
+  reservedQty?: number
   spData?: string
 }

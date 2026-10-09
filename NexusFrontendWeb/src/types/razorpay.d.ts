@@ -6,10 +6,10 @@ declare global {
 
   interface RazorpayOptions {
     key: string;
-    amount: string;
+    discountValue: string;
     currency: string;
     name: string;
-    description: string;
+    customerComment: string;
     order_id: string;
     image?: string;
     handler: (response: RazorpayResponse) => void;
@@ -40,10 +40,10 @@ declare global {
   interface RazorpayFailedResponse {
     error: {
       code: string;
-      description: string;
+      customerComment: string;
       source: string;
       step: string;
-      reason: string;
+      reasonId: string;
       metadata: {
         order_id: string;
         payment_id: string;

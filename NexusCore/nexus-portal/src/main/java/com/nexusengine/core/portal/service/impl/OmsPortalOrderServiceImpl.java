@@ -184,7 +184,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
         }
         order.setPayAmount(calcPayAmount(order));
         order.setMemberId(currentMember.getId());
-        order.setCreateTime(java.time.LocalDateTime.now());
+        order.setCreateTime(java.time.OffsetDateTime.now());
 
         order.setPayType(orderParam.payType());
 
@@ -254,7 +254,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
                 if (order == null || order.getStatus() != 0) return 0; // Only pay if unpaid
                 
                 order.setStatus(1);
-                order.setPaymentTime(java.time.LocalDateTime.now());
+                order.setPaymentTime(java.time.OffsetDateTime.now());
                 order.setPayType(payType);
                 orderRepository.save(order);
                 orderRepository.flush(); // ensure commit
@@ -285,7 +285,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
                 int count = 0;
                 OmsOrderSetting orderSetting = orderSettingRepository.findById(1L).orElse(null);
                 if (orderSetting == null) return 0;
-                List<OmsOrderDetail> timeOutOrders = portalOrderDao.getTimeOutOrders(orderSetting.getNormalOrderOvertime());
+                List<OmsOrderDetail> timeOutOrders = portalOrderDao.getTimeOutOrders(orderSetting.getPaymentTimeoutMin());
                 if (CollectionUtils.isEmpty(timeOutOrders)) return count;
                 List<Long> ids = timeOutOrders.stream().map(detail -> detail.omsOrder().getId()).collect(Collectors.toList());
                 portalOrderDao.updateOrderStatus(ids, 4);
@@ -335,14 +335,14 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
         OmsOrderSetting orderSetting = orderSettingRepository.findById(1L).orElse(null);
         if (orderSetting == null) return;
         
-        long delayTimes = orderSetting.getNormalOrderOvertime() * 60 * 1000;
+        long delayTimes = orderSetting.getPaymentTimeoutMin() * 60 * 1000;
         com.nexusengine.core.model.StagedEvent event = new com.nexusengine.core.model.StagedEvent();
         event.setAggregateType("Order");
         event.setAggregateId(String.valueOf(orderId));
         event.setType("CancelOrder");
         event.setPayload(String.valueOf(delayTimes));
         event.setStatus("PENDING");
-        event.setCreatedAt(java.time.LocalDateTime.now());
+        event.setCreatedAt(java.time.OffsetDateTime.now());
         
         stagedEventRepository.save(event);
     }
@@ -359,7 +359,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
         }
         order.setStatus(3);
         order.setConfirmStatus(1);
-        order.setReceiveTime(java.time.LocalDateTime.now());
+        order.setReceiveTime(java.time.OffsetDateTime.now());
         orderRepository.save(order);
     }
 
@@ -431,7 +431,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
 
     private String generateOrderSn(OmsOrder order) {
         StringBuilder sb = new StringBuilder();
-        String date = java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd"));
+        String date = java.time.OffsetDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd"));
         String key = REDIS_DATABASE + ":" + REDIS_KEY_ORDER_ID + date;
         Long increment = redisService.incr(key, 1);
         sb.append(date);
@@ -466,7 +466,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
                 .filter(h -> h.getCouponId().equals(couponId)).collect(Collectors.toList());
         if (!CollectionUtils.isEmpty(filtered)) {
             SmsCouponHistory couponHistory = filtered.get(0);
-            couponHistory.setUseTime(useStatus == 1 ? java.time.LocalDateTime.now() : null);
+            couponHistory.setUseTime(useStatus == 1 ? java.time.OffsetDateTime.now() : (java.time.OffsetDateTime) null);
             couponHistory.setUseStatus(useStatus);
             if (useStatus == 1 && order != null) {
                 couponHistory.setOrderId(order.getId());
@@ -690,7 +690,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
             tx.setAmount(new java.math.BigDecimal(paymentEntity.path("amount").asInt()).divide(new java.math.BigDecimal("100")));
             tx.setStatus("SUCCESS");
             tx.setWebhookPayload(payload);
-            tx.setCreateTime(java.time.LocalDateTime.now());
+            tx.setCreateTime(java.time.OffsetDateTime.now());
             paymentTransactionRepository.save(tx);
             
             // 2. Update the Order status
@@ -699,7 +699,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
                 if (dbOrder != null && dbOrder.getStatus() == 0) { // 0 is unpaid
 
                     dbOrder.setStatus(1); // 1 is pending shipment
-                    dbOrder.setPaymentTime(java.time.LocalDateTime.now());
+                    dbOrder.setPaymentTime(java.time.OffsetDateTime.now());
                     orderRepository.save(dbOrder);
                     
                     // The cancelOrder event should be removed from DLQ or ignored since status != 0

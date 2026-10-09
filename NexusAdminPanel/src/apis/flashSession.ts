@@ -3,7 +3,7 @@ import http from '@/utils/http'
 
 /**
  */
-export function getFlashSessionSelectListAPI(params: { flashPromotionId: number }) {
+export function getFlashSessionSelectListAPI(params: { flashSaleId: number }) {
   return http<SmsFlashPromotionSession[]>({
     url: '/flashSession/selectList',
     method: 'get',

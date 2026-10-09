@@ -14,9 +14,9 @@ export function getProductListAPI(params: ProductQueryParam) {
 
 /**
  */
-export function productUpdateDeleteStatusAPI(params: { ids: string; deleteStatus: number }) {
+export function productUpdateDeleteStatusAPI(params: { ids: string; deletedAt: number }) {
   return http({
-    url: '/product/update/deleteStatus',
+    url: '/product/update/deletedAt',
     method: 'post',
     params: params,
   })
@@ -24,9 +24,9 @@ export function productUpdateDeleteStatusAPI(params: { ids: string; deleteStatus
 
 /**
  */
-export function productUpdateNewStatusAPI(params: { ids: string; newStatus: number }) {
+export function productUpdateNewStatusAPI(params: { ids: string; isNewArrival: number }) {
   return http({
-    url: '/product/update/newStatus',
+    url: '/product/update/isNewArrival',
     method: 'post',
     params: params,
   })
@@ -34,9 +34,9 @@ export function productUpdateNewStatusAPI(params: { ids: string; newStatus: numb
 
 /**
  */
-export function productUpdateRecommendStatusAPI(params: { ids: string; recommendStatus: number }) {
+export function productUpdateRecommendStatusAPI(params: { ids: string; isFeatured: number }) {
   return http({
-    url: '/product/update/recommendStatus',
+    url: '/product/update/isFeatured',
     method: 'post',
     params: params,
   })
@@ -44,9 +44,9 @@ export function productUpdateRecommendStatusAPI(params: { ids: string; recommend
 
 /**
  */
-export function productUpdatePublishStatusAPI(params: { ids: string; publishStatus: number }) {
+export function productUpdatePublishStatusAPI(params: { ids: string; isPublished: number }) {
   return http({
-    url: '/product/update/publishStatus',
+    url: '/product/update/isPublished',
     method: 'post',
     params: params,
   })

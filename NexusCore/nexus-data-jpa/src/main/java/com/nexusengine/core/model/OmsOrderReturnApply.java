@@ -3,6 +3,7 @@ package com.nexusengine.core.model;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import java.io.Serializable;
+import java.time.OffsetDateTime;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import lombok.Getter;
@@ -11,125 +12,143 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "oms_order_return_apply", schema = "orders")
+@Table(name = "return_request", schema = "ordering")
 public class OmsOrderReturnApply implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Id
+        @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    
+private Long id;
 
-    @Column(name = "order_id")
+        @Column(name = "order_id")
     @Schema(title = "Order id")
-    private Long orderId;
-    @com.fasterxml.jackson.annotation.JsonIgnore
+    
+private Long orderId;
+        @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "order_id", insertable = false, updatable = false)
-    private OmsOrder order;
+    
+private OmsOrder order;
 
-    @Column(name = "company_address_id")
+        @Column(name = "return_address_id")
     @Schema(title = "Company address id")
-    private Long companyAddressId;
-    @com.fasterxml.jackson.annotation.JsonIgnore
+    
+private Long companyAddressId;
+        @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
-    @jakarta.persistence.JoinColumn(name = "company_address_id", insertable = false, updatable = false)
-    private OmsCompanyAddress companyAddress;
+    @jakarta.persistence.JoinColumn(name = "return_address_id", insertable = false, updatable = false)
+    
+private OmsCompanyAddress companyAddress;
 
-    @Column(name = "product_id")
+        @Column(name = "order_line_id")
     @Schema(title = "Product id")
-    private Long productId;
-    @com.fasterxml.jackson.annotation.JsonIgnore
+    
+private Long productId;
+        @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
-    @jakarta.persistence.JoinColumn(name = "product_id", insertable = false, updatable = false)
-    private PmsProduct product;
+    @jakarta.persistence.JoinColumn(name = "order_line_id", insertable = false, updatable = false)
+    
+private PmsProduct product;
 
-    @Column(name = "order_sn")
-    @Schema(title = "Order sn")
+            @Column(name = "order_sn")
     private String orderSn;
 
-    @Column(name = "create_time")
+        @Column(name = "created_at")
     @Schema(title = "Create time")
-    private LocalDateTime createTime;
+    
+private OffsetDateTime createTime;
 
     @Column(name = "member_username")
-    @Schema(title = "Member username")
     private String memberUsername;
 
-    @Column(name = "return_amount")
+        @Column(name = "refund_amount")
     @Schema(title = "Return amount")
-    private BigDecimal returnAmount;
+    
+private BigDecimal returnAmount;
 
-    @Column(name = "return_name")
+        @Column(name = "contact_name")
     @Schema(title = "Return name")
-    private String returnName;
+    
+private String returnName;
 
-    @Column(name = "return_phone")
+        @Column(name = "contact_phone")
     @Schema(title = "Return phone")
-    private String returnPhone;
+    
+private String returnPhone;
 
-    @Schema(title = "Status")
-    private Integer status;
+        @Schema(title = "Status")
+    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.SMALLINT)
+private Integer status;
 
-    @Column(name = "handle_time")
+        @Column(name = "reviewed_at")
     @Schema(title = "Handle time")
-    private LocalDateTime handleTime;
+    
+private OffsetDateTime handleTime;
 
-    @Column(name = "product_pic")
-    @Schema(title = "Product pic")
+            @Column(name = "product_pic")
     private String productPic;
 
-    @Column(name = "product_name")
-    @Schema(title = "Product name")
+            @Column(name = "product_name")
     private String productName;
 
-    @Column(name = "product_brand")
-    @Schema(title = "Product brand")
+            @Column(name = "product_brand")
     private String productBrand;
 
-    @Column(name = "product_attr")
-    @Schema(title = "Product attr")
+            @Column(name = "product_attr")
     private String productAttr;
 
-    @Column(name = "product_count")
+        @Column(name = "quantity")
     @Schema(title = "Product count")
-    private Integer productCount;
+    
+private Integer productCount;
 
-    @Column(name = "product_price")
+        @Column(name = "product_price")
     @Schema(title = "Product price")
-    private BigDecimal productPrice;
+    
+private BigDecimal productPrice;
 
-    @Column(name = "product_real_price")
+        @Column(name = "unit_refund_amount")
     @Schema(title = "Product real price")
-    private BigDecimal productRealPrice;
+    
+private BigDecimal productRealPrice;
 
-    @Schema(title = "Reason")
-    private String reason;
+            @Schema(title = "Reason")
+    @Column(name = "reason_id")
+private String reason;
 
-    @Schema(title = "Description")
-    private String description;
+            @Schema(title = "Description")
+    @Column(name = "customer_comment")
+private String description;
 
-    @Column(name = "proof_pics")
+        @Column(name = "evidence_urls")
     @Schema(title = "Proof pics")
-    private String proofPics;
+    
+private String proofPics;
 
-    @Column(name = "handle_note")
+        @Column(name = "review_note")
     @Schema(title = "Handle note")
-    private String handleNote;
+    
+private String handleNote;
 
-    @Column(name = "handle_man")
+        @Column(name = "reviewed_by_admin_id")
     @Schema(title = "Handle man")
-    private String handleMan;
+    
+private String handleMan;
 
-    @Column(name = "receive_man")
+        @Column(name = "received_by_admin_id")
     @Schema(title = "Receive man")
-    private String receiveMan;
+    
+private String receiveMan;
 
-    @Column(name = "receive_time")
+        @Column(name = "received_at")
     @Schema(title = "Receive time")
-    private LocalDateTime receiveTime;
+    
+private OffsetDateTime receiveTime;
 
-    @Column(name = "receive_note")
+        @Column(name = "receipt_note")
     @Schema(title = "Receive note")
-    private String receiveNote;
+    
+private String receiveNote;
 }

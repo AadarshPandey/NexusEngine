@@ -76,6 +76,7 @@ public class PmsProductSemanticSearchServiceImpl implements PmsProductSemanticSe
     }
 
     @Override
+    @org.springframework.transaction.annotation.Transactional(propagation = org.springframework.transaction.annotation.Propagation.NOT_SUPPORTED)
     @io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker(name = "openai", fallbackMethod = "semanticSearchFallback")
     @io.github.resilience4j.retry.annotation.Retry(name = "openai")
     public List<PmsProduct> semanticSearch(Long memberId, String searchContext) {

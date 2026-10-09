@@ -9,10 +9,10 @@ import lombok.EqualsAndHashCode;
  * Provides core functionality and operations for PmsProductQueryParam.
  */
 public record PmsProductQueryParam(
-    @Schema(title = "Publish status") Integer publishStatus,
-    @Schema(title = "Verify status") Integer verifyStatus,
+    @Schema(title = "Publish status") @com.fasterxml.jackson.annotation.JsonProperty("isPublished") Integer publishStatus,
+    @Schema(title = "Verify status") @com.fasterxml.jackson.annotation.JsonProperty("approvalStatus") Integer verifyStatus,
     @Schema(title = "Keyword") String keyword,
-    @Schema(title = "Product sn") String productSn,
+    @Schema(title = "Product sn") @com.fasterxml.jackson.annotation.JsonProperty("productCode") String productSn,
     @Schema(title = "Product category id") Long productCategoryId,
     @Schema(title = "Brand id") Long brandId
 ) {

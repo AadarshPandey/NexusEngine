@@ -64,7 +64,7 @@ public class OrderConcurrencyIntegrationTest {
         
         OmsOrderSetting orderSetting = new OmsOrderSetting();
         orderSetting.setId(1L);
-        orderSetting.setNormalOrderOvertime(60);
+        orderSetting.setPaymentTimeoutMin(60);
         orderSettingRepository.save(orderSetting);
     }
 

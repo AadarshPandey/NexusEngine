@@ -37,7 +37,7 @@ const FlashList: React.FC = () => {
   };
 
   const handleDelete = async (id: number) => {
-    if(confirm('Delete this flash sale campaign?')) {
+    if(confirm('Delete this flash unitsSold campaign?')) {
       try {
         await flashDeleteByIdAPI(id);
         fetchList();
@@ -63,7 +63,7 @@ const FlashList: React.FC = () => {
   };
 
   const openDialog = (data?: SmsFlashPromotion) => {
-    setEditData(data || { title: '', startDate: '', endDate: '', status: 0 });
+    setEditData(data || { title: '', startsOn: '', endsOn: '', status: 0 });
     setOpen(true);
   };
 
@@ -96,10 +96,10 @@ const FlashList: React.FC = () => {
                 <TableCell>
                   <Switch size="small" checked={row.status === 1} onChange={() => handleStatusChange(row.id!, row.status)} />
                 </TableCell>
-                <TableCell>{row.startDate ? dayjs(row.startDate).format('DD/MM/YYYY') : 'N/A'}</TableCell>
-                <TableCell>{row.endDate ? dayjs(row.endDate).format('DD/MM/YYYY') : 'N/A'}</TableCell>
+                <TableCell>{row.startsOn ? dayjs(row.startsOn).format('DD/MM/YYYY') : 'N/A'}</TableCell>
+                <TableCell>{row.endsOn ? dayjs(row.endsOn).format('DD/MM/YYYY') : 'N/A'}</TableCell>
                 <TableCell align="center">
-                  <Button size="small" onClick={() => navigate(`/sms/selectSession?flashPromotionId=${row.id}`)}>Manage Sessions</Button>
+                  <Button size="small" onClick={() => navigate(`/sms/selectSession?flashSaleId=${row.id}`)}>Manage Sessions</Button>
                   <Button size="small" color="primary" onClick={() => openDialog(row)}>Edit</Button>
                   <Button size="small" color="error" onClick={() => handleDelete(row.id!)}>Delete</Button>
                 </TableCell>
@@ -126,15 +126,15 @@ const FlashList: React.FC = () => {
           <DatePicker
             label="Start Date"
             format="DD/MM/YYYY"
-            value={editData?.startDate ? dayjs(editData.startDate) : null}
-            onChange={(newValue) => setEditData(prev => ({ ...prev!, startDate: newValue ? newValue.format('YYYY-MM-DD') : '' }))}
+            value={editData?.startsOn ? dayjs(editData.startsOn) : null}
+            onChange={(newValue) => setEditData(prev => ({ ...prev!, startsOn: newValue ? newValue.format('YYYY-MM-DD') : '' }))}
             slotProps={{ textField: { fullWidth: true, margin: 'normal' } }}
           />
           <DatePicker
             label="End Date"
             format="DD/MM/YYYY"
-            value={editData?.endDate ? dayjs(editData.endDate) : null}
-            onChange={(newValue) => setEditData(prev => ({ ...prev!, endDate: newValue ? newValue.format('YYYY-MM-DD') : '' }))}
+            value={editData?.endsOn ? dayjs(editData.endsOn) : null}
+            onChange={(newValue) => setEditData(prev => ({ ...prev!, endsOn: newValue ? newValue.format('YYYY-MM-DD') : '' }))}
             slotProps={{ textField: { fullWidth: true, margin: 'normal' } }}
           />
         </LocalizationProvider>

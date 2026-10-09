@@ -54,15 +54,15 @@ public class PmsBrandServiceImpl implements PmsBrandService {
     }
 
     @Override
-    public org.springframework.data.domain.Page<PmsBrand> listBrand(String keyword, Integer showStatus, int pageNum, int pageSize) {
+    public org.springframework.data.domain.Page<PmsBrand> listBrand(String keyword, Integer isVisible, int pageNum, int pageSize) {
         org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(pageNum > 0 ? pageNum - 1 : 0, pageSize, Sort.by(Sort.Direction.ASC, "id"));
         return brandRepository.findAll((root, query, cb) -> {
             var predicates = new java.util.ArrayList<jakarta.persistence.criteria.Predicate>();
             if (cn.hutool.core.util.StrUtil.isNotEmpty(keyword)) {
                 predicates.add(cb.like(cb.lower(root.get("name")), "%" + keyword.toLowerCase() + "%"));
             }
-            if (showStatus != null) {
-                predicates.add(cb.equal(root.get("showStatus"), showStatus));
+            if (isVisible != null) {
+                predicates.add(cb.equal(root.get("isVisible"), isVisible));
             }
             return cb.and(predicates.toArray(new jakarta.persistence.criteria.Predicate[0]));
         }, pageable);
@@ -74,10 +74,10 @@ public class PmsBrandServiceImpl implements PmsBrandService {
     }
 
     @Override
-    public int updateShowStatus(List<Long> ids, Integer showStatus) {
+    public int updateIsVisible(List<Long> ids, Integer isVisible) {
         List<PmsBrand> brands = brandRepository.findAllById(ids);
         for (PmsBrand brand : brands) {
-            brand.setShowStatus(showStatus);
+            brand.setIsVisible(isVisible);
             brandRepository.save(brand);
         }
         return brands.size();

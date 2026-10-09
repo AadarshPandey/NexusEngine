@@ -3,6 +3,7 @@ package com.nexusengine.core.model;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import java.io.Serializable;
+import java.time.OffsetDateTime;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,60 +11,69 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "sms_coupon_history", schema = "marketing")
+@Table(name = "member_coupon", schema = "promotion")
 public class SmsCouponHistory implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Id
+        @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    
+private Long id;
 
-    @Column(name = "coupon_id")
-    private Long couponId;
-    @com.fasterxml.jackson.annotation.JsonIgnore
+        @Column(name = "coupon_id")
+    
+private Long couponId;
+        @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "coupon_id", insertable = false, updatable = false)
-    private SmsCoupon coupon;
+    
+private SmsCoupon coupon;
 
-    @Column(name = "member_id")
-    private Long memberId;
-    @com.fasterxml.jackson.annotation.JsonIgnore
+        @Column(name = "member_id")
+    
+private Long memberId;
+        @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "member_id", insertable = false, updatable = false)
-    private UmsMember member;
+    
+private UmsMember member;
 
-    @Column(name = "coupon_code")
+            @org.hibernate.annotations.Formula("(SELECT c.code FROM promotion.coupon c WHERE c.id = coupon_id)")
     private String couponCode;
 
-    @Column(name = "member_nickname")
-    @Schema(title = "Member nickname")
+            @org.hibernate.annotations.Formula("(SELECT m.display_name FROM customer.member m WHERE m.id = member_id)")
     private String memberNickname;
 
-    @Column(name = "get_type")
+        @Column(name = "acquisition_channel")
     @Schema(title = "Get type")
-    private Integer getType;
+    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.SMALLINT)
+private Integer getType;
 
-    @Column(name = "create_time")
-    private LocalDateTime createTime;
+        @Column(name = "claimed_at")
+    
+private OffsetDateTime createTime;
 
-    @Column(name = "use_status")
+        @Column(name = "status")
     @Schema(title = "Use status")
-    private Integer useStatus;
+    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.SMALLINT)
+private Integer useStatus;
 
-    @Column(name = "use_time")
+        @Column(name = "redeemed_at")
     @Schema(title = "Use time")
-    private LocalDateTime useTime;
+    
+private OffsetDateTime useTime;
 
-    @Column(name = "order_id")
+        @Column(name = "order_id")
     @Schema(title = "Order id")
-    private Long orderId;
-    @com.fasterxml.jackson.annotation.JsonIgnore
+    
+private Long orderId;
+        @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "order_id", insertable = false, updatable = false)
-    private OmsOrder order;
+    
+private OmsOrder order;
 
-    @Column(name = "order_sn")
-    @Schema(title = "Order sn")
+            @org.hibernate.annotations.Formula("(SELECT o.order_number FROM ordering.customer_order o WHERE o.id = order_id)")
     private String orderSn;
 }

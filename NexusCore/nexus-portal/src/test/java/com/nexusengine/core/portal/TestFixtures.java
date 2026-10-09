@@ -4,6 +4,7 @@ import com.nexusengine.core.model.*;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -76,7 +77,7 @@ public final class TestFixtures {
         order.setPayAmount(new BigDecimal("500.00"));
         order.setStatus(0);
         order.setDeleteStatus(0);
-        order.setCreateTime(LocalDateTime.now());
+        order.setCreateTime(OffsetDateTime.now());
         return order;
     }
 

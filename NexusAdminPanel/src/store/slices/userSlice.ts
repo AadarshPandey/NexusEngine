@@ -73,7 +73,7 @@ const userSlice = createSlice({
         state.userInfo.roles = data.roles;
       }
       state.userInfo.menus = data.menus;
-      state.userInfo.avatar = data.icon;
+      state.userInfo.avatar = data.iconUrl;
     });
     builder.addCase(userLogout.fulfilled, (state) => {
       state.userInfo.token = '';

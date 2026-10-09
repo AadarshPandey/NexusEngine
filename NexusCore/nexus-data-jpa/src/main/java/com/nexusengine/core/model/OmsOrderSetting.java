@@ -9,32 +9,38 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "oms_order_setting", schema = "orders")
+@Table(name = "order_policy", schema = "ordering")
 public class OmsOrderSetting implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Id
+        @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    
+private Long id;
 
-    @Column(name = "flash_order_overtime")
+        @Column(name = "flash_payment_timeout_min")
     @Schema(title = "Flash order overtime")
-    private Integer flashOrderOvertime;
+    
+private Integer flashPaymentTimeoutMin;
 
-    @Column(name = "normal_order_overtime")
+        @Column(name = "payment_timeout_min")
     @Schema(title = "Normal order overtime")
-    private Integer normalOrderOvertime;
+    
+private Integer paymentTimeoutMin;
 
-    @Column(name = "confirm_overtime")
+        @Column(name = "auto_confirm_receipt_days")
     @Schema(title = "Confirm overtime")
-    private Integer confirmOvertime;
+    
+private Integer autoConfirmReceiptDays;
 
-    @Column(name = "finish_overtime")
+        @Column(name = "auto_complete_days")
     @Schema(title = "Finish overtime")
-    private Integer finishOvertime;
+    
+private Integer autoCompleteDays;
 
-    @Column(name = "comment_overtime")
+        @Column(name = "review_window_days")
     @Schema(title = "Comment overtime")
-    private Integer commentOvertime;
+    
+private Integer reviewWindowDays;
 }

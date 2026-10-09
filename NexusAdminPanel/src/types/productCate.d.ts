@@ -1,17 +1,17 @@
 export type PmsProductCategory = {
   /** ID */
   id?: number
-  parentId: number
+  parentReviewId: number
   name: string
-  level?: number
-  productCount?: number
-  productUnit?: string
-  navStatus: number
-  showStatus: number
-  sort?: number
-  icon?: string
-  keywords?: string
-  description?: string
+  depth?: number
+  quantity?: number
+  unitOfMeasure?: string
+  isInNavigation: number
+  isVisible: number
+  displayOrder?: number
+  iconUrl?: string
+  searchKeywords?: string
+  customerComment?: string
   productAttributeIdList?: number[]
 }
 

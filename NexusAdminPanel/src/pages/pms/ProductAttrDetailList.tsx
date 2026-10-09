@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Box, Card, Typography, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination, Paper, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import { Add } from '@mui/icons-material';
 import { useNavigate, useSearchParams } from 'react-router';
-import { getProductAttributeListAPI, productAttributeDeleteByIds, productAttributeCreateAPI, productAttributeUpdateAPI } from '@/apis/productAttr';
-import type { PmsProductAttribute } from '@/types/productAttr';
+import { getProductAttributeListAPI, productAttributeDeleteByIds, productAttributeCreateAPI, productAttributeUpdateAPI } from '@/apis/skuAttributes';
+import type { PmsProductAttribute } from '@/types/skuAttributes';
 
 const ProductAttrDetailList: React.FC = () => {
   const navigate = useNavigate();
@@ -46,13 +46,12 @@ const ProductAttrDetailList: React.FC = () => {
       setEditData({ ...attr });
     } else {
       setEditData({
-        productAttributeCategoryId: cid,
+        productTypeId: cid,
         type: type,
         name: '',
-        selectType: 0,
-        inputType: 0,
-        inputList: '',
-        sort: 0,
+        selectionMode: 0,
+        inputMode: 0,
+        allowedValues: '',
       });
     }
     setDialogOpen(true);
@@ -95,7 +94,7 @@ const ProductAttrDetailList: React.FC = () => {
             </Typography>
           </Box>
           <Box>
-            <Button variant="outlined" sx={{ mr: 2 }} onClick={() => navigate('/pms/productAttr')}>
+            <Button variant="outlined" sx={{ mr: 2 }} onClick={() => navigate('/pms/skuAttributes')}>
               Back to Types
             </Button>
             <Button variant="contained" startIcon={<Add />} onClick={() => handleOpenDialog()}>
@@ -115,36 +114,34 @@ const ProductAttrDetailList: React.FC = () => {
                 <TableCell>Select Type</TableCell>
                 <TableCell>Input Type</TableCell>
                 <TableCell>Input List Options</TableCell>
-                <TableCell>Sort</TableCell>
                 <TableCell align="center">Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {loading ? (
-                <TableRow><TableCell colSpan={7} align="center">Loading...</TableCell></TableRow>
+                <TableRow><TableCell colSpan={6} align="center">Loading...</TableCell></TableRow>
               ) : list.length === 0 ? (
-                <TableRow><TableCell colSpan={7} align="center" sx={{ py: 5 }}>No items found.</TableCell></TableRow>
+                <TableRow><TableCell colSpan={6} align="center" sx={{ py: 5 }}>No items found.</TableCell></TableRow>
               ) : (
                 list.map((row) => (
                   <TableRow key={row.id} hover>
                     <TableCell>{row.id}</TableCell>
                     <TableCell>{row.name}</TableCell>
                     <TableCell>
-                      {row.selectType === 0 ? 'Unique' : row.selectType === 1 ? 'Single Choice' : 'Multi Choice'}
+                      {row.selectionMode === 0 ? 'Unique' : row.selectionMode === 1 ? 'Single Choice' : 'Multi Choice'}
                     </TableCell>
                     <TableCell>
-                      {row.inputType === 0 ? 'Manual' : 'Select'}
+                      {row.inputMode === 0 ? 'Manual' : 'Select'}
                     </TableCell>
                     <TableCell>
-                      {row.inputList ? (
-                        <Select size="small" value={row.inputList.split(',')[0]} sx={{ minWidth: 100 }}>
-                          {row.inputList.split(',').map((opt, idx) => (
+                      {row.allowedValues ? (
+                        <Select size="small" value={row.allowedValues.split(',')[0]} sx={{ minWidth: 100 }}>
+                          {row.allowedValues.split(',').map((opt, idx) => (
                             <MenuItem key={idx} value={opt}>{opt}</MenuItem>
                           ))}
                         </Select>
                       ) : '-'}
                     </TableCell>
-                    <TableCell>{row.sort}</TableCell>
                     <TableCell align="center">
                       <Button size="small" color="primary" onClick={() => handleOpenDialog(row)}>Edit</Button>
                       <Button size="small" color="error" onClick={() => handleDelete(row.id!)}>Delete</Button>
@@ -181,9 +178,9 @@ const ProductAttrDetailList: React.FC = () => {
             <FormControl fullWidth>
               <InputLabel>Input Type</InputLabel>
               <Select
-                value={editData.inputType || 0}
+                value={editData.inputMode || 0}
                 label="Input Type"
-                onChange={(e) => setEditData({ ...editData, inputType: Number(e.target.value) })}
+                onChange={(e) => setEditData({ ...editData, inputMode: Number(e.target.value) })}
               >
                 <MenuItem value={0}>Manual Input</MenuItem>
                 <MenuItem value={1}>Select from List</MenuItem>
@@ -193,9 +190,9 @@ const ProductAttrDetailList: React.FC = () => {
             <FormControl fullWidth>
               <InputLabel>Select Type</InputLabel>
               <Select
-                value={editData.selectType || 0}
+                value={editData.selectionMode || 0}
                 label="Select Type"
-                onChange={(e) => setEditData({ ...editData, selectType: Number(e.target.value) })}
+                onChange={(e) => setEditData({ ...editData, selectionMode: Number(e.target.value) })}
               >
                 <MenuItem value={0}>Unique</MenuItem>
                 <MenuItem value={1}>Single Choice</MenuItem>
@@ -207,18 +204,9 @@ const ProductAttrDetailList: React.FC = () => {
               label="Input List Options (Comma Separated)"
               fullWidth
               variant="outlined"
-              value={editData.inputList || ''}
-              onChange={(e) => setEditData({ ...editData, inputList: e.target.value })}
+              value={editData.allowedValues || ''}
+              onChange={(e) => setEditData({ ...editData, allowedValues: e.target.value })}
               helperText="Only used if Input Type is 'Select from List'"
-            />
-
-            <TextField
-              label="Sort Priority"
-              type="number"
-              fullWidth
-              variant="outlined"
-              value={editData.sort || 0}
-              onChange={(e) => setEditData({ ...editData, sort: Number(e.target.value) })}
             />
           </Box>
         </DialogContent>

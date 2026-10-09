@@ -9,37 +9,46 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "pms_product_attribute", schema = "pms")
+@Table(name = "attribute_definition", schema = "catalog")
 public class PmsProductAttribute implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Id
+        @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    
+private Long id;
 
-    @Column(name = "product_attribute_category_id")
-    private Long productAttributeCategoryId;
-    @com.fasterxml.jackson.annotation.JsonIgnore
+        @Column(name = "product_type_id")
+    
+private Long productAttributeCategoryId;
+        @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
-    @jakarta.persistence.JoinColumn(name = "product_attribute_category_id", insertable = false, updatable = false)
-    private PmsProductAttributeCategory productAttributeCategory;
+    @jakarta.persistence.JoinColumn(name = "product_type_id", insertable = false, updatable = false)
+    
+private PmsProductAttributeCategory productAttributeCategory;
 
     private String name;
 
-    @Column(name = "select_type")
+        @com.fasterxml.jackson.annotation.JsonProperty("selectionMode")
+        @Column(name = "selection_mode")
     @Schema(title = "Select type")
-    private Integer selectType;
+    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.SMALLINT)
+private Integer selectType;
 
-    @Column(name = "input_type")
+        @com.fasterxml.jackson.annotation.JsonProperty("inputMode")
+        @Column(name = "input_mode")
     @Schema(title = "Input type")
-    private Integer inputType;
+    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.SMALLINT)
+private Integer inputType;
 
-    @Column(name = "input_list")
+        @com.fasterxml.jackson.annotation.JsonProperty("allowedValues")
+        @Column(name = "allowed_values")
     @Schema(title = "Input list")
-    private String inputList;
+    
+private String inputList;
 
-    @Schema(title = "Sort")
-    private Integer sort;@Schema(title = "Type")
-    private Integer type;
+    @Column(name = "kind")
+    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.SMALLINT)
+private Integer type;
 }

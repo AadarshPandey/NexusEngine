@@ -15,10 +15,6 @@ terraform {
 
 provider "aws" {
   region = "us-east-1"
-  # ADD CREDENTIALS HERE
-  # Uncomment the lines below and add your AWS credentials if not using profiles or env vars
-  # access_key = "ADD_AWS_ACCESS_KEY_HERE"
-  # secret_key = "ADD_AWS_SECRET_KEY_HERE"
 }
 
 # Example of calling the dev environment directly from root (optional)

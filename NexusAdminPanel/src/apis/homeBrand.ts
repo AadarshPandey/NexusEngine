@@ -16,10 +16,10 @@ export function getHomeBrandListAPI(params: HomeBrandQueryParam) {
  */
 export function homeBrandUpdateRecommendStatusAPI(params: {
   ids: string
-  recommendStatus: number
+  isFeatured: number
 }) {
   return http({
-    url: '/home/brand/update/recommendStatus',
+    url: '/home/brand/update/isFeatured',
     method: 'post',
     params: params,
   })
@@ -47,9 +47,9 @@ export function homeBrandCreateAPI(data: SmsHomeBrand[]) {
 
 /**
  */
-export function homeBrandUpdateSortAPI(params: { id: number; sort: number }) {
+export function homeBrandUpdateSortAPI(params: { id: number; displayOrder: number }) {
   return http({
-    url: '/home/brand/update/sort/' + params.id,
+    url: '/home/brand/update/displayOrder/' + params.id,
     method: 'post',
     params: params,
   })

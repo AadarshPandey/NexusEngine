@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "ums_role_menu_relation", schema = "users")
+@Table(name = "role_menu", schema = "iam")
 public class UmsRoleMenuRelation implements Serializable {
 
     private static final long serialVersionUID = 1L;

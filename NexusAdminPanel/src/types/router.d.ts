@@ -5,7 +5,7 @@ export interface RouteRecordExt {
   /** Hidden from sidebar navigation */
   hidden?: boolean;
   /** Sort order for menu display */
-  sort?: number;
+  displayOrder?: number;
   /** Child routes */
   children?: RouteRecordExt[];
   /** Always show submenu even with single child */
@@ -13,6 +13,6 @@ export interface RouteRecordExt {
   /** Route metadata */
   meta?: {
     title?: string;
-    icon?: string;
+    iconUrl?: string;
   };
 }

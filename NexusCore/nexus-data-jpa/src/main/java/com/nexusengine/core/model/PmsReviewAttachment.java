@@ -9,32 +9,39 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "pms_review_attachments", schema = "pms")
+@Table(name = "review_media", schema = "engagement")
 public class PmsReviewAttachment implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Id
+        @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    
+private Long id;
 
-    @Column(name = "review_id")
-    private Long reviewId;
-    @com.fasterxml.jackson.annotation.JsonIgnore
+        @Column(name = "review_id")
+    
+private Long reviewId;
+        @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "review_id", insertable = false, updatable = false)
-    private PmsReview review;
+    
+private PmsReview review;
 
-    @Column(name = "media_type")
+        @Column(name = "media_type")
     @Schema(title = "Type: IMAGE or VIDEO")
-    private String mediaType;
+    
+private String mediaType;
 
-    @Column(name = "media_url")
-    private String mediaUrl;
+        @Column(name = "url")
+    
+private String mediaUrl;
 
-    @Column(name = "thumbnail_url")
-    private String thumbnailUrl;
+        @Column(name = "thumbnail_url")
+    
+private String thumbnailUrl;
 
-    @Column(name = "sort_order")
-    private Integer sortOrder;
+        @Column(name = "display_order")
+    
+private Integer sortOrder;
 }

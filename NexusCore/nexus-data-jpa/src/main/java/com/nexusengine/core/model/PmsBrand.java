@@ -9,21 +9,24 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "pms_brand", schema = "pms")
+@Table(name = "brand", schema = "catalog")
 public class PmsBrand implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Id
+        @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    
+private Long id;
 
     private String name;
 
-    @Column(name = "show_status")
-    private Integer showStatus;
+        @Column(name = "is_visible")
+    @jakarta.persistence.Convert(converter = com.nexusengine.core.model.converter.IntegerToBooleanConverter.class)
+private Integer isVisible;
 
-    @Schema(title = "Logo")
-    private String logo;
+            @Schema(title = "Logo")
+    @Column(name = "logo_url")
+private String logo;
 
 }

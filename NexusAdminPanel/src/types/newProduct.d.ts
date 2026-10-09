@@ -3,13 +3,13 @@ import type { PageParam } from './common'
 export type SmsHomeNewProduct = {
   /** ID */
   id?: number
-  productId: number
+  orderLineId: number
   productName: string
-  recommendStatus?: number
-  sort?: number
+  isFeatured?: number
+  displayOrder?: number
 }
 
 export type NewProductQueryParam = PageParam & {
   productName?: string
-  recommendStatus?: number
+  isFeatured?: number
 }

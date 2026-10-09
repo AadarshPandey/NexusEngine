@@ -44,7 +44,7 @@ public class ChatbotController {
     
     @Operation(summary = "Get conversation history by session ID")
     @GetMapping("/history")
-    public CommonResult<List<AiChatConversation>> getHistory(@RequestParam String sessionId) {
+    public CommonResult<List<AiChatConversation>> getHistory(@RequestParam("slotId") String sessionId) {
         return CommonResult.success(conversationRepository.findBySessionIdOrderByCreateTimeAsc(sessionId));
     }
 }

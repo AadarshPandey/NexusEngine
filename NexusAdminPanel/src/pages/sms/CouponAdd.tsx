@@ -29,10 +29,10 @@ const CouponAdd: React.FC = () => {
   const [formData, setFormData] = useState<SmsCouponExt>({
     type: 0,
     name: '',
-        amount: 0,
-    perLimit: 1,
-    minOrderAmount: 0,
-    useType: 0,
+        discountValue: 0,
+    perMemberLimit: 1,
+    minSpendAmount: 0,
+    applicabilityScope: 0,
           });
 
   const handleSubmit = async () => {
@@ -40,8 +40,8 @@ const CouponAdd: React.FC = () => {
     try {
       const payload = {
         ...formData,
-        startTime: formData.startTime ? new Date(formData.startTime).toISOString() : undefined,
-        endTime: formData.endTime ? new Date(formData.endTime).toISOString() : undefined,
+        startsAt: formData.startsAt ? new Date(formData.startsAt).toISOString() : undefined,
+        endsAt: formData.endsAt ? new Date(formData.endsAt).toISOString() : undefined,
               };
       await couponCreateAPI(payload);
       setSnackbar({ open: true, message: 'Coupon created successfully', severity: 'success' });
@@ -98,16 +98,16 @@ const CouponAdd: React.FC = () => {
               <TextField
                 label="Amount (Value / Percentage)"
                 type="number"
-                value={formData.amount || 0}
-                onChange={e => setFormData({ ...formData, amount: Number(e.target.value) })}
+                value={formData.discountValue || 0}
+                onChange={e => setFormData({ ...formData, discountValue: Number(e.target.value) })}
                 fullWidth
                 required
               />
               <TextField
                 label="Minimum Spend"
                 type="number"
-                value={formData.minOrderAmount || 0}
-                onChange={e => setFormData({ ...formData, minOrderAmount: Number(e.target.value) })}
+                value={formData.minSpendAmount || 0}
+                onChange={e => setFormData({ ...formData, minSpendAmount: Number(e.target.value) })}
                 fullWidth
               />
             </Box>
@@ -117,8 +117,8 @@ const CouponAdd: React.FC = () => {
               <TextField
                 label="Per User Limit"
                 type="number"
-                value={formData.perLimit || 1}
-                onChange={e => setFormData({ ...formData, perLimit: Number(e.target.value) })}
+                value={formData.perMemberLimit || 1}
+                onChange={e => setFormData({ ...formData, perMemberLimit: Number(e.target.value) })}
                 fullWidth
               />
             </Box>
@@ -126,9 +126,9 @@ const CouponAdd: React.FC = () => {
             <FormControl fullWidth>
               <InputLabel>Usage Type</InputLabel>
               <Select
-                value={formData.useType}
+                value={formData.applicabilityScope}
                 label="Usage Type"
-                onChange={(e) => setFormData({ ...formData, useType: Number(e.target.value) })}
+                onChange={(e) => setFormData({ ...formData, applicabilityScope: Number(e.target.value) })}
               >
                 <MenuItem value={0}>All Products</MenuItem>
                 <MenuItem value={1}>Specific Categories</MenuItem>
@@ -143,15 +143,15 @@ const CouponAdd: React.FC = () => {
               <DateTimePicker
                 label="Start Time"
                 format="DD/MM/YYYY HH:mm"
-                value={formData.startTime ? dayjs(formData.startTime) : null}
-                onChange={(newValue) => setFormData({ ...formData, startTime: newValue ? newValue.format('YYYY-MM-DDTHH:mm') : '' })}
+                value={formData.startsAt ? dayjs(formData.startsAt) : null}
+                onChange={(newValue) => setFormData({ ...formData, startsAt: newValue ? newValue.format('YYYY-MM-DDTHH:mm') : '' })}
                 slotProps={{ textField: { fullWidth: true } }}
               />
               <DateTimePicker
                 label="End Time"
                 format="DD/MM/YYYY HH:mm"
-                value={formData.endTime ? dayjs(formData.endTime) : null}
-                onChange={(newValue) => setFormData({ ...formData, endTime: newValue ? newValue.format('YYYY-MM-DDTHH:mm') : '' })}
+                value={formData.endsAt ? dayjs(formData.endsAt) : null}
+                onChange={(newValue) => setFormData({ ...formData, endsAt: newValue ? newValue.format('YYYY-MM-DDTHH:mm') : '' })}
                 slotProps={{ textField: { fullWidth: true } }}
               />
             </Box>

@@ -125,7 +125,7 @@ public class UmsAdminController {
     @Operation(summary = "Get item Operation")
     @GetMapping("/{id}")
 
-    public CommonResult<UmsAdmin> getItem(@PathVariable Long id) {
+    public CommonResult<UmsAdmin> getItem(@PathVariable("id") Long id) {
         UmsAdmin admin = adminService.getItem(id);
         return CommonResult.success(admin);
     }
@@ -133,7 +133,7 @@ public class UmsAdminController {
     @Operation(summary = "Update Operation")
     @PostMapping("/update/{id}")
 
-    public CommonResult update(@PathVariable Long id, @RequestBody UmsAdmin admin) {
+    public CommonResult update(@PathVariable("id") Long id, @RequestBody UmsAdmin admin) {
         int count = adminService.update(id, admin);
         if (count > 0) {
             return CommonResult.success(count);
@@ -162,7 +162,7 @@ public class UmsAdminController {
     @Operation(summary = "Delete Operation")
     @PostMapping("/delete/{id}")
 
-    public CommonResult delete(@PathVariable Long id) {
+    public CommonResult delete(@PathVariable("id") Long id) {
         int count = adminService.delete(id);
         if (count > 0) {
             return CommonResult.success(count);
@@ -173,7 +173,7 @@ public class UmsAdminController {
     @Operation(summary = "Update status Operation")
     @PostMapping("/updateStatus/{id}")
 
-    public CommonResult updateStatus(@PathVariable Long id,@RequestParam(value = "status") Integer status) {
+    public CommonResult updateStatus(@PathVariable("id") Long id,@RequestParam(value = "status") Integer status) {
         UmsAdmin umsAdmin = new UmsAdmin();
         umsAdmin.setStatus(status);
         int count = adminService.update(id,umsAdmin);
@@ -198,7 +198,7 @@ public class UmsAdminController {
     @Operation(summary = "Get role list Operation")
     @GetMapping("/role/{adminId}")
 
-    public CommonResult<List<UmsRole>> getRoleList(@PathVariable Long adminId) {
+    public CommonResult<List<UmsRole>> getRoleList(@PathVariable("adminId") Long adminId) {
         List<UmsRole> roleList = adminService.getRoleList(adminId);
         return CommonResult.success(roleList);
     }

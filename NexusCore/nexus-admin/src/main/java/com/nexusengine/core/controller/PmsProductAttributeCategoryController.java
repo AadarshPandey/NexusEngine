@@ -27,7 +27,7 @@ public class PmsProductAttributeCategoryController {
     @Operation(summary = "Create Operation")
     @PostMapping("/create")
 
-    public CommonResult create(@RequestParam String name) {
+    public CommonResult create(@RequestParam("name") String name) {
         int count = productAttributeCategoryService.create(name);
         if (count > 0) {
             return CommonResult.success(count);
@@ -39,7 +39,7 @@ public class PmsProductAttributeCategoryController {
     @Operation(summary = "Update Operation")
     @PostMapping("/update/{id}")
 
-    public CommonResult update(@PathVariable Long id, @RequestParam String name) {
+    public CommonResult update(@PathVariable("id") Long id, @RequestParam("name") String name) {
         int count = productAttributeCategoryService.update(id, name);
         if (count > 0) {
             return CommonResult.success(count);
@@ -51,7 +51,7 @@ public class PmsProductAttributeCategoryController {
     @Operation(summary = "Delete Operation")
     @GetMapping("/delete/{id}")
 
-    public CommonResult delete(@PathVariable Long id) {
+    public CommonResult delete(@PathVariable("id") Long id) {
         int count = productAttributeCategoryService.delete(id);
         if (count > 0) {
             return CommonResult.success(count);
@@ -63,7 +63,7 @@ public class PmsProductAttributeCategoryController {
     @Operation(summary = "Get item Operation")
     @GetMapping("/{id}")
 
-    public CommonResult<PmsProductAttributeCategory> getItem(@PathVariable Long id) {
+    public CommonResult<PmsProductAttributeCategory> getItem(@PathVariable("id") Long id) {
         PmsProductAttributeCategory productAttributeCategory = productAttributeCategoryService.getItem(id);
         return CommonResult.success(productAttributeCategory);
     }

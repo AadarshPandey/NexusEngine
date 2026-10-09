@@ -23,7 +23,7 @@ public class OmsOrderSettingController {
     @Operation(summary = "Get item Operation")
     @GetMapping("/{id}")
 
-    public CommonResult<OmsOrderSetting> getItem(@PathVariable Long id) {
+    public CommonResult<OmsOrderSetting> getItem(@PathVariable("id") Long id) {
         OmsOrderSetting orderSetting = orderSettingService.getItem(id);
         return CommonResult.success(orderSetting);
     }
@@ -31,7 +31,7 @@ public class OmsOrderSettingController {
     @Operation(summary = "Update Operation")
     @PostMapping("/update/{id}")
 
-    public CommonResult update(@PathVariable Long id, @RequestBody OmsOrderSetting orderSetting) {
+    public CommonResult update(@PathVariable("id") Long id, @RequestBody OmsOrderSetting orderSetting) {
         int count = orderSettingService.update(id,orderSetting);
         if(count>0){
             return CommonResult.success(count);

@@ -11,6 +11,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -48,7 +49,7 @@ class UmsAdminRepositoryTest {
         admin.setUsername("testadmin");
         admin.setPassword("encryptedpassword");
         admin.setEmail("test@admin.com");
-        admin.setCreateTime(LocalDateTime.now());
+        admin.setCreateTime(OffsetDateTime.now());
         admin.setStatus(1);
 
         UmsAdmin saved = adminRepository.save(admin);

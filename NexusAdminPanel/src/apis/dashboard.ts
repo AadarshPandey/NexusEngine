@@ -24,7 +24,7 @@ export interface DashboardInfo {
   productOverview: {
     unlisted: number;
     listed: number;
-    lowStock: number;
+    lowStockThreshold: number;
     total: number;
   };
   userOverview: {

@@ -5,75 +5,75 @@ export type OmsOrder = {
   memberId?: number
   memberUsername?: string
   couponId?: number
-  orderSn?: string
-  createTime: string
-  totalAmount: number
-  payAmount: number
-  freightAmount: number
-  promotionAmount?: number
-  couponAmount?: number
-  discountAmount: number
-  payType: number
+  orderNumber?: string
+  createdAt: string
+  subtotalAmount: number
+  grandTotalAmount: number
+  shippingAmount: number
+  promotionDiscountAmount?: number
+  couponDiscountAmount?: number
+  manualAdjustmentAmount: number
+  paymentMethod: number
   status: number
   orderType: number
-  deliveryCompany?: string
-  deliverySn?: string
-  receiverName?: string
-  receiverPhone?: string
-  receiverPostCode?: string
-  receiverDetailAddress?: string
+  carrierName?: string
+  trackingNumber?: string
+  recipientName?: string
+  recipientPhone?: string
+  shippingPostalCode?: string
+  shippingAddressLine?: string
   note?: string
-  confirmStatus?: number
-  deleteStatus?: number
+  isReceiptConfirmed?: number
+  deletedAt?: number
   useIntegration?: number
-  paymentTime: string
-  deliveryTime: string
-  receiveTime: string
-  commentTime: string
-  modifyTime?: string
+  paidAt: string
+  shippedAt: string
+  deliveredAt: string
+  reviewedAt: string
+  updatedAt?: string
 }
 
 export type OmsOrderItem = {
   id: number
   orderId: number
-  productId: number
-  productPic: string
+  orderLineId: number
+  productImageUrl: string
   productName: string
-  productBrand: string
-  productPrice: number
-  productQuantity: number
-  productSkuId: number
-  productCategoryId: number
+  brandName: string
+  unitPrice: number
+  quantity: number
+  skuId: number
+  permissionGroupId: number
   promotionName: string
-  promotionAmount: number
-  couponAmount: number
-  realAmount: number
+  promotionDiscountAmount: number
+  couponDiscountAmount: number
+  lineTotalAmount: number
   giftIntegration: number
   giftGrowth: number
-  productAttr: string
+  skuAttributes: string
 }
 
 export type OmsOrderOperateHistory = {
   id: number
   orderId: number
-  operateMan: string
-  createTime: string
-  orderStatus: number
+  changedByAdminId: string
+  createdAt: string
+  toStatus: number
   note: string
 }
 
 export type OrderQueryParam = PageParam & {
-  orderSn?: string
+  orderNumber?: string
   receiverKeyword?: string
   status?: number
   orderType?: number
-  createTime?: string
+  createdAt?: string
 }
 
 export type OmsOrderDeliveryParam = {
   orderId: number
-  deliveryCompany?: string
-  deliverySn?: string
+  carrierName?: string
+  trackingNumber?: string
 }
 
 export type OmsOrderDetail = OmsOrder & {
@@ -83,16 +83,16 @@ export type OmsOrderDetail = OmsOrder & {
 
 export type OmsReceiverInfoParam = {
   orderId: number
-  receiverName?: string
-  receiverPhone?: string
-  receiverPostCode?: string
-  receiverDetailAddress?: string
+  recipientName?: string
+  recipientPhone?: string
+  shippingPostalCode?: string
+  shippingAddressLine?: string
   status: number
 }
 
 export type OmsMoneyInfoParam = {
   orderId: number
-  freightAmount: number
-  discountAmount: number
+  shippingAmount: number
+  manualAdjustmentAmount: number
   status: number
 }

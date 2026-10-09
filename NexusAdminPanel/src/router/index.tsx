@@ -99,7 +99,7 @@ const router = createHashRouter([
       { path: 'pms/productCate', element: withSuspense(ProductCategoryList) },
       { path: 'pms/addProductCate', element: withSuspense(ProductCategoryAdd) },
       { path: 'pms/updateProductCate', element: withSuspense(ProductCategoryUpdate) },
-      { path: 'pms/productAttr', element: withSuspense(ProductAttrList) },
+      { path: 'pms/skuAttributes', element: withSuspense(ProductAttrList) },
       { path: 'pms/productAttrList', element: withSuspense(ProductAttrDetailList) },
       { path: 'pms/addProductAttr', element: withSuspense(ProductAttrAdd) },
       { path: 'pms/updateProductAttr', element: withSuspense(ProductAttrUpdate) },

@@ -9,40 +9,49 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "oms_company_address", schema = "orders")
+@Table(name = "merchant_address", schema = "ordering")
 public class OmsCompanyAddress implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Id
+        @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    
+private Long id;
 
-    @Column(name = "address_name")
+        @Column(name = "label")
     @Schema(title = "Address name")
-    private String addressName;
+    
+private String addressName;
 
-    @Column(name = "send_status")
+        @Column(name = "is_default_ship_from")
     @Schema(title = "Send status")
-    private Integer sendStatus;
+    @jakarta.persistence.Convert(converter = com.nexusengine.core.model.converter.IntegerToBooleanConverter.class)
+private Integer sendStatus;
 
-    @Column(name = "receive_status")
+        @Column(name = "is_default_return_to")
     @Schema(title = "Receive status")
-    private Integer receiveStatus;
+    @jakarta.persistence.Convert(converter = com.nexusengine.core.model.converter.IntegerToBooleanConverter.class)
+private Integer receiveStatus;
 
-    @Schema(title = "Name")
-    private String name;
+            @Schema(title = "Name")
+    @Column(name = "contact_name")
+private String name;
 
-    @Schema(title = "Phone")
-    private String phone;
+            @Schema(title = "Phone")
+    @Column(name = "contact_phone")
+private String phone;
 
-    @Schema(title = "State")
-    private String state;
+        @Schema(title = "State")
+    
+private String state;
 
-    @Schema(title = "City")
-    private String city;
+        @Schema(title = "City")
+    
+private String city;
 
-    @Column(name = "detail_address")
+        @Column(name = "address_line")
     @Schema(title = "Detail address")
-    private String detailAddress;
+    
+private String detailAddress;
 }

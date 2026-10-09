@@ -1,12 +1,12 @@
 export type UmsMenu = {
   id?: number
-  parentId: number
-  createTime?: string
+  parentReviewId: number
+  createdAt?: string
   title: string
-  level?: number
-  sort: number
+  depth?: number
+  displayOrder: number
   name: string
-  icon: string
+  iconUrl: string
   hidden: number
 }
 

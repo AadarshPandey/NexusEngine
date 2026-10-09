@@ -7,11 +7,11 @@ export interface RouteConfig {
   path: string;
   name?: string;
   hidden?: boolean;
-  sort?: number;
+  displayOrder?: number;
   alwaysShow?: boolean;
   meta?: {
     title?: string;
-    icon?: string;
+    iconUrl?: string;
   };
   children?: RouteConfig[];
 }
@@ -35,21 +35,21 @@ function hasPermission(menus: UmsMenu[], route: RouteConfig): boolean {
         if (!route.meta) route.meta = {};
         route.meta.title = currMenu.title;
       }
-      if (currMenu.icon != null && currMenu.icon !== '') {
+      if (currMenu.iconUrl != null && currMenu.iconUrl !== '') {
         if (!route.meta) route.meta = {};
-        route.meta.icon = currMenu.icon;
+        route.meta.iconUrl = currMenu.iconUrl;
       }
       if (currMenu.hidden != null) {
         route.hidden = currMenu.hidden !== 0;
       }
-      if (currMenu.sort != null) {
-        route.sort = currMenu.sort;
+      if (currMenu.displayOrder != null) {
+        route.displayOrder = currMenu.displayOrder;
       }
       return true;
     } else {
-      route.sort = 0;
+      route.displayOrder = 0;
       if (route.hidden === true) {
-        route.sort = -1;
+        route.displayOrder = -1;
         return true;
       }
       return false;
@@ -61,10 +61,10 @@ function hasPermission(menus: UmsMenu[], route: RouteConfig): boolean {
 function sortRouters(routers: RouteConfig[]) {
   routers.forEach((r) => {
     if (r.children && r.children.length > 0) {
-      r.children.sort((a, b) => (b.sort || 0) - (a.sort || 0));
+      r.children.sort((a, b) => (b.displayOrder || 0) - (a.displayOrder || 0));
     }
   });
-  routers.sort((a, b) => (b.sort || 0) - (a.sort || 0));
+  routers.sort((a, b) => (b.displayOrder || 0) - (a.displayOrder || 0));
 }
 
 // Deep clone route config to avoid mutating the original

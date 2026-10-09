@@ -47,7 +47,7 @@ public class PmsSkuStockServiceImpl implements PmsSkuStockService {
             if (oldSku != null && newSku.getPrice() != null && oldSku.getPrice() != null && newSku.getPrice().compareTo(oldSku.getPrice()) != 0) {
                 com.nexusengine.core.model.PmsProductAuditLog log = new com.nexusengine.core.model.PmsProductAuditLog();
                 log.setProductId(pid);
-                log.setCreateTime(java.time.LocalDateTime.now());
+                log.setCreateTime(java.time.OffsetDateTime.now());
                 log.setOperateMan(username);
                 log.setPriceOld(oldSku.getPrice());
                 log.setPriceNew(newSku.getPrice());

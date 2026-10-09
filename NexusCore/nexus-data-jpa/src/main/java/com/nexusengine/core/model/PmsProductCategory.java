@@ -9,45 +9,64 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "pms_product_category", schema = "pms")
+@Table(name = "category", schema = "catalog")
 public class PmsProductCategory implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Id
+        @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    
+private Long id;
 
-    @Column(name = "parent_id")
+        @Column(name = "parent_id")
     @Schema(title = "Parent id")
-    private Long parentId;
+    
+private Long parentId;
 
     private String name;
 
-    @Schema(title = "Level")
-    private Integer level;
+            @Schema(title = "Level")
+    @com.fasterxml.jackson.annotation.JsonProperty("depth")
+    @Column(name = "depth")
+    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.SMALLINT)
+private Integer level;
 
-    @Column(name = "product_count")
+            @org.hibernate.annotations.Formula("(SELECT COUNT(*) FROM catalog.product p WHERE (p.category_id = id OR p.category_id IN (SELECT c.id FROM catalog.category c WHERE c.parent_id = id)) AND p.deleted_at IS NULL)")
+    @com.fasterxml.jackson.annotation.JsonProperty("quantity")
     private Integer productCount;
 
-    @Column(name = "product_unit")
-    private String productUnit;
+        @com.fasterxml.jackson.annotation.JsonProperty("unitOfMeasure")
+        @Column(name = "unit_of_measure")
+    
+private String productUnit;
 
-    @Column(name = "nav_status")
+        @com.fasterxml.jackson.annotation.JsonProperty("isInNavigation")
+        @Column(name = "is_in_navigation")
     @Schema(title = "Nav status")
-    private Integer navStatus;
+    @jakarta.persistence.Convert(converter = com.nexusengine.core.model.converter.IntegerToBooleanConverter.class)
+private Integer navStatus;
 
-    @Column(name = "show_status")
+        @com.fasterxml.jackson.annotation.JsonProperty("isVisible")
+        @Column(name = "is_visible")
     @Schema(title = "Show status")
-    private Integer showStatus;
+    @jakarta.persistence.Convert(converter = com.nexusengine.core.model.converter.IntegerToBooleanConverter.class)
+private Integer showStatus;
 
-    private Integer sort;
+            @com.fasterxml.jackson.annotation.JsonProperty("displayOrder")
+            @Column(name = "display_order")
+private Integer sort;
 
-    @Schema(title = "Icon")
-    private String icon;
+            @com.fasterxml.jackson.annotation.JsonProperty("iconUrl")
+            @Schema(title = "Icon")
+    @Column(name = "icon_url")
+private String icon;
 
-    private String keywords;
+            @com.fasterxml.jackson.annotation.JsonProperty("searchKeywords")
+            @Column(name = "search_keywords")
+private String keywords;
 
-    @Schema(title = "Description")
-    private String description;
+        @Schema(title = "Description")
+    
+private String description;
 }

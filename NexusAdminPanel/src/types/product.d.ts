@@ -1,40 +1,40 @@
 import type { PageParam } from './common'
-import type { PmsProductAttributeValue } from './productAttr'
+import type { PmsProductAttributeValue } from './skuAttributes'
 import type { PmsSkuStock } from './skuStock'
 
 export type PmsProduct = {
   /** ID */
   id?: number
   brandId?: number
-  productCategoryId?: number
+  permissionGroupId?: number
   feightTemplateId?: number
-  productAttributeCategoryId?: number
+  productTypeId?: number
   name: string
-  pic?: string
-  productSn: string
-  deleteStatus?: number
-  publishStatus?: number
-  newStatus?: number
-  recommendStatus?: number
-  verifyStatus?: number
-  sale?: number
-  price?: number
-  promotionPrice?: number
+  primaryImageUrl?: string
+  productCode: string
+  deletedAt?: number
+  isPublished?: number
+  isNewArrival?: number
+  isFeatured?: number
+  approvalStatus?: number
+  unitsSold?: number
+  listPrice?: number
+  salePrice?: number
   giftGrowth?: number
   originalPrice?: number
-  stock?: number
-  lowStock?: number
-  keywords?: string
+  onHandQty?: number
+  lowStockThreshold?: number
+  searchKeywords?: string
   albumPics?: string
   brandName?: string
-  description?: string
+  customerComment?: string
 }
 
 export type ProductQueryParam = PageParam & {
-  publishStatus?: number
-  verifyStatus?: number
-  productSn?: string
-  productCategoryId?: number
+  isPublished?: number
+  approvalStatus?: number
+  productCode?: string
+  permissionGroupId?: number
   brandId?: number
 }
 
@@ -47,33 +47,33 @@ export type PmsProductParam = PmsProduct & {
   subjectProductRelationList?: CmsSubjectProductRelation[]
   prefrenceAreaProductRelationList?: CmsPrefrenceAreaProductRelation[]
   cateParentId?: number
-  flashPromotionCount: number
-  flashPromotionId: number
-  flashPromotionPrice: number
+  quantityAvailable: number
+  flashSaleId: number
+  flashPrice: number
   flashPromotionSort: number
 }
 
 export type PmsProductVolumeDiscount = {
   /** ID */
   id?: number
-  productId?: number
-  count: number
-  discount?: number
-  price?: number
+  orderLineId?: number
+  minQuantity: number
+  discountRate?: number
+  listPrice?: number
 }
 
 export type PmsProductSpendDiscount = {
   /** ID */
   id?: number
-  productId?: number
-  fullPrice?: number
-  reducePrice?: number
+  orderLineId?: number
+  minSpendAmount?: number
+  manualAdjustmentAmount?: number
 }
 
 export type PmsMemberPrice = {
   /** ID */
   id?: number
-  productId?: number
+  orderLineId?: number
   memberPrice?: number
 }
 
@@ -81,12 +81,12 @@ export type CmsSubjectProductRelation = {
   /** ID */
   id?: number
   subjectId?: number
-  productId?: number
+  orderLineId?: number
 }
 
 export type CmsPrefrenceAreaProductRelation = {
   /** ID */
   id?: number
   prefrenceAreaId?: number
-  productId?: number
+  orderLineId?: number
 }

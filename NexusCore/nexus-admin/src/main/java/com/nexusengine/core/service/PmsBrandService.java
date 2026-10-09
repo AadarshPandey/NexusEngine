@@ -50,12 +50,12 @@ public interface PmsBrandService {
         /**
      * Executes the operation.
      * @param keyword the keyword
-     * @param showStatus the showStatus
+     * @param isVisible the isVisible
      * @param pageNum the pageNum
      * @param pageSize the pageSize
      * @return the result of the operation
      */
-    org.springframework.data.domain.Page<PmsBrand> listBrand(String keyword, Integer showStatus, int pageNum, int pageSize);
+    org.springframework.data.domain.Page<PmsBrand> listBrand(String keyword, Integer isVisible, int pageNum, int pageSize);
 
         /**
      * Executes the operation.
@@ -67,8 +67,8 @@ public interface PmsBrandService {
         /**
      * Executes the operation.
      * @param ids the ids
-     * @param showStatus the showStatus
+     * @param isVisible the isVisible
      * @return the result of the operation
      */
-    int updateShowStatus(List<Long> ids, Integer showStatus);
+    int updateIsVisible(List<Long> ids, Integer isVisible);
 }

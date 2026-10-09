@@ -29,13 +29,13 @@ const AdvertiseDetail: React.FC<Props> = ({ isEdit = false }) => {
   const [formData, setFormData] = useState<SmsHomeAdvertise>({
     name: '',
     type: 0,
-    pic: '',
-    startTime: '',
-    endTime: '',
+    primaryImageUrl: '',
+    startsAt: '',
+    endsAt: '',
     status: 1,
     url: '',
     note: '',
-    sort: 0,
+    displayOrder: 0,
   });
 
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' as 'success' | 'error' });
@@ -45,8 +45,8 @@ const AdvertiseDetail: React.FC<Props> = ({ isEdit = false }) => {
       getHomeAdvertiseByIdAPI(Number(id)).then(res => {
         // format dates for datetime-local input
         const data = res.data;
-        if (data.startTime) data.startTime = new Date(data.startTime).toISOString().slice(0, 16);
-        if (data.endTime) data.endTime = new Date(data.endTime).toISOString().slice(0, 16);
+        if (data.startsAt) data.startsAt = new Date(data.startsAt).toISOString().slice(0, 16);
+        if (data.endsAt) data.endsAt = new Date(data.endsAt).toISOString().slice(0, 16);
         setFormData(data);
       }).catch(console.error);
     }
@@ -57,8 +57,8 @@ const AdvertiseDetail: React.FC<Props> = ({ isEdit = false }) => {
       // Convert dates back to ISO or appropriate format if needed, backend usually accepts ISO string
       const payload = { 
         ...formData,
-        startTime: formData.startTime ? new Date(formData.startTime).toISOString() : undefined,
-        endTime: formData.endTime ? new Date(formData.endTime).toISOString() : undefined,
+        startsAt: formData.startsAt ? new Date(formData.startsAt).toISOString() : undefined,
+        endsAt: formData.endsAt ? new Date(formData.endsAt).toISOString() : undefined,
       };
 
       if (isEdit && id) {
@@ -92,8 +92,8 @@ const AdvertiseDetail: React.FC<Props> = ({ isEdit = false }) => {
 
             <TextField
               label="Image URL"
-              value={formData.pic || ''}
-              onChange={e => setFormData({ ...formData, pic: e.target.value })}
+              value={formData.primaryImageUrl || ''}
+              onChange={e => setFormData({ ...formData, primaryImageUrl: e.target.value })}
               fullWidth
               required
             />
@@ -102,8 +102,8 @@ const AdvertiseDetail: React.FC<Props> = ({ isEdit = false }) => {
               label="Start Time"
               type="datetime-local"
               InputLabelProps={{ shrink: true }}
-              value={formData.startTime || ''}
-              onChange={e => setFormData({ ...formData, startTime: e.target.value })}
+              value={formData.startsAt || ''}
+              onChange={e => setFormData({ ...formData, startsAt: e.target.value })}
               fullWidth
             />
             
@@ -111,8 +111,8 @@ const AdvertiseDetail: React.FC<Props> = ({ isEdit = false }) => {
               label="End Time"
               type="datetime-local"
               InputLabelProps={{ shrink: true }}
-              value={formData.endTime || ''}
-              onChange={e => setFormData({ ...formData, endTime: e.target.value })}
+              value={formData.endsAt || ''}
+              onChange={e => setFormData({ ...formData, endsAt: e.target.value })}
               fullWidth
             />
 
@@ -135,8 +135,8 @@ const AdvertiseDetail: React.FC<Props> = ({ isEdit = false }) => {
             <TextField
               label="Sort Order"
               type="number"
-              value={formData.sort || 0}
-              onChange={e => setFormData({ ...formData, sort: Number(e.target.value) })}
+              value={formData.displayOrder || 0}
+              onChange={e => setFormData({ ...formData, displayOrder: Number(e.target.value) })}
               fullWidth
             />
             

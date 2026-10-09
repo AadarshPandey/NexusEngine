@@ -46,7 +46,7 @@ public class PromotionalBannerController {
     @Operation(summary = "Update status Operation")
     @PostMapping("/update/status/{id}")
 
-    public CommonResult updateStatus(@PathVariable Long id, Integer status) {
+    public CommonResult updateStatus(@PathVariable("id") Long id, Integer status) {
         int count = advertiseService.updateStatus(id, status);
         if (count > 0)
             return CommonResult.success(count);
@@ -56,7 +56,7 @@ public class PromotionalBannerController {
     @Operation(summary = "Get item Operation")
     @GetMapping("/{id}")
 
-    public CommonResult<PromotionalBanner> getItem(@PathVariable Long id) {
+    public CommonResult<PromotionalBanner> getItem(@PathVariable("id") Long id) {
         PromotionalBanner advertise = advertiseService.getItem(id);
         return CommonResult.success(advertise);
     }
@@ -64,7 +64,7 @@ public class PromotionalBannerController {
     @Operation(summary = "Update Operation")
     @PostMapping("/update/{id}")
 
-    public CommonResult update(@PathVariable Long id, @RequestBody PromotionalBanner advertise) {
+    public CommonResult update(@PathVariable("id") Long id, @RequestBody PromotionalBanner advertise) {
         int count = advertiseService.update(id, advertise);
         if (count > 0)
             return CommonResult.success(count);

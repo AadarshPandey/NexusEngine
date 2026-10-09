@@ -6,22 +6,22 @@ import type { SmsFlashPromotionProductRelation } from '@/types/flash';
 
 const FlashProductRelation: React.FC = () => {
   const [searchParams] = useSearchParams();
-  const flashPromotionId = searchParams.get('flashPromotionId');
-  const flashPromotionSessionId = searchParams.get('flashPromotionSessionId');
+  const flashSaleId = searchParams.get('flashSaleId');
+  const slotId = searchParams.get('slotId');
 
   const [list, setList] = useState<SmsFlashPromotionProductRelation[]>([]);
 
   useEffect(() => {
-    if (flashPromotionId && flashPromotionSessionId) {
+    if (flashSaleId && slotId) {
       fetchList();
     }
-  }, [flashPromotionId, flashPromotionSessionId]);
+  }, [flashSaleId, slotId]);
 
   const fetchList = async () => {
     try {
       const res = await getFlashProductRelationListAPI({
-        flashPromotionId: Number(flashPromotionId),
-        flashPromotionSessionId: Number(flashPromotionSessionId),
+        flashSaleId: Number(flashSaleId),
+        slotId: Number(slotId),
         pageNum: 1,
         pageSize: 100
       });
@@ -38,7 +38,7 @@ const FlashProductRelation: React.FC = () => {
           <Box>
             <Typography variant="h5">Session Products & Redis Configuration</Typography>
             <Typography variant="body2" color="text.secondary">
-              Configure strict inventory limits. These values are pushed to Redis to prevent overselling during the flash sale.
+              Configure strict inventory limits. These values are pushed to Redis to prevent overselling during the flash unitsSold.
             </Typography>
           </Box>
           <Box>
@@ -64,18 +64,18 @@ const FlashProductRelation: React.FC = () => {
           <TableBody>
             {list.map((row) => (
               <TableRow key={row.id} hover>
-                <TableCell>{row.productId}</TableCell>
+                <TableCell>{row.orderLineId}</TableCell>
                 <TableCell>{row.product?.name}</TableCell>
-                <TableCell>₹{row.product?.price}</TableCell>
+                <TableCell>₹{row.product?.listPrice}</TableCell>
                 <TableCell>
-                  <TextField size="small" defaultValue={row.flashPromotionPrice} InputProps={{ startAdornment: <InputAdornment position="start">₹</InputAdornment> }} sx={{ width: 100 }} />
+                  <TextField size="small" defaultValue={row.flashPrice} InputProps={{ startAdornment: <InputAdornment position="start">₹</InputAdornment> }} sx={{ width: 100 }} />
                 </TableCell>
                 <TableCell>
-                  <TextField size="small" defaultValue={row.flashPromotionCount} sx={{ width: 100 }} />
+                  <TextField size="small" defaultValue={row.quantityAvailable} sx={{ width: 100 }} />
                   <Chip size="small" label="Strict Limit" color="error" sx={{ ml: 1 }} />
                 </TableCell>
                 <TableCell>
-                  <TextField size="small" defaultValue={row.flashPromotionLimit} sx={{ width: 80 }} />
+                  <TextField size="small" defaultValue={row.perMemberLimit} sx={{ width: 80 }} />
                 </TableCell>
                 <TableCell align="center">
                   <Button size="small" color="primary">Save Config</Button>

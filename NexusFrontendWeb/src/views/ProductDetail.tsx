@@ -33,13 +33,13 @@ const ProductDetail: React.FC = () => {
     }
   }, [id]);
 
-  const loadDetail = async (productId: number) => {
+  const loadDetail = async (orderLineId: number) => {
     try {
       setLoading(true);
-      const res = await fetchProductDetail(productId);
+      const res = await fetchProductDetail(orderLineId);
       setProductDetail(res.data);
-      if (res.data?.product?.pic) {
-        setActiveImage(res.data.product.pic);
+      if (res.data?.product?.primaryImageUrl) {
+        setActiveImage(res.data.product.primaryImageUrl);
       }
     } catch (error) {
       console.error(error);
@@ -69,7 +69,7 @@ const ProductDetail: React.FC = () => {
 
       if (matchedSku) {
         setActiveSku(matchedSku);
-        if (matchedSku.pic) setActiveImage(matchedSku.pic);
+        if (matchedSku.primaryImageUrl) setActiveImage(matchedSku.primaryImageUrl);
       } else {
         setActiveSku(null);
         // Look for ANY sku that has the selected color to at least update the image
@@ -79,24 +79,24 @@ const ProductDetail: React.FC = () => {
              return sp.some((s: {key: string, value: string}) => s.key === 'Color' && s.value === newSelections['Color']);
            } catch(e) { return false; }
         });
-        if (partialSku && partialSku.pic) {
-           setActiveImage(partialSku.pic);
-        } else if (productDetail.product.pic) {
-           setActiveImage(productDetail.product.pic);
+        if (partialSku && partialSku.primaryImageUrl) {
+           setActiveImage(partialSku.primaryImageUrl);
+        } else if (productDetail.product.primaryImageUrl) {
+           setActiveImage(productDetail.product.primaryImageUrl);
         }
       }
     }
   };
 
-  const currentCartQuantity = cartItems.find(item => item.productId === productDetail?.product.id)?.quantity || 0;
+  const currentCartQuantity = cartItems.find(item => item.orderLineId === productDetail?.product.id)?.quantity || 0;
   const isInCart = currentCartQuantity > 0;
   
   // Display Price & Stock based on SKU selection
   const isPromotionActive = productDetail?.product.promotionType === 1 || productDetail?.flashSaleActive;
   const displayPrice = activeSku 
-    ? (isPromotionActive && activeSku.promotionPrice ? activeSku.promotionPrice : activeSku.price) 
-    : (isPromotionActive && productDetail?.product.promotionPrice ? productDetail.product.promotionPrice : productDetail?.product.price);
-  const displayStock = activeSku ? Math.max(0, activeSku.stock - (activeSku.lockStock || 0)) : (productDetail ? productDetail.product.stock : 0);
+    ? (isPromotionActive && activeSku.salePrice ? activeSku.salePrice : activeSku.listPrice) 
+    : (isPromotionActive && productDetail?.product.salePrice ? productDetail.product.salePrice : productDetail?.product.listPrice);
+  const displayStock = activeSku ? Math.max(0, activeSku.onHandQty - (activeSku.reservedQty || 0)) : (productDetail ? productDetail.product.onHandQty : 0);
   const isOutOfStock = !displayStock || displayStock <= 0;
 
   // Has user selected all required attributes?
@@ -117,14 +117,14 @@ const ProductDetail: React.FC = () => {
     try {
       setAddingToCart(true);
       await dispatch(addItemToCart({
-        productId: productDetail.product.id,
+        orderLineId: productDetail.product.id,
         quantity: 1,
-        price: displayPrice || 0,
-        productPic: activeSku?.pic || productDetail.product.pic,
+        listPrice: displayPrice || 0,
+        productImageUrl: activeSku?.primaryImageUrl || productDetail.product.primaryImageUrl,
         productName: productDetail.product.name + (activeSku ? ` (${Object.values(selectedAttributes).join(', ')})` : ''),
-        productSkuId: activeSku?.id,
+        skuId: activeSku?.id,
         productSkuCode: activeSku?.skuCode,
-        productAttr: JSON.stringify(Object.entries(selectedAttributes).map(([key, value]) => ({ key, value }))),
+        skuAttributes: JSON.stringify(Object.entries(selectedAttributes).map(([key, value]) => ({ key, value }))),
       })).unwrap();
       alert('Item added to cart!');
     } catch (error: unknown) {
@@ -143,11 +143,11 @@ const ProductDetail: React.FC = () => {
   }
 
   const { product, productAttributeList, productAttributeValueList } = productDetail;
-  const allImages = [product.pic, ...(product.galleryList ? [...product.galleryList].sort((a,b)=>a.sortOrder-b.sortOrder).map(m=>m.mediaUrl) : [])].filter(Boolean) as string[];
+  const allImages = [product.primaryImageUrl, ...(product.galleryList ? [...product.galleryList].displayOrder((a,b)=>a.displayOrder-b.displayOrder).map(m=>m.url) : [])].filter(Boolean) as string[];
 
   // Group attribute values for rendering
   const attributesToRender = productAttributeList?.filter(attr => attr.type === 0).map(attr => {
-    const valObj = productAttributeValueList?.find(val => val.productAttributeId === attr.id);
+    const valObj = productAttributeValueList?.find(val => val.attributeId === attr.id);
     const values = valObj?.value ? valObj.value.split(',') : [];
     return { ...attr, values };
   }) || [];
@@ -231,12 +231,12 @@ const ProductDetail: React.FC = () => {
 
             <Box sx={{ mt: 4 }}>
               <Typography variant="h6" gutterBottom>Product Description</Typography>
-              <ReactMarkdown>{product.description || 'No description available.'}</ReactMarkdown>
+              <ReactMarkdown>{product.customerComment || 'No customerComment available.'}</ReactMarkdown>
             </Box>
           </Grid>
         </Grid>
       </Paper>
-      <ReviewSection productId={product.id} />
+      <ReviewSection orderLineId={product.id} />
     </Box>
   );
 };

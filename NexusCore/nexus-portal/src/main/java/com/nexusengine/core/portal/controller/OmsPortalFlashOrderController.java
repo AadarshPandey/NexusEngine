@@ -22,9 +22,9 @@ public class OmsPortalFlashOrderController {
     @Operation(summary = "Generate Flash Sale Order (High Concurrency)")
     @PostMapping("/generate")
 
-    public CommonResult generateFlashOrder(@RequestParam Long productId,
-                                           @RequestParam Long flashPromotionId,
-                                           @RequestParam Long flashPromotionSessionId,
+    public CommonResult generateFlashOrder(@RequestParam("productId") Long productId,
+                                           @RequestParam("flashPromotionId") Long flashPromotionId,
+                                           @RequestParam("flashPromotionSessionId") Long flashPromotionSessionId,
                                            @RequestParam(defaultValue = "1") Integer quantity) {
         return flashSaleOrderService.generateFlashOrder(productId, flashPromotionId, flashPromotionSessionId, quantity);
     }

@@ -5,7 +5,7 @@ import request from '../utils/request';
 
 const Register: React.FC = () => {
   const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [passwordHash, setPassword] = useState('');
   const [email, setEmail] = useState('');
   const [authCode, setAuthCode] = useState('');
   const [error, setError] = useState('');
@@ -47,18 +47,18 @@ const Register: React.FC = () => {
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!username || !password || !email || !authCode) {
+    if (!username || !passwordHash || !email || !authCode) {
       setError('Please fill in all fields.');
       return;
     }
-    if (password.length < 6) {
+    if (passwordHash.length < 6) {
       setError('Password must be at least 6 characters long.');
       return;
     }
     try {
       const params = new URLSearchParams();
       params.append('username', username);
-      params.append('password', password);
+      params.append('passwordHash', passwordHash);
       params.append('email', email);
       params.append('authCode', authCode);
       await request.post('/sso/register', params);
@@ -93,9 +93,9 @@ const Register: React.FC = () => {
           <TextField
             fullWidth
             label="Password"
-            type="password"
+            type="passwordHash"
             margin="normal"
-            value={password}
+            value={passwordHash}
             onChange={(e) => setPassword(e.target.value)}
           />
           <TextField

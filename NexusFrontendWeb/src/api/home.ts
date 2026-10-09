@@ -3,39 +3,39 @@ import request from '../utils/request';
 export interface PmsProduct {
   id: number;
   brandId: number;
-  productCategoryId: number;
+  permissionGroupId: number;
   name: string;
-  pic: string;
-  productSn: string;
-  deleteStatus: number;
-  publishStatus: number;
-  newStatus: number;
-  recommendStatus: number;
-  verifyStatus: number;
-  sort: number;
-  sale: number;
-  price: number;
-  promotionPrice: number;
+  primaryImageUrl: string;
+  productCode: string;
+  deletedAt: number;
+  isPublished: number;
+  isNewArrival: number;
+  isFeatured: number;
+  approvalStatus: number;
+  displayOrder: number;
+  unitsSold: number;
+  listPrice: number;
+  salePrice: number;
   promotionType?: number;
   subTitle: string;
-  description: string;
-  stock: number;
-  galleryList?: { mediaUrl: string; sortOrder: number }[];
+  customerComment: string;
+  onHandQty: number;
+  galleryList?: { url: string; displayOrder: number }[];
 }
 
 
 export interface PmsProductCategory {
   id: number;
-  parentId: number;
+  parentReviewId: number;
   name: string;
-  level: number;
-  productCount: number;
-  productUnit: string;
-  navStatus: number;
-  showStatus: number;
-  sort: number;
-  icon: string;
-  keywords: string;
+  depth: number;
+  quantity: number;
+  unitOfMeasure: string;
+  isInNavigation: number;
+  isVisible: number;
+  displayOrder: number;
+  iconUrl: string;
+  searchKeywords: string;
 }
 
 export interface HomeContentResult {
@@ -47,7 +47,7 @@ export interface HomeContentResult {
 }
 
 export const fetchHomeContent = () => {
-  return request.get<unknown, { data: HomeContentResult }>('/home/content');
+  return request.get<unknown, { data: HomeContentResult }>('/home/body');
 };
 
 export const fetchRecommendProductList = (pageSize: number = 4, pageNum: number = 1) => {

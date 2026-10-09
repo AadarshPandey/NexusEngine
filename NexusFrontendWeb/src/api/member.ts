@@ -3,31 +3,31 @@ import request from '../utils/request';
 export interface UmsMember {
   id: number;
   username: string;
-  password?: string;
-  nickname: string;
-  phone: string;
+  passwordHash?: string;
+  displayName: string;
+  contactPhone: string;
   status: number;
-  createTime: string;
-  icon: string;
+  createdAt: string;
+  iconUrl: string;
   gender: number;
   city: string;
   job: string;
-  sourceType: number;
-  points: number;
-  lifetimePoints: number;
+  signupChannel: number;
+  pointsBalance: number;
+  lifetimePointsEarned: number;
 }
 
 export interface UmsMemberReceiveAddress {
   id: number;
   memberId: number;
   name: string;
-  phoneNumber: string;
-  defaultStatus: number;
-  postCode: string;
-  province: string;
+  recipientPhone: string;
+  isDefault: number;
+  postalCode: string;
+  state: string;
   city: string;
-  region: string;
-  detailAddress: string;
+  district: string;
+  addressLine: string;
 }
 
 export const fetchMemberInfo = () => {

@@ -5,24 +5,24 @@ export interface PmsBrand {
   id: number;
   name: string;
   firstLetter: string;
-  sort: number;
+  displayOrder: number;
   factoryStatus: number;
-  showStatus: number;
-  productCount: number;
+  isVisible: number;
+  quantity: number;
   productCommentCount: number;
-  logo: string;
+  logoUrl: string;
   bigPic: string;
   brandStory: string;
 }
 
 export interface PmsProductAttribute {
   id: number;
-  productAttributeCategoryId: number;
+  productTypeId: number;
   name: string;
-  selectType: number;
-  inputType: number;
-  inputList: string;
-  sort: number;
+  selectionMode: number;
+  inputMode: number;
+  allowedValues: string;
+  displayOrder: number;
   filterType: number;
   searchType: number;
   relatedStatus: number;
@@ -32,22 +32,22 @@ export interface PmsProductAttribute {
 
 export interface PmsProductAttributeValue {
   id: number;
-  productId: number;
-  productAttributeId: number;
+  orderLineId: number;
+  attributeId: number;
   value: string;
 }
 
 export interface PmsSkuStock {
   id: number;
-  productId: number;
+  orderLineId: number;
   skuCode: string;
-  price: number;
-  stock: number;
-  lowStock: number;
-  pic: string;
-  sale: number;
-  promotionPrice: number;
-  lockStock: number;
+  listPrice: number;
+  onHandQty: number;
+  lowStockThreshold: number;
+  primaryImageUrl: string;
+  unitsSold: number;
+  salePrice: number;
+  reservedQty: number;
   spData: string;
 }
 
@@ -55,14 +55,14 @@ export interface SmsCoupon {
   id: number;
   type: number;
   name: string;
-    count: number;
-  amount: number;
-  perLimit: number;
-  minOrderAmount: number;
-  startTime: string;
-  endTime: string;
-  useType: number;
-        receiveCount: number;
+    minQuantity: number;
+  discountValue: number;
+  perMemberLimit: number;
+  minSpendAmount: number;
+  startsAt: string;
+  endsAt: string;
+  applicabilityScope: number;
+        claimedCount: number;
     code: string;
 }
 
@@ -77,7 +77,7 @@ export interface PmsPortalProductDetail {
 }
 
 export const fetchProductDetail = (id: number) => {
-  return request.get<unknown, { data: PmsPortalProductDetail }>(`/product/detail/${id}`);
+  return request.get<unknown, { data: PmsPortalProductDetail }>(`/product/comment/${id}`);
 };
 
 export const searchProducts = (keyword: string, pageNum: number = 1, pageSize: number = 20) => {

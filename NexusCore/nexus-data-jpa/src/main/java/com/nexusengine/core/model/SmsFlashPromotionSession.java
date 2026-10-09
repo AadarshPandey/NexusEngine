@@ -5,30 +5,37 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.time.OffsetDateTime;
 import java.time.LocalTime;
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "sms_flash_promotion_session", schema = "marketing")
+@Table(name = "flash_sale_slot", schema = "promotion")
 public class SmsFlashPromotionSession implements Serializable {
-    @Id
+        @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    
+private Long id;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+        @Column(name = "label", nullable = false)
+    
+private String name;
 
-    @Column(name = "start_time", nullable = false)
-    private LocalTime startTime;
+        @Column(name = "starts_at_local", nullable = false)
+    
+private LocalTime startTime;
 
-    @Column(name = "end_time", nullable = false)
-    private LocalTime endTime;
+        @Column(name = "ends_at_local", nullable = false)
+    
+private LocalTime endTime;
 
-    @Column(name = "status")
-    private Integer status;
+        @Column(name = "is_active")
+    @jakarta.persistence.Convert(converter = com.nexusengine.core.model.converter.IntegerToBooleanConverter.class)
+private Integer status;
 
-    @Column(name = "create_time")
-    private LocalDateTime createTime;
+        @Column(name = "created_at")
+    
+private OffsetDateTime createTime;
 }

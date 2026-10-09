@@ -1,9 +1,9 @@
 export type OmsOrderSetting = {
   /** ID */
   id: number
-  flashOrderOvertime?: number
-  normalOrderOvertime?: number
-  confirmOvertime?: number
-  finishOvertime?: number
-  commentOvertime?: number
+  flashPaymentTimeoutMin?: number
+  paymentTimeoutMin?: number
+  autoConfirmReceiptDays?: number
+  autoCompleteDays?: number
+  reviewWindowDays?: number
 }

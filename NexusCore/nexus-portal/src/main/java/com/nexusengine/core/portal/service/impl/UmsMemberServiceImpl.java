@@ -89,7 +89,7 @@ public class UmsMemberServiceImpl implements UmsMemberService {
         umsMember.setUsername(username);
         umsMember.setEmail(email);
         umsMember.setPassword(passwordEncoder.encode(password));
-        umsMember.setCreateTime(java.time.LocalDateTime.now());
+        umsMember.setCreateTime(java.time.OffsetDateTime.now());
         umsMember.setStatus(1);
         memberRepository.save(umsMember);
     }

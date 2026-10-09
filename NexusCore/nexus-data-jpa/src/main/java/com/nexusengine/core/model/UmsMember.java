@@ -3,6 +3,7 @@ package com.nexusengine.core.model;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import java.io.Serializable;
+import java.time.OffsetDateTime;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,55 +11,69 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "ums_member", schema = "users")
+@Table(name = "member", schema = "customer")
 public class UmsMember implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Id
+        @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    
+private Long id;
 
-    @Schema(title = "Username")
-    private String username;
+        @Schema(title = "Username")
+    
+private String username;
 
-    @Schema(title = "Password")
+            @Schema(title = "Password")
     @com.fasterxml.jackson.annotation.JsonIgnore
-    private String password;
+    @Column(name = "password_hash")
+private String password;
 
-    @Schema(title = "Nickname")
-    private String nickname;
+            @Schema(title = "Nickname")
+    @Column(name = "display_name")
+private String nickname;
 
-    @Schema(title = "Phone")
-    private String phone;
+            @Schema(title = "Phone")
+    @Column(name = "phone_e164")
+private String phone;
 
-    @Schema(title = "Email")
-    private String email;
+        @Schema(title = "Email")
+    
+private String email;
 
-    @Schema(title = "Status")
-    private Integer status;
+            @Schema(title = "Status")
+    @Column(name = "account_status")
+    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.SMALLINT)
+private Integer status;
 
-    @Column(name = "create_time")
+        @Column(name = "created_at")
     @Schema(title = "Create time")
-    private LocalDateTime createTime;
+    
+private OffsetDateTime createTime;
 
-    @Schema(title = "Icon")
-    private String icon;
+            @Schema(title = "Icon")
+    @Column(name = "avatar_url")
+private String icon;
 
-    @Schema(title = "Gender")
-    private Integer gender;
+        @Schema(title = "Gender")
+    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.SMALLINT)
+private Integer gender;
 
 
 
 
 
-    @Column(name = "source_type")
+        @Column(name = "signup_channel")
     @Schema(title = "Source type")
-    private Integer sourceType;
-    private Integer points;
+    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.SMALLINT)
+private Integer sourceType;
+            @Column(name = "points_balance")
+private Integer points;
 
 
-    @Column(name = "lifetime_points")
+        @Column(name = "lifetime_points_earned")
     @Schema(title = "History integration")
-    private Integer lifetimePoints;
+    
+private Integer lifetimePoints;
 }

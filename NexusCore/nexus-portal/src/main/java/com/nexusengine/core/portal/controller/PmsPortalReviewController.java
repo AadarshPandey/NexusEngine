@@ -24,7 +24,7 @@ public class PmsPortalReviewController {
     @Operation(summary = "Get reviews for product")
     @GetMapping("/product/{productId}")
     public CommonResult<CommonPage<PmsReview>> list(
-            @PathVariable Long productId,
+            @PathVariable("productId") Long productId,
             @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
             @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) {
         return CommonResult.success(reviewService.list(productId, pageNum, pageSize));
@@ -32,7 +32,7 @@ public class PmsPortalReviewController {
 
     @Operation(summary = "Get replies to a review")
     @GetMapping("/{parentId}/replies")
-    public CommonResult<List<PmsReview>> listReplies(@PathVariable Long parentId) {
+    public CommonResult<List<PmsReview>> listReplies(@PathVariable("parentId") Long parentId) {
         return CommonResult.success(reviewService.listReplies(parentId));
     }
 
@@ -50,12 +50,12 @@ public class PmsPortalReviewController {
 
     @Operation(summary = "Like a review or reply")
     @PostMapping("/{id}/like")
-    public CommonResult<Integer> like(@PathVariable Long id) {
+    public CommonResult<Integer> like(@PathVariable("id") Long id) {
         return CommonResult.success(reviewService.like(id));
     }
 
     @PostMapping("/{id}/dislike")
-    public CommonResult<Integer> dislike(@PathVariable Long id) {
+    public CommonResult<Integer> dislike(@PathVariable("id") Long id) {
         return CommonResult.success(reviewService.dislike(id));
     }
 }

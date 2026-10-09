@@ -3,6 +3,7 @@ package com.nexusengine.core.model;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import java.io.Serializable;
+import java.time.OffsetDateTime;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,31 +11,39 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "pms_product_approval_history", schema = "pms")
+@Table(name = "product_approval_event", schema = "catalog")
 public class PmsProductApprovalHistory implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Id
+        @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    
+private Long id;
 
-    @Column(name = "product_id")
-    private Long productId;
-    @com.fasterxml.jackson.annotation.JsonIgnore
+        @Column(name = "product_id")
+    
+private Long productId;
+        @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "product_id", insertable = false, updatable = false)
-    private PmsProduct product;
+    
+private PmsProduct product;
 
-    @Column(name = "create_time")
-    private LocalDateTime createTime;
+        @Column(name = "created_at")
+    
+private OffsetDateTime createTime;
 
-    @Column(name = "reviewer_name")
+        @Column(name = "reviewer_admin_id")
     @Schema(title = "Vertify man")
-    private String reviewerName;
+    
+private String reviewerName;
 
-    private Integer status;
+            @Column(name = "decision")
+    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.SMALLINT)
+private Integer status;
 
-    @Schema(title = "Detail")
-    private String detail;
+            @Schema(title = "Detail")
+    @Column(name = "comment")
+private String detail;
 }

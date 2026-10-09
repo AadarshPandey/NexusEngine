@@ -9,25 +9,30 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "pms_product_spend_discount", schema = "pms")
+@Table(name = "spend_threshold_discount", schema = "promotion")
 public class PmsProductSpendDiscount implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Id
+        @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    
+private Long id;
 
-    @Column(name = "product_id")
-    private Long productId;
-    @com.fasterxml.jackson.annotation.JsonIgnore
+        @Column(name = "product_id")
+    
+private Long productId;
+        @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "product_id", insertable = false, updatable = false)
-    private PmsProduct product;
+    
+private PmsProduct product;
 
-    @Column(name = "full_price")
-    private BigDecimal fullPrice;
+        @Column(name = "min_spend_amount")
+    
+private BigDecimal fullPrice;
 
-    @Column(name = "reduce_price")
-    private BigDecimal reducePrice;
+        @Column(name = "discount_amount")
+    
+private BigDecimal reducePrice;
 }

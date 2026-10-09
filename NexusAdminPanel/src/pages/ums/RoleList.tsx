@@ -62,9 +62,9 @@ const RoleList: React.FC = () => {
   const [isEdit, setIsEdit] = useState(false);
   const [formData, setFormData] = useState<UmsRole>({
     name: '',
-    description: '',
+    customerComment: '',
     status: 1,
-    sort: 0
+    displayOrder: 0
   });
 
   const fetchList = useCallback(async () => {
@@ -123,10 +123,10 @@ const RoleList: React.FC = () => {
   };
 
   const handleStatusChange = async (row: UmsRole) => {
-    const newStatus = row.status === 1 ? 0 : 1;
+    const isNewArrival = row.status === 1 ? 0 : 1;
     try {
-      await roleUpdateStatusAPI(row.id!, { status: newStatus });
-      setList((prev) => prev.map((item) => (item.id === row.id ? { ...item, status: newStatus } : item)));
+      await roleUpdateStatusAPI(row.id!, { status: isNewArrival });
+      setList((prev) => prev.map((item) => (item.id === row.id ? { ...item, status: isNewArrival } : item)));
       setSnackbar({ open: true, message: 'Status updated', severity: 'success' });
     } catch {
       setSnackbar({ open: true, message: 'Failed to update status', severity: 'error' });
@@ -150,7 +150,7 @@ const RoleList: React.FC = () => {
   // Form handling
   const openAddDialog = () => {
     setIsEdit(false);
-    setFormData({ name: '', description: '', status: 1, sort: 0 });
+    setFormData({ name: '', customerComment: '', status: 1, displayOrder: 0 });
     setFormDialogOpen(true);
   };
 
@@ -282,9 +282,9 @@ const RoleList: React.FC = () => {
                     </TableCell>
                     <TableCell>{row.id}</TableCell>
                     <TableCell sx={{ fontWeight: 500 }}>{row.name}</TableCell>
-                    <TableCell>{row.description}</TableCell>
+                    <TableCell>{row.customerComment}</TableCell>
                     <TableCell>{row.adminCount}</TableCell>
-                    <TableCell>{formatTime(row.createTime)}</TableCell>
+                    <TableCell>{formatTime(row.createdAt)}</TableCell>
                     <TableCell align="center">
                       <Switch
                         checked={row.status === 1}
@@ -370,8 +370,8 @@ const RoleList: React.FC = () => {
               label="Description"
               multiline
               rows={3}
-              value={formData.description || ''}
-              onChange={e => setFormData({ ...formData, description: e.target.value })}
+              value={formData.customerComment || ''}
+              onChange={e => setFormData({ ...formData, customerComment: e.target.value })}
               fullWidth
             />
             {!isEdit && (

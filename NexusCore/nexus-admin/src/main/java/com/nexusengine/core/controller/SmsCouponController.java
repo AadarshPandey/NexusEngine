@@ -37,7 +37,7 @@ public class SmsCouponController {
     @Operation(summary = "Delete Operation")
     @PostMapping("/delete/{id}")
 
-    public CommonResult delete(@PathVariable Long id) {
+    public CommonResult delete(@PathVariable("id") Long id) {
         int count = couponService.delete(id);
         if(count>0){
             return CommonResult.success(count);
@@ -48,7 +48,7 @@ public class SmsCouponController {
     @Operation(summary = "Update Operation")
     @PostMapping("/update/{id}")
 
-    public CommonResult update(@PathVariable Long id,@RequestBody SmsCouponParam couponParam) {
+    public CommonResult update(@PathVariable("id") Long id,@RequestBody SmsCouponParam couponParam) {
         int count = couponService.update(id,couponParam);
         if(count>0){
             return CommonResult.success(count);
@@ -71,7 +71,7 @@ public class SmsCouponController {
     @Operation(summary = "Get item Operation")
     @GetMapping("/{id}")
 
-    public CommonResult<SmsCouponParam> getItem(@PathVariable Long id) {
+    public CommonResult<SmsCouponParam> getItem(@PathVariable("id") Long id) {
         SmsCouponParam couponParam = couponService.getItem(id);
         return CommonResult.success(couponParam);
     }

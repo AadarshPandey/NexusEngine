@@ -29,7 +29,7 @@ public class SmsFlashPromotionController {
 
     @Operation(summary = "Update flash promotion")
     @PostMapping("/update/{id}")
-    public CommonResult<Integer> update(@PathVariable Long id, @RequestBody SmsFlashPromotion flashPromotion) {
+    public CommonResult<Integer> update(@PathVariable("id") Long id, @RequestBody SmsFlashPromotion flashPromotion) {
         int count = flashPromotionService.update(id, flashPromotion);
         if (count > 0) {
             return CommonResult.success(count);
@@ -39,7 +39,7 @@ public class SmsFlashPromotionController {
 
     @Operation(summary = "Delete flash promotion")
     @PostMapping("/delete/{id}")
-    public CommonResult<Integer> delete(@PathVariable Long id) {
+    public CommonResult<Integer> delete(@PathVariable("id") Long id) {
         int count = flashPromotionService.delete(id);
         if (count > 0) {
             return CommonResult.success(count);
@@ -49,7 +49,7 @@ public class SmsFlashPromotionController {
 
     @Operation(summary = "Update status")
     @PostMapping("/update/status/{id}")
-    public CommonResult<Integer> updateStatus(@PathVariable Long id, @RequestParam("status") Integer status) {
+    public CommonResult<Integer> updateStatus(@PathVariable("id") Long id, @RequestParam("status") Integer status) {
         int count = flashPromotionService.updateStatus(id, status);
         if (count > 0) {
             return CommonResult.success(count);
@@ -59,7 +59,7 @@ public class SmsFlashPromotionController {
 
     @Operation(summary = "Get flash promotion by ID")
     @GetMapping("/{id}")
-    public CommonResult<SmsFlashPromotion> getItem(@PathVariable Long id) {
+    public CommonResult<SmsFlashPromotion> getItem(@PathVariable("id") Long id) {
         SmsFlashPromotion flashPromotion = flashPromotionService.getItem(id);
         return CommonResult.success(flashPromotion);
     }

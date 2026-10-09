@@ -56,8 +56,8 @@ public class OmsCartItemController {
     @Operation(summary = "Update quantity Operation")
     @GetMapping("/update/quantity")
 
-    public CommonResult updateQuantity(@RequestParam Long id,
-                                       @RequestParam Integer quantity) {
+    public CommonResult updateQuantity(@RequestParam("id") Long id,
+                                       @RequestParam("quantity") Integer quantity) {
         int count = cartItemService.updateQuantity(id, memberService.getCurrentMember().getId(), quantity);
         if (count > 0) {
             return CommonResult.success(count);
@@ -68,7 +68,7 @@ public class OmsCartItemController {
     @Operation(summary = "Get cart product Operation")
     @GetMapping("/getProduct/{productId}")
 
-    public CommonResult<CartProduct> getCartProduct(@PathVariable Long productId) {
+    public CommonResult<CartProduct> getCartProduct(@PathVariable("productId") Long productId) {
         CartProduct cartProduct = cartItemService.getCartProduct(productId);
         return CommonResult.success(cartProduct);
     }

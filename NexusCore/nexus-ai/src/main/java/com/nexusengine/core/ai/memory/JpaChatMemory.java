@@ -29,7 +29,7 @@ public class JpaChatMemory implements ChatMemory {
             conv.setSessionId(conversationId);
             conv.setRole(msg.getMessageType().getValue());
             conv.setContent(msg.getText());
-            conv.setCreateTime(java.time.LocalDateTime.now());
+            conv.setCreateTime(java.time.OffsetDateTime.now());
             conversationRepository.save(conv);
         }
     }

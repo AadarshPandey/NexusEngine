@@ -77,12 +77,12 @@ const OrderList: React.FC = () => {
   };
 
   const filteredOrders = orders.filter(order => {
-    if (searchId && order.id.toString() !== searchId && !order.orderSn?.includes(searchId)) return false;
-    if (searchSn && !order.orderSn?.includes(searchSn)) return false;
-        if (searchAmount && order.totalAmount?.toString() !== searchAmount) return false;
-    if (searchPayType !== '' && order.payType !== searchPayType) return false;
+    if (searchId && order.id.toString() !== searchId && !order.orderNumber?.includes(searchId)) return false;
+    if (searchSn && !order.orderNumber?.includes(searchSn)) return false;
+        if (searchAmount && order.subtotalAmount?.toString() !== searchAmount) return false;
+    if (searchPayType !== '' && order.paymentMethod !== searchPayType) return false;
     if (searchStatus !== '' && order.status !== searchStatus) return false;
-    if (searchDate && !order.createTime?.startsWith(searchDate)) return false;
+    if (searchDate && !order.createdAt?.startsWith(searchDate)) return false;
     return true;
   });
 
@@ -156,12 +156,12 @@ const OrderList: React.FC = () => {
             {filteredOrders.map((order) => (
               <TableRow key={order.id} hover>
                 <TableCell>{order.id}</TableCell>
-                <TableCell>{order.orderSn}</TableCell>
+                <TableCell>{order.orderNumber}</TableCell>
                 
-                <TableCell>₹{order.totalAmount?.toFixed(2)}</TableCell>
-                <TableCell>{order.payType === 1 ? 'Alipay' : order.payType === 2 ? 'Razorpay' : 'Unpaid'}</TableCell>
+                <TableCell>₹{order.subtotalAmount?.toFixed(2)}</TableCell>
+                <TableCell>{order.paymentMethod === 1 ? 'Alipay' : order.paymentMethod === 2 ? 'Razorpay' : 'Unpaid'}</TableCell>
                 <TableCell>{getStatusChip(order.status)}</TableCell>
-                <TableCell>{new Date(order.createTime).toLocaleString()}</TableCell>
+                <TableCell>{new Date(order.createdAt).toLocaleString()}</TableCell>
                 <TableCell align="right">
                   <Button size="small" variant="outlined" onClick={(e) => handleUpdateClick(e, order)}>Update Status</Button>
                 </TableCell>

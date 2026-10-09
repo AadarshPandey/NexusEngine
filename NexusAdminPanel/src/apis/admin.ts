@@ -91,7 +91,7 @@ export function getRoleByAdminIdAPI(id: number) {
 
 /**
  */
-export function adminRoleUpdateAPI(params: { roleIds: string; adminId: number }) {
+export function adminRoleUpdateAPI(params: { roleIds: string; adminUserId: number }) {
   return http({
     url: '/admin/role/update',
     method: 'post',

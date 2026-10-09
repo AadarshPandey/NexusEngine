@@ -7,11 +7,11 @@ export type SmsHomeRecommendSubject = {
   id?: number
   subjectId: number
   subjectName: string
-  recommendStatus?: number
-  sort?: number
+  isFeatured?: number
+  displayOrder?: number
 }
 
 export type HomeSubjectQueryParam = PageParam & {
   subjectName?: string
-  recommendStatus?: number
+  isFeatured?: number
 }

@@ -1,5 +1,5 @@
 import type { CommonPage, PageParam } from '@/types/common'
-import type { PmsProductAttribute, ProductAttrInfo } from '@/types/productAttr'
+import type { PmsProductAttribute, ProductAttrInfo } from '@/types/skuAttributes'
 import http from '@/utils/http'
 
 /**

@@ -3438,11 +3438,9 @@ CREATE TABLE public.ums_admin (
     password character varying(255),
     icon character varying(255),
     email character varying(255),
-    nick_name character varying(255),
     create_time timestamp without time zone,
     login_time timestamp without time zone,
-    status integer,
-    vendor_id bigint
+    status integer
 );
 
 
@@ -3984,11 +3982,9 @@ CREATE TABLE users.ums_admin (
     password character varying(255),
     icon character varying(255),
     email character varying(255),
-    nick_name character varying(255),
     create_time timestamp without time zone,
     login_time timestamp without time zone,
-    status integer,
-    vendor_id bigint
+    status integer
 );
 
 
@@ -9037,9 +9033,9 @@ COPY public.sys_banner (id, name, type, pic, start_time, end_time, status, click
 -- Data for Name: ums_admin; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.ums_admin (id, username, password, icon, email, nick_name, note, create_time, login_time, status, vendor_id) FROM stdin;
-3	samsung_admin	$2a$10$yBHlid11MRH9e6vDsETdJufyIgz/AASiNSUJdsirodt8IUr16xWDO	\N	samsung@nexusengine.com	Samsung Admin	Brand Admin	2026-09-27 01:38:12.288861	\N	1	2
-4	nike_admin	$2a$10$yBHlid11MRH9e6vDsETdJufyIgz/AASiNSUJdsirodt8IUr16xWDO	\N	nike@nexusengine.com	Nike Admin	Brand Admin	2026-09-27 01:38:12.288861	\N	1	3
+COPY public.ums_admin (id, username, password, icon, email, create_time, login_time, status) FROM stdin;
+3	samsung_admin	$2a$10$yBHlid11MRH9e6vDsETdJufyIgz/AASiNSUJdsirodt8IUr16xWDO	\N	samsung@nexusengine.com	2026-09-27 01:38:12.288861	\N	1
+4	nike_admin	$2a$10$yBHlid11MRH9e6vDsETdJufyIgz/AASiNSUJdsirodt8IUr16xWDO	\N	nike@nexusengine.com	2026-09-27 01:38:12.288861	\N	1
 \.
 
 
@@ -9168,10 +9164,10 @@ COPY system.sys_banner (id, name, type, pic, start_time, end_time, status, click
 -- Data for Name: ums_admin; Type: TABLE DATA; Schema: users; Owner: postgres
 --
 
-COPY users.ums_admin (id, username, password, icon, email, nick_name, note, create_time, login_time, status, vendor_id) FROM stdin;
-3	samsung_admin	$2a$10$yBHlid11MRH9e6vDsETdJufyIgz/AASiNSUJdsirodt8IUr16xWDO	\N	samsung@nexusengine.com	Samsung Admin	Brand Admin	2026-09-25 12:13:07.161346	\N	1	2
-4	nike_admin	$2a$10$yBHlid11MRH9e6vDsETdJufyIgz/AASiNSUJdsirodt8IUr16xWDO	\N	nike@nexusengine.com	Nike Admin	Brand Admin	2026-09-25 12:13:07.161346	\N	1	3
-1	admin	$2a$10$UDwbUxLbBpgXBAvRlR1pS.LTz.Cx9bXm93F3bf8qaqxok6HpU5ZmC	/assets/default-avatar.png	admin@nexusengine.com	System Administrator	System Administrator	2018-10-08 13:32:47	2019-04-20 12:43:33	1	\N
+COPY users.ums_admin (id, username, password, icon, email, create_time, login_time, status) FROM stdin;
+3	samsung_admin	$2a$10$yBHlid11MRH9e6vDsETdJufyIgz/AASiNSUJdsirodt8IUr16xWDO	\N	samsung@nexusengine.com	2026-09-25 12:13:07.161346	\N	1
+4	nike_admin	$2a$10$yBHlid11MRH9e6vDsETdJufyIgz/AASiNSUJdsirodt8IUr16xWDO	\N	nike@nexusengine.com	2026-09-25 12:13:07.161346	\N	1
+1	admin	$2a$10$UDwbUxLbBpgXBAvRlR1pS.LTz.Cx9bXm93F3bf8qaqxok6HpU5ZmC	/assets/default-avatar.png	admin@nexusengine.com	2018-10-08 13:32:47	2019-04-20 12:43:33	1
 \.
 
 

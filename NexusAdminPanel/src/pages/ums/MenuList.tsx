@@ -29,7 +29,7 @@ import type { UmsMenu } from '@/types/menu';
 const MenuList: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const parentId = Number(searchParams.get('parentId')) || 0;
+  const parentReviewId = Number(searchParams.get('parentReviewId')) || 0;
 
   const [list, setList] = useState<UmsMenu[]>([]);
   const [total, setTotal] = useState(0);
@@ -42,7 +42,7 @@ const MenuList: React.FC = () => {
     setLoading(true);
     try {
       // Force pageNum > 0 check on backend
-      const res = await getMenuListByParentIdAPI(parentId, { pageNum: pageNum > 0 ? pageNum : 0, pageSize });
+      const res = await getMenuListByParentIdAPI(parentReviewId, { pageNum: pageNum > 0 ? pageNum : 0, pageSize });
       setList(res.data.list);
       setTotal(res.data.total);
     } catch (error) {
@@ -50,7 +50,7 @@ const MenuList: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [parentId, pageNum, pageSize]);
+  }, [parentReviewId, pageNum, pageSize]);
 
   useEffect(() => {
     fetchList();
@@ -96,12 +96,12 @@ const MenuList: React.FC = () => {
               sx={{ cursor: 'pointer', textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }} 
               onClick={() => {
                 setPageNum(0);
-                setSearchParams({ parentId: '0' });
+                setSearchParams({ parentReviewId: '0' });
               }}
             >
               Root Menus
             </MuiLink>
-            {parentId !== 0 && (
+            {parentReviewId !== 0 && (
               <Typography color="text.primary">Sub Menus</Typography>
             )}
           </Breadcrumbs>
@@ -141,10 +141,10 @@ const MenuList: React.FC = () => {
                     <TableCell>{row.id}</TableCell>
                     <TableCell sx={{ fontWeight: 500 }}>{row.title}</TableCell>
                     <TableCell>
-                      <Chip label={row.level === 0 ? 'Top Level' : 'Sub Level'} size="small" color={row.level === 0 ? 'primary' : 'default'} variant="outlined" />
+                      <Chip label={row.depth === 0 ? 'Top Level' : 'Sub Level'} size="small" color={row.depth === 0 ? 'primary' : 'default'} variant="outlined" />
                     </TableCell>
                     <TableCell>{row.name}</TableCell>
-                    <TableCell>{row.icon}</TableCell>
+                    <TableCell>{row.iconUrl}</TableCell>
                     <TableCell>
                       <Switch
                         checked={row.hidden === 0}
@@ -152,14 +152,14 @@ const MenuList: React.FC = () => {
                         color="success"
                       />
                     </TableCell>
-                    <TableCell>{row.sort}</TableCell>
+                    <TableCell>{row.displayOrder}</TableCell>
                     <TableCell align="center">
                       <Button 
                         size="small" 
-                        disabled={row.level !== 0} 
+                        disabled={row.depth !== 0} 
                         onClick={() => {
                           setPageNum(0);
-                          setSearchParams({ parentId: row.id!.toString() });
+                          setSearchParams({ parentReviewId: row.id!.toString() });
                         }}
                         sx={{ mr: 1, textTransform: 'none' }}
                       >

@@ -7,11 +7,11 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 export interface Banner {
   id?: number | string;
   url?: string;
-  pic?: string;
+  primaryImageUrl?: string;
   name?: string;
   title?: string;
   note?: string;
-  description?: string;
+  customerComment?: string;
 }
 
 interface BannerCarouselProps {
@@ -53,7 +53,7 @@ const BannerCarousel: React.FC<BannerCarouselProps> = ({ banners }) => {
             flexDirection: 'column',
             justifyContent: 'center',
             alignItems: 'center',
-            backgroundImage: `url(${banner.pic})`,
+            backgroundImage: `url(${banner.primaryImageUrl})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             cursor: 'pointer',
@@ -71,7 +71,7 @@ const BannerCarousel: React.FC<BannerCarouselProps> = ({ banners }) => {
               {banner.name || banner.title || 'Special Promotion'}
             </Typography>
             <Typography variant="subtitle1" color="white">
-              {banner.note || banner.description || 'Check out our latest deals!'}
+              {banner.note || banner.customerComment || 'Check out our latest deals!'}
             </Typography>
           </Box>
         </Box>

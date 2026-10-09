@@ -13,7 +13,7 @@ import { searchProducts } from '../api/product';
 import type { PmsProduct } from '../api/home';
 const Home: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { content, recommendations, loading, error } = useSelector((state: RootState) => state.home);
+  const { body, recommendations, loading, error } = useSelector((state: RootState) => state.home);
 
   const [searchKeyword, setSearchKeyword] = useState('');
   const [isSearching, setIsSearching] = useState(false);
@@ -22,10 +22,10 @@ const Home: React.FC = () => {
   const location = useLocation();
 
   useEffect(() => {
-    if (!content) {
+    if (!body) {
       dispatch(loadHomeData());
     }
-  }, [dispatch, content]);
+  }, [dispatch, body]);
 
   useEffect(() => {
     if (location.pathname === '/' && location.search === '') {
@@ -127,14 +127,14 @@ const Home: React.FC = () => {
       ) : (
         <>
           {/* Hero Banner Section */}
-          {content?.advertiseList && <BannerCarousel banners={content.advertiseList as any} />}
+          {body?.advertiseList && <BannerCarousel banners={body.advertiseList as any} />}
 
           {/* New Arrivals Section */}
-          {content?.newProductList && content.newProductList.length > 0 && (
+          {body?.newProductList && body.newProductList.length > 0 && (
             <>
               <SectionHeader title="New Arrivals" subtitle="Check out our latest products" />
               <Grid container spacing={4}>
-                {content.newProductList.map((product) => (
+                {body.newProductList.map((product) => (
                   <Grid key={product.id} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
                     <ProductCard product={product} />
                   </Grid>
@@ -144,11 +144,11 @@ const Home: React.FC = () => {
           )}
 
           {/* Hot Products Section */}
-          {content?.hotProductList && content.hotProductList.length > 0 && (
+          {body?.hotProductList && body.hotProductList.length > 0 && (
             <>
               <SectionHeader title="Hot Products" subtitle="Trending items everyone is buying" />
               <Grid container spacing={4}>
-                {content.hotProductList.map((product) => (
+                {body.hotProductList.map((product) => (
                   <Grid key={product.id} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
                     <ProductCard product={product} />
                   </Grid>

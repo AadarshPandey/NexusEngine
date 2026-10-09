@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.security.SecureRandom;
 import java.util.stream.Collectors;
@@ -52,7 +53,7 @@ public class UmsMemberCouponServiceImpl implements UmsMemberCouponService {
                 if (coupon.getCount() <= 0) {
                     Asserts.fail("Coupon is out of stock");
                 }
-                LocalDateTime now = java.time.LocalDateTime.now();
+                OffsetDateTime now = java.time.OffsetDateTime.now();
                 if (now.isBefore(coupon.getStartTime())) {
                     Asserts.fail("Coupon is not yet available");
                 }
@@ -118,7 +119,7 @@ public class UmsMemberCouponServiceImpl implements UmsMemberCouponService {
     @Override
     public List<SmsCouponHistoryDetail> listCart(List<CartPromotionItem> cartItemList, Integer type) {
         UmsMember currentMember = memberService.getCurrentMember();
-        LocalDateTime now = java.time.LocalDateTime.now();
+        OffsetDateTime now = java.time.OffsetDateTime.now();
         List<SmsCouponHistoryDetail> allList = portalProductDao.getDetailList(currentMember.getId());
         List<SmsCouponHistoryDetail> enableList = new ArrayList<>();
         List<SmsCouponHistoryDetail> disableList = new ArrayList<>();
@@ -126,7 +127,7 @@ public class UmsMemberCouponServiceImpl implements UmsMemberCouponService {
             if (couponHistoryDetail.coupon() == null) continue;
             Integer useType = couponHistoryDetail.coupon().getUseType();
             BigDecimal minOrderAmount = couponHistoryDetail.coupon().getMinOrderAmount();
-            LocalDateTime endTime = couponHistoryDetail.coupon().getEndTime();
+            OffsetDateTime endTime = couponHistoryDetail.coupon().getEndTime();
             if (useType.equals(0)) {
                 BigDecimal totalAmount = calcTotalAmount(cartItemList);
                 if (now.isBefore(endTime) && totalAmount.subtract(minOrderAmount).intValue() >= 0) {

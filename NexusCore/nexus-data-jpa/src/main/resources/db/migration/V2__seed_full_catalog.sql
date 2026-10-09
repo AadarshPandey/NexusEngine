@@ -166,22 +166,22 @@ INSERT INTO pms_product_attribute_category (id, name, attribute_count, param_cou
 
 SELECT setval('pms_product_attribute_category_id_seq', 11);
 
-INSERT INTO pms_product_attribute (id, product_attribute_category_id, name, select_type, input_type, input_list, sort, type) VALUES (1, 1, 'Color', 1, 1, 'Value1,Value2', 0, 0) ON CONFLICT DO NOTHING;
-INSERT INTO pms_product_attribute (id, product_attribute_category_id, name, select_type, input_type, input_list, sort, type) VALUES (2, 1, 'Storage', 1, 1, 'Value1,Value2', 0, 0) ON CONFLICT DO NOTHING;
-INSERT INTO pms_product_attribute (id, product_attribute_category_id, name, select_type, input_type, input_list, sort, type) VALUES (3, 2, 'RAM', 1, 1, 'Value1,Value2', 0, 0) ON CONFLICT DO NOTHING;
-INSERT INTO pms_product_attribute (id, product_attribute_category_id, name, select_type, input_type, input_list, sort, type) VALUES (4, 2, 'Storage', 1, 1, 'Value1,Value2', 0, 0) ON CONFLICT DO NOTHING;
-INSERT INTO pms_product_attribute (id, product_attribute_category_id, name, select_type, input_type, input_list, sort, type) VALUES (5, 2, 'Color', 1, 1, 'Value1,Value2', 0, 0) ON CONFLICT DO NOTHING;
-INSERT INTO pms_product_attribute (id, product_attribute_category_id, name, select_type, input_type, input_list, sort, type) VALUES (6, 3, 'Color', 1, 1, 'Value1,Value2', 0, 0) ON CONFLICT DO NOTHING;
-INSERT INTO pms_product_attribute (id, product_attribute_category_id, name, select_type, input_type, input_list, sort, type) VALUES (7, 4, 'Size (US)', 1, 1, 'Value1,Value2', 0, 0) ON CONFLICT DO NOTHING;
-INSERT INTO pms_product_attribute (id, product_attribute_category_id, name, select_type, input_type, input_list, sort, type) VALUES (8, 4, 'Color', 1, 1, 'Value1,Value2', 0, 0) ON CONFLICT DO NOTHING;
-INSERT INTO pms_product_attribute (id, product_attribute_category_id, name, select_type, input_type, input_list, sort, type) VALUES (9, 5, 'Size', 1, 1, 'Value1,Value2', 0, 0) ON CONFLICT DO NOTHING;
-INSERT INTO pms_product_attribute (id, product_attribute_category_id, name, select_type, input_type, input_list, sort, type) VALUES (10, 5, 'Color', 1, 1, 'Value1,Value2', 0, 0) ON CONFLICT DO NOTHING;
-INSERT INTO pms_product_attribute (id, product_attribute_category_id, name, select_type, input_type, input_list, sort, type) VALUES (11, 6, 'Shade', 1, 1, 'Value1,Value2', 0, 0) ON CONFLICT DO NOTHING;
-INSERT INTO pms_product_attribute (id, product_attribute_category_id, name, select_type, input_type, input_list, sort, type) VALUES (12, 7, 'Format', 1, 1, 'Value1,Value2', 0, 0) ON CONFLICT DO NOTHING;
-INSERT INTO pms_product_attribute (id, product_attribute_category_id, name, select_type, input_type, input_list, sort, type) VALUES (13, 8, 'Pack Size', 1, 1, 'Value1,Value2', 0, 0) ON CONFLICT DO NOTHING;
-INSERT INTO pms_product_attribute (id, product_attribute_category_id, name, select_type, input_type, input_list, sort, type) VALUES (14, 9, 'Size (inches)', 1, 1, 'Value1,Value2', 0, 0) ON CONFLICT DO NOTHING;
-INSERT INTO pms_product_attribute (id, product_attribute_category_id, name, select_type, input_type, input_list, sort, type) VALUES (15, 9, 'Resolution', 1, 1, 'Value1,Value2', 0, 0) ON CONFLICT DO NOTHING;
-INSERT INTO pms_product_attribute (id, product_attribute_category_id, name, select_type, input_type, input_list, sort, type) VALUES (16, 10, 'Color', 1, 1, 'Value1,Value2', 0, 0) ON CONFLICT DO NOTHING;
+INSERT INTO pms_product_attribute (id, product_attribute_category_id, name, select_type, input_type, input_list, type) VALUES (1, 1, 'Color', 1, 1, 'Value1,Value2', 0) ON CONFLICT DO NOTHING;
+INSERT INTO pms_product_attribute (id, product_attribute_category_id, name, select_type, input_type, input_list, type) VALUES (2, 1, 'Storage', 1, 1, 'Value1,Value2', 0) ON CONFLICT DO NOTHING;
+INSERT INTO pms_product_attribute (id, product_attribute_category_id, name, select_type, input_type, input_list, type) VALUES (3, 2, 'RAM', 1, 1, 'Value1,Value2', 0) ON CONFLICT DO NOTHING;
+INSERT INTO pms_product_attribute (id, product_attribute_category_id, name, select_type, input_type, input_list, type) VALUES (4, 2, 'Storage', 1, 1, 'Value1,Value2', 0) ON CONFLICT DO NOTHING;
+INSERT INTO pms_product_attribute (id, product_attribute_category_id, name, select_type, input_type, input_list, type) VALUES (5, 2, 'Color', 1, 1, 'Value1,Value2', 0) ON CONFLICT DO NOTHING;
+INSERT INTO pms_product_attribute (id, product_attribute_category_id, name, select_type, input_type, input_list, type) VALUES (6, 3, 'Color', 1, 1, 'Value1,Value2', 0) ON CONFLICT DO NOTHING;
+INSERT INTO pms_product_attribute (id, product_attribute_category_id, name, select_type, input_type, input_list, type) VALUES (7, 4, 'Size (US)', 1, 1, 'Value1,Value2', 0) ON CONFLICT DO NOTHING;
+INSERT INTO pms_product_attribute (id, product_attribute_category_id, name, select_type, input_type, input_list, type) VALUES (8, 4, 'Color', 1, 1, 'Value1,Value2', 0) ON CONFLICT DO NOTHING;
+INSERT INTO pms_product_attribute (id, product_attribute_category_id, name, select_type, input_type, input_list, type) VALUES (9, 5, 'Size', 1, 1, 'Value1,Value2', 0) ON CONFLICT DO NOTHING;
+INSERT INTO pms_product_attribute (id, product_attribute_category_id, name, select_type, input_type, input_list, type) VALUES (10, 5, 'Color', 1, 1, 'Value1,Value2', 0) ON CONFLICT DO NOTHING;
+INSERT INTO pms_product_attribute (id, product_attribute_category_id, name, select_type, input_type, input_list, type) VALUES (11, 6, 'Shade', 1, 1, 'Value1,Value2', 0) ON CONFLICT DO NOTHING;
+INSERT INTO pms_product_attribute (id, product_attribute_category_id, name, select_type, input_type, input_list, type) VALUES (12, 7, 'Format', 1, 1, 'Value1,Value2', 0) ON CONFLICT DO NOTHING;
+INSERT INTO pms_product_attribute (id, product_attribute_category_id, name, select_type, input_type, input_list, type) VALUES (13, 8, 'Pack Size', 1, 1, 'Value1,Value2', 0) ON CONFLICT DO NOTHING;
+INSERT INTO pms_product_attribute (id, product_attribute_category_id, name, select_type, input_type, input_list, type) VALUES (14, 9, 'Size (inches)', 1, 1, 'Value1,Value2', 0) ON CONFLICT DO NOTHING;
+INSERT INTO pms_product_attribute (id, product_attribute_category_id, name, select_type, input_type, input_list, type) VALUES (15, 9, 'Resolution', 1, 1, 'Value1,Value2', 0) ON CONFLICT DO NOTHING;
+INSERT INTO pms_product_attribute (id, product_attribute_category_id, name, select_type, input_type, input_list, type) VALUES (16, 10, 'Color', 1, 1, 'Value1,Value2', 0) ON CONFLICT DO NOTHING;
 
 SELECT setval('pms_product_attribute_id_seq', 17);
 

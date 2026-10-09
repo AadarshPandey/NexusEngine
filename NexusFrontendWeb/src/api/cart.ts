@@ -2,21 +2,21 @@ import request from '../utils/request';
 
 export interface OmsCartItem {
   id: number;
-  productId: number;
-  productSkuId: number;
+  orderLineId: number;
+  skuId: number;
   memberId: number;
   quantity: number;
-  price: number;
-  productPic: string;
+  listPrice: number;
+  productImageUrl: string;
   productName: string;
   productSkuCode: string;
-  createDate: string;
-  modifyDate: string;
-  deleteStatus: number;
-  productCategoryId: number;
-  productBrand: string;
-  productSn: string;
-  productAttr: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: number;
+  permissionGroupId: number;
+  brandName: string;
+  productCode: string;
+  skuAttributes: string;
   realStock?: number;
 }
 

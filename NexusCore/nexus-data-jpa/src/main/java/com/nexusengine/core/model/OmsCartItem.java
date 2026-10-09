@@ -3,6 +3,7 @@ package com.nexusengine.core.model;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import java.io.Serializable;
+import java.time.OffsetDateTime;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import lombok.Getter;
@@ -11,77 +12,84 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "oms_cart_item", schema = "orders")
+@Table(name = "cart_item", schema = "ordering")
 public class OmsCartItem implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Id
+        @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    
+private Long id;
 
-    @Column(name = "product_id")
-    private Long productId;
-    @com.fasterxml.jackson.annotation.JsonIgnore
+        @Column(name = "product_id")
+    
+private Long productId;
+        @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "product_id", insertable = false, updatable = false)
-    private PmsProduct product;
+    
+private PmsProduct product;
 
-    @Column(name = "product_sku_id")
-    private Long productSkuId;
+        @Column(name = "sku_id")
+    
+private Long productSkuId;
 
-    @Column(name = "member_id")
-    private Long memberId;
-    @com.fasterxml.jackson.annotation.JsonIgnore
+        @Column(name = "member_id")
+    
+private Long memberId;
+        @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "member_id", insertable = false, updatable = false)
-    private UmsMember member;
+    
+private UmsMember member;
 
-    @Schema(title = "Quantity")
-    private Integer quantity;
+        @Schema(title = "Quantity")
+    
+private Integer quantity;
 
-    @Schema(title = "Price")
-    private BigDecimal price;
+            @Schema(title = "Price")
+    @Column(name = "unit_price_at_add")
+private BigDecimal price;
 
-    @Column(name = "product_pic")
-    @Schema(title = "Product pic")
+            @org.hibernate.annotations.Formula("(SELECT p.primary_image_url FROM catalog.product p WHERE p.id = product_id)")
     private String productPic;
 
-    @Column(name = "product_name")
-    @Schema(title = "Product name")
+            @org.hibernate.annotations.Formula("(SELECT p.name FROM catalog.product p WHERE p.id = product_id)")
     private String productName;
 
-    @Column(name = "product_sku_code")
-    @Schema(title = "Product sku code")
+            @org.hibernate.annotations.Formula("(SELECT s.sku_code FROM catalog.product_sku s WHERE s.id = sku_id)")
     private String productSkuCode;
 
-    @Column(name = "create_date")
+        @Column(name = "created_at")
     @Schema(title = "Create date")
-    private LocalDateTime createDate;
+    
+private OffsetDateTime createDate;
 
-    @Column(name = "modify_date")
+        @Column(name = "updated_at")
     @Schema(title = "Modify date")
-    private LocalDateTime modifyDate;
+    
+private OffsetDateTime modifyDate;
 
-    @Column(name = "delete_status")
+        @Transient
     @Schema(title = "Delete status")
-    private Integer deleteStatus;
+    
+private Integer deleteStatus;
 
-    @Column(name = "product_category_id")
-    @Schema(title = "Product category id")
+            @org.hibernate.annotations.Formula("(SELECT p.category_id FROM catalog.product p WHERE p.id = product_id)")
     private Long productCategoryId;
-    @com.fasterxml.jackson.annotation.JsonIgnore
+        @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "product_category_id", insertable = false, updatable = false)
-    private PmsProductCategory productCategory;
+    
+private PmsProductCategory productCategory;
 
-    @Column(name = "product_brand")
+            @org.hibernate.annotations.Formula("(SELECT b.name FROM catalog.brand b JOIN catalog.product p ON p.brand_id = b.id WHERE p.id = product_id)")
     private String productBrand;
 
-    @Column(name = "product_sn")
+            @org.hibernate.annotations.Formula("(SELECT p.product_code FROM catalog.product p WHERE p.id = product_id)")
     private String productSn;
 
-    @Column(name = "product_attr")
-    @Schema(title = "Product attr")
+            @org.hibernate.annotations.Formula("(SELECT s.sku_attributes FROM catalog.product_sku s WHERE s.id = sku_id)")
     private String productAttr;
 }

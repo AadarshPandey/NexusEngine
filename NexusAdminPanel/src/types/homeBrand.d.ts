@@ -3,11 +3,11 @@ export type SmsHomeBrand = {
   id?: number
   brandId: number
   brandName: string
-  recommendStatus?: number
-  sort?: number
+  isFeatured?: number
+  displayOrder?: number
 }
 
 export type HomeBrandQueryParam = PageParam & {
   brandName?: string
-  recommendStatus?: number
+  isFeatured?: number
 }

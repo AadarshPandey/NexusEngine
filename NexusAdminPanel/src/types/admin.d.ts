@@ -2,7 +2,7 @@ import type { UmsMenu } from './menu'
 
 export type LoginParam = {
   username: string
-  password: string
+  passwordHash: string
 }
 
 export type LoginResult = {
@@ -12,13 +12,13 @@ export type LoginResult = {
 
 export type UserInfoResult = {
   username: string
-  icon: string
+  iconUrl: string
   menus: UmsMenu[]
   roles: []
 }
 
 export type UserInfo = Pick<UserInfoResult, 'username' | 'menus' | 'roles'> & {
-  password?: string
+  passwordHash?: string
   token: string
   avatar
 }
@@ -27,12 +27,12 @@ export type UmsAdmin = {
   /** ID */
   id?: number
   username: string
-  password: string
-  icon?: string
+  passwordHash: string
+  iconUrl?: string
   email?: string
   nickName?: string
   note?: string
-  createTime?: string
-  loginTime?: string
+  createdAt?: string
+  lastLoginAt?: string
   status: number
 }

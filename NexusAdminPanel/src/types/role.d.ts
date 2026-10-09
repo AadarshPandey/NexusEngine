@@ -2,9 +2,9 @@ export type UmsRole = {
   /** ID */
   id?: number
   name: string
-  description?: string
+  customerComment?: string
   adminCount?: number
-  createTime?: string
+  createdAt?: string
   status: number
-  sort?: number
+  displayOrder?: number
 }

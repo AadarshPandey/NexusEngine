@@ -37,7 +37,7 @@ public class OmsOrderReturnReasonController {
     @Operation(summary = "Update Operation")
     @PostMapping("/update/{id}")
 
-    public CommonResult update(@PathVariable Long id, @RequestBody OmsOrderReturnReason returnReason) {
+    public CommonResult update(@PathVariable("id") Long id, @RequestBody OmsOrderReturnReason returnReason) {
         int count = orderReturnReasonService.update(id, returnReason);
         if (count > 0) {
             return CommonResult.success(count);
@@ -68,7 +68,7 @@ public class OmsOrderReturnReasonController {
     @Operation(summary = "Get item Operation")
     @GetMapping("/{id}")
 
-    public CommonResult<OmsOrderReturnReason> getItem(@PathVariable Long id) {
+    public CommonResult<OmsOrderReturnReason> getItem(@PathVariable("id") Long id) {
         OmsOrderReturnReason reason = orderReturnReasonService.getItem(id);
         return CommonResult.success(reason);
     }

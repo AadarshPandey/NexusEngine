@@ -50,7 +50,7 @@ public class PmsProductController {
     @Operation(summary = "Get update info Operation")
     @GetMapping("/updateInfo/{id}")
 
-    public CommonResult<PmsProductResult> getUpdateInfo(@PathVariable Long id) {
+    public CommonResult<PmsProductResult> getUpdateInfo(@PathVariable("id") Long id) {
         PmsProductResult productResult = productService.getUpdateInfo(id);
         return CommonResult.success(productResult);
     }
@@ -58,7 +58,7 @@ public class PmsProductController {
     @Operation(summary = "Update Operation")
     @PostMapping("/update/{id}")
 
-    public CommonResult update(@PathVariable Long id, @RequestBody PmsProductParam productParam) {
+    public CommonResult update(@PathVariable("id") Long id, @RequestBody PmsProductParam productParam) {
         int count = productService.update(id, productParam);
         if (count > 0) {
             return CommonResult.success(count);
@@ -153,13 +153,13 @@ public class PmsProductController {
 
     @Operation(summary = "Get operate logs")
     @GetMapping("/auditLog/{id}")
-    public CommonResult<List<com.nexusengine.core.model.PmsProductAuditLog>> getAuditLog(@PathVariable Long id) {
+    public CommonResult<List<com.nexusengine.core.model.PmsProductAuditLog>> getAuditLog(@PathVariable("id") Long id) {
         return CommonResult.success(productService.getAuditLog(id));
     }
 
     @Operation(summary = "Get verify records")
     @GetMapping("/approvalHistory/{id}")
-    public CommonResult<List<com.nexusengine.core.model.PmsProductApprovalHistory>> getApprovalHistory(@PathVariable Long id) {
+    public CommonResult<List<com.nexusengine.core.model.PmsProductApprovalHistory>> getApprovalHistory(@PathVariable("id") Long id) {
         return CommonResult.success(productService.getApprovalHistory(id));
     }
 

@@ -7,7 +7,7 @@ import request from '../utils/request';
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [passwordHash, setPassword] = useState('');
   const [error, setError] = useState('');
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -17,7 +17,7 @@ const Login: React.FC = () => {
     try {
       const params = new URLSearchParams();
       params.append('username', username);
-      params.append('password', password);
+      params.append('passwordHash', passwordHash);
       const response = await request.post('/sso/login', params);
       if (response.data?.token) {
         dispatch(login({ token: response.data.token, user: { username } }));
@@ -47,9 +47,9 @@ const Login: React.FC = () => {
           <TextField
             fullWidth
             label="Password"
-            type="password"
+            type="passwordHash"
             margin="normal"
-            value={password}
+            value={passwordHash}
             onChange={(e) => setPassword(e.target.value)}
           />
           <Button fullWidth type="submit" variant="contained" color="primary" sx={{ mt: 3, mb: 2 }}>

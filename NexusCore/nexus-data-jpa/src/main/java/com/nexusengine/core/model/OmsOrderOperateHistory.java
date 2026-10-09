@@ -3,6 +3,7 @@ package com.nexusengine.core.model;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import java.io.Serializable;
+import java.time.OffsetDateTime;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,35 +11,42 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "oms_order_operate_history", schema = "orders")
+@Table(name = "order_status_history", schema = "ordering")
 public class OmsOrderOperateHistory implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Id
+        @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    
+private Long id;
 
-    @Column(name = "order_id")
+        @Column(name = "order_id")
     @Schema(title = "Order id")
-    private Long orderId;
-    @com.fasterxml.jackson.annotation.JsonIgnore
+    
+private Long orderId;
+        @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "order_id", insertable = false, updatable = false)
-    private OmsOrder order;
+    
+private OmsOrder order;
 
-    @Column(name = "operate_man")
+        @Column(name = "actor_ref")
     @Schema(title = "Operate man")
-    private String operateMan;
+    
+private String operateMan;
 
-    @Column(name = "create_time")
+        @Column(name = "created_at")
     @Schema(title = "Create time")
-    private LocalDateTime createTime;
+    
+private OffsetDateTime createTime;
 
-    @Column(name = "order_status")
+        @Column(name = "to_status")
     @Schema(title = "Order status")
-    private Integer orderStatus;
+    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.SMALLINT)
+private Integer orderStatus;
 
-    @Schema(title = "Note")
-    private String note;
+        @Schema(title = "Note")
+    
+private String note;
 }

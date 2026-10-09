@@ -12,6 +12,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
@@ -44,7 +45,7 @@ public class StagedEventIntegrationTest {
         event.setPayload("60000");
         event.setStatus("PENDING");
         event.setRetryCount(0);
-        event.setCreatedAt(LocalDateTime.now());
+        event.setCreatedAt(OffsetDateTime.now());
         
         event = stagedEventRepository.save(event);
         Long eventId = event.getId();

@@ -25,7 +25,7 @@ public class PmsProductAttributeServiceImpl implements PmsProductAttributeServic
     @Override
     public org.springframework.data.domain.Page<PmsProductAttribute> getList(Long cid, Integer type, Integer pageSize, Integer pageNum) {
         return productAttributeRepository.findByProductAttributeCategoryIdAndType(cid, type,
-                PageRequest.of(pageNum > 0 ? pageNum - 1 : 0, pageSize, Sort.by(Sort.Direction.DESC, "sort")));
+                PageRequest.of(pageNum > 0 ? pageNum - 1 : 0, pageSize, Sort.by(Sort.Direction.DESC, "id")));
     }
 
     @Override

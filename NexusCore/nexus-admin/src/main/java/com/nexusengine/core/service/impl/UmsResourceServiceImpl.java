@@ -20,7 +20,7 @@ public class UmsResourceServiceImpl implements UmsResourceService {
 
     @Override
     public int create(UmsResource umsResource) {
-        umsResource.setCreateTime(java.time.LocalDateTime.now());
+        umsResource.setCreateTime(java.time.OffsetDateTime.now());
         resourceRepository.save(umsResource);
         return 1;
     }

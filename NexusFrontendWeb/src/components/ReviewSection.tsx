@@ -9,26 +9,26 @@ import request from '../utils/request';
 
 interface AttachmentParam {
   mediaType: string;
-  mediaUrl: string;
-  sortOrder: number;
+  url: string;
+  displayOrder: number;
 }
 
 interface Review {
   id: number;
-  productId: number;
+  orderLineId: number;
   memberId: number;
   rating: number;
-  content: string;
-  createdTime: string;
-  likeCount?: number;
-  dislikeCount?: number;
+  body: string;
+  createdAt: string;
+  helpfulCount?: number;
+  notHelpfulCount?: number;
   userLiked?: boolean;
   userDisliked?: boolean;
   attachmentList?: AttachmentParam[];
   replies?: Review[];
 }
 
-export const ReviewSection: React.FC<{ productId: number }> = ({ productId }) => {
+export const ReviewSection: React.FC<{ orderLineId: number }> = ({ orderLineId }) => {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [newReviewText, setNewReviewText] = useState('');
   const [rating, setRating] = useState<number | null>(5);
@@ -40,11 +40,11 @@ export const ReviewSection: React.FC<{ productId: number }> = ({ productId }) =>
 
   useEffect(() => {
     loadReviews();
-  }, [productId]);
+  }, [orderLineId]);
 
   const loadReviews = async () => {
     try {
-      const res = await request.get<unknown, { data: { list: Review[] } }>(`/review/product/${productId}`);
+      const res = await request.get<unknown, { data: { list: Review[] } }>(`/review/product/${orderLineId}`);
       const fetchedReviews = res.data.list || [];
       
       const reviewsWithReplies = await Promise.all(
@@ -74,7 +74,7 @@ export const ReviewSection: React.FC<{ productId: number }> = ({ productId }) =>
         const res = await request.post<unknown, { data: { url: string } }>('/review/upload', formData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
-        const newMedia = { mediaType: file.type.startsWith('video/') ? 'VIDEO' : 'IMAGE', mediaUrl: res.data.url, sortOrder: isReply ? replyAttachmentList.length : attachmentList.length };
+        const newMedia = { mediaType: file.type.startsWith('video/') ? 'VIDEO' : 'IMAGE', url: res.data.url, displayOrder: isReply ? replyAttachmentList.length : attachmentList.length };
         if (isReply) {
           setReplyMediaList([...replyAttachmentList, newMedia]);
         } else {
@@ -108,10 +108,10 @@ export const ReviewSection: React.FC<{ productId: number }> = ({ productId }) =>
     if (!newReviewText.trim()) return;
     try {
       await request.post('/review/create', {
-        productId,
-        parentId: null,
+        orderLineId,
+        parentReviewId: null,
         rating,
-        content: newReviewText,
+        body: newReviewText,
         attachmentList
       });
       setNewReviewText('');
@@ -123,14 +123,14 @@ export const ReviewSection: React.FC<{ productId: number }> = ({ productId }) =>
     }
   };
 
-  const handleReplySubmit = async (parentId: number) => {
+  const handleReplySubmit = async (parentReviewId: number) => {
     if (!replyText.trim()) return;
     try {
       await request.post('/review/create', {
-        productId,
-        parentId,
+        orderLineId,
+        parentReviewId,
         rating: 5,
-        content: replyText,
+        body: replyText,
         attachmentList: replyAttachmentList
       });
       setReplyText('');
@@ -177,32 +177,32 @@ export const ReviewSection: React.FC<{ productId: number }> = ({ productId }) =>
                 <Avatar sx={{ width: 32, height: 32 }}>U</Avatar>
                 <Rating value={review.rating} readOnly size="small" />
                 <Typography variant="caption" color="text.secondary">
-                  {new Date(review.createdTime).toLocaleDateString()}
+                  {new Date(review.createdAt).toLocaleDateString()}
                 </Typography>
                 <Box sx={{ flexGrow: 1 }} />
                 
                 <IconButton size="small" onClick={() => handleLike(review.id)} color={review.userLiked ? 'primary' : 'default'}>
                   {review.userLiked ? <ThumbUpIcon fontSize="small" /> : <ThumbUpOutlinedIcon fontSize="small" />}
                 </IconButton>
-                <Typography variant="caption">{review.likeCount || 0}</Typography>
+                <Typography variant="caption">{review.helpfulCount || 0}</Typography>
 
                 <IconButton size="small" onClick={() => handleDislike(review.id)} color={review.userDisliked ? 'primary' : 'default'}>
                   {review.userDisliked ? <ThumbDownIcon fontSize="small" /> : <ThumbDownOutlinedIcon fontSize="small" />}
                 </IconButton>
-                <Typography variant="caption">{review.dislikeCount || 0}</Typography>
+                <Typography variant="caption">{review.notHelpfulCount || 0}</Typography>
                 
                 <Button size="small" sx={{ ml: 1 }} onClick={() => { setReplyingTo(replyingTo === review.id ? null : review.id); setReplyMediaList([]); }}>
                   {replyingTo === review.id ? 'Cancel' : 'Reply'}
                 </Button>
               </Box>
-              <Typography variant="body1">{review.content}</Typography>
+              <Typography variant="body1">{review.body}</Typography>
               <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mt: 1 }}>
                 {review.attachmentList && review.attachmentList.map((m, i) => (
                   <Box key={i}>
                     {m.mediaType === 'IMAGE' ? (
-                      <img src={m.mediaUrl.startsWith('http') ? m.mediaUrl : (import.meta.env.VITE_API_BASE_URL || '/api') + m.mediaUrl} alt="review" style={{ maxWidth: 200 }} />
+                      <img src={m.url.startsWith('http') ? m.url : (import.meta.env.VITE_API_BASE_URL || '/api') + m.url} alt="review" style={{ maxWidth: 200 }} />
                     ) : (
-                      <video src={m.mediaUrl.startsWith('http') ? m.mediaUrl : (import.meta.env.VITE_API_BASE_URL || '/api') + m.mediaUrl} controls style={{ maxWidth: 300 }} />
+                      <video src={m.url.startsWith('http') ? m.url : (import.meta.env.VITE_API_BASE_URL || '/api') + m.url} controls style={{ maxWidth: 300 }} />
                     )}
                   </Box>
                 ))}
@@ -235,31 +235,31 @@ export const ReviewSection: React.FC<{ productId: number }> = ({ productId }) =>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5, width: '100%' }}>
                         <Avatar sx={{ width: 24, height: 24 }}>R</Avatar>
                         <Typography variant="caption" color="text.secondary">
-                          {new Date(reply.createdTime).toLocaleDateString()}
+                          {new Date(reply.createdAt).toLocaleDateString()}
                         </Typography>
                         <Box sx={{ flexGrow: 1 }} />
                         <IconButton size="small" onClick={() => handleLike(reply.id)} color={reply.userLiked ? 'primary' : 'default'}>
                           {reply.userLiked ? <ThumbUpIcon fontSize="small" sx={{ fontSize: 16 }} /> : <ThumbUpOutlinedIcon fontSize="small" sx={{ fontSize: 16 }} />}
                         </IconButton>
-                        <Typography variant="caption">{reply.likeCount || 0}</Typography>
+                        <Typography variant="caption">{reply.helpfulCount || 0}</Typography>
 
                         <IconButton size="small" onClick={() => handleDislike(reply.id)} color={reply.userDisliked ? 'primary' : 'default'}>
                           {reply.userDisliked ? <ThumbDownIcon fontSize="small" sx={{ fontSize: 16 }} /> : <ThumbDownOutlinedIcon fontSize="small" sx={{ fontSize: 16 }} />}
                         </IconButton>
-                        <Typography variant="caption">{reply.dislikeCount || 0}</Typography>
+                        <Typography variant="caption">{reply.notHelpfulCount || 0}</Typography>
                         
                         <Button size="small" sx={{ ml: 1 }} onClick={() => { setReplyingTo(replyingTo === reply.id ? null : reply.id); setReplyMediaList([]); }}>
                           {replyingTo === reply.id ? 'Cancel' : 'Reply'}
                         </Button>
                       </Box>
-                      <Typography variant="body2">{reply.content}</Typography>
+                      <Typography variant="body2">{reply.body}</Typography>
                       <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mt: 1 }}>
                         {reply.attachmentList && reply.attachmentList.map((m, i) => (
                           <Box key={i}>
                             {m.mediaType === 'IMAGE' ? (
-                              <img src={m.mediaUrl.startsWith('http') ? m.mediaUrl : (import.meta.env.VITE_API_BASE_URL || '/api') + m.mediaUrl} alt="reply" style={{ maxWidth: 150 }} />
+                              <img src={m.url.startsWith('http') ? m.url : (import.meta.env.VITE_API_BASE_URL || '/api') + m.url} alt="reply" style={{ maxWidth: 150 }} />
                             ) : (
-                              <video src={m.mediaUrl.startsWith('http') ? m.mediaUrl : (import.meta.env.VITE_API_BASE_URL || '/api') + m.mediaUrl} controls style={{ maxWidth: 200 }} />
+                              <video src={m.url.startsWith('http') ? m.url : (import.meta.env.VITE_API_BASE_URL || '/api') + m.url} controls style={{ maxWidth: 200 }} />
                             )}
                           </Box>
                         ))}

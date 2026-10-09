@@ -9,46 +9,57 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "ums_member_receive_address", schema = "users")
+@Table(name = "member_address", schema = "customer")
 public class UmsMemberReceiveAddress implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Id
+        @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    
+private Long id;
 
-    @Column(name = "member_id")
-    private Long memberId;
-    @com.fasterxml.jackson.annotation.JsonIgnore
+        @Column(name = "member_id")
+    
+private Long memberId;
+        @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "member_id", insertable = false, updatable = false)
-    private UmsMember member;
+    
+private UmsMember member;
 
-    @Schema(title = "Name")
-    private String name;
+            @Schema(title = "Name")
+    @Column(name = "recipient_name")
+private String name;
 
-    @Column(name = "phone_number")
-    private String phoneNumber;
+        @Column(name = "recipient_phone")
+    
+private String phoneNumber;
 
-    @Column(name = "default_status")
+        @Column(name = "is_default")
     @Schema(title = "Default status")
-    private Integer defaultStatus;
+    @jakarta.persistence.Convert(converter = com.nexusengine.core.model.converter.IntegerToBooleanConverter.class)
+private Integer defaultStatus;
 
-    @Column(name = "post_code")
+        @Column(name = "postal_code")
     @Schema(title = "Post code")
-    private String postCode;
+    
+private String postCode;
 
-    @Schema(title = "Province")
-    private String province;
+            @Schema(title = "Province")
+    @Column(name = "state")
+private String province;
 
-    @Schema(title = "City")
-    private String city;
+        @Schema(title = "City")
+    
+private String city;
 
-    @Schema(title = "Region")
-    private String region;
+            @Schema(title = "Region")
+    @Column(name = "district")
+private String region;
 
-    @Column(name = "detail_address")
+        @Column(name = "address_line")
     @Schema(title = "Detail address")
-    private String detailAddress;
+    
+private String detailAddress;
 }

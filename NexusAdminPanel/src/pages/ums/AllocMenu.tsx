@@ -75,9 +75,9 @@ const AllocMenu: React.FC = () => {
       if (menu.children) {
         newSelected.push(...menu.children.map(c => c.id!));
       }
-      // Select its parent if not selected (this requires parentId which is on UmsMenu, if available)
-      if (menu.parentId !== 0 && !newSelected.includes(menu.parentId!)) {
-        newSelected.push(menu.parentId!);
+      // Select its parent if not selected (this requires parentReviewId which is on UmsMenu, if available)
+      if (menu.parentReviewId !== 0 && !newSelected.includes(menu.parentReviewId!)) {
+        newSelected.push(menu.parentReviewId!);
       }
     }
     
@@ -85,7 +85,7 @@ const AllocMenu: React.FC = () => {
     setSelectedMenuIds(Array.from(new Set(newSelected)));
   };
 
-  const handleToggleChild = (childId: number, parentId: number) => {
+  const handleToggleChild = (childId: number, parentReviewId: number) => {
     const isSelected = selectedMenuIds.includes(childId);
     let newSelected = [...selectedMenuIds];
 
@@ -94,8 +94,8 @@ const AllocMenu: React.FC = () => {
     } else {
       newSelected.push(childId);
       // Auto select parent if a child is selected
-      if (!newSelected.includes(parentId)) {
-        newSelected.push(parentId);
+      if (!newSelected.includes(parentReviewId)) {
+        newSelected.push(parentReviewId);
       }
     }
 

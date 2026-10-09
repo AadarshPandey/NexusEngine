@@ -143,18 +143,18 @@ const CouponList: React.FC = () => {
                     <TableCell>{row.id}</TableCell>
                     <TableCell>{row.name}</TableCell>
                     <TableCell>{formatType(row.type)}</TableCell>
-                                        <TableCell>₹{row.amount}</TableCell>
-                    <TableCell>₹{row.minOrderAmount}</TableCell>
+                                        <TableCell>₹{row.discountValue}</TableCell>
+                    <TableCell>₹{row.minSpendAmount}</TableCell>
                     <TableCell>
                       <Typography variant="caption" display="block">
-                        {row.startTime ? dayjs(row.startTime).format('YYYY-MM-DD') : 'N/A'}
+                        {row.startsAt ? dayjs(row.startsAt).format('YYYY-MM-DD') : 'N/A'}
                       </Typography>
                       <Typography variant="caption" display="block">
-                        to {row.endTime ? dayjs(row.endTime).format('YYYY-MM-DD') : 'N/A'}
+                        to {row.endsAt ? dayjs(row.endsAt).format('YYYY-MM-DD') : 'N/A'}
                       </Typography>
                     </TableCell>
                     <TableCell>
-                      {row.endTime && new Date(row.endTime).getTime() < new Date().getTime() ? (
+                      {row.endsAt && new Date(row.endsAt).getTime() < new Date().getTime() ? (
                         <Chip label="Expired" size="small" color="error" />
                       ) : (
                         <Chip label="Active" size="small" color="success" />

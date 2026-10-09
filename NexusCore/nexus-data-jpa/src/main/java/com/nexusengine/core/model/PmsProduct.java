@@ -14,92 +14,123 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "pms_product", schema = "pms")
+@Table(name = "product", schema = "catalog")
 public class PmsProduct implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Id
+        @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @Column(name = "brand_id")
-    private Long brandId;
-    @com.fasterxml.jackson.annotation.JsonIgnore
+    
+private Long id;
+        @Column(name = "brand_id")
+    
+private Long brandId;
+        @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "brand_id", insertable = false, updatable = false)
-    private PmsBrand brand;
+    
+private PmsBrand brand;
 
-    @Column(name = "product_category_id")
-    private Long productCategoryId;
-    @com.fasterxml.jackson.annotation.JsonIgnore
+        @Column(name = "category_id")
+    
+private Long productCategoryId;
+        @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
-    @jakarta.persistence.JoinColumn(name = "product_category_id", insertable = false, updatable = false)
-    private PmsProductCategory productCategory;
+    @jakarta.persistence.JoinColumn(name = "category_id", insertable = false, updatable = false)
+    
+private PmsProductCategory productCategory;
 
-    @Column(name = "product_attribute_category_id")
-    private Long productAttributeCategoryId;
-    @com.fasterxml.jackson.annotation.JsonIgnore
+        @Column(name = "product_type_id")
+    
+private Long productAttributeCategoryId;
+        @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
-    @jakarta.persistence.JoinColumn(name = "product_attribute_category_id", insertable = false, updatable = false)
-    private PmsProductAttributeCategory productAttributeCategory;
+    @jakarta.persistence.JoinColumn(name = "product_type_id", insertable = false, updatable = false)
+    
+private PmsProductAttributeCategory productAttributeCategory;
 
     private String name;
 
-    private String pic;
+    @com.fasterxml.jackson.annotation.JsonProperty("primaryImageUrl")
+            @Column(name = "primary_image_url")
+private String primaryImageUrl;
 
-    @Column(name = "product_sn")
+        @Column(name = "product_code")
     @Schema(title = "Product sn")
+    
+@com.fasterxml.jackson.annotation.JsonProperty("productCode")
     private String productSn;
 
-    @Column(name = "delete_status")
+        @Convert(converter = com.nexusengine.core.model.converter.IntegerToDeletedAtConverter.class)
+    @Column(name = "deleted_at")
     @Schema(title = "Delete status")
-    private Integer deleteStatus;
+    
+private Integer deleteStatus;
 
-    @Column(name = "publish_status")
+        @Column(name = "is_published")
     @Schema(title = "Publish status")
+    @jakarta.persistence.Convert(converter = com.nexusengine.core.model.converter.IntegerToBooleanConverter.class)
+@com.fasterxml.jackson.annotation.JsonProperty("isPublished")
     private Integer publishStatus;
 
-    @Column(name = "new_status")
+        @Column(name = "is_new_arrival")
     @Schema(title = "New status")
+    @jakarta.persistence.Convert(converter = com.nexusengine.core.model.converter.IntegerToBooleanConverter.class)
+@com.fasterxml.jackson.annotation.JsonProperty("isNewArrival")
     private Integer newStatus;
 
-    @Column(name = "recommend_status")
+        @Column(name = "is_featured")
     @Schema(title = "Recommend status")
+    @jakarta.persistence.Convert(converter = com.nexusengine.core.model.converter.IntegerToBooleanConverter.class)
+@com.fasterxml.jackson.annotation.JsonProperty("isFeatured")
     private Integer recommendStatus;
 
-    @Column(name = "verify_status")
+        @Column(name = "approval_status")
     @Schema(title = "Verify status")
+    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.SMALLINT)
+@com.fasterxml.jackson.annotation.JsonProperty("approvalStatus")
     private Integer verifyStatus;
 
-    @Schema(title = "Sale")
+            @Schema(title = "Sale")
+    @Column(name = "units_sold")
+@com.fasterxml.jackson.annotation.JsonProperty("unitsSold")
     private Integer sale;
 
-    private String keywords;
-    @OneToMany(fetch = jakarta.persistence.FetchType.EAGER)
+            @Column(name = "search_keywords")
+private String keywords;
+        @OneToMany(fetch = jakarta.persistence.FetchType.EAGER)
     @JoinColumn(name = "product_id")
     @com.fasterxml.jackson.annotation.JsonManagedReference
-    private List<PmsProductGallery> galleryList;
+    
+private List<PmsProductGallery> galleryList;
 
 
 
-    @Column(name = "promotion_type")
+        @Column(name = "promotion_type")
     @Schema(title = "Promotion type")
-    private Integer promotionType;
+    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.SMALLINT)
+private Integer promotionType;
 
-    @Column(name = "brand_name")
-    @Schema(title = "Brand name")
+            @org.hibernate.annotations.Formula("(SELECT b.name FROM catalog.brand b WHERE b.id = brand_id)")
     private String brandName;
 
-    @Schema(title = "Description")
-    private String description;
+        @Schema(title = "Description")
+    
+private String description;
 
-    @org.hibernate.annotations.Formula("(SELECT COALESCE(MIN(s.price), 0) FROM pms.pms_sku_stock s WHERE s.product_id = id)")
+    @org.hibernate.annotations.Formula("(SELECT COALESCE(MIN(s.list_price), 0) FROM catalog.product_sku s WHERE s.product_id = id)")
+    @com.fasterxml.jackson.annotation.JsonProperty("listPrice")
     private BigDecimal price;
 
-    @org.hibernate.annotations.Formula("(SELECT COALESCE(MIN(s.price), 0) FROM pms.pms_sku_stock s WHERE s.product_id = id)")
+    @org.hibernate.annotations.Formula("(SELECT COALESCE(MIN(s.list_price), 0) FROM catalog.product_sku s WHERE s.product_id = id)")
     private BigDecimal originalPrice;
 
-    @org.hibernate.annotations.Formula("(SELECT COALESCE(SUM(s.stock), 0) FROM pms.pms_sku_stock s WHERE s.product_id = id)")
+    @org.hibernate.annotations.Formula("(SELECT COALESCE(SUM(s.on_hand_qty), 0) FROM catalog.product_sku s WHERE s.product_id = id)")
+    @com.fasterxml.jackson.annotation.JsonProperty("onHandQty")
     private Integer stock;
 
+
+    @jakarta.persistence.Version
+    private Integer version;
 }

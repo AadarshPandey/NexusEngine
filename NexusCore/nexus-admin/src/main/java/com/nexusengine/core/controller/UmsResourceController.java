@@ -42,7 +42,7 @@ public class UmsResourceController {
     @Operation(summary = "Update Operation")
     @PostMapping("/update/{id}")
 
-    public CommonResult update(@PathVariable Long id,
+    public CommonResult update(@PathVariable("id") Long id,
                                @RequestBody UmsResource umsResource) {
         int count = resourceService.update(id, umsResource);
         dynamicSecurityMetadataSource.clearDataSource();
@@ -56,7 +56,7 @@ public class UmsResourceController {
     @Operation(summary = "Get item Operation")
     @GetMapping("/{id}")
 
-    public CommonResult<UmsResource> getItem(@PathVariable Long id) {
+    public CommonResult<UmsResource> getItem(@PathVariable("id") Long id) {
         UmsResource umsResource = resourceService.getItem(id);
         return CommonResult.success(umsResource);
     }
@@ -64,7 +64,7 @@ public class UmsResourceController {
     @Operation(summary = "Delete Operation")
     @PostMapping("/delete/{id}")
 
-    public CommonResult delete(@PathVariable Long id) {
+    public CommonResult delete(@PathVariable("id") Long id) {
         int count = resourceService.delete(id);
         dynamicSecurityMetadataSource.clearDataSource();
         if (count > 0) {

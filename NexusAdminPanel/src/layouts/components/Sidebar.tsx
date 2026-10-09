@@ -55,7 +55,7 @@ const iconComponents: Record<string, React.ReactElement> = {
   order: <ShoppingCart />,
   'order-setting': <Settings />,
   'order-return': <AssignmentReturn />,
-  'order-return-reason': <HelpOutline />,
+  'order-return-reasonId': <HelpOutline />,
   sms: <Campaign />,
   'sms-flash': <FlashOn />,
   'sms-coupon': <LocalOffer />,
@@ -153,7 +153,7 @@ const Sidebar: React.FC<SidebarProps> = ({
               '& .MuiSvgIcon-root': { fontSize: 20 },
             }}
           >
-            {getIcon(child.meta?.icon || route.meta?.icon)}
+            {getIcon(child.meta?.iconUrl || route.meta?.iconUrl)}
           </ListItemIcon>
           {opened && (
             <ListItemText
@@ -200,7 +200,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                   '& .MuiSvgIcon-root': { fontSize: 20 },
                 }}
               >
-                {getIcon(route.meta?.icon)}
+                {getIcon(route.meta?.iconUrl)}
               </ListItemIcon>
               <ListItemText
                 primary={route.meta?.title}
@@ -228,7 +228,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                     '& .MuiSvgIcon-root': { fontSize: 20 },
                   }}
                 >
-                  {getIcon(route.meta?.icon)}
+                  {getIcon(route.meta?.iconUrl)}
                 </ListItemIcon>
               </ListItemButton>
             </Tooltip>
@@ -266,7 +266,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                             '& .MuiSvgIcon-root': { fontSize: 18 },
                           }}
                         >
-                          {getIcon(child.meta?.icon)}
+                          {getIcon(child.meta?.iconUrl)}
                         </ListItemIcon>
                         <ListItemText
                           primary={child.meta?.title}
@@ -301,7 +301,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                           '& .MuiSvgIcon-root': { fontSize: 18 },
                         }}
                       >
-                        {getIcon(child.meta?.icon)}
+                        {getIcon(child.meta?.iconUrl)}
                       </ListItemIcon>
                       <ListItemText
                         primary={child.meta?.title}

@@ -13,9 +13,9 @@ export function getMenuTreeListAPI() {
 
 /**
  */
-export function getMenuListByParentIdAPI(parentId: number, params: PageParam) {
+export function getMenuListByParentIdAPI(parentReviewId: number, params: PageParam) {
   return http<CommonPage<UmsMenu>>({
-    url: '/menu/list/' + parentId,
+    url: '/menu/list/' + parentReviewId,
     method: 'get',
     params: params,
   })

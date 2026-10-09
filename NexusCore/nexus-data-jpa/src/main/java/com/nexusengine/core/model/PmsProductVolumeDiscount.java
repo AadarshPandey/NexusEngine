@@ -10,28 +10,34 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "pms_product_volume_discount", schema = "pms")
+@Table(name = "quantity_tier_discount", schema = "promotion")
 public class PmsProductVolumeDiscount implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Id
+        @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    
+private Long id;
 
-    @Column(name = "product_id")
-    private Long productId;
-    @com.fasterxml.jackson.annotation.JsonIgnore
+        @Column(name = "product_id")
+    
+private Long productId;
+        @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "product_id", insertable = false, updatable = false)
-    private PmsProduct product;
+    
+private PmsProduct product;
 
-    @Schema(title = "Count")
-    private Integer count;
+            @Schema(title = "Count")
+    @Column(name = "min_quantity")
+private Integer count;
 
-    @Schema(title = "Discount")
-    private BigDecimal discount;
+            @Schema(title = "Discount")
+    @Column(name = "discount_rate")
+private BigDecimal discount;
 
-    @Schema(title = "Price")
-    private BigDecimal price;
+            @Schema(title = "Price")
+    @Column(name = "tier_unit_price")
+private BigDecimal price;
 }

@@ -49,7 +49,7 @@ const AdvertiseList: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [keyword, setKeyword] = useState('');
   const [type, setType] = useState<number | ''>('');
-  const [endTime, setEndTime] = useState('');
+  const [endsAt, setEndTime] = useState('');
   const [pageNum, setPageNum] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [selected, setSelected] = useState<number[]>([]);
@@ -61,7 +61,7 @@ const AdvertiseList: React.FC = () => {
       const res = await getHomeAdvertiseListAPI({ 
         name: keyword || undefined, 
         type: type === '' ? undefined : type,
-        endTime: endTime || undefined,
+        endsAt: endsAt || undefined,
         pageNum: pageNum + 1, 
         pageSize 
       });
@@ -72,7 +72,7 @@ const AdvertiseList: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [keyword, type, endTime, pageNum, pageSize]);
+  }, [keyword, type, endsAt, pageNum, pageSize]);
 
   useEffect(() => {
     fetchList();
@@ -96,10 +96,10 @@ const AdvertiseList: React.FC = () => {
   };
 
   const handleStatusChange = async (row: SmsHomeAdvertise) => {
-    const newStatus = row.status === 1 ? 0 : 1;
+    const isNewArrival = row.status === 1 ? 0 : 1;
     try {
-      await homeAdvertiseUpdateStatusAPI({ id: row.id!, status: newStatus });
-      setList((prev) => prev.map((item) => (item.id === row.id ? { ...item, status: newStatus } : item)));
+      await homeAdvertiseUpdateStatusAPI({ id: row.id!, status: isNewArrival });
+      setList((prev) => prev.map((item) => (item.id === row.id ? { ...item, status: isNewArrival } : item)));
       setSnackbar({ open: true, message: 'Status updated', severity: 'success' });
     } catch {
       setSnackbar({ open: true, message: 'Failed to update status', severity: 'error' });
@@ -170,7 +170,7 @@ const AdvertiseList: React.FC = () => {
               type="date"
               label="End Time Before"
               InputLabelProps={{ shrink: true }}
-              value={endTime}
+              value={endsAt}
               onChange={(e) => setEndTime(e.target.value)}
               sx={{ width: 200 }}
             />
@@ -251,14 +251,14 @@ const AdvertiseList: React.FC = () => {
                     <TableCell>
                       <Box
                         component="img"
-                        src={row.pic}
+                        src={row.primaryImageUrl}
                         alt="Ad"
                         sx={{ height: 60, width: 120, objectFit: 'cover', borderRadius: 1 }}
                       />
                     </TableCell>
                     <TableCell>
-                      <Typography variant="caption" display="block">Start: {formatTime(row.startTime)}</Typography>
-                      <Typography variant="caption" display="block">End: {formatTime(row.endTime)}</Typography>
+                      <Typography variant="caption" display="block">Start: {formatTime(row.startsAt)}</Typography>
+                      <Typography variant="caption" display="block">End: {formatTime(row.endsAt)}</Typography>
                     </TableCell>
                     <TableCell align="center">
                       <Switch

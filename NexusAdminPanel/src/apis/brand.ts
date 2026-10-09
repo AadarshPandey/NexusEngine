@@ -24,9 +24,9 @@ export function createBrandAPI(data: PmsBrand) {
 
 /**
  */
-export function brandUpdateShowStatusAPI(params: { ids: string; showStatus: number }) {
+export function brandUpdateShowStatusAPI(params: { ids: string; isVisible: number }) {
   return http({
-    url: '/brand/update/showStatus',
+    url: '/brand/update/isVisible',
     method: 'post',
     params: params,
   })

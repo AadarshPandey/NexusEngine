@@ -45,7 +45,7 @@ public class UmsResourceCategoryController {
     @Operation(summary = "Update Operation")
     @PostMapping("/update/{id}")
 
-    public CommonResult update(@PathVariable Long id,
+    public CommonResult update(@PathVariable("id") Long id,
                                @RequestBody UmsResourceCategory umsResourceCategory) {
         int count = resourceCategoryService.update(id, umsResourceCategory);
         if (count > 0) {
@@ -58,7 +58,7 @@ public class UmsResourceCategoryController {
     @Operation(summary = "Delete Operation")
     @PostMapping("/delete/{id}")
 
-    public CommonResult delete(@PathVariable Long id) {
+    public CommonResult delete(@PathVariable("id") Long id) {
         int count = resourceCategoryService.delete(id);
         if (count > 0) {
             return CommonResult.success(count);

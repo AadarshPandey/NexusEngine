@@ -3,25 +3,25 @@ import type { PageParam } from './common'
 export type UmsResource = {
   /** ID */
   id?: number
-  createTime?: string
+  createdAt?: string
   name: string
   url: string
-  description?: string
-  categoryId: number
+  customerComment?: string
+  permissionGroupId: number
   checked?: boolean
 }
 
 export type UmsResourceCategory = {
   /** ID */
   id?: number
-  createTime?: string
+  createdAt?: string
   name: string
-  sort: number
+  displayOrder: number
   checked?: boolean
 }
 
 export type ResourceQueryParam = PageParam & {
   nameKeyword?: string
   urlKeyword?: string
-  categoryId?: number
+  permissionGroupId?: number
 }

@@ -37,7 +37,7 @@ public class PmsPortalBrandController {
     @Operation(summary = "Detail Operation")
     @GetMapping("/detail/{brandId}")
 
-    public CommonResult<PmsBrand> detail(@PathVariable Long brandId) {
+    public CommonResult<PmsBrand> detail(@PathVariable("brandId") Long brandId) {
         PmsBrand brand = portalBrandService.detail(brandId);
         return CommonResult.success(brand);
     }
@@ -45,7 +45,7 @@ public class PmsPortalBrandController {
     @Operation(summary = "Product list Operation")
     @GetMapping("/productList")
 
-    public CommonResult<CommonPage<PmsProduct>> productList(@RequestParam Long brandId,
+    public CommonResult<CommonPage<PmsProduct>> productList(@RequestParam("brandId") Long brandId,
                                                             @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
                                                             @RequestParam(value = "pageSize", defaultValue = "6") Integer pageSize) {
         CommonPage<PmsProduct> result = portalBrandService.productList(brandId,pageNum, pageSize);

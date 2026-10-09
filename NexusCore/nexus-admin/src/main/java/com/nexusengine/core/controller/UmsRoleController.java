@@ -37,7 +37,7 @@ public class UmsRoleController {
     @Operation(summary = "Update Operation")
     @PostMapping("/update/{id}")
 
-    public CommonResult update(@PathVariable Long id, @RequestBody UmsRole role) {
+    public CommonResult update(@PathVariable("id") Long id, @RequestBody UmsRole role) {
         int count = roleService.update(id, role);
         if (count > 0) {
             return CommonResult.success(count);
@@ -77,7 +77,7 @@ public class UmsRoleController {
     @Operation(summary = "Update status Operation")
     @PostMapping("/updateStatus/{id}")
 
-    public CommonResult updateStatus(@PathVariable Long id, @RequestParam(value = "status") Integer status) {
+    public CommonResult updateStatus(@PathVariable("id") Long id, @RequestParam(value = "status") Integer status) {
         UmsRole umsRole = new UmsRole();
         umsRole.setStatus(status);
         int count = roleService.update(id, umsRole);
@@ -90,7 +90,7 @@ public class UmsRoleController {
     @Operation(summary = "List menu Operation")
     @GetMapping("/listMenu/{roleId}")
 
-    public CommonResult<List<UmsMenu>> listMenu(@PathVariable Long roleId) {
+    public CommonResult<List<UmsMenu>> listMenu(@PathVariable("roleId") Long roleId) {
         List<UmsMenu> roleList = roleService.listMenu(roleId);
         return CommonResult.success(roleList);
     }
@@ -98,7 +98,7 @@ public class UmsRoleController {
     @Operation(summary = "List resource Operation")
     @GetMapping("/listResource/{roleId}")
 
-    public CommonResult<List<UmsResource>> listResource(@PathVariable Long roleId) {
+    public CommonResult<List<UmsResource>> listResource(@PathVariable("roleId") Long roleId) {
         List<UmsResource> roleList = roleService.listResource(roleId);
         return CommonResult.success(roleList);
     }
@@ -106,7 +106,7 @@ public class UmsRoleController {
     @Operation(summary = "Alloc menu Operation")
     @PostMapping("/allocMenu")
 
-    public CommonResult allocMenu(@RequestParam Long roleId, @RequestParam List<Long> menuIds) {
+    public CommonResult allocMenu(@RequestParam("roleId") Long roleId, @RequestParam("menuIds") List<Long> menuIds) {
         int count = roleService.allocMenu(roleId, menuIds);
         return CommonResult.success(count);
     }
@@ -114,7 +114,7 @@ public class UmsRoleController {
     @Operation(summary = "Alloc resource Operation")
     @PostMapping("/allocResource")
 
-    public CommonResult allocResource(@RequestParam Long roleId, @RequestParam List<Long> resourceIds) {
+    public CommonResult allocResource(@RequestParam("roleId") Long roleId, @RequestParam("resourceIds") List<Long> resourceIds) {
         int count = roleService.allocResource(roleId, resourceIds);
         return CommonResult.success(count);
     }

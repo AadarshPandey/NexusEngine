@@ -5,80 +5,80 @@ import type { UmsMemberReceiveAddress } from './member';
 export interface OmsOrderItem {
   id: number;
   orderId: number;
-  orderSn: string;
-  productId: number;
-  productPic: string;
+  orderNumber: string;
+  orderLineId: number;
+  productImageUrl: string;
   productName: string;
-  productBrand: string;
-  productSn: string;
-  productPrice: number;
-  productQuantity: number;
-  productSkuId: number;
+  brandName: string;
+  productCode: string;
+  unitPrice: number;
+  quantity: number;
+  skuId: number;
   productSkuCode: string;
-  productCategoryId: number;
+  permissionGroupId: number;
   sp1: string;
   sp2: string;
   sp3: string;
   promotionName: string;
-  promotionAmount: number;
-  couponAmount: number;
-  realAmount: number;
+  promotionDiscountAmount: number;
+  couponDiscountAmount: number;
+  lineTotalAmount: number;
   giftIntegration: number;
   giftGrowth: number;
-  productAttr: string;
+  skuAttributes: string;
 }
 
 export interface OmsOrderReturnApply {
   id: number;
   orderId: number;
-  companyAddressId: number;
-  productId: number;
-  orderSn: string;
-  createTime: string;
-  returnAmount: number;
-  returnName: string;
-  returnPhone: string;
+  returnAddressId: number;
+  orderLineId: number;
+  orderNumber: string;
+  createdAt: string;
+  refundAmount: number;
+  contactName: string;
+  contactPhone: string;
   status: number;
-  handleTime: string;
-  productPic: string;
+  reviewedAt: string;
+  productImageUrl: string;
   productName: string;
-  productBrand: string;
-  productSn: string;
-  productAttr: string;
-  productCount: number;
-  productPrice: number;
-  productRealPrice: number;
-  reason: string;
-  description: string;
-  proofPics: string;
-  handleNote: string;
-  handleMan: string;
-  receiveMan: string;
-  receiveTime: string;
-  receiveNote: string;
+  brandName: string;
+  productCode: string;
+  skuAttributes: string;
+  quantity: number;
+  unitPrice: number;
+  unitRefundAmount: number;
+  reasonId: string;
+  customerComment: string;
+  evidenceUrls: string;
+  reviewNote: string;
+  reviewedByAdminId: string;
+  receivedByAdminId: string;
+  deliveredAt: string;
+  receiptNote: string;
 }
 
 export interface SmsCoupon {
   id: number;
   type: number;
   name: string;
-  amount: number;
-  minOrderAmount: number;
-  useType: number;
-  endTime: string;
+  discountValue: number;
+  minSpendAmount: number;
+  applicabilityScope: number;
+  endsAt: string;
     maxDiscountAmount?: number;
 }
 
 export interface SmsCouponProductRelation {
   id: number;
   couponId: number;
-  productId: number;
+  orderLineId: number;
 }
 
 export interface SmsCouponProductCategoryRelation {
   id: number;
   couponId: number;
-  productCategoryId: number;
+  permissionGroupId: number;
 }
 
 export interface SmsCouponHistoryDetail {
@@ -87,12 +87,12 @@ export interface SmsCouponHistoryDetail {
   memberId: number;
   couponCode: string;
   memberNickname: string;
-  getType: number;
-  createTime: string;
-  useStatus: number;
-  useTime: string;
+  acquisitionChannel: number;
+  createdAt: string;
+  status: number;
+  redeemedAt: string;
   orderId: number;
-  orderSn: string;
+  orderNumber: string;
   coupon: SmsCoupon;
   productRelationList?: SmsCouponProductRelation[];
   categoryRelationList?: SmsCouponProductCategoryRelation[];
@@ -103,10 +103,10 @@ export interface ConfirmOrderResult {
   memberReceiveAddressList: UmsMemberReceiveAddress[];
   couponHistoryDetailList: SmsCouponHistoryDetail[];
   calcAmount: {
-    totalAmount: number;
-    freightAmount: number;
-    promotionAmount: number;
-    payAmount: number;
+    subtotalAmount: number;
+    shippingAmount: number;
+    promotionDiscountAmount: number;
+    grandTotalAmount: number;
   };
 }
 
@@ -114,35 +114,35 @@ export interface OrderParam {
   memberReceiveAddressId: number;
   couponId?: number;
   useIntegration?: number;
-  payType: number;
+  paymentMethod: number;
   cartIds?: number[];
 }
 
 export interface OmsOrderDetail {
   id: number;
-  orderSn: string;
-  createTime: string;
-  totalAmount: number;
-  payAmount: number;
-  freightAmount: number;
-  promotionAmount: number;
-  payType: number;
+  orderNumber: string;
+  createdAt: string;
+  subtotalAmount: number;
+  grandTotalAmount: number;
+  shippingAmount: number;
+  promotionDiscountAmount: number;
+  paymentMethod: number;
   status: number;
   orderType: number;
-  deliveryCompany: string;
-  deliverySn: string;
-  receiverName: string;
-  receiverPhone: string;
-  receiverPostCode: string;
-  receiverDetailAddress: string;
-    confirmStatus: number;
-  deleteStatus: number;
+  carrierName: string;
+  trackingNumber: string;
+  recipientName: string;
+  recipientPhone: string;
+  shippingPostalCode: string;
+  shippingAddressLine: string;
+    isReceiptConfirmed: number;
+  deletedAt: number;
   useIntegration: number;
-  paymentTime: string;
-  deliveryTime: string;
-  receiveTime: string;
-  commentTime: string;
-  modifyTime: string;
+  paidAt: string;
+  shippedAt: string;
+  deliveredAt: string;
+  reviewedAt: string;
+  updatedAt: string;
   orderItemList: OmsOrderItem[];
   returnApplyList?: OmsOrderReturnApply[];
 }
@@ -173,12 +173,12 @@ export const fetchOrderList = (status: number = -1, pageNum: number = 1, pageSiz
   });
 };
 
-export const paySuccess = (orderId: number, payType: number = 1) => {
-  return request.post<unknown, { data: unknown }>(`/order/paySuccess?orderId=${orderId}&payType=${payType}`);
+export const paySuccess = (orderId: number, paymentMethod: number = 1) => {
+  return request.post<unknown, { data: unknown }>(`/order/paySuccess?orderId=${orderId}&paymentMethod=${paymentMethod}`);
 };
 
 export const createRazorpayOrder = (orderId: number) => {
-  return request.post<unknown, { data: { razorpayOrderId: string, keyId: string, amount: string } }>(`/order/createRazorpayOrder?orderId=${orderId}`);
+  return request.post<unknown, { data: { razorpayOrderId: string, keyId: string, discountValue: string } }>(`/order/createRazorpayOrder?orderId=${orderId}`);
 };
 
 export const verifyRazorpayPayment = (orderId: number, razorpayPaymentId: string, razorpayOrderId: string, razorpaySignature: string) => {

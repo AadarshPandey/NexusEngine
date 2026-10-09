@@ -3,7 +3,7 @@ export type CmsPrefrenceArea = {
   id?: number
   name: string
   subTitle: string
-  sort: number
-  showStatus: number
-  pic?: string
+  displayOrder: number
+  isVisible: number
+  primaryImageUrl?: string
 }

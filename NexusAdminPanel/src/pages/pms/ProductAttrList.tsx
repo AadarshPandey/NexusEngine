@@ -3,7 +3,7 @@ import { Box, Card, Typography, Button, Table, TableBody, TableCell, TableContai
 import { Add } from '@mui/icons-material';
 import { useNavigate } from 'react-router';
 import { getProductAttributeCategoryListAPI, productAttributeCategoryCreateAPI, productAttributeCategoryUpdateAPI, productAttributeCategoryDeleteById } from '@/apis/productAttrCate';
-import type { PmsProductAttributeCategory } from '@/types/productAttr';
+import type { PmsProductAttributeCategory } from '@/types/skuAttributes';
 
 const ProductAttrList: React.FC = () => {
   const navigate = useNavigate();

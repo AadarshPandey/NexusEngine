@@ -74,7 +74,7 @@ public class UmsAdminServiceImpl implements UmsAdminService {
         }
         UmsAdmin umsAdmin = new UmsAdmin();
         BeanUtils.copyProperties(umsAdminParam, umsAdmin);
-        umsAdmin.setCreateTime(java.time.LocalDateTime.now());
+        umsAdmin.setCreateTime(java.time.OffsetDateTime.now());
         umsAdmin.setStatus(1);
         UmsAdmin existing = adminRepository.findByUsername(umsAdmin.getUsername());
         if (existing != null) {
@@ -112,7 +112,7 @@ public class UmsAdminServiceImpl implements UmsAdminService {
         if(admin==null) return;
         UmsAdminLoginLog loginLog = new UmsAdminLoginLog();
         loginLog.setAdminId(admin.getId());
-        loginLog.setCreateTime(java.time.LocalDateTime.now());
+        loginLog.setCreateTime(java.time.OffsetDateTime.now());
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
         loginLog.setIp(RequestUtil.getRequestIp(request));

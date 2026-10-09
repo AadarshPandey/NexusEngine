@@ -4,40 +4,40 @@ import type { OmsCompanyAddress } from './companyAddress'
 export type OmsOrderReturnApply = {
   id: number
   orderId: number
-  companyAddressId: number
-  productId: number
+  returnAddressId: number
+  orderLineId: number
   memberUsername?: string
-  orderSn: string
-  createTime: string
-  returnAmount: number
-  returnName: string
-  returnPhone: string
+  orderNumber: string
+  createdAt: string
+  refundAmount: number
+  contactName: string
+  contactPhone: string
   status: number
-  handleTime: string
-  productPic: string
+  reviewedAt: string
+  productImageUrl: string
   productName: string
-  productBrand: string
-  productAttr: string
-  productCount: number
-  productPrice: number
-  productRealPrice: number
-  reason: string
-  description: string
-  proofPics: string
-  handleNote: string
-  handleMan: string
-  receiveMan: string
-  receiveTime: string
-  receiveNote: string
+  brandName: string
+  skuAttributes: string
+  quantity: number
+  unitPrice: number
+  unitRefundAmount: number
+  reasonId: string
+  customerComment: string
+  evidenceUrls: string
+  reviewNote: string
+  reviewedByAdminId: string
+  receivedByAdminId: string
+  deliveredAt: string
+  receiptNote: string
 }
 
 export type ReturnApplyQueryParam = PageParam & {
   id?: number
   receiverKeyword?: string
   status?: number
-  createTime?: string
-  handleMan?: string
-  handleTime?: string
+  createdAt?: string
+  reviewedByAdminId?: string
+  reviewedAt?: string
 }
 
 export type OmsOrderReturnApplyResult = OmsOrderReturnApply & {
@@ -46,11 +46,11 @@ export type OmsOrderReturnApplyResult = OmsOrderReturnApply & {
 
 export type OmsUpdateStatusParam = {
   id: number
-  companyAddressId: number
-  returnAmount: number
-  handleNote: string
-  handleMan: string
-  receiveNote: string
-  receiveMan: string
+  returnAddressId: number
+  refundAmount: number
+  reviewNote: string
+  reviewedByAdminId: string
+  receiptNote: string
+  receivedByAdminId: string
   status: number
 }

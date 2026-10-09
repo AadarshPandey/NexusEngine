@@ -1,19 +1,19 @@
 export type CmsSubject = {
   /** ID */
   id?: number
-  categoryId?: number
+  permissionGroupId?: number
   title?: string
-  pic?: string
-  productCount?: number
-  recommendStatus?: number
-  createTime?: string
+  primaryImageUrl?: string
+  quantity?: number
+  isFeatured?: number
+  createdAt?: string
   collectCount?: number
   readCount?: number
   commentCount?: number
   albumPics?: string
-  description?: string
-  showStatus?: number
+  customerComment?: string
+  isVisible?: number
   forwardCount?: number
   categoryName?: string
-  content?: string
+  body?: string
 }

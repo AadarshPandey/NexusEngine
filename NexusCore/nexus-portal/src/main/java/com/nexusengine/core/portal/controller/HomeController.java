@@ -24,7 +24,7 @@ public class HomeController {
     private final HomeService homeService;
 
     @Operation(summary = "Content Operation")
-    @GetMapping("/content")
+    @GetMapping("/body")
 
     public CommonResult<HomeContentResult> content() {
         HomeContentResult contentResult = homeService.content();
@@ -43,7 +43,7 @@ public class HomeController {
     @Operation(summary = "Get product cate list Operation")
     @GetMapping("/productCateList/{parentId}")
 
-    public CommonResult<List<PmsProductCategory>> getProductCateList(@PathVariable Long parentId) {
+    public CommonResult<List<PmsProductCategory>> getProductCateList(@PathVariable("parentId") Long parentId) {
         List<PmsProductCategory> productCategoryList = homeService.getProductCateList(parentId);
         return CommonResult.success(productCategoryList);
     }

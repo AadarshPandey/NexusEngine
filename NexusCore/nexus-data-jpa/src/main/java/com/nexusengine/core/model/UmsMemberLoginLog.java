@@ -3,6 +3,7 @@ package com.nexusengine.core.model;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import java.io.Serializable;
+import java.time.OffsetDateTime;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,32 +11,39 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "ums_member_login_log", schema = "users")
+@Table(name = "member_login_event", schema = "customer")
 public class UmsMemberLoginLog implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Id
+        @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    
+private Long id;
 
-    @Column(name = "member_id")
-    private Long memberId;
-    @com.fasterxml.jackson.annotation.JsonIgnore
+        @Column(name = "member_id")
+    
+private Long memberId;
+        @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "member_id", insertable = false, updatable = false)
-    private UmsMember member;
+    
+private UmsMember member;
 
-    @Column(name = "create_time")
-    private LocalDateTime createTime;
+        @Column(name = "occurred_at")
+    
+private OffsetDateTime createTime;
 
-    private String ip;
+            @Column(name = "ip_address")
+private String ip;
 
     private String city;
 
-    @Column(name = "login_type")
+        @Column(name = "login_method")
     @Schema(title = "Login type")
-    private Integer loginType;
+    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.SMALLINT)
+private Integer loginType;
 
-    private String province;
+            @Column(name = "region")
+private String province;
 }

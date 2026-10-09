@@ -8,20 +8,20 @@ import { getProductCategoryListWithChildrenAPI } from '@/apis/productCate';
 
 interface PmsProductAuditLog {
   id?: number;
-  productId?: number;
-  priceOld?: number;
-  priceNew?: number;
-  operateMan?: string;
-  createTime?: string;
+  orderLineId?: number;
+  oldListPrice?: number;
+  newListPrice?: number;
+  changedByAdminId?: string;
+  createdAt?: string;
 }
 
 interface PmsProductApprovalHistory {
   id?: number;
-  productId?: number;
-  createTime?: string;
-  reviewerName?: string;
+  orderLineId?: number;
+  createdAt?: string;
+  reviewerAdminId?: string;
   status?: number;
-  detail?: string;
+  comment?: string;
 }
 
 interface PmsSpData {
@@ -36,11 +36,11 @@ const ProductList: React.FC = () => {
   const [total, setTotal] = useState(0);
   const [searchParams, setSearchParams] = useState({
     keyword: '',
-    productSn: '',
-    productCategoryId: '',
+    productCode: '',
+    permissionGroupId: '',
     brandId: '',
-    publishStatus: '',
-    verifyStatus: '',
+    isPublished: '',
+    approvalStatus: '',
     pageNum: 1,
     pageSize: 10
   });
@@ -50,7 +50,7 @@ const ProductList: React.FC = () => {
   const [verifyModalOpen, setVerifyModalOpen] = useState(false);
   const [logModalOpen, setLogModalOpen] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
-  const [verifyStatus, setVerifyStatus] = useState<number>(1);
+  const [approvalStatus, setVerifyStatus] = useState<number>(1);
   const [verifyDetail, setVerifyDetail] = useState('');
   const [auditLogs, setAuditLogs] = useState<PmsProductAuditLog[]>([]);
   const [approvalHistorys, setApprovalHistorys] = useState<PmsProductApprovalHistory[]>([]);
@@ -94,8 +94,8 @@ const ProductList: React.FC = () => {
   const submitVerify = async () => {
     if (!selectedProductId) return;
     try {
-      await http.post('/product/update/verifyStatus', null, {
-        params: { ids: selectedProductId.toString(), verifyStatus, detail: verifyDetail }
+      await http.post('/product/update/approvalStatus', null, {
+        params: { ids: selectedProductId.toString(), approvalStatus, comment: verifyDetail }
       });
       alert('Verification updated successfully!');
       setVerifyModalOpen(false);
@@ -156,7 +156,7 @@ const ProductList: React.FC = () => {
   };
 
   const handleReset = () => {
-    const resetParams = { ...searchParams, keyword: '', productSn: '', productCategoryId: '', brandId: '', publishStatus: '', verifyStatus: '', pageNum: 1 };
+    const resetParams = { ...searchParams, keyword: '', productCode: '', permissionGroupId: '', brandId: '', isPublished: '', approvalStatus: '', pageNum: 1 };
     setSearchParams(resetParams);
     fetchProducts(resetParams);
   };
@@ -164,9 +164,9 @@ const ProductList: React.FC = () => {
   const handleStatusChange = async (id: number, type: 'publish' | 'new' | 'recommend', checked: boolean) => {
     const val = checked ? 1 : 0;
     try {
-      if (type === 'publish') await productUpdatePublishStatusAPI({ ids: id.toString(), publishStatus: val });
-      if (type === 'new') await productUpdateNewStatusAPI({ ids: id.toString(), newStatus: val });
-      if (type === 'recommend') await productUpdateRecommendStatusAPI({ ids: id.toString(), recommendStatus: val });
+      if (type === 'publish') await productUpdatePublishStatusAPI({ ids: id.toString(), isPublished: val });
+      if (type === 'new') await productUpdateNewStatusAPI({ ids: id.toString(), isNewArrival: val });
+      if (type === 'recommend') await productUpdateRecommendStatusAPI({ ids: id.toString(), isFeatured: val });
       fetchProducts();
     } catch (e) {
       console.error(e);
@@ -176,7 +176,7 @@ const ProductList: React.FC = () => {
   const handleDelete = async (id: number) => {
     if (confirm('Are you sure you want to delete this product?')) {
       try {
-        await productUpdateDeleteStatusAPI({ ids: id.toString(), deleteStatus: 1 });
+        await productUpdateDeleteStatusAPI({ ids: id.toString(), deletedAt: 1 });
         fetchProducts();
       } catch (e) {
         console.error(e);
@@ -208,12 +208,12 @@ const ProductList: React.FC = () => {
             <TextField fullWidth label="Product name" size="small" value={searchParams.keyword} onChange={(e) => setSearchParams({ ...searchParams, keyword: e.target.value })} />
           </Grid>
           <Grid size={{ xs: 12, md: 4 }}>
-            <TextField fullWidth label="Product number" size="small" value={searchParams.productSn} onChange={(e) => setSearchParams({ ...searchParams, productSn: e.target.value })} />
+            <TextField fullWidth label="Product number" size="small" value={searchParams.productCode} onChange={(e) => setSearchParams({ ...searchParams, productCode: e.target.value })} />
           </Grid>
           <Grid size={{ xs: 12, md: 4 }}>
             <FormControl fullWidth size="small">
               <InputLabel>Product Category</InputLabel>
-              <Select label="Product Category" value={searchParams.productCategoryId} onChange={(e) => setSearchParams({ ...searchParams, productCategoryId: e.target.value as string })}>
+              <Select label="Product Category" value={searchParams.permissionGroupId} onChange={(e) => setSearchParams({ ...searchParams, permissionGroupId: e.target.value as string })}>
                 <MenuItem value="">Please select</MenuItem>
                 {categories.map((parent: import('@/types/productCate').PmsProductCategory) => [
                   <ListSubheader key={`header-${parent.id}`}>{parent.name}</ListSubheader>,
@@ -240,7 +240,7 @@ const ProductList: React.FC = () => {
           <Grid size={{ xs: 12, md: 4 }}>
             <FormControl fullWidth size="small">
               <InputLabel>Available now</InputLabel>
-              <Select label="Available now" value={searchParams.publishStatus} onChange={(e) => setSearchParams({ ...searchParams, publishStatus: e.target.value as string })}>
+              <Select label="Available now" value={searchParams.isPublished} onChange={(e) => setSearchParams({ ...searchParams, isPublished: e.target.value as string })}>
                 <MenuItem value="">All</MenuItem>
                 <MenuItem value={1}>On shelves</MenuItem>
                 <MenuItem value={0}>Off shelves</MenuItem>
@@ -250,7 +250,7 @@ const ProductList: React.FC = () => {
           <Grid size={{ xs: 12, md: 4 }}>
             <FormControl fullWidth size="small">
               <InputLabel>Review status</InputLabel>
-              <Select label="Review status" value={searchParams.verifyStatus} onChange={(e) => setSearchParams({ ...searchParams, verifyStatus: e.target.value as string })}>
+              <Select label="Review status" value={searchParams.approvalStatus} onChange={(e) => setSearchParams({ ...searchParams, approvalStatus: e.target.value as string })}>
                 <MenuItem value="">All</MenuItem>
                 <MenuItem value={1}>Approved</MenuItem>
                 <MenuItem value={0}>Not reviewed</MenuItem>
@@ -279,7 +279,7 @@ const ProductList: React.FC = () => {
                 <TableCell>Label</TableCell>
                 <TableCell>SKU inventory</TableCell>
                 <TableCell>Sales volume</TableCell>
-                <TableCell>Available stock</TableCell>
+                <TableCell>Available onHandQty</TableCell>
                 <TableCell>Review status</TableCell>
                 <TableCell align="center">operate</TableCell>
               </TableRow>
@@ -289,37 +289,37 @@ const ProductList: React.FC = () => {
                 <TableRow key={row.id}>
                   <TableCell>{row.id}</TableCell>
                   <TableCell>
-                    <Box component="img" src={row.pic || 'https://via.placeholder.com/80'} alt="pic" sx={{ width: 80, height: 80, objectFit: 'contain', border: '1px solid #eee', borderRadius: 1 }} />
+                    <Box component="img" src={row.primaryImageUrl || 'https://via.placeholder.com/80'} alt="primaryImageUrl" sx={{ width: 80, height: 80, objectFit: 'contain', border: '1px solid #eee', borderRadius: 1 }} />
                   </TableCell>
                   <TableCell>
                     <Typography variant="body2" sx={{ fontWeight: 'bold' }}>{row.name}</Typography>
                     <Typography variant="caption" color="text.secondary" display="block">Brand: {row.brandName}</Typography>
                   </TableCell>
                   <TableCell>
-                    <Typography variant="body2">Price: ₹{row.price}</Typography>
-                    <Typography variant="caption" color="text.secondary">Item No.: {row.productSn}</Typography>
+                    <Typography variant="body2">Price: ₹{row.listPrice}</Typography>
+                    <Typography variant="caption" color="text.secondary">Item No.: {row.productCode}</Typography>
                   </TableCell>
                   <TableCell>
                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
                       <Typography variant="caption" sx={{ width: 80 }}>On shelves:</Typography>
-                      <Switch size="small" checked={row.publishStatus === 1} onChange={(e) => handleStatusChange(row.id!, 'publish', e.target.checked)} />
+                      <Switch size="small" checked={row.isPublished === 1} onChange={(e) => handleStatusChange(row.id!, 'publish', e.target.checked)} />
                     </Box>
                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
                       <Typography variant="caption" sx={{ width: 80 }}>New:</Typography>
-                      <Switch size="small" checked={row.newStatus === 1} onChange={(e) => handleStatusChange(row.id!, 'new', e.target.checked)} />
+                      <Switch size="small" checked={row.isNewArrival === 1} onChange={(e) => handleStatusChange(row.id!, 'new', e.target.checked)} />
                     </Box>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                       <Typography variant="caption" sx={{ width: 80 }}>recommend:</Typography>
-                      <Switch size="small" checked={row.recommendStatus === 1} onChange={(e) => handleStatusChange(row.id!, 'recommend', e.target.checked)} />
+                      <Switch size="small" checked={row.isFeatured === 1} onChange={(e) => handleStatusChange(row.id!, 'recommend', e.target.checked)} />
                     </Box>
                   </TableCell>
                   <TableCell align="center">
                     <Button variant="outlined" size="small" sx={{ borderRadius: 20 }}>0</Button>
                   </TableCell>
-                  <TableCell>{row.sale || 0}</TableCell>
-                  <TableCell>{row.stock || 0}</TableCell>
+                  <TableCell>{row.unitsSold || 0}</TableCell>
+                  <TableCell>{row.onHandQty || 0}</TableCell>
                   <TableCell>
-                    <Typography variant="body2">{row.verifyStatus === 1 ? 'Approved' : 'Not reviewed'}</Typography>
+                    <Typography variant="body2">{row.approvalStatus === 1 ? 'Approved' : 'Not reviewed'}</Typography>
                     <Link href="#" variant="caption" underline="hover">Review details</Link>
                   </TableCell>
                   <TableCell align="center">
@@ -356,7 +356,7 @@ const ProductList: React.FC = () => {
         <DialogContent dividers>
           <FormControl fullWidth sx={{ mb: 2, mt: 1 }}>
             <InputLabel>Status</InputLabel>
-            <Select value={verifyStatus} onChange={e => setVerifyStatus(e.target.value as number)} label="Status">
+            <Select value={approvalStatus} onChange={e => setVerifyStatus(e.target.value as number)} label="Status">
               <MenuItem value={1}>Approve</MenuItem>
               <MenuItem value={2}>Reject</MenuItem>
             </Select>
@@ -401,35 +401,35 @@ const ProductList: React.FC = () => {
                       <TableCell>{attrs || '-'}</TableCell>
                       <TableCell>
                         {isEditingSku ? (
-                          <TextField size="small" type="number" value={sku.price} onChange={e => {
+                          <TextField size="small" type="number" value={sku.listPrice} onChange={e => {
                             const newList = [...editingSkuList];
-                            newList[idx].price = Number(e.target.value);
+                            newList[idx].listPrice = Number(e.target.value);
                             setEditingSkuList(newList);
                           }} />
                         ) : (
-                          sku.price !== undefined ? `${sku.price}` : '-'
+                          sku.listPrice !== undefined ? `${sku.listPrice}` : '-'
                         )}
                       </TableCell>
                       <TableCell>
                         {isEditingSku ? (
-                          <TextField size="small" type="number" value={sku.stock} onChange={e => {
+                          <TextField size="small" type="number" value={sku.onHandQty} onChange={e => {
                             const newList = [...editingSkuList];
-                            newList[idx].stock = Number(e.target.value);
+                            newList[idx].onHandQty = Number(e.target.value);
                             setEditingSkuList(newList);
                           }} />
                         ) : (
-                          sku.stock !== undefined ? sku.stock : '-'
+                          sku.onHandQty !== undefined ? sku.onHandQty : '-'
                         )}
                       </TableCell>
                       <TableCell>
                         {isEditingSku ? (
-                          <TextField size="small" type="number" value={sku.lowStock} onChange={e => {
+                          <TextField size="small" type="number" value={sku.lowStockThreshold} onChange={e => {
                             const newList = [...editingSkuList];
-                            newList[idx].lowStock = Number(e.target.value);
+                            newList[idx].lowStockThreshold = Number(e.target.value);
                             setEditingSkuList(newList);
                           }} />
                         ) : (
-                          sku.lowStock !== undefined ? sku.lowStock : '-'
+                          sku.lowStockThreshold !== undefined ? sku.lowStockThreshold : '-'
                         )}
                       </TableCell>
                     </TableRow>
@@ -460,24 +460,24 @@ const ProductList: React.FC = () => {
         <DialogContent dividers>
           <Typography variant="h6" sx={{ mb: 1 }}>SKU Price Changes</Typography>
           {auditLogs.length === 0 ? (
-            <Typography color="text.secondary" sx={{ mb: 3 }}>No price changes found.</Typography>
+            <Typography color="text.secondary" sx={{ mb: 3 }}>No listPrice changes found.</Typography>
           ) : (
             <Table size="small" sx={{ mb: 3 }}>
               <TableHead>
                 <TableRow>
                   <TableCell>Operator</TableCell>
                   <TableCell>Time</TableCell>
-                  <TableCell>Old Price</TableCell>
+                  <TableCell>New PK Price</TableCell>
                   <TableCell>New Price</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {auditLogs.map((log: PmsProductAuditLog, idx: number) => (
                   <TableRow key={idx}>
-                    <TableCell>{log.operateMan || 'System'}</TableCell>
-                    <TableCell>{log.createTime ? new Date(log.createTime).toLocaleString() : '-'}</TableCell>
-                    <TableCell>{log.priceOld || '-'}</TableCell>
-                    <TableCell>{log.priceNew || '-'}</TableCell>
+                    <TableCell>{log.changedByAdminId || 'System'}</TableCell>
+                    <TableCell>{log.createdAt ? new Date(log.createdAt).toLocaleString() : '-'}</TableCell>
+                    <TableCell>{log.oldListPrice || '-'}</TableCell>
+                    <TableCell>{log.newListPrice || '-'}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -500,10 +500,10 @@ const ProductList: React.FC = () => {
               <TableBody>
                 {approvalHistorys.map((rec: PmsProductApprovalHistory, idx: number) => (
                   <TableRow key={idx}>
-                    <TableCell>{rec.reviewerName || 'System'}</TableCell>
-                    <TableCell>{rec.createTime ? new Date(rec.createTime).toLocaleString() : '-'}</TableCell>
+                    <TableCell>{rec.reviewerAdminId || 'System'}</TableCell>
+                    <TableCell>{rec.createdAt ? new Date(rec.createdAt).toLocaleString() : '-'}</TableCell>
                     <TableCell>{rec.status === 1 ? 'Approved' : 'Rejected'}</TableCell>
-                    <TableCell>{rec.detail || '-'}</TableCell>
+                    <TableCell>{rec.comment || '-'}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

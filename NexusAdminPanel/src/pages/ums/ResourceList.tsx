@@ -46,7 +46,7 @@ const ResourceList: React.FC = () => {
   // Form Dialog
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
-  const [formData, setFormData] = useState<UmsResource>({ name: '', url: '', categoryId: 0, description: '' });
+  const [formData, setFormData] = useState<UmsResource>({ name: '', url: '', permissionGroupId: 0, customerComment: '' });
 
   const fetchCategories = async () => {
     try {
@@ -75,7 +75,7 @@ const ResourceList: React.FC = () => {
       const res = await getResourceListAPI({ 
         nameKeyword: finalName || undefined,
         urlKeyword: finalUrl || undefined,
-        categoryId: finalCat === '' ? undefined : finalCat,
+        permissionGroupId: finalCat === '' ? undefined : finalCat,
         pageNum: finalPageNum + 1, 
         pageSize 
       });
@@ -122,7 +122,7 @@ const ResourceList: React.FC = () => {
 
   const openAddDialog = () => {
     setIsEdit(false);
-    setFormData({ name: '', url: '', categoryId: categories.length > 0 ? categories[0].id! : 0, description: '' });
+    setFormData({ name: '', url: '', permissionGroupId: categories.length > 0 ? categories[0].id! : 0, customerComment: '' });
     setDialogOpen(true);
   };
 
@@ -133,7 +133,7 @@ const ResourceList: React.FC = () => {
   };
 
   const handleFormSubmit = async () => {
-    if (!formData.name || !formData.url || !formData.categoryId) {
+    if (!formData.name || !formData.url || !formData.permissionGroupId) {
       setSnackbar({ open: true, message: 'Name, URL, and Category are required', severity: 'warning' });
       return;
     }
@@ -232,9 +232,9 @@ const ResourceList: React.FC = () => {
                     <TableCell>{row.id}</TableCell>
                     <TableCell sx={{ fontWeight: 500 }}>{row.name}</TableCell>
                     <TableCell sx={{ color: 'text.secondary', fontFamily: 'monospace' }}>{row.url}</TableCell>
-                    <TableCell>{row.description || '-'}</TableCell>
-                    <TableCell>{getCategoryName(row.categoryId)}</TableCell>
-                    <TableCell>{formatTime(row.createTime)}</TableCell>
+                    <TableCell>{row.customerComment || '-'}</TableCell>
+                    <TableCell>{getCategoryName(row.permissionGroupId)}</TableCell>
+                    <TableCell>{formatTime(row.createdAt)}</TableCell>
                     <TableCell align="center">
                       <IconButton size="small" onClick={() => openEditDialog(row)} sx={{ color: '#6366F1' }}>
                         <Edit fontSize="small" />
@@ -291,8 +291,8 @@ const ResourceList: React.FC = () => {
             label="Category"
             fullWidth
             required
-            value={formData.categoryId}
-            onChange={e => setFormData({ ...formData, categoryId: Number(e.target.value) })}
+            value={formData.permissionGroupId}
+            onChange={e => setFormData({ ...formData, permissionGroupId: Number(e.target.value) })}
           >
             {categories.map((c) => (
               <MenuItem key={c.id} value={c.id}>{c.name}</MenuItem>
@@ -303,8 +303,8 @@ const ResourceList: React.FC = () => {
             fullWidth
             multiline
             rows={2}
-            value={formData.description || ''}
-            onChange={e => setFormData({ ...formData, description: e.target.value })}
+            value={formData.customerComment || ''}
+            onChange={e => setFormData({ ...formData, customerComment: e.target.value })}
           />
         </DialogContent>
         <DialogActions>

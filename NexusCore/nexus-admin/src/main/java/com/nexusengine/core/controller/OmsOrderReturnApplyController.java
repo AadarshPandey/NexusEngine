@@ -50,7 +50,7 @@ public class OmsOrderReturnApplyController {
     @Operation(summary = "Get item Operation")
     @GetMapping("/{id}")
 
-    public CommonResult getItem(@PathVariable Long id) {
+    public CommonResult getItem(@PathVariable("id") Long id) {
         OmsOrderReturnApplyResult result = returnApplyService.getItem(id);
         return CommonResult.success(result);
     }
@@ -58,7 +58,7 @@ public class OmsOrderReturnApplyController {
     @Operation(summary = "Update status Operation")
     @PostMapping("/update/status/{id}")
 
-    public CommonResult updateStatus(@PathVariable Long id, @RequestBody OmsUpdateStatusParam statusParam) {
+    public CommonResult updateStatus(@PathVariable("id") Long id, @RequestBody OmsUpdateStatusParam statusParam) {
         int count = returnApplyService.updateStatus(id, statusParam);
         if (count > 0) {
             return CommonResult.success(count);

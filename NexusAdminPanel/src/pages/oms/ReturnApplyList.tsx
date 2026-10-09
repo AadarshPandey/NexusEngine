@@ -15,7 +15,7 @@ const ReturnApplyList: React.FC = () => {
   const fetchApplies = async () => {
     try {
       const res = await getReturnApplyListAPI({ pageNum: 1, pageSize: 50 });
-      const sortedList = res.data.list?.sort((a, b) => new Date(b.createTime).getTime() - new Date(a.createTime).getTime()) || [];
+      const sortedList = res.data.list?.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()) || [];
       setApplies(sortedList);
     } catch (e) {
       console.error(e);
@@ -52,11 +52,11 @@ const ReturnApplyList: React.FC = () => {
             {applies.map((apply) => (
               <TableRow key={apply.id} hover>
                 <TableCell>{apply.id}</TableCell>
-                <TableCell>{new Date(apply.createTime).toLocaleString()}</TableCell>
+                <TableCell>{new Date(apply.createdAt).toLocaleString()}</TableCell>
                 
-                <TableCell>₹{apply.returnAmount?.toFixed(2)}</TableCell>
+                <TableCell>₹{apply.refundAmount?.toFixed(2)}</TableCell>
                 <TableCell>{getStatusChip(apply.status)}</TableCell>
-                <TableCell>{apply.handleTime ? new Date(apply.handleTime).toLocaleString() : 'N/A'}</TableCell>
+                <TableCell>{apply.reviewedAt ? new Date(apply.reviewedAt).toLocaleString() : 'N/A'}</TableCell>
                 <TableCell>
                   <Button size="small" variant="text" onClick={() => navigate(`/oms/returnApply/${apply.id}`)}>View Details</Button>
                 </TableCell>

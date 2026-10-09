@@ -12,18 +12,18 @@ const ProductAdd: React.FC = () => {
   
   const [formData, setFormData] = useState({
     name: '',
-    description: '',
-    price: '',
+    customerComment: '',
+    listPrice: '',
     originalPrice: '',
-    stock: '',
-    pic: '',
-    productCategoryId: '',
+    onHandQty: '',
+    primaryImageUrl: '',
+    permissionGroupId: '',
     brandId: '',
-    publishStatus: 1,
-    newStatus: 1,
-    recommendStatus: 1,
-    verifyStatus: 1,
-    skuStockList: [{ skuCode: '', price: '', stock: '' }]
+    isPublished: 1,
+    isNewArrival: 1,
+    isFeatured: 1,
+    approvalStatus: 1,
+    skuStockList: [{ skuCode: '', listPrice: '', onHandQty: '' }]
   });
 
   useEffect(() => {
@@ -46,7 +46,7 @@ const ProductAdd: React.FC = () => {
   const handleAddSku = () => {
     setFormData({
       ...formData,
-      skuStockList: [...formData.skuStockList, { skuCode: '', price: '', stock: '' }]
+      skuStockList: [...formData.skuStockList, { skuCode: '', listPrice: '', onHandQty: '' }]
     });
   };
 
@@ -71,7 +71,7 @@ const ProductAdd: React.FC = () => {
     }
     for (let i = 0; i < formData.skuStockList.length; i++) {
       const sku = formData.skuStockList[i];
-      if (!sku.skuCode || !sku.price || !sku.stock) {
+      if (!sku.skuCode || !sku.listPrice || !sku.onHandQty) {
         alert("Please fill in all SKU fields (Code, Price, Stock) for all SKUs.");
         return;
       }
@@ -82,15 +82,15 @@ const ProductAdd: React.FC = () => {
       
       const formattedSkus = formData.skuStockList.map(sku => ({
         skuCode: sku.skuCode,
-        price: cleanNumber(sku.price),
-        stock: cleanNumber(sku.stock)
+        listPrice: cleanNumber(sku.listPrice),
+        onHandQty: cleanNumber(sku.onHandQty)
       }));
 
       await productCreateAPI({
         ...formData,
-        price: cleanNumber(formData.price),
+        listPrice: cleanNumber(formData.listPrice),
         originalPrice: cleanNumber(formData.originalPrice),
-        stock: cleanNumber(formData.stock),
+        onHandQty: cleanNumber(formData.onHandQty),
         skuStockList: formattedSkus
       } as unknown as import('@/types/product').PmsProductParam);
       alert('Product created successfully!');
@@ -115,7 +115,7 @@ const ProductAdd: React.FC = () => {
             <Grid size={{ xs: 12, md: 6 }}>
               <FormControl fullWidth required>
                 <InputLabel>Product Category</InputLabel>
-                <Select label="Product Category" value={formData.productCategoryId} onChange={e => setFormData({...formData, productCategoryId: e.target.value as string})}>
+                <Select label="Product Category" value={formData.permissionGroupId} onChange={e => setFormData({...formData, permissionGroupId: e.target.value as string})}>
                   {categories.map((parent: import('@/types/productCate').PmsProductCategoryExt) => [
                     <ListSubheader key={`header-${parent.id}`}>{parent.name}</ListSubheader>,
                     ...(parent.children || []).map((child: import('@/types/productCate').PmsProductCategory) => (
@@ -139,19 +139,19 @@ const ProductAdd: React.FC = () => {
             </Grid>
 
             <Grid size={{ xs: 12, md: 6 }}>
-              <TextField fullWidth label="Price (₹)" type="text" required value={formData.price} onChange={e => setFormData({...formData, price: e.target.value})} />
+              <TextField fullWidth label="Price (₹)" type="text" required value={formData.listPrice} onChange={e => setFormData({...formData, listPrice: e.target.value})} />
             </Grid>
             <Grid size={{ xs: 12, md: 6 }}>
               <TextField fullWidth label="Original Price (₹)" type="text" value={formData.originalPrice} onChange={e => setFormData({...formData, originalPrice: e.target.value})} />
             </Grid>
             <Grid size={{ xs: 12, md: 6 }}>
-              <TextField fullWidth label="Stock" type="text" required value={formData.stock} onChange={e => setFormData({...formData, stock: e.target.value})} />
+              <TextField fullWidth label="Stock" type="text" required value={formData.onHandQty} onChange={e => setFormData({...formData, onHandQty: e.target.value})} />
             </Grid>
             <Grid size={{ xs: 12, md: 6 }}>
-              <TextField fullWidth label="Image URL" value={formData.pic} onChange={e => setFormData({...formData, pic: e.target.value})} />
+              <TextField fullWidth label="Image URL" value={formData.primaryImageUrl} onChange={e => setFormData({...formData, primaryImageUrl: e.target.value})} />
             </Grid>
             <Grid size={{ xs: 12 }}>
-              <TextField fullWidth label="Description" multiline rows={4} value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} />
+              <TextField fullWidth label="Description" multiline rows={4} value={formData.customerComment} onChange={e => setFormData({...formData, customerComment: e.target.value})} />
             </Grid>
             <Grid size={{ xs: 12 }}>
               <Box sx={{ mt: 2, mb: 2 }}>
@@ -163,10 +163,10 @@ const ProductAdd: React.FC = () => {
                         <TextField fullWidth label="SKU Code" required size="small" value={sku.skuCode} onChange={e => handleSkuChange(index, 'skuCode', e.target.value)} />
                       </Grid>
                       <Grid size={{ xs: 12, md: 3 }}>
-                        <TextField fullWidth label="Price (₹)" required size="small" value={sku.price} onChange={e => handleSkuChange(index, 'price', e.target.value)} />
+                        <TextField fullWidth label="Price (₹)" required size="small" value={sku.listPrice} onChange={e => handleSkuChange(index, 'listPrice', e.target.value)} />
                       </Grid>
                       <Grid size={{ xs: 12, md: 3 }}>
-                        <TextField fullWidth label="Stock" required size="small" value={sku.stock} onChange={e => handleSkuChange(index, 'stock', e.target.value)} />
+                        <TextField fullWidth label="Stock" required size="small" value={sku.onHandQty} onChange={e => handleSkuChange(index, 'onHandQty', e.target.value)} />
                       </Grid>
                       <Grid size={{ xs: 12, md: 3 }}>
                         <Button color="error" variant="outlined" disabled={formData.skuStockList.length === 1} onClick={() => handleRemoveSku(index)}>Remove</Button>

@@ -5,34 +5,34 @@ export type SmsFlashPromotion = {
   /** ID */
   id?: number
   title: string
-  startDate?: string
-  endDate?: string
+  startsOn?: string
+  endsOn?: string
   status: number
-  createTime?: string
+  createdAt?: string
 }
 
 export type SmsFlashPromotionSession = {
   id?: number
   name: string
-  startTime?: string
-  endTime?: string
+  startsAt?: string
+  endsAt?: string
   status: number
-  createTime?: string
-  productCount?: number
+  createdAt?: string
+  quantity?: number
 }
 
 export type SmsFlashPromotionProductRelation = {
   id?: number
-  flashPromotionId: number
-  flashPromotionSessionId: number
-  productId: number
-  flashPromotionPrice?: number
-  flashPromotionCount?: number
-  flashPromotionLimit?: number
+  flashSaleId: number
+  slotId: number
+  orderLineId: number
+  flashPrice?: number
+  quantityAvailable?: number
+  perMemberLimit?: number
   product?: PmsProduct
 }
 
 export type FlashProductQueryParam = PageParam & {
-  flashPromotionId?: number
-  flashPromotionSessionId?: number
+  flashSaleId?: number
+  slotId?: number
 }

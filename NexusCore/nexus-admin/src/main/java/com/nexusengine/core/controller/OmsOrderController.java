@@ -48,7 +48,7 @@ public class OmsOrderController {
     @Operation(summary = "Close Operation")
     @PostMapping("/update/close")
 
-    public CommonResult close(@RequestParam("ids") List<Long> ids, @RequestParam String note) {
+    public CommonResult close(@RequestParam("ids") List<Long> ids, @RequestParam("note") String note) {
         int count = orderService.close(ids, note);
         if (count > 0) {
             return CommonResult.success(count);
@@ -70,7 +70,7 @@ public class OmsOrderController {
     @Operation(summary = "Detail Operation")
     @GetMapping("/{id}")
 
-    public CommonResult<OmsOrderDetail> detail(@PathVariable Long id) {
+    public CommonResult<OmsOrderDetail> detail(@PathVariable("id") Long id) {
         OmsOrderDetail orderDetailResult = orderService.detail(id);
         return CommonResult.success(orderDetailResult);
     }

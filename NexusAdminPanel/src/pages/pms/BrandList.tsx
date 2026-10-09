@@ -86,10 +86,10 @@ const BrandList: React.FC = () => {
   };
 
   const handleShowStatusChange = async (row: PmsBrand) => {
-    const newStatus = row.showStatus === 1 ? 0 : 1;
+    const isNewArrival = row.isVisible === 1 ? 0 : 1;
     try {
-      await brandUpdateShowStatusAPI({ ids: String(row.id), showStatus: newStatus });
-      setList((prev) => prev.map((item) => (item.id === row.id ? { ...item, showStatus: newStatus } : item)));
+      await brandUpdateShowStatusAPI({ ids: String(row.id), isVisible: isNewArrival });
+      setList((prev) => prev.map((item) => (item.id === row.id ? { ...item, isVisible: isNewArrival } : item)));
       setSnackbar({ open: true, message: 'Status updated', severity: 'success' });
     } catch {
       setSnackbar({ open: true, message: 'Failed to update status', severity: 'error' });
@@ -119,9 +119,9 @@ const BrandList: React.FC = () => {
       setSnackbar({ open: true, message: 'Please select an operation type', severity: 'error' });
       return;
     }
-    const showStatus = operateType === 'show' ? 1 : 0;
+    const isVisible = operateType === 'show' ? 1 : 0;
     try {
-      await brandUpdateShowStatusAPI({ ids: selected.join(','), showStatus });
+      await brandUpdateShowStatusAPI({ ids: selected.join(','), isVisible });
       setSnackbar({ open: true, message: 'Batch operation successful', severity: 'success' });
       fetchList();
     } catch {
@@ -227,7 +227,7 @@ const BrandList: React.FC = () => {
                     <TableCell sx={{ fontWeight: 500 }}>{row.name}</TableCell>
                     <TableCell align="center">
                       <Switch
-                        checked={row.showStatus === 1}
+                        checked={row.isVisible === 1}
                         onChange={() => handleShowStatusChange(row)}
                         size="small"
                         color="primary"

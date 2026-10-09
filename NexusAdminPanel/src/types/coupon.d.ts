@@ -5,14 +5,14 @@ export type SmsCoupon = {
   id?: number
   type: number
   name: string
-    count?: number
-  amount: number
-  perLimit: number
-  minOrderAmount?: number
-  startTime?: string
-  endTime?: string
-  useType: number
-        receiveCount?: number
+    minQuantity?: number
+  discountValue: number
+  perMemberLimit: number
+  minSpendAmount?: number
+  startsAt?: string
+  endsAt?: string
+  applicabilityScope: number
+        claimedCount?: number
     code?: string
 }
 
@@ -22,15 +22,15 @@ export type SmsCouponExt = SmsCoupon & {
 }
 
 export type CouponProductCateRelationVo = {
-  productCategoryId?: number
+  permissionGroupId?: number
   productCategoryName?: string
   parentCategoryName?: string
 }
 
 export type CouponSelectProductOptionVo = {
-  productId?: number
+  orderLineId?: number
   productName: string
-  productSn: string
+  productCode: string
 }
 
 export type CouponQueryParam = PageParam & {
@@ -45,16 +45,16 @@ export type SmsCouponHistory = {
   memberId?: number
   couponCode?: string
   memberNickname?: string
-  getType?: number
-  createTime?: string
-  useStatus?: number
-  useTime?: string
+  acquisitionChannel?: number
+  createdAt?: string
+  status?: number
+  redeemedAt?: string
   orderId?: number
-  orderSn?: string
+  orderNumber?: string
 }
 
 export type CouponHistoryQueryParam = PageParam & {
-  useStatus?: number
-  orderSn?: string
+  status?: number
+  orderNumber?: string
   couponId?: number
 }

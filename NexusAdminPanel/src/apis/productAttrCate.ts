@@ -2,7 +2,7 @@ import type { CommonPage, PageParam } from '@/types/common'
 import type {
   PmsProductAttributeCategory,
   PmsProductAttributeCategoryExt,
-} from '@/types/productAttr'
+} from '@/types/skuAttributes'
 import http from '@/utils/http'
 
 /**

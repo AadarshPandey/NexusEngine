@@ -5,39 +5,49 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.time.OffsetDateTime;
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "ai_chat_conversation", schema = "ai")
+@Table(name = "chat_message", schema = "ai")
 public class AiChatConversation implements Serializable {
-    @Id
+        @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    
+private Long id;
 
-    @Column(name = "member_id")
-    private Long memberId;
-    @com.fasterxml.jackson.annotation.JsonIgnore
+        @Column(name = "member_id")
+    
+private Long memberId;
+        @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "member_id", insertable = false, updatable = false)
-    private UmsMember member;
+    
+private UmsMember member;
 
-    @Column(name = "session_id", nullable = false)
-    private String sessionId;
+        @Column(name = "conversation_id", nullable = false)
+    
+private String sessionId;
 
-    @Column(name = "role", nullable = false)
-    private String role;
+        @Column(name = "role", nullable = false)
+    
+private String role;
 
-    @Column(name = "content", nullable = false)
-    private String content;
+        @Column(name = "content", nullable = false)
+    
+private String content;
 
-    @Column(name = "model")
-    private String model;
+        @Column(name = "model_name")
+    
+private String model;
 
-    @Column(name = "tokens_used")
-    private Integer tokensUsed;
+        @Column(name = "token_count")
+    
+private Integer tokensUsed;
 
-    @Column(name = "create_time")
-    private LocalDateTime createTime;
+        @Column(name = "created_at")
+    
+private OffsetDateTime createTime;
 }

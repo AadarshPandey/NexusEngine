@@ -199,7 +199,7 @@ public class PmsProductServiceImpl implements PmsProductService {
         for (Long id : ids) {
             PmsProductApprovalHistory record = new PmsProductApprovalHistory();
             record.setProductId(id);
-            record.setCreateTime(java.time.LocalDateTime.now());
+            record.setCreateTime(java.time.OffsetDateTime.now());
             record.setDetail(detail);
             record.setStatus(verifyStatus);
             String username = "admin";

@@ -60,8 +60,8 @@ const ReturnReasonList: React.FC = () => {
 
   const handleStatusChange = async (id: number, currentStatus: number) => {
     try {
-      const newStatus = currentStatus === 1 ? 0 : 1;
-      await returnReasonUpdateStatusAPI({ ids: String(id), status: newStatus });
+      const isNewArrival = currentStatus === 1 ? 0 : 1;
+      await returnReasonUpdateStatusAPI({ ids: String(id), status: isNewArrival });
       fetchList();
     } catch (e) {
       console.error(e);
@@ -85,7 +85,7 @@ const ReturnReasonList: React.FC = () => {
     if (data) {
       setEditData({ ...data });
     } else {
-      setEditData({ name: '', sort: 0, status: 1 });
+      setEditData({ name: '', displayOrder: 0, status: 1 });
     }
     setDialogOpen(true);
   };
@@ -157,11 +157,11 @@ const ReturnReasonList: React.FC = () => {
                     </TableCell>
                     <TableCell>{row.id}</TableCell>
                     <TableCell>{row.name}</TableCell>
-                    <TableCell align="center">{row.sort}</TableCell>
+                    <TableCell align="center">{row.displayOrder}</TableCell>
                     <TableCell align="center">
                       <Switch size="small" checked={row.status === 1} onChange={() => handleStatusChange(row.id!, row.status)} />
                     </TableCell>
-                    <TableCell>{row.createTime ? dayjs(row.createTime).format('YYYY-MM-DD HH:mm:ss') : 'N/A'}</TableCell>
+                    <TableCell>{row.createdAt ? dayjs(row.createdAt).format('YYYY-MM-DD HH:mm:ss') : 'N/A'}</TableCell>
                     <TableCell align="center">
                       <Button size="small" color="primary" onClick={() => handleOpenDialog(row)}>Edit</Button>
                       <Button size="small" color="error" onClick={() => handleDelete([row.id!])}>Delete</Button>
@@ -205,8 +205,8 @@ const ReturnReasonList: React.FC = () => {
             label="Sort Order"
             type="number"
             fullWidth
-            value={editData?.sort ?? 0}
-            onChange={(e) => setEditData({ ...editData!, sort: Number(e.target.value) })}
+            value={editData?.displayOrder ?? 0}
+            onChange={(e) => setEditData({ ...editData!, displayOrder: Number(e.target.value) })}
           />
           <Box sx={{ display: 'flex', alignItems: 'center', mt: 2 }}>
             <Typography sx={{ mr: 2 }}>Status:</Typography>

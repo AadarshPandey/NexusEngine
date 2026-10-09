@@ -22,7 +22,7 @@ public class SmsFlashPromotionSessionController {
     }
 
     @GetMapping("/selectList")
-    public CommonResult<List<SmsFlashPromotionSession>> selectList(@RequestParam Long flashPromotionId) {
+    public CommonResult<List<SmsFlashPromotionSession>> selectList(@RequestParam("flashPromotionId") Long flashPromotionId) {
         return CommonResult.success(sessionRepository.findAll());
     }
 
@@ -33,14 +33,14 @@ public class SmsFlashPromotionSessionController {
     }
 
     @PostMapping("/update/{id}")
-    public CommonResult update(@PathVariable Long id, @RequestBody SmsFlashPromotionSession session) {
+    public CommonResult update(@PathVariable("id") Long id, @RequestBody SmsFlashPromotionSession session) {
         session.setId(id);
         sessionRepository.save(session);
         return CommonResult.success(null);
     }
     
     @PostMapping("/update/status/{id}")
-    public CommonResult updateStatus(@PathVariable Long id, @RequestParam Integer status) {
+    public CommonResult updateStatus(@PathVariable("id") Long id, @RequestParam("status") Integer status) {
         SmsFlashPromotionSession session = sessionRepository.findById(id).orElse(null);
         if (session != null) {
             session.setStatus(status);
@@ -51,7 +51,7 @@ public class SmsFlashPromotionSessionController {
     }
 
     @PostMapping("/delete/{id}")
-    public CommonResult delete(@PathVariable Long id) {
+    public CommonResult delete(@PathVariable("id") Long id) {
         sessionRepository.deleteById(id);
         return CommonResult.success(null);
     }

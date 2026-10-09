@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router';
 
 const ProductCategoryList: React.FC = () => {
   const [categories, setCategories] = useState<PmsProductCategory[]>([]);
-  const [parentId, setParentId] = useState<number>(0);
+  const [parentReviewId, setParentId] = useState<number>(0);
   const [pageNum, setPageNum] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState(0);
@@ -14,11 +14,11 @@ const ProductCategoryList: React.FC = () => {
 
   useEffect(() => {
     fetchCategories();
-  }, [parentId, pageNum, pageSize]);
+  }, [parentReviewId, pageNum, pageSize]);
 
   const fetchCategories = async () => {
     try {
-      const res = await getProductCategoryListAPI(parentId, { pageNum, pageSize });
+      const res = await getProductCategoryListAPI(parentReviewId, { pageNum, pageSize });
       setCategories(res.data.list);
       setTotal(res.data.total);
     } catch (e) {
@@ -28,7 +28,7 @@ const ProductCategoryList: React.FC = () => {
 
   const handleShowStatusChange = async (id: number, checked: boolean) => {
     try {
-      await productCategoryUpdateShowStatusAPI({ ids: id.toString(), showStatus: checked ? 1 : 0 });
+      await productCategoryUpdateShowStatusAPI({ ids: id.toString(), isVisible: checked ? 1 : 0 });
       fetchCategories();
     } catch (e) {
       console.error(e);
@@ -37,7 +37,7 @@ const ProductCategoryList: React.FC = () => {
 
   const handleNavStatusChange = async (id: number, checked: boolean) => {
     try {
-      await productCategoryUpdateNavStatusAPI({ ids: id.toString(), navStatus: checked ? 1 : 0 });
+      await productCategoryUpdateNavStatusAPI({ ids: id.toString(), isInNavigation: checked ? 1 : 0 });
       fetchCategories();
     } catch (e) {
       console.error(e);
@@ -60,7 +60,7 @@ const ProductCategoryList: React.FC = () => {
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
         <Typography variant="h5">Product Categories</Typography>
         <Box>
-          {parentId !== 0 && (
+          {parentReviewId !== 0 && (
             <Button variant="outlined" sx={{ mr: 2 }} onClick={() => setParentId(0)}>Back to Root</Button>
           )}
           <Button variant="contained" color="primary" onClick={() => navigate('/pms/addProductCate')}>Add Category</Button>
@@ -88,29 +88,29 @@ const ProductCategoryList: React.FC = () => {
               <TableRow key={row.id} hover>
                 <TableCell>{row.id}</TableCell>
                 <TableCell>{row.name}</TableCell>
-                <TableCell>{row.level === 0 ? 'Level 1' : 'Level 2'}</TableCell>
-                <TableCell>{row.productCount}</TableCell>
-                <TableCell>{row.productUnit}</TableCell>
+                <TableCell>{row.depth === 0 ? 'Level 1' : 'Level 2'}</TableCell>
+                <TableCell>{row.quantity}</TableCell>
+                <TableCell>{row.unitOfMeasure}</TableCell>
                 <TableCell>
                   <Switch 
-                    checked={row.navStatus === 1} 
+                    checked={row.isInNavigation === 1} 
                     onChange={(e) => handleNavStatusChange(row.id as number, e.target.checked)} 
                     color="primary" 
                   />
                 </TableCell>
                 <TableCell>
                   <Switch 
-                    checked={row.showStatus === 1} 
+                    checked={row.isVisible === 1} 
                     onChange={(e) => handleShowStatusChange(row.id as number, e.target.checked)} 
                     color="primary" 
                   />
                 </TableCell>
-                <TableCell>{row.sort}</TableCell>
+                <TableCell>{row.displayOrder}</TableCell>
                 <TableCell align="center">
                   <Button 
                     size="small" 
                     variant="text" 
-                    disabled={row.level !== 0}
+                    disabled={row.depth !== 0}
                     onClick={() => setParentId(row.id as number)}
                   >
                     View Children

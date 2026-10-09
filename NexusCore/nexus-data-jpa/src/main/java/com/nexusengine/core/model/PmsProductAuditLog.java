@@ -3,6 +3,7 @@ package com.nexusengine.core.model;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import java.io.Serializable;
+import java.time.OffsetDateTime;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import lombok.Getter;
@@ -11,42 +12,51 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "pms_product_audit_log", schema = "pms")
+@Table(name = "product_price_change", schema = "catalog")
 public class PmsProductAuditLog implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Id
+        @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    
+private Long id;
 
-    @Column(name = "product_id")
-    private Long productId;
-    @com.fasterxml.jackson.annotation.JsonIgnore
+        @Column(name = "product_id")
+    
+private Long productId;
+        @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "product_id", insertable = false, updatable = false)
-    private PmsProduct product;
+    
+private PmsProduct product;
 
-    @Column(name = "price_old")
-    private BigDecimal priceOld;
+        @Column(name = "old_list_price")
+    
+private BigDecimal priceOld;
 
-    @Column(name = "price_new")
-    private BigDecimal priceNew;
+        @Column(name = "new_list_price")
+    
+private BigDecimal priceNew;
 
-    @Column(name = "sale_price_old")
-    private BigDecimal salePriceOld;
+        @Column(name = "old_sale_price")
+    
+private BigDecimal salePriceOld;
 
-    @Column(name = "sale_price_new")
-    private BigDecimal salePriceNew;
+        @Column(name = "new_sale_price")
+    
+private BigDecimal salePriceNew;
 
 
 
 
 
-    @Column(name = "operate_man")
+        @Column(name = "changed_by_admin_id")
     @Schema(title = "Operate man")
-    private String operateMan;
+    
+private String operateMan;
 
-    @Column(name = "create_time")
-    private LocalDateTime createTime;
+        @Column(name = "changed_at")
+    
+private OffsetDateTime createTime;
 }

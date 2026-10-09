@@ -51,7 +51,7 @@ const HomeBrand: React.FC = () => {
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
   const [keyword, setKeyword] = useState('');
-  const [recommendStatus, setRecommendStatus] = useState<number | ''>('');
+  const [isFeatured, setRecommendStatus] = useState<number | ''>('');
   const [pageNum, setPageNum] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [selected, setSelected] = useState<number[]>([]);
@@ -69,7 +69,7 @@ const HomeBrand: React.FC = () => {
     try {
       const res = await getHomeBrandListAPI({ 
         brandName: keyword || undefined, 
-        recommendStatus: recommendStatus === '' ? undefined : recommendStatus,
+        isFeatured: isFeatured === '' ? undefined : isFeatured,
         pageNum: pageNum + 1, 
         pageSize 
       });
@@ -80,7 +80,7 @@ const HomeBrand: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [keyword, recommendStatus, pageNum, pageSize]);
+  }, [keyword, isFeatured, pageNum, pageSize]);
 
   useEffect(() => {
     fetchList();
@@ -104,10 +104,10 @@ const HomeBrand: React.FC = () => {
   };
 
   const handleRecommendStatusChange = async (row: SmsHomeBrand) => {
-    const newStatus = row.recommendStatus === 1 ? 0 : 1;
+    const isNewArrival = row.isFeatured === 1 ? 0 : 1;
     try {
-      await homeBrandUpdateRecommendStatusAPI({ ids: String(row.id), recommendStatus: newStatus });
-      setList((prev) => prev.map((item) => (item.id === row.id ? { ...item, recommendStatus: newStatus } : item)));
+      await homeBrandUpdateRecommendStatusAPI({ ids: String(row.id), isFeatured: isNewArrival });
+      setList((prev) => prev.map((item) => (item.id === row.id ? { ...item, isFeatured: isNewArrival } : item)));
       setSnackbar({ open: true, message: 'Status updated', severity: 'success' });
     } catch {
       setSnackbar({ open: true, message: 'Failed to update status', severity: 'error' });
@@ -116,11 +116,11 @@ const HomeBrand: React.FC = () => {
 
   const handleSortChange = async (row: SmsHomeBrand, newSort: number) => {
     try {
-      await homeBrandUpdateSortAPI({ id: row.id!, sort: newSort });
-      setList((prev) => prev.map((item) => (item.id === row.id ? { ...item, sort: newSort } : item)));
+      await homeBrandUpdateSortAPI({ id: row.id!, displayOrder: newSort });
+      setList((prev) => prev.map((item) => (item.id === row.id ? { ...item, displayOrder: newSort } : item)));
       setSnackbar({ open: true, message: 'Sort updated', severity: 'success' });
     } catch {
-      setSnackbar({ open: true, message: 'Failed to update sort', severity: 'error' });
+      setSnackbar({ open: true, message: 'Failed to update displayOrder', severity: 'error' });
     }
   };
 
@@ -150,7 +150,7 @@ const HomeBrand: React.FC = () => {
     try {
       if (operateType === 'recommend' || operateType === 'unrecommend') {
         const status = operateType === 'recommend' ? 1 : 0;
-        await homeBrandUpdateRecommendStatusAPI({ ids: selected.join(','), recommendStatus: status });
+        await homeBrandUpdateRecommendStatusAPI({ ids: selected.join(','), isFeatured: status });
       } else if (operateType === 'delete') {
         if (!window.confirm('Are you sure you want to delete selected items?')) return;
         await homeBrandDeleteByIdsAPI({ ids: selected.join(',') });
@@ -188,8 +188,8 @@ const HomeBrand: React.FC = () => {
       return {
         brandId: brand!.id!,
         brandName: brand!.name,
-        recommendStatus: 1,
-        sort: 0
+        isFeatured: 1,
+        displayOrder: 0
       };
     });
     
@@ -230,7 +230,7 @@ const HomeBrand: React.FC = () => {
             />
             <FormControl size="small" sx={{ width: 180 }}>
               <Select
-                value={recommendStatus}
+                value={isFeatured}
                 label="Recommend status"
                 onChange={(e) => setRecommendStatus(e.target.value as number | '')}
                 displayEmpty
@@ -312,7 +312,7 @@ const HomeBrand: React.FC = () => {
                     <TableCell sx={{ fontWeight: 500 }}>{row.brandName}</TableCell>
                     <TableCell align="center">
                       <Switch
-                        checked={row.recommendStatus === 1}
+                        checked={row.isFeatured === 1}
                         onChange={() => handleRecommendStatusChange(row)}
                         size="small"
                         color="primary"
@@ -322,7 +322,7 @@ const HomeBrand: React.FC = () => {
                       <TextField
                         size="small"
                         type="number"
-                        defaultValue={row.sort}
+                        defaultValue={row.displayOrder}
                         onBlur={(e) => handleSortChange(row, Number(e.target.value))}
                         sx={{ width: 80 }}
                         inputProps={{ min: 0 }}

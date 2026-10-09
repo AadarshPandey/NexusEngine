@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Optional;
 
 @Service
@@ -21,7 +22,7 @@ public class SmsFlashPromotionServiceImpl implements SmsFlashPromotionService {
 
     @Override
     public int create(SmsFlashPromotion flashPromotion) {
-        flashPromotion.setCreateTime(LocalDateTime.now());
+        flashPromotion.setCreateTime(OffsetDateTime.now());
         flashPromotionRepository.save(flashPromotion);
         return 1;
     }

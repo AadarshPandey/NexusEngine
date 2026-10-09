@@ -32,7 +32,7 @@ public class PmsProductRecommendationController {
 
     public CommonResult<List<PmsProduct>> semanticSearch(
             @RequestParam(required = false) Long memberId,
-            @RequestParam String searchContext) {
+            @RequestParam("searchContext") String searchContext) {
         List<PmsProduct> productList = semanticSearchService.semanticSearch(memberId, searchContext);
         return CommonResult.success(productList);
     }

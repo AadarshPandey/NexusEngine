@@ -13,7 +13,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       <CardMedia
         component="img"
         height="200"
-        image={product.pic?.includes('file') ? 'https://via.placeholder.com/200' : (product.pic || 'https://via.placeholder.com/200')}
+        image={product.primaryImageUrl?.includes('file') ? 'https://via.placeholder.com/200' : (product.primaryImageUrl || 'https://via.placeholder.com/200')}
         alt={product.name}
         sx={{ objectFit: 'contain', p: 2 }}
       />
@@ -24,7 +24,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         <Typography variant="body2" color="text.secondary" sx={{ mb: 2, height: 40, overflow: 'hidden' }}>
         </Typography>
         <Typography variant="h5" color="primary" sx={{ fontWeight: 'bold' }}>
-          ₹{(product.promotionType === 1 && product.promotionPrice ? product.promotionPrice : product.price)?.toFixed(2)}
+          ₹{(product.promotionType === 1 && product.salePrice ? product.salePrice : product.listPrice)?.toFixed(2)}
         </Typography>
       </CardContent>
       <CardActions>

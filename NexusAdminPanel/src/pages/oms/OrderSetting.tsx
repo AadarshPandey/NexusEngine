@@ -75,8 +75,8 @@ const OrderSetting: React.FC = () => {
                 <TextField
                   size="small"
                   type="number"
-                  value={setting.normalOrderOvertime || 0}
-                  onChange={(e) => handleChange('normalOrderOvertime', e.target.value)}
+                  value={setting.paymentTimeoutMin || 0}
+                  onChange={(e) => handleChange('paymentTimeoutMin', e.target.value)}
                   InputProps={{
                     endAdornment: <InputAdornment position="end">minutes</InputAdornment>,
                   }}
@@ -95,15 +95,15 @@ const OrderSetting: React.FC = () => {
                 <TextField
                   size="small"
                   type="number"
-                  value={setting.flashOrderOvertime || 0}
-                  onChange={(e) => handleChange('flashOrderOvertime', e.target.value)}
+                  value={setting.flashPaymentTimeoutMin || 0}
+                  onChange={(e) => handleChange('flashPaymentTimeoutMin', e.target.value)}
                   InputProps={{
                     endAdornment: <InputAdornment position="end">minutes</InputAdornment>,
                   }}
                   sx={{ width: 150, mr: 2 }}
                 />
                 <Typography variant="caption" color="text.secondary">
-                  Time until an unpaid flash sale order is auto-cancelled.
+                  Time until an unpaid flash unitsSold order is auto-cancelled.
                 </Typography>
               </Box>
             </Grid>
@@ -115,8 +115,8 @@ const OrderSetting: React.FC = () => {
                 <TextField
                   size="small"
                   type="number"
-                  value={setting.confirmOvertime || 0}
-                  onChange={(e) => handleChange('confirmOvertime', e.target.value)}
+                  value={setting.autoConfirmReceiptDays || 0}
+                  onChange={(e) => handleChange('autoConfirmReceiptDays', e.target.value)}
                   InputProps={{
                     endAdornment: <InputAdornment position="end">days</InputAdornment>,
                   }}
@@ -135,8 +135,8 @@ const OrderSetting: React.FC = () => {
                 <TextField
                   size="small"
                   type="number"
-                  value={setting.finishOvertime || 0}
-                  onChange={(e) => handleChange('finishOvertime', e.target.value)}
+                  value={setting.autoCompleteDays || 0}
+                  onChange={(e) => handleChange('autoCompleteDays', e.target.value)}
                   InputProps={{
                     endAdornment: <InputAdornment position="end">days</InputAdornment>,
                   }}
@@ -155,8 +155,8 @@ const OrderSetting: React.FC = () => {
                 <TextField
                   size="small"
                   type="number"
-                  value={setting.commentOvertime || 0}
-                  onChange={(e) => handleChange('commentOvertime', e.target.value)}
+                  value={setting.reviewWindowDays || 0}
+                  onChange={(e) => handleChange('reviewWindowDays', e.target.value)}
                   InputProps={{
                     endAdornment: <InputAdornment position="end">days</InputAdornment>,
                   }}

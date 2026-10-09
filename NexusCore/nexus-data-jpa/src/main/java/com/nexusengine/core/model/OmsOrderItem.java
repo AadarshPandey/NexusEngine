@@ -10,76 +10,94 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "oms_order_item", schema = "orders")
+@Table(name = "order_line", schema = "ordering")
 public class OmsOrderItem implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Id
+        @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    
+private Long id;
 
-    @Column(name = "order_id")
+        @Column(name = "order_id")
     @Schema(title = "Order id")
-    private Long orderId;
-    @com.fasterxml.jackson.annotation.JsonIgnore
+    
+private Long orderId;
+        @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "order_id", insertable = false, updatable = false)
-    private OmsOrder order;
+    
+private OmsOrder order;
 
-    @Column(name = "product_id")
-    private Long productId;
-    @com.fasterxml.jackson.annotation.JsonIgnore
+        @Column(name = "product_id")
+    
+private Long productId;
+        @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "product_id", insertable = false, updatable = false)
-    private PmsProduct product;
+    
+private PmsProduct product;
 
-    @Column(name = "product_pic")
-    private String productPic;
+        @Column(name = "product_image_url")
+    
+private String productPic;
 
-    @Column(name = "product_name")
-    private String productName;
+        @Column(name = "product_name")
+    
+private String productName;
 
-    @Column(name = "product_brand")
-    private String productBrand;
+        @Column(name = "brand_name")
+    
+private String productBrand;
 
-    @Column(name = "product_price")
+        @Column(name = "unit_price")
     @Schema(title = "Product price")
-    private BigDecimal productPrice;
+    
+private BigDecimal productPrice;
 
-    @Column(name = "product_quantity")
+        @Column(name = "quantity")
     @Schema(title = "Product quantity")
-    private Integer productQuantity;
+    
+private Integer productQuantity;
 
-    @Column(name = "product_sku_id")
+        @Column(name = "sku_id")
     @Schema(title = "Product sku id")
-    private Long productSkuId;
+    
+private Long productSkuId;
 
-    @Column(name = "product_category_id")
+        @Column(name = "category_id")
     @Schema(title = "Product category id")
-    private Long productCategoryId;
-    @com.fasterxml.jackson.annotation.JsonIgnore
+    
+private Long productCategoryId;
+        @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
-    @jakarta.persistence.JoinColumn(name = "product_category_id", insertable = false, updatable = false)
-    private PmsProductCategory productCategory;
+    @jakarta.persistence.JoinColumn(name = "category_id", insertable = false, updatable = false)
+    
+private PmsProductCategory productCategory;
 
-    @Column(name = "promotion_name")
+        @Column(name = "promotion_name")
     @Schema(title = "Promotion name")
-    private String promotionName;
+    
+private String promotionName;
 
-    @Column(name = "promotion_amount")
+        @Column(name = "promotion_discount_amount")
     @Schema(title = "Promotion amount")
-    private BigDecimal promotionAmount;
+    
+private BigDecimal promotionAmount;
 
-    @Column(name = "coupon_amount")
+        @Column(name = "coupon_discount_amount")
     @Schema(title = "Coupon amount")
-    private BigDecimal couponAmount;
+    
+private BigDecimal couponAmount;
 
-    @Column(name = "real_amount")
+        @Column(name = "line_total_amount")
     @Schema(title = "Real amount")
-    private BigDecimal realAmount;
+    
+private BigDecimal realAmount;
 
-    @Column(name = "product_attr")
+        @Column(name = "sku_attributes")
     @Schema(title = "Product attr")
-    private String productAttr;
+    
+private String productAttr;
 }

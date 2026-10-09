@@ -55,7 +55,7 @@ public class PmsPortalProductController {
     @Operation(summary = "Detail Operation")
     @GetMapping("/detail/{id}")
 
-    public CommonResult<PmsPortalProductDetail> detail(@PathVariable Long id) {
+    public CommonResult<PmsPortalProductDetail> detail(@PathVariable("id") Long id) {
         PmsPortalProductDetail productDetail = portalProductService.detail(id);
         return CommonResult.success(productDetail);
     }

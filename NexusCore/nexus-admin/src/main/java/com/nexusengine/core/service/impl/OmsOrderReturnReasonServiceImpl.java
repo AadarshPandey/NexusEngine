@@ -17,7 +17,7 @@ public class OmsOrderReturnReasonServiceImpl implements OmsOrderReturnReasonServ
 
     @Override
     public int create(OmsOrderReturnReason returnReason) {
-        returnReason.setCreateTime(java.time.LocalDateTime.now());
+        returnReason.setCreatedAt(java.time.OffsetDateTime.now());
         returnReasonRepository.save(returnReason);
         return 1;
     }
@@ -37,7 +37,7 @@ public class OmsOrderReturnReasonServiceImpl implements OmsOrderReturnReasonServ
 
     @Override
     public List<OmsOrderReturnReason> list(Integer pageSize, Integer pageNum) {
-        return returnReasonRepository.findAll(PageRequest.of(pageNum > 0 ? pageNum - 1 : 0, pageSize, Sort.by(Sort.Direction.DESC, "sort"))).getContent();
+        return returnReasonRepository.findAll(PageRequest.of(pageNum > 0 ? pageNum - 1 : 0, pageSize, org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.DESC, "displayOrder"))).getContent();
     }
 
     @Override

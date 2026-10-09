@@ -9,22 +9,21 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "pms_product_attribute_category", schema = "pms")
+@Table(name = "product_type", schema = "catalog")
 public class PmsProductAttributeCategory implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Id
+        @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    
+private Long id;
 
     private String name;
 
-    @Column(name = "attribute_count")
-    @Schema(title = "Attribute count")
+            @org.hibernate.annotations.Formula("(SELECT COUNT(*) FROM catalog.attribute_definition a WHERE a.product_type_id = id AND a.kind = 0)")
     private Integer attributeCount;
 
-    @Column(name = "param_count")
-    @Schema(title = "Param count")
+            @org.hibernate.annotations.Formula("(SELECT COUNT(*) FROM catalog.attribute_definition a WHERE a.product_type_id = id AND a.kind = 1)")
     private Integer paramCount;
 }

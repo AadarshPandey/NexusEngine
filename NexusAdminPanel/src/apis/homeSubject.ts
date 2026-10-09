@@ -16,10 +16,10 @@ export function getHomeRecommendSubjectListAPI(params: HomeSubjectQueryParam) {
  */
 export function homeRecommendSubjectUpdateRecommendStatusAPI(params: {
   ids: string
-  recommendStatus: number
+  isFeatured: number
 }) {
   return http({
-    url: '/home/recommendSubject/update/recommendStatus',
+    url: '/home/recommendSubject/update/isFeatured',
     method: 'post',
     params: params,
   })
@@ -47,9 +47,9 @@ export function homeRecommendSubjectCreateAPI(data: SmsHomeRecommendSubject[]) {
 
 /**
  */
-export function homeRecommendSubjectUpdateSortAPI(params: { id: number; sort: number }) {
+export function homeRecommendSubjectUpdateSortAPI(params: { id: number; displayOrder: number }) {
   return http({
-    url: '/home/recommendSubject/update/sort/' + params.id,
+    url: '/home/recommendSubject/update/displayOrder/' + params.id,
     method: 'post',
     params: params,
   })

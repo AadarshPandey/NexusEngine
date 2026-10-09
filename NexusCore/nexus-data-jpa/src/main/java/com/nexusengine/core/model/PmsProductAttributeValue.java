@@ -9,29 +9,35 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "pms_product_attribute_value", schema = "pms")
+@Table(name = "product_attribute_value", schema = "catalog")
 public class PmsProductAttributeValue implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Id
+        @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    
+private Long id;
 
-    @Column(name = "product_id")
-    private Long productId;
-    @com.fasterxml.jackson.annotation.JsonIgnore
+        @Column(name = "product_id")
+    
+private Long productId;
+        @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "product_id", insertable = false, updatable = false)
-    private PmsProduct product;
+    
+private PmsProduct product;
 
-    @Column(name = "product_attribute_id")
-    private Long productAttributeId;
-    @com.fasterxml.jackson.annotation.JsonIgnore
+        @Column(name = "attribute_id")
+    
+private Long productAttributeId;
+        @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
-    @jakarta.persistence.JoinColumn(name = "product_attribute_id", insertable = false, updatable = false)
-    private PmsProductAttribute productAttribute;
+    @jakarta.persistence.JoinColumn(name = "attribute_id", insertable = false, updatable = false)
+    
+private PmsProductAttribute productAttribute;
 
-    @Schema(title = "Value")
-    private String value;
+        @Schema(title = "Value")
+    
+private String value;
 }

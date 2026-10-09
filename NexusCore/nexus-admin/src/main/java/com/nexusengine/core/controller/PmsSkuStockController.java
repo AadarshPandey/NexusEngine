@@ -25,14 +25,14 @@ public class PmsSkuStockController {
     @Operation(summary = "Get list Operation")
     @GetMapping("/{pid}")
 
-    public CommonResult<List<PmsSkuStock>> getList(@PathVariable Long pid, @RequestParam(value = "keyword",required = false) String keyword) {
+    public CommonResult<List<PmsSkuStock>> getList(@PathVariable("pid") Long pid, @RequestParam(value = "keyword",required = false) String keyword) {
         List<PmsSkuStock> skuStockList = skuStockService.getList(pid, keyword);
         return CommonResult.success(skuStockList);
     }
     @Operation(summary = "Update Operation")
     @PostMapping("/update/{pid}")
 
-    public CommonResult update(@PathVariable Long pid,@RequestBody List<PmsSkuStock> skuStockList){
+    public CommonResult update(@PathVariable("pid") Long pid,@RequestBody List<PmsSkuStock> skuStockList){
         int count = skuStockService.update(pid,skuStockList);
         if(count>0){
             return CommonResult.success(count);

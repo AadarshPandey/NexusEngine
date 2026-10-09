@@ -41,7 +41,7 @@ public class PmsProductCategoryController {
     @Operation(summary = "Update Operation")
     @PostMapping("/update/{id}")
 
-    public CommonResult update(@PathVariable Long id,
+    public CommonResult update(@PathVariable("id") Long id,
                          @Validated
                          @RequestBody PmsProductCategoryParam productCategoryParam) {
         int count = productCategoryService.update(id, productCategoryParam);
@@ -55,7 +55,7 @@ public class PmsProductCategoryController {
     @Operation(summary = "Get list Operation")
     @GetMapping("/list/{parentId}")
 
-    public CommonResult<CommonPage<PmsProductCategory>> getList(@PathVariable Long parentId,
+    public CommonResult<CommonPage<PmsProductCategory>> getList(@PathVariable("parentId") Long parentId,
                                                                 @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
                                                                 @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
         org.springframework.data.domain.Page<PmsProductCategory> productCategoryList = productCategoryService.getList(parentId, pageSize, pageNum);
@@ -65,7 +65,7 @@ public class PmsProductCategoryController {
     @Operation(summary = "Get item Operation")
     @GetMapping("/{id}")
 
-    public CommonResult<PmsProductCategory> getItem(@PathVariable Long id) {
+    public CommonResult<PmsProductCategory> getItem(@PathVariable("id") Long id) {
         PmsProductCategory productCategory = productCategoryService.getItem(id);
         return CommonResult.success(productCategory);
     }
@@ -73,7 +73,7 @@ public class PmsProductCategoryController {
     @Operation(summary = "Delete Operation")
     @PostMapping("/delete/{id}")
 
-    public CommonResult delete(@PathVariable Long id) {
+    public CommonResult delete(@PathVariable("id") Long id) {
         int count = productCategoryService.delete(id);
         if (count > 0) {
             return CommonResult.success(count);
@@ -83,9 +83,9 @@ public class PmsProductCategoryController {
     }
 
     @Operation(summary = "Update nav status Operation")
-    @PostMapping("/update/navStatus")
+    @PostMapping("/update/isInNavigation")
 
-    public CommonResult updateNavStatus(@RequestParam("ids") List<Long> ids, @RequestParam("navStatus") Integer navStatus) {
+    public CommonResult updateNavStatus(@RequestParam("ids") List<Long> ids, @RequestParam("isInNavigation") Integer navStatus) {
         int count = productCategoryService.updateNavStatus(ids, navStatus);
         if (count > 0) {
             return CommonResult.success(count);
@@ -95,9 +95,9 @@ public class PmsProductCategoryController {
     }
 
     @Operation(summary = "Update show status Operation")
-    @PostMapping("/update/showStatus")
+    @PostMapping("/update/isVisible")
 
-    public CommonResult updateShowStatus(@RequestParam("ids") List<Long> ids, @RequestParam("showStatus") Integer showStatus) {
+    public CommonResult updateShowStatus(@RequestParam("ids") List<Long> ids, @RequestParam("isVisible") Integer showStatus) {
         int count = productCategoryService.updateShowStatus(ids, showStatus);
         if (count > 0) {
             return CommonResult.success(count);

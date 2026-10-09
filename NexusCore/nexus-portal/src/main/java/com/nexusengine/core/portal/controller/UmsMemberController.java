@@ -38,19 +38,22 @@ public class UmsMemberController {
     @PostMapping("/register")
 
     public CommonResult register(@RequestParam("username") String username,
-                                 @RequestParam("password") String password,
+                                 @RequestParam(value = "password", required = false) String password,
+                                 @RequestParam(value = "passwordHash", required = false) String passwordHash,
                                  @RequestParam("email") String email,
                                  @RequestParam("authCode") String authCode) {
-        memberService.register(username, password, email, authCode);
+        String finalPassword = password != null ? password : passwordHash;
+        memberService.register(username, finalPassword, email, authCode);
         return CommonResult.success(null,"Success");
     }
 
     @Operation(summary = "Login Operation")
     @PostMapping("/login")
-
-    public CommonResult login(@RequestParam String username,
-                              @RequestParam String password) {
-        String token = memberService.login(username, password);
+    public CommonResult login(@RequestParam("username") String username,
+                              @RequestParam(value = "password", required = false) String password,
+                              @RequestParam(value = "passwordHash", required = false) String passwordHash) {
+        String finalPassword = password != null ? password : passwordHash;
+        String token = memberService.login(username, finalPassword);
         if (token == null) {
             return CommonResult.validateFailed("Invalid username or password");
         }
@@ -114,10 +117,12 @@ public class UmsMemberController {
     @Operation(summary = "Update password Operation")
     @PostMapping("/updatePassword")
 
-    public CommonResult updatePassword(@RequestParam String email,
-                                 @RequestParam String password,
-                                 @RequestParam String authCode) {
-        memberService.updatePassword(email,password,authCode);
+    public CommonResult updatePassword(@RequestParam("email") String email,
+                                 @RequestParam(value = "password", required = false) String password,
+                                 @RequestParam(value = "passwordHash", required = false) String passwordHash,
+                                 @RequestParam("authCode") String authCode) {
+        String finalPassword = password != null ? password : passwordHash;
+        memberService.updatePassword(email, finalPassword, authCode);
         return CommonResult.success(null,"Success");
     }
 

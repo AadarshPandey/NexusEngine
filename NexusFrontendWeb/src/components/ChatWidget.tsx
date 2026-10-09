@@ -12,7 +12,7 @@ import axios from 'axios';
 interface ChatMessage {
   id?: number;
   role: 'USER' | 'ASSISTANT';
-  content: string;
+  body: string;
 }
 
 const generateSessionId = () => {
@@ -28,22 +28,22 @@ const ChatWidget: React.FC = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [sessionId, setSessionId] = useState('');
+  const [slotId, setSessionId] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const sId = generateSessionId();
     setSessionId(sId);
     // Load history when component mounts
-    axios.get(`/api/portal/chat/history?sessionId=${sId}`)
+    axios.get(`/api/portal/chat/history?slotId=${sId}`)
       .then(res => {
         if (res.data.code === 200 && res.data.data) {
            const history = res.data.data.map((item: ChatMessage) => ({
              role: item.role,
-             content: item.content
+             body: item.body
            }));
            if(history.length === 0) {
-              setMessages([{ role: 'ASSISTANT', content: 'Hi there! I am Nexus AI. How can I help you today?' }]);
+              setMessages([{ role: 'ASSISTANT', body: 'Hi there! I am Nexus AI. How can I help you today?' }]);
            } else {
               setMessages(history);
            }
@@ -51,7 +51,7 @@ const ChatWidget: React.FC = () => {
       })
       .catch(err => {
         console.error("Failed to load chat history", err);
-        setMessages([{ role: 'ASSISTANT', content: 'Hi! How can I help you?' }]);
+        setMessages([{ role: 'ASSISTANT', body: 'Hi! How can I help you?' }]);
       });
   }, []);
 
@@ -66,20 +66,20 @@ const ChatWidget: React.FC = () => {
     
     const userMessage = input.trim();
     setInput('');
-    setMessages(prev => [...prev, { role: 'USER', content: userMessage }]);
+    setMessages(prev => [...prev, { role: 'USER', body: userMessage }]);
     setIsLoading(true);
 
     try {
       const response = await axios.post('/api/portal/chat', {
         question: userMessage,
-        sessionId: sessionId
+        slotId: slotId
       });
       
       if (response.data.code === 200) {
-        setMessages(prev => [...prev, { role: 'ASSISTANT', content: response.data.data.answer }]);
+        setMessages(prev => [...prev, { role: 'ASSISTANT', body: response.data.data.answer }]);
       }
     } catch (error) {
-      setMessages(prev => [...prev, { role: 'ASSISTANT', content: 'Sorry, I am having trouble connecting right now.' }]);
+      setMessages(prev => [...prev, { role: 'ASSISTANT', body: 'Sorry, I am having trouble connecting right now.' }]);
     } finally {
       setIsLoading(false);
     }
@@ -147,7 +147,7 @@ const ChatWidget: React.FC = () => {
                       }}
                     >
                       <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
-                        {msg.content}
+                        {msg.body}
                       </Typography>
                     </Box>
                   </ListItem>
