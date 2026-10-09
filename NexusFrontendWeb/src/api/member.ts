@@ -21,13 +21,13 @@ export interface UmsMemberReceiveAddress {
   id: number;
   memberId: number;
   name: string;
-  recipientPhone: string;
-  isDefault: number;
-  postalCode: string;
+  receiverPhone: string;
+  defaultStatus: number;
+  postCode: string;
   state: string;
   city: string;
-  district: string;
-  addressLine: string;
+  region: string;
+  detailAddress: string;
 }
 
 export const fetchMemberInfo = () => {

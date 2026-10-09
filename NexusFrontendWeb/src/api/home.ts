@@ -7,7 +7,7 @@ export interface PmsProduct {
   name: string;
   primaryImageUrl: string;
   productCode: string;
-  deletedAt: number;
+  deleteStatus: number;
   isPublished: number;
   isNewArrival: number;
   isFeatured: number;

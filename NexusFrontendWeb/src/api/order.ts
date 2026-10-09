@@ -5,7 +5,7 @@ import type { UmsMemberReceiveAddress } from './member';
 export interface OmsOrderItem {
   id: number;
   orderId: number;
-  orderNumber: string;
+  orderSn: string;
   orderLineId: number;
   productImageUrl: string;
   productName: string;
@@ -20,7 +20,7 @@ export interface OmsOrderItem {
   sp2: string;
   sp3: string;
   promotionName: string;
-  promotionDiscountAmount: number;
+  promotionAmount: number;
   couponDiscountAmount: number;
   lineTotalAmount: number;
   giftIntegration: number;
@@ -33,13 +33,13 @@ export interface OmsOrderReturnApply {
   orderId: number;
   returnAddressId: number;
   orderLineId: number;
-  orderNumber: string;
+  orderSn: string;
   createdAt: string;
   refundAmount: number;
   contactName: string;
   contactPhone: string;
   status: number;
-  reviewedAt: string;
+  commentTime: string;
   productImageUrl: string;
   productName: string;
   brandName: string;
@@ -54,7 +54,7 @@ export interface OmsOrderReturnApply {
   reviewNote: string;
   reviewedByAdminId: string;
   receivedByAdminId: string;
-  deliveredAt: string;
+  receiveTime: string;
   receiptNote: string;
 }
 
@@ -92,7 +92,7 @@ export interface SmsCouponHistoryDetail {
   status: number;
   redeemedAt: string;
   orderId: number;
-  orderNumber: string;
+  orderSn: string;
   coupon: SmsCoupon;
   productRelationList?: SmsCouponProductRelation[];
   categoryRelationList?: SmsCouponProductCategoryRelation[];
@@ -103,10 +103,10 @@ export interface ConfirmOrderResult {
   memberReceiveAddressList: UmsMemberReceiveAddress[];
   couponHistoryDetailList: SmsCouponHistoryDetail[];
   calcAmount: {
-    subtotalAmount: number;
-    shippingAmount: number;
-    promotionDiscountAmount: number;
-    grandTotalAmount: number;
+    totalAmount: number;
+    freightAmount: number;
+    promotionAmount: number;
+    payAmount: number;
   };
 }
 
@@ -114,35 +114,35 @@ export interface OrderParam {
   memberReceiveAddressId: number;
   couponId?: number;
   useIntegration?: number;
-  paymentMethod: number;
+  payType: number;
   cartIds?: number[];
 }
 
 export interface OmsOrderDetail {
   id: number;
-  orderNumber: string;
-  createdAt: string;
-  subtotalAmount: number;
-  grandTotalAmount: number;
-  shippingAmount: number;
-  promotionDiscountAmount: number;
-  paymentMethod: number;
+  orderSn: string;
+  createTime: string;
+  totalAmount: number;
+  payAmount: number;
+  freightAmount: number;
+  promotionAmount: number;
+  payType: number;
   status: number;
   orderType: number;
-  carrierName: string;
-  trackingNumber: string;
-  recipientName: string;
-  recipientPhone: string;
-  shippingPostalCode: string;
-  shippingAddressLine: string;
-    isReceiptConfirmed: number;
-  deletedAt: number;
+  deliveryCompany: string;
+  deliverySn: string;
+  receiverName: string;
+  receiverPhone: string;
+  receiverPostCode: string;
+  receiverDetailAddress: string;
+    confirmStatus: number;
+  deleteStatus: number;
   useIntegration: number;
-  paidAt: string;
-  shippedAt: string;
-  deliveredAt: string;
-  reviewedAt: string;
-  updatedAt: string;
+  paymentTime: string;
+  deliveryTime: string;
+  receiveTime: string;
+  commentTime: string;
+  modifyTime: string;
   orderItemList: OmsOrderItem[];
   returnApplyList?: OmsOrderReturnApply[];
 }
@@ -173,8 +173,8 @@ export const fetchOrderList = (status: number = -1, pageNum: number = 1, pageSiz
   });
 };
 
-export const paySuccess = (orderId: number, paymentMethod: number = 1) => {
-  return request.post<unknown, { data: unknown }>(`/order/paySuccess?orderId=${orderId}&paymentMethod=${paymentMethod}`);
+export const paySuccess = (orderId: number, payType: number = 1) => {
+  return request.post<unknown, { data: unknown }>(`/order/paySuccess?orderId=${orderId}&payType=${payType}`);
 };
 
 export const createRazorpayOrder = (orderId: number) => {

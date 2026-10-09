@@ -143,7 +143,7 @@ const ProductDetail: React.FC = () => {
   }
 
   const { product, productAttributeList, productAttributeValueList } = productDetail;
-  const allImages = [product.primaryImageUrl, ...(product.galleryList ? [...product.galleryList].displayOrder((a,b)=>a.displayOrder-b.displayOrder).map(m=>m.url) : [])].filter(Boolean) as string[];
+  const allImages = [product.primaryImageUrl, ...(product.galleryList ? [...product.galleryList].sort((a,b)=>a.displayOrder-b.displayOrder).map(m=>m.url) : [])].filter(Boolean) as string[];
 
   // Group attribute values for rendering
   const attributesToRender = productAttributeList?.filter(attr => attr.type === 0).map(attr => {

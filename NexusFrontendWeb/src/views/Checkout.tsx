@@ -29,7 +29,7 @@ const Checkout: React.FC = () => {
     let applicableAmount = 0;
     if (coupon.applicabilityScope === 0) {
       // All products
-      applicableAmount = confirmData.calcAmount.subtotalAmount || 0;
+      applicableAmount = confirmData.calcAmount.totalAmount || 0;
     } else if (coupon.applicabilityScope === 1) {
       // Specific categories
       const allowedCategories = comment.categoryRelationList?.map(c => c.permissionGroupId) || [];
@@ -58,13 +58,13 @@ const Checkout: React.FC = () => {
       }
       return discountRate;
     } else if (coupon.type === 2) {
-      return confirmData.calcAmount.shippingAmount || 0;
+      return confirmData.calcAmount.freightAmount || 0;
     }
     return 0;
   };
 
   const manualAdjustmentAmount = calculateDiscount();
-  const finalPayAmount = Math.max((confirmData?.calcAmount.grandTotalAmount || 0) - manualAdjustmentAmount, 0);
+  const finalPayAmount = Math.max((confirmData?.calcAmount.payAmount || 0) - manualAdjustmentAmount, 0);
 
   useEffect(() => {
     if (!isAuthenticated || items.length === 0) {
@@ -81,7 +81,7 @@ const Checkout: React.FC = () => {
       const res = await generateConfirmOrder(cartIds);
       setConfirmData(res.data);
       if (res.data.memberReceiveAddressList && res.data.memberReceiveAddressList.length > 0) {
-        const defaultAddr = res.data.memberReceiveAddressList.find((a: import('../api/member').UmsMemberReceiveAddress) => a.isDefault === 1) || res.data.memberReceiveAddressList[0];
+        const defaultAddr = res.data.memberReceiveAddressList.find((a: import('../api/member').UmsMemberReceiveAddress) => a.defaultStatus === 1) || res.data.memberReceiveAddressList[0];
         setSelectedAddressId(defaultAddr.id);
       }
     } catch (err: unknown) {
@@ -103,7 +103,7 @@ const Checkout: React.FC = () => {
       // 1. Generate the actual order in the backend
       const orderRes = await generateOrder({
         memberReceiveAddressId: selectedAddressId as number,
-        paymentMethod: 2, // 2 = Razorpay
+        payType: 2, // 2 = Razorpay
         cartIds: items.map(i => i.id),
         couponId: selectedCouponId ? (selectedCouponId as number) : undefined
       });
@@ -143,7 +143,7 @@ const Checkout: React.FC = () => {
         discountValue: discountValue, 
         currency: 'INR',
         name: 'Nexus Engine',
-        customerComment: `Payment for Order #${order.orderNumber}`,
+        customerComment: `Payment for Order #${order.orderSn}`,
         image: 'https://cdn.razorpay.com/logos/FF7H1D9qU0R55R_medium.png',
         order_id: razorpayOrderId,
         handler: async function (response: RazorpayResponse) {
@@ -212,7 +212,7 @@ const Checkout: React.FC = () => {
             >
               {confirmData.memberReceiveAddressList.map((addr: import('../api/member').UmsMemberReceiveAddress) => (
                 <MenuItem key={addr.id} value={addr.id}>
-                  {addr.name} - {addr.recipientPhone} ({[addr.addressLine, addr.district, addr.city, addr.state].filter(Boolean).join(', ')} - PIN: {addr.postalCode})
+                  {addr.name} - {addr.receiverPhone} ({[addr.detailAddress, addr.region, addr.city, addr.state].filter(Boolean).join(', ')} - PIN: {addr.postCode})
                 </MenuItem>
               ))}
             </Select>
@@ -264,11 +264,11 @@ const Checkout: React.FC = () => {
         
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 4, mb: 1 }}>
           <Typography color="text.secondary">Total Amount:</Typography>
-          <Typography>₹{confirmData?.calcAmount.subtotalAmount?.toFixed(2)}</Typography>
+          <Typography>₹{confirmData?.calcAmount.totalAmount?.toFixed(2)}</Typography>
         </Box>
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 4, mb: 1 }}>
           <Typography color="text.secondary">Freight:</Typography>
-          <Typography>₹{confirmData?.calcAmount.shippingAmount?.toFixed(2)}</Typography>
+          <Typography>₹{confirmData?.calcAmount.freightAmount?.toFixed(2)}</Typography>
         </Box>
         {manualAdjustmentAmount > 0 && (
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 4, mb: 1 }}>

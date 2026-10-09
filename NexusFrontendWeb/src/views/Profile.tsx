@@ -36,7 +36,7 @@ const Profile: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [openAddAddress, setOpenAddAddress] = useState(false);
   const [newAddress, setNewAddress] = useState<Partial<UmsMemberReceiveAddress> & { coordinates?: string }>({
-    name: '', recipientPhone: '', state: '', city: '', district: '', addressLine: '', postalCode: '', coordinates: ''
+    name: '', receiverPhone: '', state: '', city: '', region: '', detailAddress: '', postCode: '', coordinates: ''
   });
 
   // Refund dialog states
@@ -105,13 +105,13 @@ const Profile: React.FC = () => {
     try {
       const addressToSave = { ...newAddress };
       if (addressToSave.coordinates) {
-        addressToSave.addressLine = `${addressToSave.addressLine} [Coords: ${addressToSave.coordinates}]`;
+        addressToSave.detailAddress = `${addressToSave.detailAddress} [Coords: ${addressToSave.coordinates}]`;
       }
       await addAddress(addressToSave);
       setOpenAddAddress(false);
       const addressRes = await fetchAddressList();
       setAddresses(addressRes.data || []);
-      setNewAddress({ name: '', recipientPhone: '', state: '', city: '', district: '', addressLine: '', postalCode: '', coordinates: '' });
+      setNewAddress({ name: '', receiverPhone: '', state: '', city: '', region: '', detailAddress: '', postCode: '', coordinates: '' });
       alert('Address added successfully!');
     } catch (error) {
       alert('Failed to add address');
@@ -164,7 +164,7 @@ const Profile: React.FC = () => {
         submitReturnApply({
           orderId: refundOrder.id,
           orderLineId: item.orderLineId,
-          orderNumber: refundOrder.orderNumber,
+          orderSn: refundOrder.orderSn,
           contactName: memberInfo?.displayName || memberInfo?.username,
           contactPhone: memberInfo?.contactPhone || '',
           productImageUrl: item.productImageUrl,
@@ -213,7 +213,6 @@ const Profile: React.FC = () => {
           />
           <Typography variant="h5" gutterBottom>{memberInfo?.displayName || authUser?.username}</Typography>
           <Divider sx={{ my: 2 }} />
-          <Typography variant="body2">Points: {memberInfo?.pointsBalance || 0}</Typography>
         </Paper>
       </Box>
 
@@ -265,8 +264,8 @@ const Profile: React.FC = () => {
 
                       return (
                       <TableRow key={order.id}>
-                        <TableCell>{order.orderNumber}</TableCell>
-                        <TableCell>{new Date(order.createdAt).toLocaleDateString()}</TableCell>
+                        <TableCell>{order.orderSn}</TableCell>
+                        <TableCell>{new Date(order.createTime).toLocaleDateString()}</TableCell>
                         <TableCell>
                           <Typography variant="body2">
                             {isOrderFullyRefunded ? 'Refunded' :
@@ -289,7 +288,7 @@ const Profile: React.FC = () => {
                             Ordered: {totalOrderQty} | Refunded: {totalReturnedQty} | Remaining: {Math.max(0, totalOrderQty - totalReturnedQty)}
                           </Typography>
                         </TableCell>
-                        <TableCell align="right">₹{order.subtotalAmount?.toFixed(2)}</TableCell>
+                        <TableCell align="right">₹{order.totalAmount?.toFixed(2)}</TableCell>
                         <TableCell align="center">
                           {order.status === 0 && (
                             <Button 
@@ -328,7 +327,7 @@ const Profile: React.FC = () => {
                                     discountValue: discountValue, 
                                     currency: 'INR',
                                     name: 'Nexus Engine',
-                                    customerComment: `Payment for Order #${order.orderNumber}`,
+                                    customerComment: `Payment for Order #${order.orderSn}`,
                                     order_id: razorpayOrderId,
                                     handler: async function (response: RazorpayResponse) {
                                       try {
@@ -398,9 +397,9 @@ const Profile: React.FC = () => {
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                 {addresses.map((address) => (
                   <Paper key={address.id} variant="outlined" sx={{ p: 2 }}>
-                    <Typography sx={{ fontWeight: 'bold' }}>{address.name} ({address.recipientPhone})</Typography>
+                    <Typography sx={{ fontWeight: 'bold' }}>{address.name} ({address.receiverPhone})</Typography>
                     <Typography color="text.secondary">
-                      {[address.addressLine, address.district, address.city, address.state].filter(Boolean).join(', ')} - PIN: {address.postalCode}
+                      {[address.detailAddress, address.region, address.city, address.state].filter(Boolean).join(', ')} - PIN: {address.postCode}
                     </Typography>
                   </Paper>
                 ))}
@@ -416,9 +415,9 @@ const Profile: React.FC = () => {
         <DialogContent>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
             <TextField label="Name" fullWidth value={newAddress.name} onChange={e => setNewAddress({...newAddress, name: e.target.value})} />
-            <TextField label="Phone Number" fullWidth value={newAddress.recipientPhone} onChange={e => setNewAddress({...newAddress, recipientPhone: e.target.value})} />
-            <TextField label="Full Address" fullWidth multiline rows={3} value={newAddress.addressLine} onChange={e => setNewAddress({...newAddress, addressLine: e.target.value})} />
-            <TextField label="PIN Code" fullWidth value={newAddress.postalCode} onChange={e => setNewAddress({...newAddress, postalCode: e.target.value})} />
+            <TextField label="Phone Number" fullWidth value={newAddress.receiverPhone} onChange={e => setNewAddress({...newAddress, receiverPhone: e.target.value})} />
+            <TextField label="Full Address" fullWidth multiline rows={3} value={newAddress.detailAddress} onChange={e => setNewAddress({...newAddress, detailAddress: e.target.value})} />
+            <TextField label="PIN Code" fullWidth value={newAddress.postCode} onChange={e => setNewAddress({...newAddress, postCode: e.target.value})} />
             <TextField label="Geographic Coordinates (Lat, Long)" fullWidth value={newAddress.coordinates} onChange={e => setNewAddress({...newAddress, coordinates: e.target.value})} />
           </Box>
         </DialogContent>

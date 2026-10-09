@@ -11,8 +11,8 @@ export interface OmsCartItem {
   productName: string;
   productSkuCode: string;
   createdAt: string;
-  updatedAt: string;
-  deletedAt: number;
+  modifyTime: string;
+  deleteStatus: number;
   permissionGroupId: number;
   brandName: string;
   productCode: string;

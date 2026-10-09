@@ -12,7 +12,7 @@ const mockProduct: PmsProduct = {
   name: 'Nexus Phone Pro',
   primaryImageUrl: 'https://via.placeholder.com/200',
   productCode: 'NEXUS-001',
-  deletedAt: 0,
+  deleteStatus: 0,
   isPublished: 1,
   isNewArrival: 1,
   isFeatured: 1,
