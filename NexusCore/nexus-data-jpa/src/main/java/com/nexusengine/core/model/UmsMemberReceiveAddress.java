@@ -46,9 +46,9 @@ private Integer defaultStatus;
     
 private String postCode;
 
-            @Schema(title = "Province")
+            @Schema(title = "State")
     @Column(name = "state")
-private String province;
+private String state;
 
         @Schema(title = "City")
     
