@@ -10,6 +10,8 @@ import jakarta.persistence.PersistenceContext;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,9 +27,9 @@ public class DashboardServiceImpl implements DashboardService {
     public DashboardInfo getDashboardInfo() {
         LocalDate today = LocalDate.now();
         LocalDate yesterday = today.minusDays(1);
-        LocalDateTime todayStart = today.atStartOfDay();
-        LocalDateTime yesterdayStart = yesterday.atStartOfDay();
-        LocalDateTime todayEnd = today.plusDays(1).atStartOfDay();
+        OffsetDateTime todayStart = today.atStartOfDay().atOffset(ZoneOffset.UTC);
+        OffsetDateTime yesterdayStart = yesterday.atStartOfDay().atOffset(ZoneOffset.UTC);
+        OffsetDateTime todayEnd = today.plusDays(1).atStartOfDay().atOffset(ZoneOffset.UTC);
 
         // 1. Today's Orders
         Long todayOrders = (Long) entityManager.createQuery("SELECT COUNT(o) FROM OmsOrder o WHERE o.createTime >= :start AND o.createTime < :end AND o.status IN (1,2,3)")
@@ -78,11 +80,11 @@ public class DashboardServiceImpl implements DashboardService {
 
         // User Overview
         LocalDate firstDayOfMonth = today.withDayOfMonth(1);
-        LocalDateTime monthStart = firstDayOfMonth.atStartOfDay();
+        OffsetDateTime monthStart = firstDayOfMonth.atStartOfDay().atOffset(ZoneOffset.UTC);
         DashboardInfo.UserOverview uOverview = new DashboardInfo.UserOverview(
-            (Long) entityManager.createQuery("SELECT COUNT(u) FROM UmsMember u WHERE u.createTime >= :start AND u.createTime < :end").setParameter("start", todayStart).setParameter("end", todayEnd).getSingleResult(),
-            (Long) entityManager.createQuery("SELECT COUNT(u) FROM UmsMember u WHERE u.createTime >= :start AND u.createTime < :end").setParameter("start", yesterdayStart).setParameter("end", todayStart).getSingleResult(),
-            (Long) entityManager.createQuery("SELECT COUNT(u) FROM UmsMember u WHERE u.createTime >= :start").setParameter("start", monthStart).getSingleResult(),
+            (Long) entityManager.createQuery("SELECT COUNT(u) FROM UmsMember u WHERE u.createdAt >= :start AND u.createdAt < :end").setParameter("start", todayStart).setParameter("end", todayEnd).getSingleResult(),
+            (Long) entityManager.createQuery("SELECT COUNT(u) FROM UmsMember u WHERE u.createdAt >= :start AND u.createdAt < :end").setParameter("start", yesterdayStart).setParameter("end", todayStart).getSingleResult(),
+            (Long) entityManager.createQuery("SELECT COUNT(u) FROM UmsMember u WHERE u.createdAt >= :start").setParameter("start", monthStart).getSingleResult(),
             (Long) entityManager.createQuery("SELECT COUNT(u) FROM UmsMember u").getSingleResult()
         );
 
@@ -91,7 +93,7 @@ public class DashboardServiceImpl implements DashboardService {
                 .setParameter("start", monthStart).getSingleResult();
         
         LocalDate firstDayOfWeek = today.minusDays(today.getDayOfWeek().getValue() - 1);
-        LocalDateTime weekStart = firstDayOfWeek.atStartOfDay();
+        OffsetDateTime weekStart = firstDayOfWeek.atStartOfDay().atOffset(ZoneOffset.UTC);
         Long weekOrders = (Long) entityManager.createQuery("SELECT COUNT(o) FROM OmsOrder o WHERE o.createTime >= :start AND o.status IN (1,2,3)")
                 .setParameter("start", weekStart).getSingleResult();
 
@@ -114,8 +116,8 @@ public class DashboardServiceImpl implements DashboardService {
         List<DashboardInfo.ChartData> chartList = new ArrayList<>();
         for (int i = 14; i >= 0; i--) {
             LocalDate d = today.minusDays(i);
-            LocalDateTime dStart = d.atStartOfDay();
-            LocalDateTime dEnd = d.plusDays(1).atStartOfDay();
+            OffsetDateTime dStart = d.atStartOfDay().atOffset(ZoneOffset.UTC);
+            OffsetDateTime dEnd = d.plusDays(1).atStartOfDay().atOffset(ZoneOffset.UTC);
             
             Long cnt = (Long) entityManager.createQuery("SELECT COUNT(o) FROM OmsOrder o WHERE o.createTime >= :start AND o.createTime < :end AND o.status IN (1,2,3)")
                 .setParameter("start", dStart).setParameter("end", dEnd).getSingleResult();
