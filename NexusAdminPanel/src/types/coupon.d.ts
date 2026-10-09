@@ -5,14 +5,14 @@ export type SmsCoupon = {
   id?: number
   type: number
   name: string
-    minQuantity?: number
-  discountValue: number
-  perMemberLimit: number
-  minSpendAmount?: number
-  startsAt?: string
-  endsAt?: string
-  applicabilityScope: number
-        claimedCount?: number
+    count?: number
+  amount: number
+  perLimit: number
+  minOrderAmount?: number
+  startTime?: string
+  endTime?: string
+  useType: number
+        receiveCount?: number
     code?: string
 }
 
@@ -45,16 +45,16 @@ export type SmsCouponHistory = {
   memberId?: number
   couponCode?: string
   memberNickname?: string
-  acquisitionChannel?: number
-  createdAt?: string
-  status?: number
+  getType?: number
+  createTime?: string
+  useStatus?: number
   redeemedAt?: string
   orderId?: number
-  orderNumber?: string
+  orderSn?: string
 }
 
 export type CouponHistoryQueryParam = PageParam & {
-  status?: number
-  orderNumber?: string
+  useStatus?: number
+  orderSn?: string
   couponId?: number
 }

@@ -56,10 +56,10 @@ const CouponHistory: React.FC = () => {
               <TableRow key={item.id} hover>
                 <TableCell>{item.couponCode}</TableCell>
                 <TableCell>{item.memberNickname}</TableCell>
-                <TableCell>{item.acquisitionChannel === 1 ? 'Active Claim' : 'System Award'}</TableCell>
-                <TableCell>{new Date(item.createdAt!).toLocaleString()}</TableCell>
-                <TableCell>{getUseStatusChip(item.status!)}</TableCell>
-                <TableCell>{item.orderNumber || 'N/A'}</TableCell>
+                <TableCell>{item.getType === 1 ? 'Active Claim' : 'System Award'}</TableCell>
+                <TableCell>{new Date(item.createTime!).toLocaleString()}</TableCell>
+                <TableCell>{getUseStatusChip(item.useStatus!)}</TableCell>
+                <TableCell>{item.orderSn || 'N/A'}</TableCell>
                 <TableCell>{item.redeemedAt ? new Date(item.redeemedAt).toLocaleString() : 'N/A'}</TableCell>
               </TableRow>
             ))}
