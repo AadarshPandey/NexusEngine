@@ -29,7 +29,8 @@ const CouponAdd: React.FC = () => {
   const [formData, setFormData] = useState<SmsCouponExt>({
     type: 0,
     name: '',
-        amount: 0,
+    count: 100,
+    amount: 0,
     perLimit: 1,
     minOrderAmount: 0,
     useType: 0,
@@ -82,16 +83,14 @@ const CouponAdd: React.FC = () => {
                 </Select>
               </FormControl>
 
-              <FormControl fullWidth>
-                <InputLabel>Platform</InputLabel>
-                <Select
-                  label="Platform"
-                >
-                  <MenuItem value={0}>All Platforms</MenuItem>
-                  <MenuItem value={1}>Mobile App</MenuItem>
-                  <MenuItem value={2}>PC Web</MenuItem>
-                </Select>
-              </FormControl>
+              <TextField
+                label="Total Quantity"
+                type="number"
+                value={formData.count || 0}
+                onChange={e => setFormData({ ...formData, count: Number(e.target.value) })}
+                fullWidth
+                required
+              />
             </Box>
 
             <Box sx={{ display: 'flex', gap: 2 }}>
@@ -113,7 +112,6 @@ const CouponAdd: React.FC = () => {
             </Box>
 
             <Box sx={{ display: 'flex', gap: 2 }}>
-              
               <TextField
                 label="Per User Limit"
                 type="number"

@@ -125,7 +125,8 @@ const CouponList: React.FC = () => {
                 <TableCell>ID</TableCell>
                 <TableCell>Coupon Name</TableCell>
                 <TableCell>Type</TableCell>
-                                <TableCell>Value</TableCell>
+                <TableCell>Remaining</TableCell>
+                <TableCell>Value</TableCell>
                 <TableCell>Minimum Spend</TableCell>
                 <TableCell>Valid Range</TableCell>
                 <TableCell>Status</TableCell>
@@ -143,7 +144,8 @@ const CouponList: React.FC = () => {
                     <TableCell>{row.id}</TableCell>
                     <TableCell>{row.name}</TableCell>
                     <TableCell>{formatType(row.type)}</TableCell>
-                                        <TableCell>₹{row.amount}</TableCell>
+                    <TableCell>{row.count !== undefined ? row.count : 'N/A'}</TableCell>
+                    <TableCell>₹{row.amount}</TableCell>
                     <TableCell>₹{row.minOrderAmount}</TableCell>
                     <TableCell>
                       <Typography variant="caption" display="block">
