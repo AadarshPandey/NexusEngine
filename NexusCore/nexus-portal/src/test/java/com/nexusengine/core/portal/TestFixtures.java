@@ -17,9 +17,9 @@ public final class TestFixtures {
         member.setId(1L);
         member.setUsername("testuser");
         member.setPassword("encodedPassword");
-        member.setPhone("1234567890");
+        member.setContactPhone("1234567890");
         member.setStatus(1);
-        member.setPoints(100);
+        member.setPointsBalance(100);
         return member;
     }
 

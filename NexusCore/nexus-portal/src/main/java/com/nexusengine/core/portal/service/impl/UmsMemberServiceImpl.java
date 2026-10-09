@@ -89,7 +89,7 @@ public class UmsMemberServiceImpl implements UmsMemberService {
         umsMember.setUsername(username);
         umsMember.setEmail(email);
         umsMember.setPassword(passwordEncoder.encode(password));
-        umsMember.setCreateTime(java.time.OffsetDateTime.now());
+        umsMember.setCreatedAt(java.time.OffsetDateTime.now());
         umsMember.setStatus(1);
         memberRepository.save(umsMember);
     }
@@ -152,7 +152,7 @@ public class UmsMemberServiceImpl implements UmsMemberService {
     public void updatePoints(Long id, Integer integration) {
         UmsMember member = memberRepository.findById(id).orElse(null);
         if (member != null) {
-            member.setPoints(integration);
+            member.setPointsBalance(integration);
             memberRepository.save(member);
             memberCacheService.delMember(id);
         }

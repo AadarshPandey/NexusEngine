@@ -89,9 +89,9 @@ public class UmsMemberController {
     @PostMapping("/updateProfile")
     public CommonResult updateProfile(@org.springframework.web.bind.annotation.RequestBody UmsMember member) {
         UmsMember current = memberService.getCurrentMember();
-        if (member.getNickname() != null) current.setNickname(member.getNickname());
-        if (member.getPhone() != null) current.setPhone(member.getPhone());
-        if (member.getIcon() != null) current.setIcon(member.getIcon());
+        if (member.getDisplayName() != null) current.setDisplayName(member.getDisplayName());
+        if (member.getContactPhone() != null) current.setContactPhone(member.getContactPhone());
+        if (member.getIconUrl() != null) current.setIconUrl(member.getIconUrl());
         memberService.updateMember(current);
         return CommonResult.success(current);
     }

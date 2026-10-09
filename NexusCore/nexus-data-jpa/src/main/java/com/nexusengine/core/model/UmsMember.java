@@ -32,11 +32,11 @@ private String password;
 
             @Schema(title = "Nickname")
     @Column(name = "display_name")
-private String nickname;
+private String displayName;
 
             @Schema(title = "Phone")
     @Column(name = "phone_e164")
-private String phone;
+private String contactPhone;
 
         @Schema(title = "Email")
     
@@ -50,11 +50,11 @@ private Integer status;
         @Column(name = "created_at")
     @Schema(title = "Create time")
     
-private OffsetDateTime createTime;
+private OffsetDateTime createdAt;
 
             @Schema(title = "Icon")
     @Column(name = "avatar_url")
-private String icon;
+private String iconUrl;
 
         @Schema(title = "Gender")
     @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.SMALLINT)
@@ -67,13 +67,13 @@ private Integer gender;
         @Column(name = "signup_channel")
     @Schema(title = "Source type")
     @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.SMALLINT)
-private Integer sourceType;
+private Integer signupChannel;
             @Column(name = "points_balance")
-private Integer points;
+private Integer pointsBalance;
 
 
         @Column(name = "lifetime_points_earned")
     @Schema(title = "History integration")
     
-private Integer lifetimePoints;
+private Integer lifetimePointsEarned;
 }

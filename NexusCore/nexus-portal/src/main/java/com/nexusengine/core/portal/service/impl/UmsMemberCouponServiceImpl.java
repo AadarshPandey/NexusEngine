@@ -66,7 +66,7 @@ public class UmsMemberCouponServiceImpl implements UmsMemberCouponService {
                 couponHistory.setCouponCode(generateCouponCode(currentMember.getId()));
                 couponHistory.setCreateTime(now);
                 couponHistory.setMemberId(currentMember.getId());
-                couponHistory.setMemberNickname(currentMember.getNickname());
+                couponHistory.setMemberNickname(currentMember.getDisplayName());
                 couponHistory.setGetType(1);
                 couponHistory.setUseStatus(0);
                 couponHistoryRepository.save(couponHistory);

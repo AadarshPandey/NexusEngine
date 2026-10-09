@@ -68,7 +68,7 @@ public class OmsPortalOrderServiceImpl implements OmsPortalOrderService {
         result.setMemberReceiveAddressList(memberReceiveAddressList);
         List<SmsCouponHistoryDetail> couponHistoryDetailList = memberCouponService.listCart(cartPromotionItemList, 1);
         result.setCouponHistoryDetailList(couponHistoryDetailList);
-        result.setMemberPoints(currentMember.getPoints());
+        result.setMemberPoints(currentMember.getPointsBalance());
         ConfirmOrderResult.CalcAmount calcAmount = calcCartAmount(cartPromotionItemList);
         result.setCalcAmount(calcAmount);
         return result;
