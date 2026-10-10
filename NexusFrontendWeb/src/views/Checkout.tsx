@@ -32,16 +32,16 @@ const Checkout: React.FC = () => {
       applicableAmount = confirmData.calcAmount.totalAmount || 0;
     } else if (coupon.applicabilityScope === 1) {
       // Specific categories
-      const allowedCategories = comment.categoryRelationList?.map(c => c.permissionGroupId) || [];
+      const allowedCategories = comment.categoryRelationList?.map(c => c.productCategoryId) || [];
       applicableAmount = confirmData.cartPromotionItemList
-        .filter(item => allowedCategories.includes(item.permissionGroupId))
-        .reduce((sum, item) => sum + (item.listPrice * item.quantity), 0);
+        .filter(item => item.productCategoryId !== undefined && allowedCategories.includes(item.productCategoryId))
+        .reduce((sum, item) => sum + (item.price * item.quantity), 0);
     } else if (coupon.applicabilityScope === 2) {
       // Specific products
-      const allowedProducts = comment.productRelationList?.map(p => p.orderLineId) || [];
+      const allowedProducts = comment.productRelationList?.map(p => p.productId) || [];
       applicableAmount = confirmData.cartPromotionItemList
-        .filter(item => allowedProducts.includes(item.orderLineId))
-        .reduce((sum, item) => sum + (item.listPrice * item.quantity), 0);
+        .filter(item => allowedProducts.includes(item.productId))
+        .reduce((sum, item) => sum + (item.price * item.quantity), 0);
     }
 
     // Minimum point/discountValue not met for the applicable items
@@ -143,7 +143,7 @@ const Checkout: React.FC = () => {
         discountValue: discountValue, 
         currency: 'INR',
         name: 'Nexus Engine',
-        customerComment: `Payment for Order #${order.orderSn}`,
+        description: `Payment for Order #${order.orderSn}`,
         image: 'https://cdn.razorpay.com/logos/FF7H1D9qU0R55R_medium.png',
         order_id: razorpayOrderId,
         handler: async function (response: RazorpayResponse) {
@@ -180,7 +180,7 @@ const Checkout: React.FC = () => {
       
       const rzp = new window.Razorpay(options);
       rzp.on('payment.failed', function (response: RazorpayFailedResponse){
-        alert(`Payment Failed: ${response.error.customerComment}`);
+        alert(`Payment Failed: ${response.error.description}`);
       });
       rzp.open();
 
@@ -257,7 +257,7 @@ const Checkout: React.FC = () => {
         {confirmData?.cartPromotionItemList.map((item) => (
           <Box key={item.id} sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
             <Typography>{item.productName} x {item.quantity}</Typography>
-            <Typography>₹{(item.listPrice * item.quantity).toFixed(2)}</Typography>
+            <Typography>₹{(item.price * item.quantity).toFixed(2)}</Typography>
           </Box>
         ))}
         <Divider sx={{ my: 2 }} />

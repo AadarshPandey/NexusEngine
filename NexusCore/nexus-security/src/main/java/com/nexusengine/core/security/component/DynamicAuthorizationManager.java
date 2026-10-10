@@ -1,5 +1,7 @@
 package com.nexusengine.core.security.component;
 
+
+
 import cn.hutool.core.collection.CollUtil;
 import com.nexusengine.core.security.config.IgnoreUrlsConfig;
 import jakarta.servlet.http.HttpServletRequest;
@@ -63,7 +65,7 @@ public class DynamicAuthorizationManager implements AuthorizationManager<Request
 
         List<String> needAuthorities = securityDataSource.getConfigAttributesWithPath(path);
         if (CollUtil.isEmpty(needAuthorities)) {
-            // If the endpoint is not explicitly mapped in UmsResource, allow access
+            // If the endpoint is not explicitly mapped in Permission, allow access
             // ONLY if the user is an admin.
             Authentication currentAuth = authentication.get();
             if (currentAuth != null && currentAuth.isAuthenticated() &&

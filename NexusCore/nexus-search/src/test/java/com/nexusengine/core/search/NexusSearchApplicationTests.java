@@ -1,7 +1,7 @@
 package com.nexusengine.core.search;
 
-import com.nexusengine.core.search.dao.EsProductDao;
-import com.nexusengine.core.search.domain.EsProduct;
+import com.nexusengine.core.search.dao.ProductSearchDao;
+import com.nexusengine.core.search.domain.ProductDocument;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,11 +17,11 @@ import java.util.Map;
 public class NexusSearchApplicationTests {
     private static final Logger log = LoggerFactory.getLogger(NexusSearchApplicationTests.class);
 
-    private final EsProductDao productDao;
+    private final ProductSearchDao productDao;
     private final ElasticsearchTemplate elasticsearchTemplate;
 
     @Autowired
-    NexusSearchApplicationTests(EsProductDao productDao, ElasticsearchTemplate elasticsearchTemplate) {
+    NexusSearchApplicationTests(ProductSearchDao productDao, ElasticsearchTemplate elasticsearchTemplate) {
         this.productDao = productDao;
         this.elasticsearchTemplate = elasticsearchTemplate;
     }
@@ -30,14 +30,14 @@ public class NexusSearchApplicationTests {
     public void contextLoads() {
     }
     @Test
-    public void testGetAllEsProductList(){
-        List<EsProduct> esProductList = productDao.getAllEsProductList(null);
+    public void testGetAllProductDocumentList(){
+        List<ProductDocument> esProductList = productDao.getAllEsProductList(null);
         log.info("ES product list: {}", esProductList);
     }
     @Test
-    public void testEsProductMapping(){
-        IndexOperations indexOperations = elasticsearchTemplate.indexOps(EsProduct.class);
-        indexOperations.putMapping(indexOperations.createMapping(EsProduct.class));
+    public void testProductDocumentMapping(){
+        IndexOperations indexOperations = elasticsearchTemplate.indexOps(ProductDocument.class);
+        indexOperations.putMapping(indexOperations.createMapping(ProductDocument.class));
         Map mapping = indexOperations.getMapping();
         log.info("ES product mapping: {}", mapping);
     }

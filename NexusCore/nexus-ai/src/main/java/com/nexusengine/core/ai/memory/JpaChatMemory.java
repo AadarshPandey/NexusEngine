@@ -1,7 +1,7 @@
 package com.nexusengine.core.ai.memory;
 
-import com.nexusengine.core.model.AiChatConversation;
-import com.nexusengine.core.repository.AiChatConversationRepository;
+import com.nexusengine.core.domain.ai.entity.ChatMessage;
+import com.nexusengine.core.domain.ai.repository.ChatMessageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.messages.Message;
@@ -20,12 +20,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class JpaChatMemory implements ChatMemory {
 
-    private final AiChatConversationRepository conversationRepository;
+    private final ChatMessageRepository conversationRepository;
 
     @Override
     public void add(String conversationId, List<Message> messages) {
         for (Message msg : messages) {
-            AiChatConversation conv = new AiChatConversation();
+            ChatMessage conv = new ChatMessage();
             conv.setSessionId(conversationId);
             conv.setRole(msg.getMessageType().getValue());
             conv.setContent(msg.getText());
@@ -36,10 +36,10 @@ public class JpaChatMemory implements ChatMemory {
 
     @Override
     public List<Message> get(String conversationId) {
-        List<AiChatConversation> records = conversationRepository.findBySessionIdOrderByCreateTimeAsc(conversationId);
+        List<ChatMessage> records = conversationRepository.findBySessionIdOrderByCreateTimeAsc(conversationId);
         
         List<Message> messages = new ArrayList<>();
-        for (AiChatConversation rec : records) {
+        for (ChatMessage rec : records) {
             if (MessageType.USER.getValue().equalsIgnoreCase(rec.getRole())) {
                 messages.add(new UserMessage(rec.getContent()));
             } else if (MessageType.ASSISTANT.getValue().equalsIgnoreCase(rec.getRole())) {
@@ -53,7 +53,7 @@ public class JpaChatMemory implements ChatMemory {
 
     @Override
     public void clear(String conversationId) {
-        List<AiChatConversation> records = conversationRepository.findBySessionIdOrderByCreateTimeAsc(conversationId);
+        List<ChatMessage> records = conversationRepository.findBySessionIdOrderByCreateTimeAsc(conversationId);
         conversationRepository.deleteAll(records);
     }
 }

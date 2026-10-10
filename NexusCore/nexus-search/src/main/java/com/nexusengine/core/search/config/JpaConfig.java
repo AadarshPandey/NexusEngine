@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  */
 @Configuration
 @EnableTransactionManagement
-@EnableJpaRepositories(basePackages = {"com.nexusengine.core.repository"})
-@EntityScan(basePackages = {"com.nexusengine.core.model"})
+@EnableJpaRepositories(basePackages = {"com.nexusengine.core.domain"})
+@EntityScan(basePackages = {"com.nexusengine.core.domain"})
 public class JpaConfig {
 }

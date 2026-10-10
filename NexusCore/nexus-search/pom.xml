@@ -20,7 +20,7 @@
     <dependencies>
         <dependency>
             <groupId>com.nexusengine.core</groupId>
-            <artifactId>nexus-data-jpa</artifactId>
+            <artifactId>nexus-domain</artifactId>
             <exclusions>
                 <exclusion>
                     <groupId>org.springframework.boot</groupId>

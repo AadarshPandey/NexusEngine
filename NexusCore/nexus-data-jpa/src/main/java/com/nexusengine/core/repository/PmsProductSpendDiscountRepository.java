@@ -1,8 +1,0 @@
-package com.nexusengine.core.repository;
-import com.nexusengine.core.model.PmsProductSpendDiscount;
-import org.springframework.data.jpa.repository.JpaRepository;
-import java.util.List;
-public interface PmsProductSpendDiscountRepository extends JpaRepository<PmsProductSpendDiscount, Long> {
-    List<PmsProductSpendDiscount> findByProductId(Long productId);
-    void deleteByProductId(Long productId);
-}

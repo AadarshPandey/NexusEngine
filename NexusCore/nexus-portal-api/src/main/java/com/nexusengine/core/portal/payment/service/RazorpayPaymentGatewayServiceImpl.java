@@ -1,0 +1,104 @@
+package com.nexusengine.core.portal.payment.service;
+
+import com.nexusengine.core.portal.payment.service.PaymentGatewayService;
+import com.nexusengine.core.portal.catalog.dto.*;
+import com.nexusengine.core.portal.catalog.service.*;
+import com.nexusengine.core.portal.catalog.dao.*;
+import com.nexusengine.core.portal.payment.service.*;
+import com.nexusengine.core.portal.ordering.dto.*;
+import com.nexusengine.core.portal.ordering.service.*;
+import com.nexusengine.core.portal.ordering.dao.*;
+import com.nexusengine.core.portal.customer.dto.*;
+import com.nexusengine.core.portal.customer.service.*;
+import com.nexusengine.core.portal.promotion.dto.*;
+import com.nexusengine.core.portal.promotion.service.*;
+import com.nexusengine.core.portal.promotion.strategy.*;
+import com.nexusengine.core.portal.ai.service.*;
+import com.nexusengine.core.portal.home.dto.*;
+import com.nexusengine.core.portal.home.service.*;
+import com.nexusengine.core.portal.engagement.dto.*;
+import com.nexusengine.core.portal.engagement.service.*;
+
+import com.nexusengine.core.domain.catalog.entity.*;
+import com.nexusengine.core.domain.ordering.entity.*;
+import com.nexusengine.core.domain.customer.entity.*;
+import com.nexusengine.core.domain.promotion.entity.*;
+import com.nexusengine.core.domain.iam.entity.*;
+import com.nexusengine.core.domain.catalog.repository.*;
+import com.nexusengine.core.domain.ordering.repository.*;
+import com.nexusengine.core.domain.customer.repository.*;
+import com.nexusengine.core.domain.promotion.repository.*;
+import com.nexusengine.core.domain.iam.repository.*;
+import com.razorpay.RazorpayClient;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
+
+
+@Service
+public class RazorpayPaymentGatewayServiceImpl implements PaymentGatewayService {
+
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(RazorpayPaymentGatewayServiceImpl.class);
+
+    @Value("${razorpay.keyId}")
+    private String razorpayKeyId;
+
+    @Value("${razorpay.keySecret}")
+    private String razorpayKeySecret;
+
+    @Override
+    @io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker(name = "razorpay", fallbackMethod = "createOrderFallback")
+    @io.github.resilience4j.retry.annotation.Retry(name = "razorpay")
+    public Map<String, String> createOrder(int amount, String receipt) {
+        try {
+            RazorpayClient razorpay = new RazorpayClient(razorpayKeyId, razorpayKeySecret);
+            JSONObject orderRequest = new JSONObject();
+            orderRequest.put("amount", amount);
+            orderRequest.put("currency", "INR");
+            orderRequest.put("receipt", receipt);
+
+            com.razorpay.Order razorpayOrder = razorpay.orders.create(orderRequest);
+
+            Map<String, String> result = new HashMap<>();
+            result.put("razorpayOrderId", razorpayOrder.get("id"));
+            result.put("keyId", razorpayKeyId);
+            result.put("amount", String.valueOf(amount));
+            return result;
+        } catch (com.razorpay.RazorpayException e) {
+            throw new RuntimeException("Failed to create Razorpay order: " + e.getMessage(), e);
+        }
+    }
+
+    public Map<String, String> createOrderFallback(int amount, String receipt, Throwable t) {
+        log.error("Razorpay circuit breaker fallback triggered for order (amount={}, receipt={})", amount, receipt, t);
+        throw new RuntimeException("Payment service temporarily unavailable");
+    }
+
+    @Override
+    public boolean verifySignature(String orderId, String paymentId, String signature) {
+        try {
+            JSONObject options = new JSONObject();
+            options.put("razorpay_order_id", orderId);
+            options.put("razorpay_payment_id", paymentId);
+            options.put("razorpay_signature", signature);
+            return com.razorpay.Utils.verifyPaymentSignature(options, razorpayKeySecret);
+        } catch (com.razorpay.RazorpayException e) {
+            throw new RuntimeException("Failed to verify signature", e);
+        }
+    }
+
+    @Override
+    public boolean verifyPaymentAmount(String paymentId, int expectedAmount) {
+        try {
+            RazorpayClient razorpay = new RazorpayClient(razorpayKeyId, razorpayKeySecret);
+            com.razorpay.Payment payment = razorpay.payments.fetch(paymentId);
+            int amount = payment.get("amount");
+            return amount == expectedAmount;
+        } catch (com.razorpay.RazorpayException e) {
+            throw new RuntimeException("Failed to fetch payment amount", e);
+        }
+    }
+}

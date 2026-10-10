@@ -1,7 +1,7 @@
 package com.nexusengine.core.application.config;
 
-import com.nexusengine.core.service.UmsAdminService;
-import com.nexusengine.core.portal.service.UmsMemberService;
+import com.nexusengine.core.admin.iam.service.AdminUserService;
+import com.nexusengine.core.portal.customer.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,10 +13,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 @Configuration
 public class UnifiedSecurityConfig {
 
-    private final UmsAdminService adminService;
-    private final UmsMemberService memberService;
+    private final AdminUserService adminService;
+    private final MemberService memberService;
 
-    public UnifiedSecurityConfig(UmsAdminService adminService, UmsMemberService memberService) {
+    public UnifiedSecurityConfig(AdminUserService adminService, MemberService memberService) {
         this.adminService = adminService;
         this.memberService = memberService;
     }

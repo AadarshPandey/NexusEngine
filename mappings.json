@@ -1,0 +1,697 @@
+{
+  "pms_brand": {
+    "old_schema": "pms",
+    "old_name": "pms_brand",
+    "new_schema": "catalog",
+    "new_name": "brand",
+    "columns": {
+      "name": "name",
+      "show_status": "is_visible",
+      "logo": "logo_url"
+    }
+  },
+  "pms_product": {
+    "old_schema": "pms",
+    "old_name": "pms_product",
+    "new_schema": "catalog",
+    "new_name": "product",
+    "columns": {
+      "brand_id": "brand_id",
+      "product_category_id": "category_id",
+      "product_attribute_category_id": "product_type_id",
+      "name": "name",
+      "pic": "primary_image_url",
+      "product_sn": "product_code",
+      "delete_status": "deleted_at",
+      "publish_status": "is_published",
+      "new_status": "is_new_arrival",
+      "recommend_status": "is_featured",
+      "verify_status": "approval_status",
+      "sale": "units_sold",
+      "keywords": "search_keywords",
+      "description": "description",
+      "promotion_type": "promotion_type"
+    }
+  },
+  "pms_sku_stock": {
+    "old_schema": "pms",
+    "old_name": "pms_sku_stock",
+    "new_schema": "catalog",
+    "new_name": "product_sku",
+    "columns": {
+      "product_id": "product_id",
+      "sku_code": "sku_code",
+      "price": "list_price",
+      "promotion_price": "sale_price",
+      "stock": "on_hand_qty",
+      "lock_stock": "reserved_qty",
+      "low_stock": "low_stock_threshold",
+      "pic": "image_url",
+      "sale": "units_sold",
+      "sku_attributes": "sku_attributes"
+    }
+  },
+  "pms_product_category": {
+    "old_schema": "pms",
+    "old_name": "pms_product_category",
+    "new_schema": "catalog",
+    "new_name": "category",
+    "columns": {
+      "parent_id": "parent_id",
+      "name": "name",
+      "level": "depth",
+      "product_unit": "unit_of_measure",
+      "nav_status": "is_in_navigation",
+      "show_status": "is_visible",
+      "sort": "display_order",
+      "icon": "icon_url",
+      "keywords": "search_keywords",
+      "description": "description"
+    }
+  },
+  "pms_product_attribute_category": {
+    "old_schema": "pms",
+    "old_name": "pms_product_attribute_category",
+    "new_schema": "catalog",
+    "new_name": "product_type",
+    "columns": {
+      "name": "name"
+    }
+  },
+  "pms_product_attribute": {
+    "old_schema": "pms",
+    "old_name": "pms_product_attribute",
+    "new_schema": "catalog",
+    "new_name": "attribute_definition",
+    "columns": {
+      "product_attribute_category_id": "product_type_id",
+      "name": "name",
+      "select_type": "selection_mode",
+      "input_type": "input_mode",
+      "input_list": "allowed_values",
+      "sort": "display_order",
+      "type": "kind"
+    }
+  },
+  "pms_product_attribute_value": {
+    "old_schema": "pms",
+    "old_name": "pms_product_attribute_value",
+    "new_schema": "catalog",
+    "new_name": "product_attribute_value",
+    "columns": {
+      "product_id": "product_id",
+      "product_attribute_id": "attribute_id",
+      "value": "value"
+    }
+  },
+  "pms_product_category_attribute_relation": {
+    "old_schema": "pms",
+    "old_name": "pms_product_category_attribute_relation",
+    "new_schema": "catalog",
+    "new_name": "category_attribute",
+    "columns": {
+      "product_category_id": "category_id",
+      "product_attribute_id": "attribute_id"
+    }
+  },
+  "pms_product_gallery": {
+    "old_schema": "pms",
+    "old_name": "pms_product_gallery",
+    "new_schema": "catalog",
+    "new_name": "product_media",
+    "columns": {
+      "product_id": "product_id",
+      "media_type": "media_type",
+      "media_url": "url",
+      "sort_order": "display_order"
+    }
+  },
+  "pms_product_spend_discount": {
+    "old_schema": "pms",
+    "old_name": "pms_product_spend_discount",
+    "new_schema": "promotion",
+    "new_name": "spend_threshold_discount",
+    "columns": {
+      "product_id": "product_id",
+      "full_price": "min_spend_amount",
+      "reduce_price": "discount_amount"
+    }
+  },
+  "pms_product_volume_discount": {
+    "old_schema": "pms",
+    "old_name": "pms_product_volume_discount",
+    "new_schema": "promotion",
+    "new_name": "quantity_tier_discount",
+    "columns": {
+      "product_id": "product_id",
+      "count": "min_quantity",
+      "discount": "discount_rate",
+      "price": "tier_unit_price"
+    }
+  },
+  "pms_product_approval_history": {
+    "old_schema": "pms",
+    "old_name": "pms_product_approval_history",
+    "new_schema": "catalog",
+    "new_name": "product_approval_event",
+    "columns": {
+      "product_id": "product_id",
+      "create_time": "created_at",
+      "reviewer_name": "reviewer_admin_id",
+      "status": "decision",
+      "detail": "comment"
+    }
+  },
+  "pms_product_audit_log": {
+    "old_schema": "pms",
+    "old_name": "pms_product_audit_log",
+    "new_schema": "catalog",
+    "new_name": "product_price_change",
+    "columns": {
+      "product_id": "product_id",
+      "price_old": "old_list_price",
+      "price_new": "new_list_price",
+      "sale_price_old": "old_sale_price",
+      "sale_price_new": "new_sale_price",
+      "operate_man": "changed_by_admin_id",
+      "create_time": "changed_at"
+    }
+  },
+  "pms_review": {
+    "old_schema": "pms",
+    "old_name": "pms_review",
+    "new_schema": "engagement",
+    "new_name": "product_review",
+    "columns": {
+      "product_id": "product_id",
+      "member_id": "member_id",
+      "parent_id": "parent_review_id",
+      "rating": "rating",
+      "content": "body",
+      "like_count": "helpful_count",
+      "dislike_count": "not_helpful_count",
+      "status": "moderation_status",
+      "created_time": "created_at"
+    }
+  },
+  "pms_review_attachments": {
+    "old_schema": "pms",
+    "old_name": "pms_review_attachments",
+    "new_schema": "engagement",
+    "new_name": "review_media",
+    "columns": {
+      "review_id": "review_id",
+      "media_type": "media_type",
+      "media_url": "url",
+      "thumbnail_url": "thumbnail_url",
+      "sort_order": "display_order"
+    }
+  },
+  "oms_cart_item": {
+    "old_schema": "orders",
+    "old_name": "oms_cart_item",
+    "new_schema": "ordering",
+    "new_name": "cart_item",
+    "columns": {
+      "member_id": "member_id",
+      "product_id": "product_id",
+      "product_sku_id": "sku_id",
+      "quantity": "quantity",
+      "price": "unit_price_at_add",
+      "create_date": "created_at",
+      "modify_date": "updated_at"
+    }
+  },
+  "oms_order": {
+    "old_schema": "orders",
+    "old_name": "oms_order",
+    "new_schema": "ordering",
+    "new_name": "customer_order",
+    "columns": {
+      "member_id": "member_id",
+      "coupon_id": "coupon_id",
+      "order_sn": "order_number",
+      "create_time": "created_at",
+      "total_amount": "subtotal_amount",
+      "freight_amount": "shipping_amount",
+      "promotion_amount": "promotion_discount_amount",
+      "coupon_amount": "coupon_discount_amount",
+      "discount_amount": "manual_adjustment_amount",
+      "pay_amount": "grand_total_amount",
+      "pay_type": "payment_method",
+      "status": "status",
+      "order_type": "order_type",
+      "delivery_company": "carrier_name",
+      "delivery_sn": "tracking_number",
+      "receiver_name": "recipient_name",
+      "receiver_phone": "recipient_phone",
+      "receiver_post_code": "shipping_postal_code",
+      "receiver_detail_address": "shipping_address_line",
+      "note": "customer_note",
+      "confirm_status": "is_receipt_confirmed",
+      "delete_status": "deleted_at",
+      "payment_time": "paid_at",
+      "delivery_time": "shipped_at",
+      "receive_time": "delivered_at",
+      "comment_time": "reviewed_at",
+      "modify_time": "updated_at"
+    }
+  },
+  "oms_order_item": {
+    "old_schema": "orders",
+    "old_name": "oms_order_item",
+    "new_schema": "ordering",
+    "new_name": "order_line",
+    "columns": {
+      "order_id": "order_id",
+      "product_id": "product_id",
+      "product_sku_id": "sku_id",
+      "product_name": "product_name",
+      "product_pic": "product_image_url",
+      "product_brand": "brand_name",
+      "product_category_id": "category_id",
+      "product_attr": "sku_attributes",
+      "product_price": "unit_price",
+      "product_quantity": "quantity",
+      "promotion_name": "promotion_name",
+      "promotion_amount": "promotion_discount_amount",
+      "coupon_amount": "coupon_discount_amount",
+      "real_amount": "line_total_amount"
+    }
+  },
+  "oms_order_operate_history": {
+    "old_schema": "orders",
+    "old_name": "oms_order_operate_history",
+    "new_schema": "ordering",
+    "new_name": "order_status_history",
+    "columns": {
+      "order_id": "order_id",
+      "order_status": "to_status",
+      "operate_man": "actor_ref",
+      "note": "note",
+      "create_time": "created_at"
+    }
+  },
+  "oms_order_return_apply": {
+    "old_schema": "orders",
+    "old_name": "oms_order_return_apply",
+    "new_schema": "ordering",
+    "new_name": "return_request",
+    "columns": {
+      "order_id": "order_id",
+      "product_id": "order_line_id",
+      "company_address_id": "return_address_id",
+      "product_count": "quantity",
+      "product_real_price": "unit_refund_amount",
+      "return_amount": "refund_amount",
+      "return_name": "contact_name",
+      "return_phone": "contact_phone",
+      "reason": "reason_id",
+      "description": "customer_comment",
+      "proof_pics": "evidence_urls",
+      "status": "status",
+      "handle_time": "reviewed_at",
+      "handle_man": "reviewed_by_admin_id",
+      "handle_note": "review_note",
+      "receive_time": "received_at",
+      "receive_man": "received_by_admin_id",
+      "receive_note": "receipt_note",
+      "create_time": "created_at"
+    }
+  },
+  "oms_order_return_reason": {
+    "old_schema": "orders",
+    "old_name": "oms_order_return_reason",
+    "new_schema": "ordering",
+    "new_name": "return_reason",
+    "columns": {
+      "name": "label",
+      "sort": "display_order",
+      "status": "is_active",
+      "create_time": "created_at"
+    }
+  },
+  "oms_company_address": {
+    "old_schema": "orders",
+    "old_name": "oms_company_address",
+    "new_schema": "ordering",
+    "new_name": "merchant_address",
+    "columns": {
+      "address_name": "label",
+      "send_status": "is_default_ship_from",
+      "receive_status": "is_default_return_to",
+      "name": "contact_name",
+      "phone": "contact_phone",
+      "state": "state",
+      "city": "city",
+      "detail_address": "address_line"
+    }
+  },
+  "oms_order_setting": {
+    "old_schema": "orders",
+    "old_name": "oms_order_setting",
+    "new_schema": "ordering",
+    "new_name": "order_policy",
+    "columns": {
+      "id": "id",
+      "flash_order_overtime": "flash_payment_timeout_min",
+      "normal_order_overtime": "payment_timeout_min",
+      "confirm_overtime": "auto_confirm_receipt_days",
+      "finish_overtime": "auto_complete_days",
+      "comment_overtime": "review_window_days"
+    }
+  },
+  "oms_payment_transaction": {
+    "old_schema": "orders",
+    "old_name": "oms_payment_transaction",
+    "new_schema": "payment",
+    "new_name": "payment_transaction",
+    "columns": {
+      "order_id": "order_id",
+      "transaction_id": "provider_txn_id",
+      "transaction_type": "txn_type",
+      "amount": "amount",
+      "status": "status",
+      "webhook_payload": "provider_payload",
+      "create_time": "created_at"
+    }
+  },
+  "ums_member": {
+    "old_schema": "users",
+    "old_name": "ums_member",
+    "new_schema": "customer",
+    "new_name": "member",
+    "columns": {
+      "username": "username",
+      "password": "password_hash",
+      "nickname": "display_name",
+      "phone": "phone_e164",
+      "email": "email",
+      "status": "account_status",
+      "icon": "avatar_url",
+      "gender": "gender",
+      "birthday": "birth_date",
+      "personalized_signature": "bio",
+      "source_type": "signup_channel",
+      "points": "points_balance",
+      "lifetime_points": "lifetime_points_earned",
+      "create_time": "created_at"
+    }
+  },
+  "ums_member_receive_address": {
+    "old_schema": "users",
+    "old_name": "ums_member_receive_address",
+    "new_schema": "customer",
+    "new_name": "member_address",
+    "columns": {
+      "member_id": "member_id",
+      "name": "recipient_name",
+      "phone_number": "recipient_phone",
+      "default_status": "is_default",
+      "post_code": "postal_code",
+      "province": "state",
+      "city": "city",
+      "region": "district",
+      "detail_address": "address_line"
+    }
+  },
+  "ums_member_login_log": {
+    "old_schema": "users",
+    "old_name": "ums_member_login_log",
+    "new_schema": "customer",
+    "new_name": "member_login_event",
+    "columns": {
+      "member_id": "member_id",
+      "create_time": "occurred_at",
+      "ip": "ip_address",
+      "login_type": "login_method",
+      "province": "region",
+      "city": "city"
+    }
+  },
+  "ums_member_product_category_relation": {
+    "old_schema": "users",
+    "old_name": "ums_member_product_category_relation",
+    "new_schema": "customer",
+    "new_name": "member_category_interest",
+    "columns": {
+      "member_id": "member_id",
+      "product_category_id": "category_id"
+    }
+  },
+  "ums_admin": {
+    "old_schema": "users",
+    "old_name": "ums_admin",
+    "new_schema": "iam",
+    "new_name": "admin_user",
+    "columns": {
+      "username": "username",
+      "password": "password_hash",
+      "icon": "avatar_url",
+      "email": "email",
+      "status": "is_enabled",
+      "create_time": "created_at",
+      "login_time": "last_login_at"
+    }
+  },
+  "ums_admin_login_log": {
+    "old_schema": "users",
+    "old_name": "ums_admin_login_log",
+    "new_schema": "iam",
+    "new_name": "admin_login_event",
+    "columns": {
+      "admin_id": "admin_user_id",
+      "create_time": "occurred_at",
+      "ip": "ip_address",
+      "address": "geo_location",
+      "user_agent": "user_agent"
+    }
+  },
+  "ums_role": {
+    "old_schema": "users",
+    "old_name": "ums_role",
+    "new_schema": "iam",
+    "new_name": "role",
+    "columns": {
+      "name": "name",
+      "description": "description",
+      "status": "is_active",
+      "sort": "display_order",
+      "create_time": "created_at"
+    }
+  },
+  "ums_resource": {
+    "old_schema": "users",
+    "old_name": "ums_resource",
+    "new_schema": "iam",
+    "new_name": "permission",
+    "columns": {
+      "name": "name",
+      "url": "url_pattern",
+      "description": "description",
+      "category_id": "permission_group_id",
+      "create_time": "created_at"
+    }
+  },
+  "ums_resource_category": {
+    "old_schema": "users",
+    "old_name": "ums_resource_category",
+    "new_schema": "iam",
+    "new_name": "permission_group",
+    "columns": {
+      "name": "name",
+      "sort": "display_order",
+      "create_time": "created_at"
+    }
+  },
+  "ums_menu": {
+    "old_schema": "users",
+    "old_name": "ums_menu",
+    "new_schema": "iam",
+    "new_name": "console_menu",
+    "columns": {
+      "parent_id": "parent_id",
+      "title": "title",
+      "name": "route_name",
+      "icon": "icon",
+      "level": "depth",
+      "sort": "display_order",
+      "hidden": "is_hidden",
+      "create_time": "created_at",
+      "Old": "New PK",
+      "`users.ums_admin_role_relation` (admin_id, role_id)": "(admin_user_id, role_id)",
+      "`users.ums_role_menu_relation` (role_id, menu_id)": "(role_id, menu_id)",
+      "`users.ums_role_resource_relation` (role_id, resource_id)": "(role_id, permission_id)"
+    }
+  },
+  "sms_coupon": {
+    "old_schema": "marketing",
+    "old_name": "sms_coupon",
+    "new_schema": "promotion",
+    "new_name": "coupon",
+    "columns": {
+      "type": "discount_type",
+      "name": "name",
+      "code": "code",
+      "amount": "discount_value",
+      "max_discount_amount": "max_discount_amount",
+      "min_order_amount": "min_spend_amount",
+      "count": "remaining_quantity",
+      "receive_count": "claimed_count",
+      "per_limit": "per_member_limit",
+      "use_type": "applicability_scope",
+      "start_time": "starts_at",
+      "end_time": "ends_at",
+      "version": "version",
+      "stackable": "is_stackable",
+      "is_public": "is_public"
+    }
+  },
+  "sms_coupon_history": {
+    "old_schema": "marketing",
+    "old_name": "sms_coupon_history",
+    "new_schema": "promotion",
+    "new_name": "member_coupon",
+    "columns": {
+      "coupon_id": "coupon_id",
+      "member_id": "member_id",
+      "get_type": "acquisition_channel",
+      "use_status": "status",
+      "create_time": "claimed_at",
+      "use_time": "redeemed_at",
+      "order_id": "order_id",
+      "Old": "New PK",
+      "`marketing.sms_coupon_product_relation` (coupon_id, product_id)": "(coupon_id, product_id)",
+      "`marketing.sms_coupon_product_category_relation` (coupon_id, product_category_id)": "(coupon_id, category_id)"
+    }
+  },
+  "sms_flash_promotion": {
+    "old_schema": "marketing",
+    "old_name": "sms_flash_promotion",
+    "new_schema": "promotion",
+    "new_name": "flash_sale",
+    "columns": {
+      "title": "title",
+      "start_date": "starts_on",
+      "end_date": "ends_on",
+      "status": "is_active",
+      "create_time": "created_at"
+    }
+  },
+  "sms_flash_promotion_session": {
+    "old_schema": "marketing",
+    "old_name": "sms_flash_promotion_session",
+    "new_schema": "promotion",
+    "new_name": "flash_sale_slot",
+    "columns": {
+      "name": "label",
+      "start_time": "starts_at_local",
+      "end_time": "ends_at_local",
+      "status": "is_active",
+      "create_time": "created_at"
+    }
+  },
+  "sms_flash_promotion_product_relation": {
+    "old_schema": "marketing",
+    "old_name": "sms_flash_promotion_product_relation",
+    "new_schema": "promotion",
+    "new_name": "flash_sale_item",
+    "columns": {
+      "flash_promotion_id": "flash_sale_id",
+      "flash_promotion_session_id": "slot_id",
+      "product_id": "product_id",
+      "flash_promotion_price": "flash_price",
+      "flash_promotion_count": "quantity_available",
+      "flash_promotion_limit": "per_member_limit"
+    }
+  },
+  "sms_flash_promotion_log": {
+    "old_schema": "marketing",
+    "old_name": "sms_flash_promotion_log",
+    "new_schema": "promotion",
+    "new_name": "flash_sale_purchase",
+    "columns": {
+      "member_id": "member_id",
+      "product_id": "product_id",
+      "flash_promotion_id": "flash_sale_id",
+      "session_id": "slot_id",
+      "order_id": "order_id",
+      "quantity": "quantity",
+      "status": "status",
+      "create_time": "created_at"
+    }
+  },
+  "promotional_banner": {
+    "old_schema": "marketing",
+    "old_name": "promotional_banner",
+    "new_schema": "promotion",
+    "new_name": "banner",
+    "columns": {
+      "name": "title",
+      "type": "placement",
+      "pic": "image_url",
+      "url": "target_url",
+      "start_time": "starts_at",
+      "end_time": "ends_at",
+      "status": "is_active",
+      "click_count": "click_count",
+      "order_count": "order_count",
+      "note": "internal_note",
+      "sort": "display_order"
+    }
+  },
+  "ai_chat_conversation": {
+    "old_schema": "ai",
+    "old_name": "ai_chat_conversation",
+    "new_schema": "ai",
+    "new_name": "chat_message",
+    "columns": {
+      "member_id": "member_id",
+      "session_id": "conversation_id",
+      "role": "role",
+      "content": "content",
+      "model": "model_name",
+      "tokens_used": "token_count",
+      "create_time": "created_at"
+    }
+  },
+  "pms_product_embedding": {
+    "old_schema": "ai",
+    "old_name": "pms_product_embedding",
+    "new_schema": "ai",
+    "new_name": "product_embedding",
+    "columns": {
+      "product_id": "product_id",
+      "embedding": "embedding"
+    }
+  },
+  "vector_store": {
+    "old_schema": "ai",
+    "old_name": "vector_store",
+    "new_schema": "ai",
+    "new_name": "vector_store",
+    "columns": {
+      "metadata": "metadata"
+    }
+  },
+  "staged_event": {
+    "old_schema": "messaging",
+    "old_name": "staged_event",
+    "new_schema": "messaging",
+    "new_name": "outbox_event",
+    "columns": {
+      "aggregate_type": "aggregate_type",
+      "aggregate_id": "aggregate_id",
+      "type": "event_type",
+      "payload": "payload",
+      "status": "status",
+      "retry_count": "attempt_count",
+      "created_at": "created_at",
+      "Phase": "Frontend impact",
+      "**1. DB-only rename**": "None",
+      "**2. Types and constraints**": "None if converters keep the existing JSON values (e.g. `AttributeConverter<Integer, Boolean>`)",
+      "**3. Drops and denormalization fixes**": "Needs DTOs on the backend; the API stays the same",
+      "**4. (Optional) API naming**": "Frontend changes required"
+    }
+  }
+}

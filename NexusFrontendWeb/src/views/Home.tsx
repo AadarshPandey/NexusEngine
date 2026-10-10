@@ -3,7 +3,7 @@ import { Box, Grid, CircularProgress, Typography, TextField, InputAdornment, Ico
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router';
+import { useSearchParams, useNavigate } from 'react-router';
 import type { RootState, AppDispatch } from '../store';
 import { loadHomeData } from '../store/slices/homeSlice';
 import BannerCarousel from '../components/BannerCarousel';
@@ -15,11 +15,14 @@ const Home: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { body, recommendations, loading, error } = useSelector((state: RootState) => state.home);
 
-  const [searchKeyword, setSearchKeyword] = useState('');
-  const [isSearching, setIsSearching] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const queryParam = searchParams.get('keyword') || '';
+
+  const [searchKeyword, setSearchKeyword] = useState(queryParam);
+  const [isSearching, setIsSearching] = useState(!!queryParam);
   const [searchResults, setSearchResults] = useState<PmsProduct[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
-  const location = useLocation();
 
   useEffect(() => {
     if (!body) {
@@ -28,22 +31,20 @@ const Home: React.FC = () => {
   }, [dispatch, body]);
 
   useEffect(() => {
-    if (location.pathname === '/' && location.search === '') {
+    const keyword = searchParams.get('keyword');
+    if (keyword) {
+      setSearchKeyword(keyword);
+      setIsSearching(true);
+      performSearch(keyword);
+    } else {
       handleClearSearch();
     }
-  }, [location]);
+  }, [searchParams]);
 
-  const handleSearch = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!searchKeyword.trim()) {
-      handleClearSearch();
-      return;
-    }
-    
-    setIsSearching(true);
+  const performSearch = async (keyword: string) => {
     setSearchLoading(true);
     try {
-      const res = await searchProducts(searchKeyword);
+      const res = await searchProducts(keyword);
       setSearchResults(res.data.list);
     } catch (err) {
       console.error(err);
@@ -52,10 +53,24 @@ const Home: React.FC = () => {
     }
   };
 
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!searchKeyword.trim()) {
+      navigate('/');
+      return;
+    }
+    setSearchParams({ keyword: searchKeyword.trim() });
+  };
+
   const handleClearSearch = () => {
     setSearchKeyword('');
     setIsSearching(false);
     setSearchResults([]);
+  };
+
+  const handleClearInput = () => {
+    setSearchKeyword('');
+    navigate('/');
   };
 
   if (loading && !isSearching) {
@@ -89,7 +104,7 @@ const Home: React.FC = () => {
               endAdornment: (
                 <InputAdornment position="end">
                   {searchKeyword && (
-                    <IconButton onClick={handleClearSearch} size="small">
+                    <IconButton onClick={handleClearInput} size="small">
                       <ClearIcon />
                     </IconButton>
                   )}

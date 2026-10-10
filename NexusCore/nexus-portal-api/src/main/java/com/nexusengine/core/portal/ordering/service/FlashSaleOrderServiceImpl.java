@@ -1,0 +1,127 @@
+package com.nexusengine.core.portal.ordering.service;
+
+import lombok.RequiredArgsConstructor;
+import com.nexusengine.core.portal.catalog.dto.*;
+import com.nexusengine.core.portal.catalog.service.*;
+import com.nexusengine.core.portal.catalog.dao.*;
+import com.nexusengine.core.portal.payment.service.*;
+import com.nexusengine.core.portal.ordering.dto.*;
+import com.nexusengine.core.portal.ordering.service.*;
+import com.nexusengine.core.portal.ordering.dao.*;
+import com.nexusengine.core.portal.customer.dto.*;
+import com.nexusengine.core.portal.customer.service.*;
+import com.nexusengine.core.portal.promotion.dto.*;
+import com.nexusengine.core.portal.promotion.service.*;
+import com.nexusengine.core.portal.promotion.strategy.*;
+import com.nexusengine.core.portal.ai.service.*;
+import com.nexusengine.core.portal.home.dto.*;
+import com.nexusengine.core.portal.home.service.*;
+import com.nexusengine.core.portal.engagement.dto.*;
+import com.nexusengine.core.portal.engagement.service.*;
+
+import com.nexusengine.core.common.api.CommonResult;
+
+import com.nexusengine.core.domain.catalog.entity.*;
+import com.nexusengine.core.domain.ordering.entity.*;
+import com.nexusengine.core.domain.customer.entity.*;
+import com.nexusengine.core.domain.promotion.entity.*;
+import com.nexusengine.core.domain.iam.entity.*;
+import com.nexusengine.core.domain.catalog.repository.*;
+import com.nexusengine.core.domain.ordering.repository.*;
+import com.nexusengine.core.domain.customer.repository.*;
+import com.nexusengine.core.domain.promotion.repository.*;
+import com.nexusengine.core.domain.iam.repository.*;
+import com.nexusengine.core.domain.customer.entity.Member;
+import io.github.bucket4j.Bandwidth;
+import io.github.bucket4j.Bucket;
+import io.github.bucket4j.Refill;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
+import org.springframework.stereotype.Service;
+
+import jakarta.annotation.PostConstruct;
+import java.time.Duration;
+import java.util.Collections;
+import java.util.concurrent.ConcurrentHashMap;
+
+
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class FlashSaleOrderServiceImpl implements FlashSaleOrderService {
+
+    private final StringRedisTemplate redisTemplate;
+
+    private final AmqpTemplate amqpTemplate;
+
+    private final MemberService memberService;
+
+    private DefaultRedisScript<Long> stockScript;
+
+    // In-memory bucket cache for user-level rate limiting
+    private final ConcurrentHashMap<Long, Bucket> buckets = new ConcurrentHashMap<>();
+
+    @PostConstruct
+    public void init() {
+        // Lua Script: Checks if stock is enough and user hasn't bought, then decrements. Returns 1 if success, 0 if out of stock, -1 if already bought.
+        String lua = "local stock = tonumber(redis.call('get', KEYS[1])); " +
+                     "if stock and stock >= tonumber(ARGV[1]) then " +
+                     "  local bought = redis.call('sismember', KEYS[2], ARGV[2]); " +
+                     "  if bought == 1 then return -1; end; " +
+                     "  redis.call('decrby', KEYS[1], tonumber(ARGV[1])); " +
+                     "  redis.call('sadd', KEYS[2], ARGV[2]); " +
+                     "  return 1; " +
+                     "else " +
+                     "  return 0; " +
+                     "end;";
+        stockScript = new DefaultRedisScript<>();
+        stockScript.setScriptText(lua);
+        stockScript.setResultType(Long.class);
+    }
+
+    // Fix 4: Distributed rate limiting using Redis instead of in-memory ConcurrentHashMap
+    private boolean isRateLimited(Long memberId) {
+        String key = "flash:rate_limit:" + memberId;
+        String script = "local c = redis.call('incr', KEYS[1]); if c == 1 then redis.call('expire', KEYS[1], 1) end; return c";
+        Long current = redisTemplate.execute(
+            new org.springframework.data.redis.core.script.DefaultRedisScript<>(script, Long.class),
+            java.util.Collections.singletonList(key)
+        );
+        return current != null && current > 1;
+    }
+
+    @Override
+    public CommonResult generateFlashOrder(Long productId, Long flashPromotionId, Long flashPromotionSessionId, Integer quantity) {
+        Member currentMember = memberService.getCurrentMember();
+        if (currentMember == null) {
+            return CommonResult.unauthorized(null);
+        }
+
+        // Fix 4: Rate Limiting (API Gateway / User level) using Redis
+        if (isRateLimited(currentMember.getId())) {
+            return CommonResult.failed("Request too frequent, please try again later.");
+        }
+
+        // Fix 3: Redis Gatekeeper: Atomic stock deduction and 1-per-user check
+        String stockKey = "flash:stock:" + flashPromotionId + ":" + flashPromotionSessionId + ":" + productId;
+        String userSetKey = "flash:users:" + flashPromotionId + ":" + flashPromotionSessionId + ":" + productId;
+        Long result = redisTemplate.execute(stockScript, java.util.Arrays.asList(stockKey, userSetKey), String.valueOf(quantity), String.valueOf(currentMember.getId()));
+        
+        if (result == null || result == 0L) {
+            return CommonResult.failed("Flash sale inventory is sold out!");
+        } else if (result == -1L) {
+            return CommonResult.failed("You have already purchased this flash sale item!");
+        }
+
+        // 3. Asynchronous Order Processing (RabbitMQ)
+        FlashSaleOrderMessage message = new FlashSaleOrderMessage(currentMember.getId(), productId, flashPromotionId, flashPromotionSessionId, quantity);
+
+        amqpTemplate.convertAndSend(QueueEnum.QUEUE_FLASH_ORDER.getExchange(), QueueEnum.QUEUE_FLASH_ORDER.getRouteKey(), message);
+        log.info("Flash order message sent to MQ for member: {}, product: {}", currentMember.getId(), productId);
+
+        return CommonResult.success(null, "Order request received, processing in background.");
+    }
+}

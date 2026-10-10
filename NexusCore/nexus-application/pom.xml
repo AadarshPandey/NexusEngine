@@ -18,12 +18,12 @@
     <dependencies>
         <dependency>
             <groupId>com.nexusengine.core</groupId>
-            <artifactId>nexus-admin</artifactId>
+            <artifactId>nexus-admin-api</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.nexusengine.core</groupId>
-            <artifactId>nexus-portal</artifactId>
+            <artifactId>nexus-portal-api</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>

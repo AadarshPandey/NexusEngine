@@ -5,55 +5,47 @@ import type { UmsMemberReceiveAddress } from './member';
 export interface OmsOrderItem {
   id: number;
   orderId: number;
-  orderSn: string;
-  orderLineId: number;
-  productImageUrl: string;
+  productId: number;
+  productPic: string;
   productName: string;
-  brandName: string;
-  productCode: string;
-  unitPrice: number;
-  quantity: number;
-  skuId: number;
-  productSkuCode: string;
-  permissionGroupId: number;
-  sp1: string;
-  sp2: string;
-  sp3: string;
+  productBrand: string;
+  productPrice: number;
+  productQuantity: number;
+  productSkuId: number;
+  productCategoryId: number;
   promotionName: string;
   promotionAmount: number;
-  couponDiscountAmount: number;
-  lineTotalAmount: number;
-  giftIntegration: number;
-  giftGrowth: number;
-  skuAttributes: string;
+  couponAmount: number;
+  realAmount: number;
+  productAttr: string;
 }
 
 export interface OmsOrderReturnApply {
   id: number;
   orderId: number;
-  returnAddressId: number;
-  orderLineId: number;
+  companyAddressId: number;
+  productId: number;
   orderSn: string;
-  createdAt: string;
-  refundAmount: number;
-  contactName: string;
-  contactPhone: string;
+  createTime: string;
+  returnAmount: number;
+  returnName: string;
+  returnPhone: string;
   status: number;
-  commentTime: string;
-  productImageUrl: string;
+  handleTime: string;
+  productPic: string;
   productName: string;
-  brandName: string;
+  productBrand: string;
   productCode: string;
-  skuAttributes: string;
-  quantity: number;
-  unitPrice: number;
-  unitRefundAmount: number;
-  reasonId: string;
-  customerComment: string;
-  evidenceUrls: string;
-  reviewNote: string;
-  reviewedByAdminId: string;
-  receivedByAdminId: string;
+  productAttr: string;
+  productCount: number;
+  productPrice: number;
+  productRealPrice: number;
+  reason: string;
+  description: string;
+  proofPics: string;
+  handleNote: string;
+  handleMan: string;
+  receiveMan: string;
   receiveTime: string;
   receiptNote: string;
 }
@@ -72,13 +64,13 @@ export interface SmsCoupon {
 export interface SmsCouponProductRelation {
   id: number;
   couponId: number;
-  orderLineId: number;
+  productId: number;
 }
 
 export interface SmsCouponProductCategoryRelation {
   id: number;
   couponId: number;
-  permissionGroupId: number;
+  productCategoryId: number;
 }
 
 export interface SmsCouponHistoryDetail {
@@ -88,7 +80,7 @@ export interface SmsCouponHistoryDetail {
   couponCode: string;
   memberNickname: string;
   acquisitionChannel: number;
-  createdAt: string;
+  createTime: string;
   status: number;
   redeemedAt: string;
   orderId: number;
@@ -141,7 +133,7 @@ export interface OmsOrderDetail {
   paymentTime: string;
   deliveryTime: string;
   receiveTime: string;
-  commentTime: string;
+  handleTime: string;
   modifyTime: string;
   orderItemList: OmsOrderItem[];
   returnApplyList?: OmsOrderReturnApply[];

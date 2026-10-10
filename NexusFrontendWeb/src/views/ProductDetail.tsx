@@ -69,7 +69,7 @@ const ProductDetail: React.FC = () => {
 
       if (matchedSku) {
         setActiveSku(matchedSku);
-        if (matchedSku.primaryImageUrl) setActiveImage(matchedSku.primaryImageUrl);
+        if (matchedSku.pic) setActiveImage(matchedSku.pic);
       } else {
         setActiveSku(null);
         // Look for ANY sku that has the selected color to at least update the image
@@ -79,8 +79,8 @@ const ProductDetail: React.FC = () => {
              return sp.some((s: {key: string, value: string}) => s.key === 'Color' && s.value === newSelections['Color']);
            } catch(e) { return false; }
         });
-        if (partialSku && partialSku.primaryImageUrl) {
-           setActiveImage(partialSku.primaryImageUrl);
+        if (partialSku && partialSku.pic) {
+           setActiveImage(partialSku.pic);
         } else if (productDetail.product.primaryImageUrl) {
            setActiveImage(productDetail.product.primaryImageUrl);
         }
@@ -88,15 +88,15 @@ const ProductDetail: React.FC = () => {
     }
   };
 
-  const currentCartQuantity = cartItems.find(item => item.orderLineId === productDetail?.product.id)?.quantity || 0;
+  const currentCartQuantity = cartItems.find(item => item.productId === productDetail?.product.id)?.quantity || 0;
   const isInCart = currentCartQuantity > 0;
   
   // Display Price & Stock based on SKU selection
   const isPromotionActive = productDetail?.product.promotionType === 1 || productDetail?.flashSaleActive;
   const displayPrice = activeSku 
-    ? (isPromotionActive && activeSku.salePrice ? activeSku.salePrice : activeSku.listPrice) 
+    ? (isPromotionActive && activeSku.promotionPrice ? activeSku.promotionPrice : activeSku.price) 
     : (isPromotionActive && productDetail?.product.salePrice ? productDetail.product.salePrice : productDetail?.product.listPrice);
-  const displayStock = activeSku ? Math.max(0, activeSku.onHandQty - (activeSku.reservedQty || 0)) : (productDetail ? productDetail.product.onHandQty : 0);
+  const displayStock = activeSku ? Math.max(0, activeSku.stock - (activeSku.lockStock || 0)) : (productDetail ? productDetail.product.onHandQty : 0);
   const isOutOfStock = !displayStock || displayStock <= 0;
 
   // Has user selected all required attributes?
@@ -117,14 +117,14 @@ const ProductDetail: React.FC = () => {
     try {
       setAddingToCart(true);
       await dispatch(addItemToCart({
-        orderLineId: productDetail.product.id,
+        productId: productDetail.product.id,
         quantity: 1,
-        listPrice: displayPrice || 0,
-        productImageUrl: activeSku?.primaryImageUrl || productDetail.product.primaryImageUrl,
+        price: displayPrice || 0,
+        productPic: activeSku?.pic || productDetail.product.primaryImageUrl,
         productName: productDetail.product.name + (activeSku ? ` (${Object.values(selectedAttributes).join(', ')})` : ''),
-        skuId: activeSku?.id,
+        productSkuId: activeSku?.id,
         productSkuCode: activeSku?.skuCode,
-        skuAttributes: JSON.stringify(Object.entries(selectedAttributes).map(([key, value]) => ({ key, value }))),
+        productAttr: JSON.stringify(Object.entries(selectedAttributes).map(([key, value]) => ({ key, value }))),
       })).unwrap();
       alert('Item added to cart!');
     } catch (error: unknown) {
@@ -147,7 +147,7 @@ const ProductDetail: React.FC = () => {
 
   // Group attribute values for rendering
   const attributesToRender = productAttributeList?.filter(attr => attr.type === 0).map(attr => {
-    const valObj = productAttributeValueList?.find(val => val.attributeId === attr.id);
+    const valObj = productAttributeValueList?.find(val => val.productAttributeId === attr.id);
     const values = valObj?.value ? valObj.value.split(',') : [];
     return { ...attr, values };
   }) || [];
@@ -231,12 +231,12 @@ const ProductDetail: React.FC = () => {
 
             <Box sx={{ mt: 4 }}>
               <Typography variant="h6" gutterBottom>Product Description</Typography>
-              <ReactMarkdown>{product.customerComment || 'No customerComment available.'}</ReactMarkdown>
+              <ReactMarkdown>{product.description || 'No description available.'}</ReactMarkdown>
             </Box>
           </Grid>
         </Grid>
       </Paper>
-      <ReviewSection orderLineId={product.id} />
+      <ReviewSection productId={product.id} />
     </Box>
   );
 };

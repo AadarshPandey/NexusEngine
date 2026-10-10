@@ -1,0 +1,123 @@
+package com.nexusengine.core.portal.customer.service;
+
+import com.nexusengine.core.domain.customer.entity.Member;
+import com.nexusengine.core.portal.catalog.dto.*;
+import com.nexusengine.core.portal.catalog.service.*;
+import com.nexusengine.core.portal.catalog.dao.*;
+import com.nexusengine.core.portal.payment.service.*;
+import com.nexusengine.core.portal.ordering.dto.*;
+import com.nexusengine.core.portal.ordering.service.*;
+import com.nexusengine.core.portal.ordering.dao.*;
+import com.nexusengine.core.portal.customer.dto.*;
+import com.nexusengine.core.portal.customer.service.*;
+import com.nexusengine.core.portal.promotion.dto.*;
+import com.nexusengine.core.portal.promotion.service.*;
+import com.nexusengine.core.portal.promotion.strategy.*;
+import com.nexusengine.core.portal.ai.service.*;
+import com.nexusengine.core.portal.home.dto.*;
+import com.nexusengine.core.portal.home.service.*;
+import com.nexusengine.core.portal.engagement.dto.*;
+import com.nexusengine.core.portal.engagement.service.*;
+
+import com.nexusengine.core.domain.catalog.entity.*;
+import com.nexusengine.core.domain.ordering.entity.*;
+import com.nexusengine.core.domain.customer.entity.*;
+import com.nexusengine.core.domain.promotion.entity.*;
+import com.nexusengine.core.domain.iam.entity.*;
+import com.nexusengine.core.domain.catalog.repository.*;
+import com.nexusengine.core.domain.ordering.repository.*;
+import com.nexusengine.core.domain.customer.repository.*;
+import com.nexusengine.core.domain.promotion.repository.*;
+import com.nexusengine.core.domain.iam.repository.*;
+import org.springframework.security.core.userdetails.UserDetails;
+
+
+/**
+ * Service interface for managing user members in the portal.
+ * Handles member registration, authentication, profile retrieval, and security operations.
+ */
+public interface MemberService {
+        /**
+     * Retrieves a member by their username.
+     *
+     * @param username the username of the member
+     * @return the associated Member
+     */
+    Member getByUsername(String username);
+
+        /**
+     * Retrieves a member by their unique ID.
+     *
+     * @param id the unique identifier of the member
+     * @return the associated Member
+     */
+    Member getById(Long id);
+
+        /**
+     * Registers a new member in the portal.
+     *
+     * @param username the desired username
+     * @param password the desired password
+     * @param email the member's email address
+     * @param authCode the verification code sent to the email
+     */
+    void register(String username, String password, String email, String authCode);
+
+        /**
+     * Generates and sends an authentication code to the specified email.
+     *
+     * @param email the email address to send the code to
+     */
+    void generateAuthCode(String email);
+
+        /**
+     * Updates a member's password using an authentication code.
+     *
+     * @param email the member's email address
+     * @param password the new password
+     * @param authCode the verification code sent to the email
+     */
+    void updatePassword(String email, String password, String authCode);
+
+        /**
+     * Retrieves the currently authenticated member.
+     *
+     * @return the current Member
+     */
+    Member getCurrentMember();
+    void updateMember(Member member);
+
+        /**
+     * Updates the integration (points) for a specific member.
+     *
+     * @param id the unique identifier of the member
+     * @param integration the integration points to set or add
+     */
+    void updatePoints(Long id,Integer integration);
+
+
+        /**
+     * Loads user details for Spring Security authentication.
+     *
+     * @param username the username to load details for
+     * @return the UserDetails required by Spring Security
+     */
+    UserDetails loadUserByUsername(String username);
+
+        /**
+     * Authenticates a member and generates a JWT token.
+     *
+     * @param username the member username
+     * @param password the member password
+     * @return the generated JWT token
+     */
+    String login(String username, String password);
+
+        /**
+     * Refreshes an existing valid or recently expired JWT token.
+     *
+     * @param token the old JWT token
+     * @return a new JWT token
+     */
+    String refreshToken(String token);
+}

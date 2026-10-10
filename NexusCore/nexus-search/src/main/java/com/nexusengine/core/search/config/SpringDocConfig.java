@@ -1,5 +1,7 @@
 package com.nexusengine.core.search.config;
 
+import com.nexusengine.core.domain.catalog.entity.Product;
+
 import io.swagger.v3.oas.models.ExternalDocumentation;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;

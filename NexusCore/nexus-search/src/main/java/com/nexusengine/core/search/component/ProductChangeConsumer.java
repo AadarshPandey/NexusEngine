@@ -1,6 +1,8 @@
 package com.nexusengine.core.search.component;
 
-import com.nexusengine.core.search.service.EsProductService;
+import com.nexusengine.core.domain.catalog.entity.Product;
+
+import com.nexusengine.core.search.service.ProductSearchService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -13,9 +15,9 @@ import org.springframework.stereotype.Component;
 public class ProductChangeConsumer {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProductChangeConsumer.class);
 
-    private final EsProductService esProductService;
+    private final ProductSearchService esProductService;
 
-    public ProductChangeConsumer(EsProductService esProductService) {
+    public ProductChangeConsumer(ProductSearchService esProductService) {
         this.esProductService = esProductService;
     }
 

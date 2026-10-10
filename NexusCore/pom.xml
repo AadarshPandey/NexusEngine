@@ -11,11 +11,11 @@
 
     <modules>
         <module>nexus-common</module>
-        <module>nexus-data-jpa</module>
+        <module>nexus-domain</module>
         <module>nexus-security</module>
-        <module>nexus-admin</module>
+        <module>nexus-admin-api</module>
         <module>nexus-search</module>
-        <module>nexus-portal</module>
+        <module>nexus-portal-api</module>
         <module>nexus-ai</module>
         <module>nexus-application</module>
     </modules>
@@ -36,7 +36,7 @@
         <skipTests>false</skipTests>
         <!-- Module versions -->
         <nexus-common.version>1.0-SNAPSHOT</nexus-common.version>
-        <nexus-data-jpa.version>1.0-SNAPSHOT</nexus-data-jpa.version>
+        <nexus-domain.version>1.0-SNAPSHOT</nexus-domain.version>
         <nexus-security.version>1.0-SNAPSHOT</nexus-security.version>
         <nexus-ai.version>1.0-SNAPSHOT</nexus-ai.version>
         <!-- Library versions -->
@@ -60,7 +60,7 @@
         <hibernate-vector.version>7.4.5.Final</hibernate-vector.version>
         <pgvector.version>0.1.6</pgvector.version>
         <!-- Testcontainers -->
-        <testcontainers.version>1.20.1</testcontainers.version>
+        <testcontainers.version>1.20.4</testcontainers.version>
         <!-- Redisson -->
         <redisson.version>4.7.0</redisson.version>
         <mapstruct.version>1.6.3</mapstruct.version>
@@ -164,8 +164,8 @@
             <!-- NexusCore data JPA module -->
             <dependency>
                 <groupId>com.nexusengine.core</groupId>
-                <artifactId>nexus-data-jpa</artifactId>
-                <version>${nexus-data-jpa.version}</version>
+                <artifactId>nexus-domain</artifactId>
+                <version>${nexus-domain.version}</version>
             </dependency>
             <!-- NexusCore security module -->
             <dependency>

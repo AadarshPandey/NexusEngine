@@ -23,7 +23,7 @@ const mockProduct: PmsProduct = {
   salePrice: 899.99,
   promotionType: 1,
   subTitle: 'The ultimate smartphone experience.',
-  customerComment: 'Features an edge-to-edge display.',
+  description: 'Features an edge-to-edge display.',
   onHandQty: 1000,
 };
 

@@ -42,12 +42,12 @@ const Profile: React.FC = () => {
   // Refund dialog states
   const [openRefundDialog, setOpenRefundDialog] = useState(false);
   const [openEditProfile, setOpenEditProfile] = useState(false);
-  const [editProfileData, setEditProfileData] = useState({ displayName: '', contactPhone: '', iconUrl: '' });
+  const [editProfileData, setEditProfileData] = useState({ displayName: '', returnPhone: '', iconUrl: '' });
 
   const handleEditProfileOpen = () => {
     setEditProfileData({
       displayName: memberInfo?.displayName || '',
-      contactPhone: memberInfo?.contactPhone || '',
+      returnPhone: memberInfo?.contactPhone || '',
       iconUrl: memberInfo?.iconUrl || ''
     });
     setOpenEditProfile(true);
@@ -139,8 +139,8 @@ const Profile: React.FC = () => {
     const currentIndex = selectedRefundItems.findIndex((i) => i.id === item.id);
     const newSelected = [...selectedRefundItems];
     if (currentIndex === -1) {
-      const totalReturnedQty = refundOrder?.returnApplyList?.filter((r: import('../api/order').OmsOrderReturnApply) => r.orderLineId === item.orderLineId).reduce((sum, r) => sum + (r.quantity || 0), 0) || 0;
-      const maxReturnableQty = item.quantity - totalReturnedQty;
+      const totalReturnedQty = refundOrder?.returnApplyList?.filter((r: import('../api/order').OmsOrderReturnApply) => r.productId === item.productId).reduce((sum, r) => sum + (r.productCount || 0), 0) || 0;
+      const maxReturnableQty = item.productQuantity - totalReturnedQty;
       newSelected.push({ ...item, returnQuantity: maxReturnableQty });
     } else {
       newSelected.splice(currentIndex, 1);
@@ -163,19 +163,19 @@ const Profile: React.FC = () => {
       await Promise.all(selectedRefundItems.map(item => 
         submitReturnApply({
           orderId: refundOrder.id,
-          orderLineId: item.orderLineId,
+          productId: item.productId,
           orderSn: refundOrder.orderSn,
-          contactName: memberInfo?.displayName || memberInfo?.username,
-          contactPhone: memberInfo?.contactPhone || '',
-          productImageUrl: item.productImageUrl,
+          returnName: memberInfo?.displayName || memberInfo?.username,
+          returnPhone: memberInfo?.contactPhone || '',
+          productPic: item.productPic,
           productName: item.productName,
-          brandName: item.brandName,
-          skuAttributes: item.skuAttributes,
-          quantity: item.returnQuantity,
-          unitPrice: item.unitPrice,
-          unitRefundAmount: (item.lineTotalAmount / item.quantity) * item.returnQuantity,
-          reasonId: refundReason,
-          customerComment: refundReason
+          productBrand: item.productBrand,
+          productAttr: item.productAttr,
+          productCount: item.returnQuantity,
+          productPrice: item.productPrice,
+          returnAmount: (item.realAmount / item.productQuantity) * item.returnQuantity,
+          reason: refundReason,
+          description: refundReason
         })
       ));
       alert('Refund application(s) submitted successfully!');
@@ -258,8 +258,8 @@ const Profile: React.FC = () => {
                   </TableHead>
                   <TableBody>
                     {orders.map((order) => {
-                      const totalOrderQty = order.orderItemList?.reduce((sum: number, item: import('../api/order').OmsOrderItem) => sum + item.quantity, 0) || 0;
-                      const totalReturnedQty = order.returnApplyList?.reduce((sum: number, r: import('../api/order').OmsOrderReturnApply) => sum + (r.quantity || 0), 0) || 0;
+                      const totalOrderQty = order.orderItemList?.reduce((sum: number, item: import('../api/order').OmsOrderItem) => sum + item.productQuantity, 0) || 0;
+                      const totalReturnedQty = order.returnApplyList?.reduce((sum: number, r: import('../api/order').OmsOrderReturnApply) => sum + (r.productCount || 0), 0) || 0;
                       const isOrderFullyRefunded = totalOrderQty > 0 && totalReturnedQty >= totalOrderQty;
 
                       return (
@@ -327,7 +327,7 @@ const Profile: React.FC = () => {
                                     discountValue: discountValue, 
                                     currency: 'INR',
                                     name: 'Nexus Engine',
-                                    customerComment: `Payment for Order #${order.orderSn}`,
+                                    description: `Payment for Order #${order.orderSn}`,
                                     order_id: razorpayOrderId,
                                     handler: async function (response: RazorpayResponse) {
                                       try {
@@ -353,7 +353,7 @@ const Profile: React.FC = () => {
                                   };
                                   const rzp = new window.Razorpay(options);
                                   rzp.on('payment.failed', function (response: RazorpayFailedResponse){
-                                    alert(`Payment Failed: ${response.error.customerComment}`);
+                                    alert(`Payment Failed: ${response.error.description}`);
                                   });
                                   rzp.open();
                                   
@@ -435,8 +435,8 @@ const Profile: React.FC = () => {
           </Typography>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             {refundOrder?.orderItemList?.map((item: import('../api/order').OmsOrderItem) => {
-              const totalReturnedQty = refundOrder?.returnApplyList?.filter((r: import('../api/order').OmsOrderReturnApply) => r.orderLineId === item.orderLineId).reduce((sum, r) => sum + (r.quantity || 0), 0) || 0;
-              const maxReturnableQty = item.quantity - totalReturnedQty;
+              const totalReturnedQty = refundOrder?.returnApplyList?.filter((r: import('../api/order').OmsOrderReturnApply) => r.productId === item.productId).reduce((sum, r) => sum + (r.productCount || 0), 0) || 0;
+              const maxReturnableQty = item.productQuantity - totalReturnedQty;
               const isFullyReturned = maxReturnableQty <= 0;
               const isSelected = selectedRefundItems.some(i => i.id === item.id);
               return (
@@ -457,11 +457,11 @@ const Profile: React.FC = () => {
                     if (!isFullyReturned) handleRefundItemToggle(item);
                   }}
                 >
-                  <img src={item.productImageUrl?.includes('file') ? 'https://via.placeholder.com/60' : (item.productImageUrl || 'https://via.placeholder.com/60')} alt={item.productName} style={{ width: 60, height: 60, objectFit: 'cover' }} />
+                  <img src={item.productPic?.includes('file') ? 'https://via.placeholder.com/60' : (item.productPic || 'https://via.placeholder.com/60')} alt={item.productName} style={{ width: 60, height: 60, objectFit: 'cover' }} />
                   <Box sx={{ flex: 1 }}>
                     <Typography variant="subtitle2">{item.productName}</Typography>
-                    <Typography variant="body2" color="text.secondary">{item.skuAttributes}</Typography>
-                    <Typography variant="body2">Qty: {item.quantity} | ₹{item.lineTotalAmount}</Typography>
+                    <Typography variant="body2" color="text.secondary">{item.productAttr}</Typography>
+                    <Typography variant="body2">Qty: {item.productQuantity} | ₹{item.realAmount}</Typography>
                     {totalReturnedQty > 0 && isFullyReturned && (
                       <Typography variant="caption" color="error" sx={{ fontWeight: 'bold' }}>Refund Requested (Fully)</Typography>
                     )}

@@ -32,22 +32,22 @@ export interface PmsProductAttribute {
 
 export interface PmsProductAttributeValue {
   id: number;
-  orderLineId: number;
-  attributeId: number;
+  productId: number;
+  productAttributeId: number;
   value: string;
 }
 
 export interface PmsSkuStock {
   id: number;
-  orderLineId: number;
+  productId: number;
   skuCode: string;
-  listPrice: number;
-  onHandQty: number;
-  lowStockThreshold: number;
-  primaryImageUrl: string;
-  unitsSold: number;
-  salePrice: number;
-  reservedQty: number;
+  price: number;
+  stock: number;
+  lowStock: number;
+  pic: string;
+  sale: number;
+  promotionPrice?: number;
+  lockStock: number;
   spData: string;
 }
 
@@ -77,11 +77,22 @@ export interface PmsPortalProductDetail {
 }
 
 export const fetchProductDetail = (id: number) => {
-  return request.get<unknown, { data: PmsPortalProductDetail }>(`/product/comment/${id}`);
+  return request.get<unknown, { data: PmsPortalProductDetail }>(`/product/detail/${id}`);
 };
 
-export const searchProducts = (keyword: string, pageNum: number = 1, pageSize: number = 20) => {
-  return request.get<unknown, { data: { list: PmsProduct[] } }>('/portal/product/search', {
+export const searchProducts = async (keyword: string, pageNum: number = 0, pageSize: number = 20) => {
+  const res = await request.get<unknown, { data: { list: any[] } }>('/api/search/esProduct/search', {
+    baseURL: '/', // reset baseURL so it doesn't prepend /api/portal
     params: { keyword, pageNum, pageSize }
   });
+  if (res && res.data && res.data.list) {
+    res.data.list = res.data.list.map(item => ({
+      ...item,
+      primaryImageUrl: item.pic || item.primaryImageUrl,
+      listPrice: item.price !== undefined ? item.price : item.listPrice,
+      unitsSold: item.sale !== undefined ? item.sale : item.unitsSold,
+      onHandQty: item.stock !== undefined ? item.stock : item.onHandQty,
+    }));
+  }
+  return res as unknown as { data: { list: PmsProduct[] } };
 };

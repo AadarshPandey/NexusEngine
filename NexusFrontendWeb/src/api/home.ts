@@ -18,7 +18,7 @@ export interface PmsProduct {
   salePrice: number;
   promotionType?: number;
   subTitle: string;
-  customerComment: string;
+  description: string;
   onHandQty: number;
   galleryList?: { url: string; displayOrder: number }[];
 }

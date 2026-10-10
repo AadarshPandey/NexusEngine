@@ -1,0 +1,8 @@
+psql "postgresql://postgres:postgres@localhost:5433/nexuscore" -c "ALTER TABLE users.ums_role_menu_relation SET SCHEMA iam;"
+psql "postgresql://postgres:postgres@localhost:5433/nexuscore" -c "ALTER TABLE iam.ums_role_menu_relation RENAME TO role_menu;"
+psql "postgresql://postgres:postgres@localhost:5433/nexuscore" -c "ALTER TABLE users.ums_role_resource_relation SET SCHEMA iam;"
+psql "postgresql://postgres:postgres@localhost:5433/nexuscore" -c "ALTER TABLE iam.ums_role_resource_relation RENAME TO role_resource;"
+psql "postgresql://postgres:postgres@localhost:5433/nexuscore" -c "ALTER TABLE marketing.sms_coupon_product_relation SET SCHEMA promotion;"
+psql "postgresql://postgres:postgres@localhost:5433/nexuscore" -c "ALTER TABLE promotion.sms_coupon_product_relation RENAME TO coupon_product;"
+psql "postgresql://postgres:postgres@localhost:5433/nexuscore" -c "ALTER TABLE marketing.sms_coupon_product_category_relation SET SCHEMA promotion;"
+psql "postgresql://postgres:postgres@localhost:5433/nexuscore" -c "ALTER TABLE promotion.sms_coupon_product_category_relation RENAME TO coupon_category;"

@@ -1,0 +1,1136 @@
+[
+  {
+    "old_camel": "showStatus",
+    "new_camel": "isVisible",
+    "old_pascal": "ShowStatus",
+    "new_pascal": "IsVisible"
+  },
+  {
+    "old_camel": "logo",
+    "new_camel": "logoUrl",
+    "old_pascal": "Logo",
+    "new_pascal": "LogoUrl"
+  },
+  {
+    "old_camel": "productCategoryId",
+    "new_camel": "categoryId",
+    "old_pascal": "ProductCategoryId",
+    "new_pascal": "CategoryId"
+  },
+  {
+    "old_camel": "productAttributeCategoryId",
+    "new_camel": "productTypeId",
+    "old_pascal": "ProductAttributeCategoryId",
+    "new_pascal": "ProductTypeId"
+  },
+  {
+    "old_camel": "pic",
+    "new_camel": "primaryImageUrl",
+    "old_pascal": "Pic",
+    "new_pascal": "PrimaryImageUrl"
+  },
+  {
+    "old_camel": "productSn",
+    "new_camel": "productCode",
+    "old_pascal": "ProductSn",
+    "new_pascal": "ProductCode"
+  },
+  {
+    "old_camel": "deleteStatus",
+    "new_camel": "deletedAt",
+    "old_pascal": "DeleteStatus",
+    "new_pascal": "DeletedAt"
+  },
+  {
+    "old_camel": "publishStatus",
+    "new_camel": "isPublished",
+    "old_pascal": "PublishStatus",
+    "new_pascal": "IsPublished"
+  },
+  {
+    "old_camel": "newStatus",
+    "new_camel": "isNewArrival",
+    "old_pascal": "NewStatus",
+    "new_pascal": "IsNewArrival"
+  },
+  {
+    "old_camel": "recommendStatus",
+    "new_camel": "isFeatured",
+    "old_pascal": "RecommendStatus",
+    "new_pascal": "IsFeatured"
+  },
+  {
+    "old_camel": "verifyStatus",
+    "new_camel": "approvalStatus",
+    "old_pascal": "VerifyStatus",
+    "new_pascal": "ApprovalStatus"
+  },
+  {
+    "old_camel": "sale",
+    "new_camel": "unitsSold",
+    "old_pascal": "Sale",
+    "new_pascal": "UnitsSold"
+  },
+  {
+    "old_camel": "keywords",
+    "new_camel": "searchKeywords",
+    "old_pascal": "Keywords",
+    "new_pascal": "SearchKeywords"
+  },
+  {
+    "old_camel": "price",
+    "new_camel": "listPrice",
+    "old_pascal": "Price",
+    "new_pascal": "ListPrice"
+  },
+  {
+    "old_camel": "promotionPrice",
+    "new_camel": "salePrice",
+    "old_pascal": "PromotionPrice",
+    "new_pascal": "SalePrice"
+  },
+  {
+    "old_camel": "stock",
+    "new_camel": "onHandQty",
+    "old_pascal": "Stock",
+    "new_pascal": "OnHandQty"
+  },
+  {
+    "old_camel": "lockStock",
+    "new_camel": "reservedQty",
+    "old_pascal": "LockStock",
+    "new_pascal": "ReservedQty"
+  },
+  {
+    "old_camel": "lowStock",
+    "new_camel": "lowStockThreshold",
+    "old_pascal": "LowStock",
+    "new_pascal": "LowStockThreshold"
+  },
+  {
+    "old_camel": "pic",
+    "new_camel": "imageUrl",
+    "old_pascal": "Pic",
+    "new_pascal": "ImageUrl"
+  },
+  {
+    "old_camel": "level",
+    "new_camel": "depth",
+    "old_pascal": "Level",
+    "new_pascal": "Depth"
+  },
+  {
+    "old_camel": "productUnit",
+    "new_camel": "unitOfMeasure",
+    "old_pascal": "ProductUnit",
+    "new_pascal": "UnitOfMeasure"
+  },
+  {
+    "old_camel": "navStatus",
+    "new_camel": "isInNavigation",
+    "old_pascal": "NavStatus",
+    "new_pascal": "IsInNavigation"
+  },
+  {
+    "old_camel": "sort",
+    "new_camel": "displayOrder",
+    "old_pascal": "Sort",
+    "new_pascal": "DisplayOrder"
+  },
+  {
+    "old_camel": "icon",
+    "new_camel": "iconUrl",
+    "old_pascal": "Icon",
+    "new_pascal": "IconUrl"
+  },
+  {
+    "old_camel": "selectType",
+    "new_camel": "selectionMode",
+    "old_pascal": "SelectType",
+    "new_pascal": "SelectionMode"
+  },
+  {
+    "old_camel": "inputType",
+    "new_camel": "inputMode",
+    "old_pascal": "InputType",
+    "new_pascal": "InputMode"
+  },
+  {
+    "old_camel": "inputList",
+    "new_camel": "allowedValues",
+    "old_pascal": "InputList",
+    "new_pascal": "AllowedValues"
+  },
+  {
+    "old_camel": "type",
+    "new_camel": "kind",
+    "old_pascal": "Type",
+    "new_pascal": "Kind"
+  },
+  {
+    "old_camel": "productAttributeId",
+    "new_camel": "attributeId",
+    "old_pascal": "ProductAttributeId",
+    "new_pascal": "AttributeId"
+  },
+  {
+    "old_camel": "mediaUrl",
+    "new_camel": "url",
+    "old_pascal": "MediaUrl",
+    "new_pascal": "Url"
+  },
+  {
+    "old_camel": "sortOrder",
+    "new_camel": "displayOrder",
+    "old_pascal": "SortOrder",
+    "new_pascal": "DisplayOrder"
+  },
+  {
+    "old_camel": "fullPrice",
+    "new_camel": "minSpendAmount",
+    "old_pascal": "FullPrice",
+    "new_pascal": "MinSpendAmount"
+  },
+  {
+    "old_camel": "reducePrice",
+    "new_camel": "discountAmount",
+    "old_pascal": "ReducePrice",
+    "new_pascal": "DiscountAmount"
+  },
+  {
+    "old_camel": "count",
+    "new_camel": "minQuantity",
+    "old_pascal": "Count",
+    "new_pascal": "MinQuantity"
+  },
+  {
+    "old_camel": "discount",
+    "new_camel": "discountRate",
+    "old_pascal": "Discount",
+    "new_pascal": "DiscountRate"
+  },
+  {
+    "old_camel": "price",
+    "new_camel": "tierUnitPrice",
+    "old_pascal": "Price",
+    "new_pascal": "TierUnitPrice"
+  },
+  {
+    "old_camel": "createTime",
+    "new_camel": "createdAt",
+    "old_pascal": "CreateTime",
+    "new_pascal": "CreatedAt"
+  },
+  {
+    "old_camel": "reviewerName",
+    "new_camel": "reviewerAdminId",
+    "old_pascal": "ReviewerName",
+    "new_pascal": "ReviewerAdminId"
+  },
+  {
+    "old_camel": "status",
+    "new_camel": "decision",
+    "old_pascal": "Status",
+    "new_pascal": "Decision"
+  },
+  {
+    "old_camel": "detail",
+    "new_camel": "comment",
+    "old_pascal": "Detail",
+    "new_pascal": "Comment"
+  },
+  {
+    "old_camel": "priceOld",
+    "new_camel": "oldListPrice",
+    "old_pascal": "PriceOld",
+    "new_pascal": "OldListPrice"
+  },
+  {
+    "old_camel": "priceNew",
+    "new_camel": "newListPrice",
+    "old_pascal": "PriceNew",
+    "new_pascal": "NewListPrice"
+  },
+  {
+    "old_camel": "salePriceOld",
+    "new_camel": "oldSalePrice",
+    "old_pascal": "SalePriceOld",
+    "new_pascal": "OldSalePrice"
+  },
+  {
+    "old_camel": "salePriceNew",
+    "new_camel": "newSalePrice",
+    "old_pascal": "SalePriceNew",
+    "new_pascal": "NewSalePrice"
+  },
+  {
+    "old_camel": "operateMan",
+    "new_camel": "changedByAdminId",
+    "old_pascal": "OperateMan",
+    "new_pascal": "ChangedByAdminId"
+  },
+  {
+    "old_camel": "createTime",
+    "new_camel": "changedAt",
+    "old_pascal": "CreateTime",
+    "new_pascal": "ChangedAt"
+  },
+  {
+    "old_camel": "parentId",
+    "new_camel": "parentReviewId",
+    "old_pascal": "ParentId",
+    "new_pascal": "ParentReviewId"
+  },
+  {
+    "old_camel": "content",
+    "new_camel": "body",
+    "old_pascal": "Content",
+    "new_pascal": "Body"
+  },
+  {
+    "old_camel": "likeCount",
+    "new_camel": "helpfulCount",
+    "old_pascal": "LikeCount",
+    "new_pascal": "HelpfulCount"
+  },
+  {
+    "old_camel": "dislikeCount",
+    "new_camel": "notHelpfulCount",
+    "old_pascal": "DislikeCount",
+    "new_pascal": "NotHelpfulCount"
+  },
+  {
+    "old_camel": "status",
+    "new_camel": "moderationStatus",
+    "old_pascal": "Status",
+    "new_pascal": "ModerationStatus"
+  },
+  {
+    "old_camel": "createdTime",
+    "new_camel": "createdAt",
+    "old_pascal": "CreatedTime",
+    "new_pascal": "CreatedAt"
+  },
+  {
+    "old_camel": "productSkuId",
+    "new_camel": "skuId",
+    "old_pascal": "ProductSkuId",
+    "new_pascal": "SkuId"
+  },
+  {
+    "old_camel": "price",
+    "new_camel": "unitPriceAtAdd",
+    "old_pascal": "Price",
+    "new_pascal": "UnitPriceAtAdd"
+  },
+  {
+    "old_camel": "createDate",
+    "new_camel": "createdAt",
+    "old_pascal": "CreateDate",
+    "new_pascal": "CreatedAt"
+  },
+  {
+    "old_camel": "modifyDate",
+    "new_camel": "updatedAt",
+    "old_pascal": "ModifyDate",
+    "new_pascal": "UpdatedAt"
+  },
+  {
+    "old_camel": "orderSn",
+    "new_camel": "orderNumber",
+    "old_pascal": "OrderSn",
+    "new_pascal": "OrderNumber"
+  },
+  {
+    "old_camel": "totalAmount",
+    "new_camel": "subtotalAmount",
+    "old_pascal": "TotalAmount",
+    "new_pascal": "SubtotalAmount"
+  },
+  {
+    "old_camel": "freightAmount",
+    "new_camel": "shippingAmount",
+    "old_pascal": "FreightAmount",
+    "new_pascal": "ShippingAmount"
+  },
+  {
+    "old_camel": "promotionAmount",
+    "new_camel": "promotionDiscountAmount",
+    "old_pascal": "PromotionAmount",
+    "new_pascal": "PromotionDiscountAmount"
+  },
+  {
+    "old_camel": "couponAmount",
+    "new_camel": "couponDiscountAmount",
+    "old_pascal": "CouponAmount",
+    "new_pascal": "CouponDiscountAmount"
+  },
+  {
+    "old_camel": "discountAmount",
+    "new_camel": "manualAdjustmentAmount",
+    "old_pascal": "DiscountAmount",
+    "new_pascal": "ManualAdjustmentAmount"
+  },
+  {
+    "old_camel": "payAmount",
+    "new_camel": "grandTotalAmount",
+    "old_pascal": "PayAmount",
+    "new_pascal": "GrandTotalAmount"
+  },
+  {
+    "old_camel": "payType",
+    "new_camel": "paymentMethod",
+    "old_pascal": "PayType",
+    "new_pascal": "PaymentMethod"
+  },
+  {
+    "old_camel": "deliveryCompany",
+    "new_camel": "carrierName",
+    "old_pascal": "DeliveryCompany",
+    "new_pascal": "CarrierName"
+  },
+  {
+    "old_camel": "deliverySn",
+    "new_camel": "trackingNumber",
+    "old_pascal": "DeliverySn",
+    "new_pascal": "TrackingNumber"
+  },
+  {
+    "old_camel": "receiverName",
+    "new_camel": "recipientName",
+    "old_pascal": "ReceiverName",
+    "new_pascal": "RecipientName"
+  },
+  {
+    "old_camel": "receiverPhone",
+    "new_camel": "recipientPhone",
+    "old_pascal": "ReceiverPhone",
+    "new_pascal": "RecipientPhone"
+  },
+  {
+    "old_camel": "receiverPostCode",
+    "new_camel": "shippingPostalCode",
+    "old_pascal": "ReceiverPostCode",
+    "new_pascal": "ShippingPostalCode"
+  },
+  {
+    "old_camel": "receiverDetailAddress",
+    "new_camel": "shippingAddressLine",
+    "old_pascal": "ReceiverDetailAddress",
+    "new_pascal": "ShippingAddressLine"
+  },
+  {
+    "old_camel": "note",
+    "new_camel": "customerNote",
+    "old_pascal": "Note",
+    "new_pascal": "CustomerNote"
+  },
+  {
+    "old_camel": "confirmStatus",
+    "new_camel": "isReceiptConfirmed",
+    "old_pascal": "ConfirmStatus",
+    "new_pascal": "IsReceiptConfirmed"
+  },
+  {
+    "old_camel": "paymentTime",
+    "new_camel": "paidAt",
+    "old_pascal": "PaymentTime",
+    "new_pascal": "PaidAt"
+  },
+  {
+    "old_camel": "deliveryTime",
+    "new_camel": "shippedAt",
+    "old_pascal": "DeliveryTime",
+    "new_pascal": "ShippedAt"
+  },
+  {
+    "old_camel": "receiveTime",
+    "new_camel": "deliveredAt",
+    "old_pascal": "ReceiveTime",
+    "new_pascal": "DeliveredAt"
+  },
+  {
+    "old_camel": "commentTime",
+    "new_camel": "reviewedAt",
+    "old_pascal": "CommentTime",
+    "new_pascal": "ReviewedAt"
+  },
+  {
+    "old_camel": "modifyTime",
+    "new_camel": "updatedAt",
+    "old_pascal": "ModifyTime",
+    "new_pascal": "UpdatedAt"
+  },
+  {
+    "old_camel": "productPic",
+    "new_camel": "productImageUrl",
+    "old_pascal": "ProductPic",
+    "new_pascal": "ProductImageUrl"
+  },
+  {
+    "old_camel": "productBrand",
+    "new_camel": "brandName",
+    "old_pascal": "ProductBrand",
+    "new_pascal": "BrandName"
+  },
+  {
+    "old_camel": "productAttr",
+    "new_camel": "skuAttributes",
+    "old_pascal": "ProductAttr",
+    "new_pascal": "SkuAttributes"
+  },
+  {
+    "old_camel": "productPrice",
+    "new_camel": "unitPrice",
+    "old_pascal": "ProductPrice",
+    "new_pascal": "UnitPrice"
+  },
+  {
+    "old_camel": "productQuantity",
+    "new_camel": "quantity",
+    "old_pascal": "ProductQuantity",
+    "new_pascal": "Quantity"
+  },
+  {
+    "old_camel": "realAmount",
+    "new_camel": "lineTotalAmount",
+    "old_pascal": "RealAmount",
+    "new_pascal": "LineTotalAmount"
+  },
+  {
+    "old_camel": "orderStatus",
+    "new_camel": "toStatus",
+    "old_pascal": "OrderStatus",
+    "new_pascal": "ToStatus"
+  },
+  {
+    "old_camel": "operateMan",
+    "new_camel": "actorRef",
+    "old_pascal": "OperateMan",
+    "new_pascal": "ActorRef"
+  },
+  {
+    "old_camel": "productId",
+    "new_camel": "orderLineId",
+    "old_pascal": "ProductId",
+    "new_pascal": "OrderLineId"
+  },
+  {
+    "old_camel": "companyAddressId",
+    "new_camel": "returnAddressId",
+    "old_pascal": "CompanyAddressId",
+    "new_pascal": "ReturnAddressId"
+  },
+  {
+    "old_camel": "productCount",
+    "new_camel": "quantity",
+    "old_pascal": "ProductCount",
+    "new_pascal": "Quantity"
+  },
+  {
+    "old_camel": "productRealPrice",
+    "new_camel": "unitRefundAmount",
+    "old_pascal": "ProductRealPrice",
+    "new_pascal": "UnitRefundAmount"
+  },
+  {
+    "old_camel": "returnAmount",
+    "new_camel": "refundAmount",
+    "old_pascal": "ReturnAmount",
+    "new_pascal": "RefundAmount"
+  },
+  {
+    "old_camel": "returnName",
+    "new_camel": "contactName",
+    "old_pascal": "ReturnName",
+    "new_pascal": "ContactName"
+  },
+  {
+    "old_camel": "returnPhone",
+    "new_camel": "contactPhone",
+    "old_pascal": "ReturnPhone",
+    "new_pascal": "ContactPhone"
+  },
+  {
+    "old_camel": "reason",
+    "new_camel": "reasonId",
+    "old_pascal": "Reason",
+    "new_pascal": "ReasonId"
+  },
+  {
+    "old_camel": "description",
+    "new_camel": "customerComment",
+    "old_pascal": "Description",
+    "new_pascal": "CustomerComment"
+  },
+  {
+    "old_camel": "proofPics",
+    "new_camel": "evidenceUrls",
+    "old_pascal": "ProofPics",
+    "new_pascal": "EvidenceUrls"
+  },
+  {
+    "old_camel": "handleTime",
+    "new_camel": "reviewedAt",
+    "old_pascal": "HandleTime",
+    "new_pascal": "ReviewedAt"
+  },
+  {
+    "old_camel": "handleMan",
+    "new_camel": "reviewedByAdminId",
+    "old_pascal": "HandleMan",
+    "new_pascal": "ReviewedByAdminId"
+  },
+  {
+    "old_camel": "handleNote",
+    "new_camel": "reviewNote",
+    "old_pascal": "HandleNote",
+    "new_pascal": "ReviewNote"
+  },
+  {
+    "old_camel": "receiveTime",
+    "new_camel": "receivedAt",
+    "old_pascal": "ReceiveTime",
+    "new_pascal": "ReceivedAt"
+  },
+  {
+    "old_camel": "receiveMan",
+    "new_camel": "receivedByAdminId",
+    "old_pascal": "ReceiveMan",
+    "new_pascal": "ReceivedByAdminId"
+  },
+  {
+    "old_camel": "receiveNote",
+    "new_camel": "receiptNote",
+    "old_pascal": "ReceiveNote",
+    "new_pascal": "ReceiptNote"
+  },
+  {
+    "old_camel": "name",
+    "new_camel": "label",
+    "old_pascal": "Name",
+    "new_pascal": "Label"
+  },
+  {
+    "old_camel": "status",
+    "new_camel": "isActive",
+    "old_pascal": "Status",
+    "new_pascal": "IsActive"
+  },
+  {
+    "old_camel": "addressName",
+    "new_camel": "label",
+    "old_pascal": "AddressName",
+    "new_pascal": "Label"
+  },
+  {
+    "old_camel": "sendStatus",
+    "new_camel": "isDefaultShipFrom",
+    "old_pascal": "SendStatus",
+    "new_pascal": "IsDefaultShipFrom"
+  },
+  {
+    "old_camel": "receiveStatus",
+    "new_camel": "isDefaultReturnTo",
+    "old_pascal": "ReceiveStatus",
+    "new_pascal": "IsDefaultReturnTo"
+  },
+  {
+    "old_camel": "name",
+    "new_camel": "contactName",
+    "old_pascal": "Name",
+    "new_pascal": "ContactName"
+  },
+  {
+    "old_camel": "phone",
+    "new_camel": "contactPhone",
+    "old_pascal": "Phone",
+    "new_pascal": "ContactPhone"
+  },
+  {
+    "old_camel": "detailAddress",
+    "new_camel": "addressLine",
+    "old_pascal": "DetailAddress",
+    "new_pascal": "AddressLine"
+  },
+  {
+    "old_camel": "flashOrderOvertime",
+    "new_camel": "flashPaymentTimeoutMin",
+    "old_pascal": "FlashOrderOvertime",
+    "new_pascal": "FlashPaymentTimeoutMin"
+  },
+  {
+    "old_camel": "normalOrderOvertime",
+    "new_camel": "paymentTimeoutMin",
+    "old_pascal": "NormalOrderOvertime",
+    "new_pascal": "PaymentTimeoutMin"
+  },
+  {
+    "old_camel": "confirmOvertime",
+    "new_camel": "autoConfirmReceiptDays",
+    "old_pascal": "ConfirmOvertime",
+    "new_pascal": "AutoConfirmReceiptDays"
+  },
+  {
+    "old_camel": "finishOvertime",
+    "new_camel": "autoCompleteDays",
+    "old_pascal": "FinishOvertime",
+    "new_pascal": "AutoCompleteDays"
+  },
+  {
+    "old_camel": "commentOvertime",
+    "new_camel": "reviewWindowDays",
+    "old_pascal": "CommentOvertime",
+    "new_pascal": "ReviewWindowDays"
+  },
+  {
+    "old_camel": "transactionId",
+    "new_camel": "providerTxnId",
+    "old_pascal": "TransactionId",
+    "new_pascal": "ProviderTxnId"
+  },
+  {
+    "old_camel": "transactionType",
+    "new_camel": "txnType",
+    "old_pascal": "TransactionType",
+    "new_pascal": "TxnType"
+  },
+  {
+    "old_camel": "webhookPayload",
+    "new_camel": "providerPayload",
+    "old_pascal": "WebhookPayload",
+    "new_pascal": "ProviderPayload"
+  },
+  {
+    "old_camel": "password",
+    "new_camel": "passwordHash",
+    "old_pascal": "Password",
+    "new_pascal": "PasswordHash"
+  },
+  {
+    "old_camel": "nickname",
+    "new_camel": "displayName",
+    "old_pascal": "Nickname",
+    "new_pascal": "DisplayName"
+  },
+  {
+    "old_camel": "phone",
+    "new_camel": "phoneE164",
+    "old_pascal": "Phone",
+    "new_pascal": "PhoneE164"
+  },
+  {
+    "old_camel": "status",
+    "new_camel": "accountStatus",
+    "old_pascal": "Status",
+    "new_pascal": "AccountStatus"
+  },
+  {
+    "old_camel": "icon",
+    "new_camel": "avatarUrl",
+    "old_pascal": "Icon",
+    "new_pascal": "AvatarUrl"
+  },
+  {
+    "old_camel": "birthday",
+    "new_camel": "birthDate",
+    "old_pascal": "Birthday",
+    "new_pascal": "BirthDate"
+  },
+  {
+    "old_camel": "personalizedSignature",
+    "new_camel": "bio",
+    "old_pascal": "PersonalizedSignature",
+    "new_pascal": "Bio"
+  },
+  {
+    "old_camel": "sourceType",
+    "new_camel": "signupChannel",
+    "old_pascal": "SourceType",
+    "new_pascal": "SignupChannel"
+  },
+  {
+    "old_camel": "points",
+    "new_camel": "pointsBalance",
+    "old_pascal": "Points",
+    "new_pascal": "PointsBalance"
+  },
+  {
+    "old_camel": "lifetimePoints",
+    "new_camel": "lifetimePointsEarned",
+    "old_pascal": "LifetimePoints",
+    "new_pascal": "LifetimePointsEarned"
+  },
+  {
+    "old_camel": "name",
+    "new_camel": "recipientName",
+    "old_pascal": "Name",
+    "new_pascal": "RecipientName"
+  },
+  {
+    "old_camel": "phoneNumber",
+    "new_camel": "recipientPhone",
+    "old_pascal": "PhoneNumber",
+    "new_pascal": "RecipientPhone"
+  },
+  {
+    "old_camel": "defaultStatus",
+    "new_camel": "isDefault",
+    "old_pascal": "DefaultStatus",
+    "new_pascal": "IsDefault"
+  },
+  {
+    "old_camel": "postCode",
+    "new_camel": "postalCode",
+    "old_pascal": "PostCode",
+    "new_pascal": "PostalCode"
+  },
+  {
+    "old_camel": "province",
+    "new_camel": "state",
+    "old_pascal": "Province",
+    "new_pascal": "State"
+  },
+  {
+    "old_camel": "region",
+    "new_camel": "district",
+    "old_pascal": "Region",
+    "new_pascal": "District"
+  },
+  {
+    "old_camel": "createTime",
+    "new_camel": "occurredAt",
+    "old_pascal": "CreateTime",
+    "new_pascal": "OccurredAt"
+  },
+  {
+    "old_camel": "ip",
+    "new_camel": "ipAddress",
+    "old_pascal": "Ip",
+    "new_pascal": "IpAddress"
+  },
+  {
+    "old_camel": "loginType",
+    "new_camel": "loginMethod",
+    "old_pascal": "LoginType",
+    "new_pascal": "LoginMethod"
+  },
+  {
+    "old_camel": "province",
+    "new_camel": "region",
+    "old_pascal": "Province",
+    "new_pascal": "Region"
+  },
+  {
+    "old_camel": "status",
+    "new_camel": "isEnabled",
+    "old_pascal": "Status",
+    "new_pascal": "IsEnabled"
+  },
+  {
+    "old_camel": "loginTime",
+    "new_camel": "lastLoginAt",
+    "old_pascal": "LoginTime",
+    "new_pascal": "LastLoginAt"
+  },
+  {
+    "old_camel": "adminId",
+    "new_camel": "adminUserId",
+    "old_pascal": "AdminId",
+    "new_pascal": "AdminUserId"
+  },
+  {
+    "old_camel": "address",
+    "new_camel": "geoLocation",
+    "old_pascal": "Address",
+    "new_pascal": "GeoLocation"
+  },
+  {
+    "old_camel": "url",
+    "new_camel": "urlPattern",
+    "old_pascal": "Url",
+    "new_pascal": "UrlPattern"
+  },
+  {
+    "old_camel": "categoryId",
+    "new_camel": "permissionGroupId",
+    "old_pascal": "CategoryId",
+    "new_pascal": "PermissionGroupId"
+  },
+  {
+    "old_camel": "name",
+    "new_camel": "routeName",
+    "old_pascal": "Name",
+    "new_pascal": "RouteName"
+  },
+  {
+    "old_camel": "hidden",
+    "new_camel": "isHidden",
+    "old_pascal": "Hidden",
+    "new_pascal": "IsHidden"
+  },
+  {
+    "old_camel": "Old",
+    "new_camel": "New PK",
+    "old_pascal": "Old",
+    "new_pascal": "New Pk"
+  },
+  {
+    "old_camel": "`users.umsAdminRoleRelation` (AdminId, RoleId)",
+    "new_camel": "(adminUserId, RoleId)",
+    "old_pascal": "`Users.UmsAdminRoleRelation` (AdminId, RoleId)",
+    "new_pascal": "(AdminUserId, RoleId)"
+  },
+  {
+    "old_camel": "`users.umsRoleMenuRelation` (RoleId, MenuId)",
+    "new_camel": "(roleId, MenuId)",
+    "old_pascal": "`Users.UmsRoleMenuRelation` (RoleId, MenuId)",
+    "new_pascal": "(RoleId, MenuId)"
+  },
+  {
+    "old_camel": "`users.umsRoleResourceRelation` (RoleId, ResourceId)",
+    "new_camel": "(roleId, PermissionId)",
+    "old_pascal": "`Users.UmsRoleResourceRelation` (RoleId, ResourceId)",
+    "new_pascal": "(RoleId, PermissionId)"
+  },
+  {
+    "old_camel": "type",
+    "new_camel": "discountType",
+    "old_pascal": "Type",
+    "new_pascal": "DiscountType"
+  },
+  {
+    "old_camel": "amount",
+    "new_camel": "discountValue",
+    "old_pascal": "Amount",
+    "new_pascal": "DiscountValue"
+  },
+  {
+    "old_camel": "minOrderAmount",
+    "new_camel": "minSpendAmount",
+    "old_pascal": "MinOrderAmount",
+    "new_pascal": "MinSpendAmount"
+  },
+  {
+    "old_camel": "count",
+    "new_camel": "remainingQuantity",
+    "old_pascal": "Count",
+    "new_pascal": "RemainingQuantity"
+  },
+  {
+    "old_camel": "receiveCount",
+    "new_camel": "claimedCount",
+    "old_pascal": "ReceiveCount",
+    "new_pascal": "ClaimedCount"
+  },
+  {
+    "old_camel": "perLimit",
+    "new_camel": "perMemberLimit",
+    "old_pascal": "PerLimit",
+    "new_pascal": "PerMemberLimit"
+  },
+  {
+    "old_camel": "useType",
+    "new_camel": "applicabilityScope",
+    "old_pascal": "UseType",
+    "new_pascal": "ApplicabilityScope"
+  },
+  {
+    "old_camel": "startTime",
+    "new_camel": "startsAt",
+    "old_pascal": "StartTime",
+    "new_pascal": "StartsAt"
+  },
+  {
+    "old_camel": "endTime",
+    "new_camel": "endsAt",
+    "old_pascal": "EndTime",
+    "new_pascal": "EndsAt"
+  },
+  {
+    "old_camel": "stackable",
+    "new_camel": "isStackable",
+    "old_pascal": "Stackable",
+    "new_pascal": "IsStackable"
+  },
+  {
+    "old_camel": "getType",
+    "new_camel": "acquisitionChannel",
+    "old_pascal": "GetType",
+    "new_pascal": "AcquisitionChannel"
+  },
+  {
+    "old_camel": "useStatus",
+    "new_camel": "status",
+    "old_pascal": "UseStatus",
+    "new_pascal": "Status"
+  },
+  {
+    "old_camel": "createTime",
+    "new_camel": "claimedAt",
+    "old_pascal": "CreateTime",
+    "new_pascal": "ClaimedAt"
+  },
+  {
+    "old_camel": "useTime",
+    "new_camel": "redeemedAt",
+    "old_pascal": "UseTime",
+    "new_pascal": "RedeemedAt"
+  },
+  {
+    "old_camel": "`marketing.smsCouponProductRelation` (CouponId, ProductId)",
+    "new_camel": "(couponId, ProductId)",
+    "old_pascal": "`Marketing.SmsCouponProductRelation` (CouponId, ProductId)",
+    "new_pascal": "(CouponId, ProductId)"
+  },
+  {
+    "old_camel": "`marketing.smsCouponProductCategoryRelation` (CouponId, ProductCategoryId)",
+    "new_camel": "(couponId, CategoryId)",
+    "old_pascal": "`Marketing.SmsCouponProductCategoryRelation` (CouponId, ProductCategoryId)",
+    "new_pascal": "(CouponId, CategoryId)"
+  },
+  {
+    "old_camel": "startDate",
+    "new_camel": "startsOn",
+    "old_pascal": "StartDate",
+    "new_pascal": "StartsOn"
+  },
+  {
+    "old_camel": "endDate",
+    "new_camel": "endsOn",
+    "old_pascal": "EndDate",
+    "new_pascal": "EndsOn"
+  },
+  {
+    "old_camel": "startTime",
+    "new_camel": "startsAtLocal",
+    "old_pascal": "StartTime",
+    "new_pascal": "StartsAtLocal"
+  },
+  {
+    "old_camel": "endTime",
+    "new_camel": "endsAtLocal",
+    "old_pascal": "EndTime",
+    "new_pascal": "EndsAtLocal"
+  },
+  {
+    "old_camel": "flashPromotionId",
+    "new_camel": "flashSaleId",
+    "old_pascal": "FlashPromotionId",
+    "new_pascal": "FlashSaleId"
+  },
+  {
+    "old_camel": "flashPromotionSessionId",
+    "new_camel": "slotId",
+    "old_pascal": "FlashPromotionSessionId",
+    "new_pascal": "SlotId"
+  },
+  {
+    "old_camel": "flashPromotionPrice",
+    "new_camel": "flashPrice",
+    "old_pascal": "FlashPromotionPrice",
+    "new_pascal": "FlashPrice"
+  },
+  {
+    "old_camel": "flashPromotionCount",
+    "new_camel": "quantityAvailable",
+    "old_pascal": "FlashPromotionCount",
+    "new_pascal": "QuantityAvailable"
+  },
+  {
+    "old_camel": "flashPromotionLimit",
+    "new_camel": "perMemberLimit",
+    "old_pascal": "FlashPromotionLimit",
+    "new_pascal": "PerMemberLimit"
+  },
+  {
+    "old_camel": "sessionId",
+    "new_camel": "slotId",
+    "old_pascal": "SessionId",
+    "new_pascal": "SlotId"
+  },
+  {
+    "old_camel": "name",
+    "new_camel": "title",
+    "old_pascal": "Name",
+    "new_pascal": "Title"
+  },
+  {
+    "old_camel": "type",
+    "new_camel": "placement",
+    "old_pascal": "Type",
+    "new_pascal": "Placement"
+  },
+  {
+    "old_camel": "url",
+    "new_camel": "targetUrl",
+    "old_pascal": "Url",
+    "new_pascal": "TargetUrl"
+  },
+  {
+    "old_camel": "note",
+    "new_camel": "internalNote",
+    "old_pascal": "Note",
+    "new_pascal": "InternalNote"
+  },
+  {
+    "old_camel": "sessionId",
+    "new_camel": "conversationId",
+    "old_pascal": "SessionId",
+    "new_pascal": "ConversationId"
+  },
+  {
+    "old_camel": "model",
+    "new_camel": "modelName",
+    "old_pascal": "Model",
+    "new_pascal": "ModelName"
+  },
+  {
+    "old_camel": "tokensUsed",
+    "new_camel": "tokenCount",
+    "old_pascal": "TokensUsed",
+    "new_pascal": "TokenCount"
+  },
+  {
+    "old_camel": "type",
+    "new_camel": "eventType",
+    "old_pascal": "Type",
+    "new_pascal": "EventType"
+  },
+  {
+    "old_camel": "retryCount",
+    "new_camel": "attemptCount",
+    "old_pascal": "RetryCount",
+    "new_pascal": "AttemptCount"
+  },
+  {
+    "old_camel": "Phase",
+    "new_camel": "Frontend impact",
+    "old_pascal": "Phase",
+    "new_pascal": "Frontend Impact"
+  },
+  {
+    "old_camel": "\u2705 **1. DB-only rename**",
+    "new_camel": "None",
+    "old_pascal": "\u2705 **1. Db-Only Rename**",
+    "new_pascal": "None"
+  },
+  {
+    "old_camel": "**2. Types and constraints**",
+    "new_camel": "None if converters keep the existing JSON values (e.g. `AttributeConverter<Integer, Boolean>`)",
+    "old_pascal": "**2. Types And Constraints**",
+    "new_pascal": "None If Converters Keep The Existing Json Values (E.G. `Attributeconverter<Integer, Boolean>`)"
+  },
+  {
+    "old_camel": "**3. Drops and denormalization fixes**",
+    "new_camel": "Needs DTOs on the backend; the API stays the same",
+    "old_pascal": "**3. Drops And Denormalization Fixes**",
+    "new_pascal": "Needs Dtos On The Backend; The Api Stays The Same"
+  },
+  {
+    "old_camel": "**4. (Optional) API naming**",
+    "new_camel": "Frontend changes required",
+    "old_pascal": "**4. (Optional) Api Naming**",
+    "new_pascal": "Frontend Changes Required"
+  }
+]

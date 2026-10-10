@@ -31,7 +31,7 @@ class AbstractNexusChatServiceTest {
 
     private static class TestNexusChatService extends AbstractNexusChatService {
         public TestNexusChatService(ChatClient.Builder chatClientBuilder) {
-            super(chatClientBuilder);
+            super(chatClientBuilder, null, null);
         }
 
         @Override

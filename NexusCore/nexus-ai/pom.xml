@@ -24,7 +24,7 @@
         </dependency>
         <dependency>
             <groupId>com.nexusengine.core</groupId>
-            <artifactId>nexus-data-jpa</artifactId>
+            <artifactId>nexus-domain</artifactId>
         </dependency>
         <!--Spring AI-->
         <dependency>
