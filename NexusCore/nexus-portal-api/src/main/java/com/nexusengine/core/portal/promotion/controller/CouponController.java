@@ -49,7 +49,7 @@ import java.util.List;
  * Represents the CouponController component.
  * Provides core functionality and operations for CouponController.
  */
-@RestController
+@RestController("portalCouponController")
 @Tag(name = "CouponController", description = "Ums member coupon controller APIs")
 @RequestMapping("/portal/member/coupon")
 @RequiredArgsConstructor

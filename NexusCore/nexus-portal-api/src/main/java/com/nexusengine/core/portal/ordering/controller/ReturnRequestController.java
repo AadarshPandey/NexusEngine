@@ -48,7 +48,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * Represents the ReturnRequestController component.
  * Provides core functionality and operations for ReturnRequestController.
  */
-@RestController
+@RestController("portalReturnRequestController")
 @Tag(name = "ReturnRequestController",description = "Oms portal order return apply controller APIs")
 @RequestMapping("/portal/returnApply")
 @RequiredArgsConstructor

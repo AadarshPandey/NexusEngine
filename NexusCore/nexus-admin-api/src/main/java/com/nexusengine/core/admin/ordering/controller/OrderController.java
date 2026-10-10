@@ -42,7 +42,7 @@ import java.util.List;
  * Represents the OrderController component.
  * Provides core functionality and operations for OrderController.
  */
-@RestController
+@RestController("adminOrderController")
 @Tag(name = "OrderController", description = "Oms order controller APIs")
 @RequestMapping("/order")
 @RequiredArgsConstructor

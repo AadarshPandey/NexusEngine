@@ -46,7 +46,7 @@ import java.util.List;
 /**
  * Portal brand management Service implementation
  */
-@Service
+@Service("portalBrandServiceImpl")
 @RequiredArgsConstructor
 public class BrandServiceImpl implements BrandService {
     private final HomeDao homeDao;

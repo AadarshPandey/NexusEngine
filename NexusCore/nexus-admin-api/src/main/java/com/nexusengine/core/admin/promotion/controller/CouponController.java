@@ -41,7 +41,7 @@ import java.util.List;
  * Represents the CouponController component.
  * Provides core functionality and operations for CouponController.
  */
-@RestController
+@RestController("adminCouponController")
 @Tag(name = "CouponController", description = "Sms coupon controller APIs")
 @RequestMapping("/coupon")
 @RequiredArgsConstructor

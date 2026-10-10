@@ -3,7 +3,7 @@ import { Box, Typography, Paper, Tabs, Tab, Table, TableBody, TableCell, TableCo
 import { useSelector } from 'react-redux';
 import { store } from '../store';
 import type { RootState } from '../store';
-import { fetchOrderList, submitReturnApply, getReturnReasons } from '../api/order';
+import { fetchOrderList, submitReturnApply, getReturnReasons, cancelUserOrder } from '../api/order';
 import type { OmsOrderDetail } from '../api/order';
 import { fetchMemberInfo, fetchAddressList, addAddress, updateProfile } from '../api/member';
 import type { UmsMember, UmsMemberReceiveAddress } from '../api/member';
@@ -364,6 +364,28 @@ const Profile: React.FC = () => {
                               }}
                             >
                               Pay Now
+                            </Button>
+                          )}
+                          {order.status === 0 && (
+                            <Button 
+                              variant="outlined" 
+                              size="small" 
+                              color="error"
+                              sx={{ ml: 1 }}
+                              onClick={async () => {
+                                if (window.confirm('Are you sure you want to cancel this order?')) {
+                                  try {
+                                    await cancelUserOrder(order.id);
+                                    alert('Order cancelled successfully.');
+                                    loadDashboardData();
+                                  } catch (e) {
+                                    alert('Failed to cancel order.');
+                                    console.error(e);
+                                  }
+                                }
+                              }}
+                            >
+                              Cancel Order
                             </Button>
                           )}
                           {[1, 2, 3, 5].includes(order.status) && !isOrderFullyRefunded && (

@@ -10,8 +10,8 @@ import java.util.List;
 
 public interface CustomerOrderRepository extends JpaRepository<CustomerOrder, Long>, JpaSpecificationExecutor<CustomerOrder> {
     CustomerOrder findByOrderSn(String orderSn);
-    Page<CustomerOrder> findByMemberIdAndDeleteStatusOrderByCreateTimeDesc(Long memberId, Integer deleteStatus, Pageable pageable);
-    Page<CustomerOrder> findByMemberIdAndStatusAndDeleteStatusOrderByCreateTimeDesc(Long memberId, Integer status, Integer deleteStatus, Pageable pageable);
-    List<CustomerOrder> findByIdAndStatusAndDeleteStatus(Long id, Integer status, Integer deleteStatus);
-    List<CustomerOrder> findByStatusAndDeleteStatusAndCreateTimeBefore(Integer status, Integer deleteStatus, java.time.LocalDateTime deadline);
+    Page<CustomerOrder> findByMemberIdAndDeleteStatusIsNullOrderByCreateTimeDesc(Long memberId, Pageable pageable);
+    Page<CustomerOrder> findByMemberIdAndStatusAndDeleteStatusIsNullOrderByCreateTimeDesc(Long memberId, Integer status, Pageable pageable);
+    List<CustomerOrder> findByIdAndStatusAndDeleteStatusIsNull(Long id, Integer status);
+    List<CustomerOrder> findByStatusAndDeleteStatusIsNullAndCreateTimeBefore(Integer status, java.time.LocalDateTime deadline);
 }

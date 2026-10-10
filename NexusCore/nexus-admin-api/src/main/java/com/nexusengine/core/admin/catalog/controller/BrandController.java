@@ -42,7 +42,7 @@ import java.util.List;
  * Represents the BrandController component.
  * Provides core functionality and operations for BrandController.
  */
-@RestController
+@RestController("adminBrandController")
 @Tag(name = "BrandController", description = "Pms brand controller APIs")
 @RequestMapping("/brand")
 @RequiredArgsConstructor

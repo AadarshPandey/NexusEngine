@@ -41,8 +41,11 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 public class JacksonConfig {
     @Bean
     @Primary
+    @ConditionalOnMissingBean
     public ObjectMapper jacksonObjectMapper() {
         ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new com.fasterxml.jackson.datatype.jsr310.JavaTimeModule());
+        objectMapper.disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         return objectMapper;
     }

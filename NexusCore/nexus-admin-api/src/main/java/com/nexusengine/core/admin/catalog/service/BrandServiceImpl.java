@@ -37,7 +37,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 
-@Service
+@Service("adminBrandServiceImpl")
 @RequiredArgsConstructor
 public class BrandServiceImpl implements BrandService {
     private final BrandRepository brandRepository;

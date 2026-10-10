@@ -76,7 +76,7 @@ import java.util.stream.Collectors;
 /**
  * Product management Service implementation
  */
-@Service
+@Service("adminProductServiceImpl")
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProductServiceImpl.class);

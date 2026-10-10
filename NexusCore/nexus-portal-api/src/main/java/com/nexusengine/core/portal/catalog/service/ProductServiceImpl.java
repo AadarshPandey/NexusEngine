@@ -82,7 +82,7 @@ import java.util.ArrayList;
 /**
  * Portal product management Service implementation
  */
-@Service
+@Service("portalProductServiceImpl")
 @RequiredArgsConstructor
 @org.springframework.transaction.annotation.Transactional(readOnly = true)
 public class ProductServiceImpl implements ProductService {

@@ -76,7 +76,7 @@ public class OrderDao {
         java.time.LocalDateTime deadline = java.time.LocalDateTime.now().minusMinutes(minutes);
         
         
-        List<CustomerOrder> orders = orderRepository.findByStatusAndDeleteStatusAndCreateTimeBefore(0, 0, deadline);
+        List<CustomerOrder> orders = orderRepository.findByStatusAndDeleteStatusIsNullAndCreateTimeBefore(0, deadline);
         List<OrderDetail> result = new ArrayList<>();
         for (CustomerOrder order : orders) {
             

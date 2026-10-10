@@ -47,7 +47,7 @@ import java.time.LocalDateTime;
 /**
  * Order return apply Service implementation
  */
-@Service
+@Service("portalReturnRequestServiceImpl")
 @RequiredArgsConstructor
 public class ReturnRequestServiceImpl implements ReturnRequestService {
     private final ReturnRequestRepository returnApplyRepository;

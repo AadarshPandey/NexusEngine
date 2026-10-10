@@ -42,7 +42,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service
+@Service("adminOrderServiceImpl")
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
     private final CustomerOrderRepository orderRepository;

@@ -176,3 +176,7 @@ export const createRazorpayOrder = (orderId: number) => {
 export const verifyRazorpayPayment = (orderId: number, razorpayPaymentId: string, razorpayOrderId: string, razorpaySignature: string) => {
   return request.post<unknown, { data: unknown }>(`/order/verifyRazorpayPayment?orderId=${orderId}&razorpayPaymentId=${razorpayPaymentId}&razorpayOrderId=${razorpayOrderId}&razorpaySignature=${razorpaySignature}`);
 };
+
+export const cancelUserOrder = (orderId: number) => {
+  return request.post<unknown, { data: unknown }>(`/order/cancelUserOrder?orderId=${orderId}`);
+};

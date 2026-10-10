@@ -35,7 +35,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 
-@Service
+@Service("adminReturnRequestServiceImpl")
 @RequiredArgsConstructor
 public class ReturnRequestServiceImpl implements ReturnRequestService {
     private final ReturnRequestRepository returnApplyRepository;

@@ -55,7 +55,7 @@ import java.util.Map;
  * Customer-facing order management controller.
  * Handles order creation, listing, cancellation, and Razorpay payment integration.
  */
-@RestController
+@RestController("portalOrderController")
 @Tag(name = "OrderController", description = "Oms portal order controller APIs")
 @RequestMapping("/portal/order")
 @Slf4j

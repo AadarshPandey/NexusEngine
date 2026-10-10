@@ -95,7 +95,7 @@ import java.util.stream.Collectors;
 /**
  * Portal order management Service implementation
  */
-@Service
+@Service("portalOrderServiceImpl")
 @Transactional
 @Slf4j
 @RequiredArgsConstructor
@@ -374,7 +374,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @org.springframework.transaction.annotation.Transactional
     public void cancelOrder(Long orderId) {
-        List<CustomerOrder> cancelOrderList = orderRepository.findByIdAndStatusAndDeleteStatus(orderId, 0, 0);
+        List<CustomerOrder> cancelOrderList = orderRepository.findByIdAndStatusAndDeleteStatusIsNull(orderId, 0);
         if (CollectionUtils.isEmpty(cancelOrderList)) return;
         CustomerOrder cancelOrder = cancelOrderList.get(0);
         
@@ -433,11 +433,11 @@ public class OrderServiceImpl implements OrderService {
         Member member = memberService.getCurrentMember();
         Page<CustomerOrder> orderPage;
         if (status == null || status == -1) {
-            orderPage = orderRepository.findByMemberIdAndDeleteStatusOrderByCreateTimeDesc(
-                    member.getId(), 0, PageRequest.of(pageNum - 1, pageSize));
+            orderPage = orderRepository.findByMemberIdAndDeleteStatusIsNullOrderByCreateTimeDesc(
+                    member.getId(), PageRequest.of(pageNum - 1, pageSize));
         } else {
-            orderPage = orderRepository.findByMemberIdAndStatusAndDeleteStatusOrderByCreateTimeDesc(
-                    member.getId(), status, 0, PageRequest.of(pageNum - 1, pageSize));
+            orderPage = orderRepository.findByMemberIdAndStatusAndDeleteStatusIsNullOrderByCreateTimeDesc(
+                    member.getId(), status, PageRequest.of(pageNum - 1, pageSize));
         }
         CommonPage<CustomerOrder> commonOrderPage = CommonPage.restPage(orderPage);
         CommonPage<OrderDetail> resultPage = new CommonPage<>();

@@ -51,7 +51,7 @@ import java.util.List;
  * Represents the ProductController component.
  * Provides core functionality and operations for ProductController.
  */
-@RestController
+@RestController("portalProductController")
 @Tag(name = "ProductController", description = "Pms portal product controller APIs")
 @RequestMapping("/portal/product")
 @RequiredArgsConstructor
