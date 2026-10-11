@@ -8,7 +8,6 @@ import com.nexusengine.core.domain.catalog.entity.Brand;
 import com.nexusengine.core.domain.catalog.entity.Product;
 import com.nexusengine.core.domain.catalog.repository.BrandRepository;
 import com.nexusengine.core.domain.catalog.repository.ProductRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;

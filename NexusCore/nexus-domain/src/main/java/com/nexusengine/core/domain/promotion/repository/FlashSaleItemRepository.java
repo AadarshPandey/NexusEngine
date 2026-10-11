@@ -10,8 +10,8 @@ import java.util.Optional;
 
 public interface FlashSaleItemRepository extends JpaRepository<FlashSaleItem, Long> {
     Page<FlashSaleItem> findByFlashPromotionIdAndFlashPromotionSessionId(Long flashPromotionId, Long flashPromotionSessionId, Pageable pageable);
-    
+
     List<FlashSaleItem> findByFlashPromotionIdAndFlashPromotionSessionId(Long flashPromotionId, Long flashPromotionSessionId);
-    
+
     Optional<FlashSaleItem> findByFlashPromotionIdAndFlashPromotionSessionIdAndProductId(Long flashPromotionId, Long flashPromotionSessionId, Long productId);
 }

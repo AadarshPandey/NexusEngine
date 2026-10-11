@@ -33,10 +33,10 @@ public class SecurityConfig {
     private final JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
     private final DynamicAuthorizationManager dynamicAuthorizationManager;
 
-    public SecurityConfig(IgnoreUrlsConfig ignoreUrlsConfig, 
-                          RestfulAccessDeniedHandler restfulAccessDeniedHandler, 
-                          RestAuthenticationEntryPoint restAuthenticationEntryPoint, 
-                          JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter, 
+    public SecurityConfig(IgnoreUrlsConfig ignoreUrlsConfig,
+                          RestfulAccessDeniedHandler restfulAccessDeniedHandler,
+                          RestAuthenticationEntryPoint restAuthenticationEntryPoint,
+                          JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter,
                           @Nullable DynamicAuthorizationManager dynamicAuthorizationManager) {
         this.ignoreUrlsConfig = ignoreUrlsConfig;
         this.restfulAccessDeniedHandler = restfulAccessDeniedHandler;
@@ -52,7 +52,7 @@ public class SecurityConfig {
                 registry.requestMatchers(url).permitAll();
             }
             registry.requestMatchers(HttpMethod.OPTIONS).permitAll();
-            
+
             registry.anyRequest().access(dynamicAuthorizationManager==null? AuthenticatedAuthorizationManager.authenticated():dynamicAuthorizationManager);
         })
         .csrf(AbstractHttpConfigurer::disable)

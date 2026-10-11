@@ -44,7 +44,7 @@ public class FlashSaleConcurrencyIntegrationTest {
 
     @Autowired
     private FlashSaleItemRepository flashRelationRepository;
-    
+
     @Autowired
     private CustomerOrderRepository orderRepository;
 
@@ -121,7 +121,7 @@ public class FlashSaleConcurrencyIntegrationTest {
 
         FlashSaleItem updatedRelation = flashRelationRepository.findById(relation.getId()).orElseThrow();
         assertThat(updatedRelation.getFlashPromotionCount()).isEqualTo(0);
-        
+
         long totalOrders = orderRepository.count();
         assertThat(totalOrders).isEqualTo(10);
     }

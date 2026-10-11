@@ -16,17 +16,17 @@ import java.io.Serializable;
 @Entity
 @Table(name = "product_embedding", schema = "ai")
 public class ProductEmbedding implements Serializable {
-    
+
         @Id
     @Column(name = "product_id")
-    
+
 private Long productId;
         @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "product_id", insertable = false, updatable = false)
-    
+
 private Product product;
-    
+
     @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.VECTOR)
     @Column(name = "embedding", columnDefinition = "vector")
     private float[] embedding;

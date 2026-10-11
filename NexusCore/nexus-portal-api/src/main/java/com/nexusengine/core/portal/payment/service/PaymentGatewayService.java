@@ -8,4 +8,5 @@ public interface PaymentGatewayService {
     Map<String, String> createOrder(int amount, String receipt);
     boolean verifySignature(String orderId, String paymentId, String signature);
     boolean verifyPaymentAmount(String paymentId, int expectedAmount);
+    boolean verifyWebhookSignature(String payload, String signature);
 }

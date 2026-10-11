@@ -1,6 +1,5 @@
 package com.nexusengine.core.admin.promotion.dto;
 
-import com.nexusengine.core.domain.catalog.entity.Product;
 
 
 
@@ -8,8 +7,6 @@ import com.nexusengine.core.domain.promotion.entity.Coupon;
 import com.nexusengine.core.domain.promotion.entity.CouponCategory;
 import com.nexusengine.core.domain.promotion.entity.CouponProduct;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Getter;
-import lombok.Setter;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 

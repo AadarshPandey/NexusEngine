@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import com.nexusengine.core.domain.messaging.repository.OutboxEventRepository;
 import com.nexusengine.core.domain.ordering.entity.OrderLine;
-import com.nexusengine.core.domain.catalog.entity.ProductSku;
 import com.nexusengine.core.domain.promotion.entity.MemberCoupon;
 import com.nexusengine.core.domain.ordering.repository.OrderLineRepository;
 import com.nexusengine.core.domain.messaging.entity.OutboxEvent;
@@ -28,19 +27,15 @@ import com.nexusengine.core.domain.customer.entity.Member;
 import com.nexusengine.core.domain.ordering.entity.ReturnRequest;
 import com.nexusengine.core.domain.ordering.entity.OrderPolicy;
 
-import cn.hutool.core.bean.BeanUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.JsonNode;
-import cn.hutool.core.collection.CollUtil;
 import com.nexusengine.core.common.api.CommonPage;
 import com.nexusengine.core.common.exception.Asserts;
 import com.nexusengine.core.common.service.RedisService;
 
 
-import com.nexusengine.core.portal.component.CancelOrderSender;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -50,7 +45,6 @@ import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 import com.nexusengine.core.portal.ordering.dto.CartPromotionItem;
@@ -123,27 +117,11 @@ public class OrderServiceImpl implements OrderService {
         }
         Member currentMember = memberService.getCurrentMember();
         List<CartPromotionItem> cartPromotionItemList = cartItemService.listPromotion(currentMember.getId(), orderParam.cartIds());
-        
-        // Fix 2: Sort by product ID to prevent deadlocks
+
+        // Sort by product ID to prevent deadlocks across database rows
         cartPromotionItemList.sort(Comparator.comparing(item -> item.cartItem().getProductId()));
 
-        // REDISSON DISTRIBUTED LOCK
-        List<org.redisson.api.RLock> productLocks = new ArrayList<>();
-        for (CartPromotionItem item : cartPromotionItemList) {
-            productLocks.add(redissonClient.getLock("lock:product:stock:" + item.cartItem().getProductId()));
-        }
-        org.redisson.api.RLock multiLock = redissonClient.getMultiLock(productLocks.toArray(new org.redisson.api.RLock[0]));
-        boolean isLocked = false;
-        try {
-            isLocked = multiLock.tryLock(10, 30, java.util.concurrent.TimeUnit.SECONDS);
-            if (!isLocked) {
-                Asserts.fail("High traffic, please try again later.");
-            }
-            
-            // Fix 1: Execute DB logic inside the lock using programmatic transaction
-            org.springframework.transaction.support.TransactionTemplate transactionTemplate = new org.springframework.transaction.support.TransactionTemplate(transactionManager);
-            return transactionTemplate.execute(status -> {
-                for (CartPromotionItem cartPromotionItem : cartPromotionItemList) {
+        for (CartPromotionItem cartPromotionItem : cartPromotionItemList) {
             OrderLine orderItem = new OrderLine();
             orderItem.setProductId(cartPromotionItem.cartItem().getProductId());
             orderItem.setProductName(cartPromotionItem.cartItem().getProductName());
@@ -159,15 +137,17 @@ public class OrderServiceImpl implements OrderService {
 
             orderItemList.add(orderItem);
         }
-            for (CartPromotionItem item : cartPromotionItemList) {
-                
-                if (item.cartItem().getProductSkuId() != null) {
-                    ProductSku skuStock = skuStockRepository.findById(item.cartItem().getProductSkuId()).orElse(null);
-                    if (skuStock == null || (skuStock.getOnHandQty() - (skuStock.getReservedQty() == null ? 0 : skuStock.getReservedQty())) < item.cartItem().getQuantity()) {
-                        Asserts.fail("Insufficient stock for SKU");
-                    }
+
+        // Atomic DB stock reservation (ADR 0001) - eliminates check-then-act race condition
+        for (CartPromotionItem item : cartPromotionItemList) {
+            if (item.cartItem().getProductSkuId() != null) {
+                int updated = skuStockRepository.reserveStock(item.cartItem().getProductSkuId(), item.cartItem().getQuantity());
+                if (updated == 0) {
+                    Asserts.fail("Insufficient stock for SKU: " + item.cartItem().getProductSkuId());
                 }
             }
+        }
+
         if (orderParam.couponId() == null) {
             for (OrderLine orderItem : orderItemList) {
                 orderItem.setCouponAmount(new BigDecimal(0));
@@ -191,12 +171,11 @@ public class OrderServiceImpl implements OrderService {
             } else {
                 for (OrderLine orderItem : orderItemList) {
                     BigDecimal perAmount = orderItem.getProductPrice().divide(totalAmount, 3, RoundingMode.HALF_EVEN).multiply(pointsAmount);
-                    
+
                 }
             }
         }
         handleRealAmount(orderItemList);
-        lockStock(cartPromotionItemList);
         CustomerOrder order = new CustomerOrder();
         order.setDiscountAmount(new BigDecimal(0));
         order.setTotalAmount(calcTotalAmount(orderItemList));
@@ -270,17 +249,32 @@ public class OrderServiceImpl implements OrderService {
         result.put("order", order);
         result.put("orderItemList", orderItemList);
         return result;
-        
-            });
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            Asserts.fail("Order creation interrupted");
-            return null;
-        } finally {
-            if (isLocked) {
-                multiLock.unlock();
+    }
+
+    @Override
+    @org.springframework.transaction.annotation.Transactional
+    public Integer paySuccess(Long orderId, Integer payType, String paymentId) {
+        if (paymentId != null && !paymentId.isBlank()) {
+            if (paymentTransactionRepository.findByTransactionId(paymentId).isPresent()) {
+                log.warn("Payment replay attempt detected for transaction: {}", paymentId);
+                Asserts.fail("Payment transaction already processed");
+            }
+            CustomerOrder order = orderRepository.findById(orderId).orElse(null);
+            PaymentTransaction tx = new PaymentTransaction();
+            tx.setTransactionId(paymentId);
+            tx.setOrderId(orderId);
+            tx.setTransactionType("PAYMENT");
+            tx.setStatus("SUCCESS");
+            tx.setCreateTime(java.time.OffsetDateTime.now());
+            tx.setAmount(order != null && order.getPayAmount() != null ? order.getPayAmount() : java.math.BigDecimal.ZERO);
+            try {
+                paymentTransactionRepository.saveAndFlush(tx);
+            } catch (org.springframework.dao.DataIntegrityViolationException e) {
+                log.warn("Duplicate payment replay prevented by DB constraint: {}", paymentId);
+                Asserts.fail("Payment transaction already processed");
             }
         }
+        return paySuccess(orderId, payType);
     }
 
     @Override
@@ -291,7 +285,7 @@ public class OrderServiceImpl implements OrderService {
             if (lock.tryLock(5, 10, java.util.concurrent.TimeUnit.SECONDS)) {
                 CustomerOrder order = orderRepository.findById(orderId).orElse(null);
                 if (order == null || order.getStatus() != 0) return 0; // Only pay if unpaid
-                
+
                 order.setStatus(1);
                 order.setPaymentTime(java.time.OffsetDateTime.now());
                 order.setPayType(payType);
@@ -331,7 +325,7 @@ public class OrderServiceImpl implements OrderService {
                 for (OrderDetail timeOutOrder : timeOutOrders) {
                     orderDao.releaseSkuStockLock(timeOutOrder.orderItemList());
                     updateCouponStatus(timeOutOrder.customerOrder().getCouponId(), timeOutOrder.customerOrder().getMemberId(), 0, null);
-                    
+
                 }
                 return timeOutOrders.size();
             }
@@ -351,7 +345,7 @@ public class OrderServiceImpl implements OrderService {
         List<CustomerOrder> cancelOrderList = orderRepository.findByIdAndStatusAndDeleteStatusIsNull(orderId, 0);
         if (CollectionUtils.isEmpty(cancelOrderList)) return;
         CustomerOrder cancelOrder = cancelOrderList.get(0);
-        
+
         Member currentMember = memberService.getCurrentMember();
         if (currentMember != null && !cancelOrder.getMemberId().equals(currentMember.getId())) {
             // Internal scheduled tasks might have no current member, but if one exists, it must match.
@@ -364,7 +358,7 @@ public class OrderServiceImpl implements OrderService {
             orderDao.releaseSkuStockLock(orderItemList);
         }
         updateCouponStatus(cancelOrder.getCouponId(), cancelOrder.getMemberId(), 0, null);
-        
+
     }
 
 
@@ -372,9 +366,14 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void sendDelayMessageCancelOrder(Long orderId) {
         OrderPolicy orderSetting = orderSettingRepository.findById(1L).orElse(null);
-        if (orderSetting == null) return;
-        
-        long delayTimes = orderSetting.getPaymentTimeoutMin() * 60 * 1000;
+        long timeoutMin = (orderSetting != null && orderSetting.getPaymentTimeoutMin() != null)
+                ? orderSetting.getPaymentTimeoutMin()
+                : 30L;
+        if (orderSetting == null) {
+            log.warn("Order policy record not found in database; using default {}-minute timeout for order {}", timeoutMin, orderId);
+        }
+
+        long delayTimes = timeoutMin * 60 * 1000;
         OutboxEvent event = new OutboxEvent();
         event.setAggregateType("Order");
         event.setAggregateId(String.valueOf(orderId));
@@ -382,7 +381,7 @@ public class OrderServiceImpl implements OrderService {
         event.setPayload(String.valueOf(delayTimes));
         event.setStatus("PENDING");
         event.setCreatedAt(java.time.OffsetDateTime.now());
-        
+
         outboxEventRepository.save(event);
     }
 
@@ -420,7 +419,7 @@ public class OrderServiceImpl implements OrderService {
         resultPage.setTotal(commonOrderPage.getTotal());
         resultPage.setTotalPage(commonOrderPage.getTotalPage());
         List<CustomerOrder> orderList = orderPage.getContent();
-        if (CollUtil.isEmpty(orderList)) {
+        if (orderList.isEmpty()) {
             resultPage.setList(new ArrayList<>());
             return resultPage;
         }
@@ -493,7 +492,7 @@ public class OrderServiceImpl implements OrderService {
     private Integer calcEarnedPoints(List<OrderLine> orderItemList) {
         int sum = 0;
         for (OrderLine orderItem : orderItemList) {
-            
+
         }
         return sum;
     }
@@ -545,7 +544,7 @@ public class OrderServiceImpl implements OrderService {
     private BigDecimal calcPointsAmount(List<OrderLine> orderItemList) {
         BigDecimal amount = new BigDecimal(0);
         for (OrderLine item : orderItemList) {
-            
+
         }
         return amount;
     }
@@ -583,11 +582,11 @@ public class OrderServiceImpl implements OrderService {
             eligibleItems = new ArrayList<>();
         }
 
-        CouponDiscountStrategy strategy = 
+        CouponDiscountStrategy strategy =
             CouponStrategyFactory.getStrategy(coupon.getType());
-        
+
         BigDecimal totalDiscount = strategy.calculateDiscount(eligibleItems, coupon);
-        
+
         if (totalDiscount.compareTo(BigDecimal.ZERO) > 0) {
             BigDecimal totalAmount = calcTotalAmount(eligibleItems);
             for (OrderLine orderItem : eligibleItems) {
@@ -632,18 +631,6 @@ public class OrderServiceImpl implements OrderService {
         return total;
     }
 
-    private void lockStock(List<CartPromotionItem> cartPromotionItemList) {
-        for (CartPromotionItem item : cartPromotionItemList) {
-            if (item.cartItem().getProductSkuId() != null) {
-                ProductSku skuStock = skuStockRepository.findById(item.cartItem().getProductSkuId()).orElse(null);
-                if (skuStock != null) {
-                    skuStock.setReservedQty(skuStock.getReservedQty() + item.cartItem().getQuantity());
-                    skuStockRepository.save(skuStock);
-                }
-            }
-            
-        }
-    }
 
     private boolean hasStock(List<CartPromotionItem> cartPromotionItemList) {
         for (CartPromotionItem item : cartPromotionItemList) {
@@ -696,32 +683,26 @@ public class OrderServiceImpl implements OrderService {
         try {
             JsonNode root = objectMapper.readTree(payload);
             String event = root.path("event").asText();
-            
+
             // Only handle payment.captured for now
             if (!"payment.captured".equals(event)) {
                 return;
             }
-            
+
             JsonNode paymentEntity = root.path("payload").path("payment").path("entity");
             String transactionId = paymentEntity.path("id").asText();
             String orderIdStr = paymentEntity.path("notes").path("order_id").asText();
-            
-            if (transactionId == null || transactionId.isEmpty()) return;
-            
-            // Idempotency check: Does this transaction already exist?
-            if (paymentTransactionRepository.findByTransactionId(transactionId).isPresent()) {
-                log.info("Idempotent Webhook: Transaction {} already processed. Ignoring.", transactionId);
-                return;
-            }
-            
+
             Long orderId = null;
-            try {
-                orderId = Long.parseLong(orderIdStr);
-            } catch (Exception e) {
-                log.warn("Could not parse order_id from webhook payload: {}", orderIdStr);
+            if (orderIdStr != null && !orderIdStr.isBlank()) {
+                try {
+                    orderId = Long.parseLong(orderIdStr);
+                } catch (NumberFormatException e) {
+                    log.warn("Could not parse order_id from webhook payload: {}", orderIdStr);
+                }
             }
-            
-            // 1. Record the transaction immediately to prevent concurrent duplicate processing
+
+            // 1. Record the transaction immediately with saveAndFlush; unique DB constraint prevents concurrent duplicates
             PaymentTransaction tx = new PaymentTransaction();
             tx.setTransactionId(transactionId);
             tx.setOrderId(orderId != null ? orderId : -1L);
@@ -730,21 +711,28 @@ public class OrderServiceImpl implements OrderService {
             tx.setStatus("SUCCESS");
             tx.setWebhookPayload(payload);
             tx.setCreateTime(java.time.OffsetDateTime.now());
-            paymentTransactionRepository.save(tx);
-            
-            // 2. Update the Order status
+            try {
+                paymentTransactionRepository.saveAndFlush(tx);
+            } catch (org.springframework.dao.DataIntegrityViolationException e) {
+                log.info("Idempotent Webhook: Transaction {} already processed. Skipping duplicate.", transactionId);
+                return;
+            }
+
+            // 2. Update the Order status and deduct inventory atomically
             if (orderId != null) {
                 CustomerOrder dbOrder = orderRepository.findById(orderId).orElse(null);
                 if (dbOrder != null && dbOrder.getStatus() == 0) { // 0 is unpaid
-
                     dbOrder.setStatus(1); // 1 is pending shipment
                     dbOrder.setPaymentTime(java.time.OffsetDateTime.now());
                     orderRepository.save(dbOrder);
-                    
-                    // The cancelOrder event should be removed from DLQ or ignored since status != 0
+
+                    OrderDetail orderDetail = orderDao.getDetail(orderId);
+                    if (orderDetail != null && !CollectionUtils.isEmpty(orderDetail.orderItemList())) {
+                        orderDao.updateSkuStock(orderDetail.orderItemList());
+                    }
                 }
             }
-            
+
         } catch (Exception e) {
             log.error("Error processing webhook payload", e);
             throw new RuntimeException("Webhook processing error", e);

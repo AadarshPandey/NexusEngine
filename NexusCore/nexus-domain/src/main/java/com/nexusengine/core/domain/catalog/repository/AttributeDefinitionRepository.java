@@ -9,6 +9,6 @@ import java.util.List;
 
 public interface AttributeDefinitionRepository extends JpaRepository<AttributeDefinition, Long> {
     Page<AttributeDefinition> findByProductAttributeCategoryIdAndType(Long productAttributeCategoryId, Integer type, Pageable pageable);
-    
+
     List<AttributeDefinition> findByProductAttributeCategoryId(Long productAttributeCategoryId);
 }

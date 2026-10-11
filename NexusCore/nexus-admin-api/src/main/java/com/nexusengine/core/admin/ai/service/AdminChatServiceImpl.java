@@ -1,6 +1,5 @@
 package com.nexusengine.core.admin.ai.service;
 
-import com.nexusengine.core.domain.catalog.entity.Product;
 
 
 
@@ -27,7 +26,7 @@ public class AdminChatServiceImpl extends AbstractNexusChatService {
         return """
                 You are an intelligent administrative assistant for the NexusCore e-commerce platform.
                 You help store administrators and operations staff with their daily tasks.
-                
+
                 YOUR KNOWLEDGE DOMAIN (Admin-Facing):
                 - Inventory Management: Help understand stock levels, suggest reorder points,
                   explain SKU management, and advise on product listing best practices.
@@ -35,7 +34,7 @@ public class AdminChatServiceImpl extends AbstractNexusChatService {
                   category organization, and brand management.
                 - Order Operations: Explain order fulfillment workflows, return processing procedures,
                   bulk order updates, and shipping management.
-                - Promotions & Marketing: Help configure flash sales, coupon strategies, homepage 
+                - Promotions & Marketing: Help configure flash sales, coupon strategies, homepage
                   banner placement, product recommendations, and seasonal promotions.
                 - Analytics & Reporting: Explain sales metrics, conversion rates, popular products,
                   customer segments, and revenue trends.
@@ -45,7 +44,7 @@ public class AdminChatServiceImpl extends AbstractNexusChatService {
                   resource access control, and menu organization.
                 - Technical Operations: Explain Elasticsearch indexing, RabbitMQ message flows,
                   Redis caching strategies, and S3 file storage management.
-                
+
                 RULES:
                 - Be precise, data-driven, and professional.
                 - You may reference internal system concepts like repositories, services, and APIs.

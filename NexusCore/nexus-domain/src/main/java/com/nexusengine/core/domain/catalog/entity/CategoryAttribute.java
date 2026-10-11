@@ -15,24 +15,24 @@ public class CategoryAttribute implements Serializable {
 
         @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    
+
 private Long id;
 
         @Column(name = "category_id")
-    
+
 private Long productCategoryId;
         @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "category_id", insertable = false, updatable = false)
-    
+
 private Category productCategory;
 
         @Column(name = "attribute_id")
-    
+
 private Long productAttributeId;
         @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "attribute_id", insertable = false, updatable = false)
-    
+
 private AttributeDefinition productAttribute;
 }

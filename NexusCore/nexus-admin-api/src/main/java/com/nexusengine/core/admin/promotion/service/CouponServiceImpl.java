@@ -6,17 +6,12 @@ import com.nexusengine.core.domain.promotion.entity.CouponProduct;
 import com.nexusengine.core.domain.promotion.entity.Coupon;
 import com.nexusengine.core.domain.promotion.entity.CouponCategory;
 
-import cn.hutool.core.util.StrUtil;
 import com.nexusengine.core.domain.promotion.repository.CouponRepository;
 import com.nexusengine.core.domain.promotion.repository.CouponCategoryRepository;
 import com.nexusengine.core.domain.promotion.repository.CouponProductRepository;
 
 
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.data.domain.PageRequest;
-import java.util.List;
 import com.nexusengine.core.admin.promotion.dto.CouponParam;
 
 

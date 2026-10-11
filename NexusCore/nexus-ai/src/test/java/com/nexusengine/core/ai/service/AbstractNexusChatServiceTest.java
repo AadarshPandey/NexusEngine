@@ -12,7 +12,6 @@ import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
 
 import java.util.Collections;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -26,7 +25,7 @@ class AbstractNexusChatServiceTest {
     private CallResponseSpec responseSpec;
     private VectorStore vectorStore;
     private ChatMemory chatMemory;
-    
+
     private TestNexusChatService service;
 
     private static class TestNexusChatService extends AbstractNexusChatService {
@@ -62,9 +61,10 @@ class AbstractNexusChatServiceTest {
         when(chatClientBuilder.defaultSystem(any(String.class))).thenReturn(chatClientBuilder);
         when(chatClientBuilder.defaultAdvisors(any(MessageChatMemoryAdvisor.class))).thenReturn(chatClientBuilder);
         when(chatClientBuilder.build()).thenReturn(chatClient);
-        
+
         when(chatClient.prompt()).thenReturn(requestSpec);
         when(requestSpec.user(any(String.class))).thenReturn(requestSpec);
+        when(requestSpec.advisors(any(java.util.function.Consumer.class))).thenReturn(requestSpec);
         when(requestSpec.call()).thenReturn(responseSpec);
         when(responseSpec.content()).thenReturn("AI response");
 
@@ -99,13 +99,13 @@ class AbstractNexusChatServiceTest {
         when(vectorStore.similaritySearch(any(SearchRequest.class))).thenReturn(Collections.singletonList(doc));
 
         String response = service.askWithContext("Hello", "session-123");
-        
+
         assertEquals("AI response", response);
-        
+
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        verify(requestSpec, times(2)).user(captor.capture());
+        verify(requestSpec).user(captor.capture());
         String finalQuestion = captor.getValue();
-        
+
         assertEquals("Hello\n\nContext Information:\nContext text", finalQuestion);
     }
 }

@@ -3,7 +3,6 @@ package com.nexusengine.core.admin.infra.dto;
 import lombok.Builder;
 
 
-import lombok.EqualsAndHashCode;
 import java.util.List;
 
 
@@ -20,7 +19,7 @@ public record BucketPolicyConfigDto(
         @Builder(toBuilder=true)
         public Statement {}
     }
-    
+
     @Builder(toBuilder=true)
     public BucketPolicyConfigDto {}
 }

@@ -6,8 +6,6 @@ import com.nexusengine.core.domain.ordering.entity.CustomerOrder;
 import com.nexusengine.core.domain.ordering.entity.OrderLine;
 import com.nexusengine.core.domain.ordering.entity.OrderStatusHistory;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Getter;
-import lombok.Setter;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 

@@ -150,6 +150,12 @@ spring:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
+
+razorpay:
+  keyId: ${RAZORPAY_KEY_ID:rzp_test_placeholder}
+  keySecret: ${RAZORPAY_KEY_SECRET:placeholder_secret}
+  webhookSecret: ${RAZORPAY_WEBHOOK_SECRET:placeholder_webhook_secret}
+
 springdoc:
   api-docs:
     enabled: true

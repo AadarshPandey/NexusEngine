@@ -2,16 +2,12 @@ package com.nexusengine.core.admin.iam.service;
 
 import lombok.RequiredArgsConstructor;
 
-import cn.hutool.core.util.StrUtil;
-
-
+import org.springframework.util.StringUtils;
 import com.nexusengine.core.domain.iam.repository.PermissionRepository;
 import com.nexusengine.core.domain.iam.entity.Permission;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -56,10 +52,10 @@ public class PermissionServiceImpl implements PermissionService {
             if (categoryId != null) {
                 predicates.add(cb.equal(root.get("categoryId"), categoryId));
             }
-            if (StrUtil.isNotEmpty(nameKeyword)) {
+            if (StringUtils.hasText(nameKeyword)) {
                 predicates.add(cb.like(root.get("name"), "%" + nameKeyword + "%"));
             }
-            if (StrUtil.isNotEmpty(urlKeyword)) {
+            if (StringUtils.hasText(urlKeyword)) {
                 predicates.add(cb.like(root.get("url"), "%" + urlKeyword + "%"));
             }
             return cb.and(predicates.toArray(new jakarta.persistence.criteria.Predicate[0]));

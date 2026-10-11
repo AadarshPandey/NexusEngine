@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -46,7 +45,7 @@ public class OutboxEventIntegrationTest {
         event.setStatus("PENDING");
         event.setRetryCount(0);
         event.setCreatedAt(OffsetDateTime.now());
-        
+
         event = outboxEventRepository.save(event);
         Long eventId = event.getId();
 

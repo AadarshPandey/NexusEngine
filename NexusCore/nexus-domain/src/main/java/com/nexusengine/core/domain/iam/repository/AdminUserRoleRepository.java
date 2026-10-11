@@ -1,6 +1,5 @@
 package com.nexusengine.core.domain.iam.repository;
 
-import com.nexusengine.core.domain.iam.entity.RolePermission;
 
 import com.nexusengine.core.domain.iam.entity.AdminUserRole;
 import com.nexusengine.core.domain.iam.entity.Permission;
@@ -13,7 +12,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface AdminUserRoleRepository extends JpaRepository<AdminUserRole, Long>, JpaSpecificationExecutor<AdminUserRole> {
-    
+
     void deleteByAdminId(Long adminId);
 
     List<AdminUserRole> findByRoleId(Long roleId);

@@ -9,7 +9,6 @@ import com.nexusengine.core.domain.catalog.repository.AttributeDefinitionReposit
 
 import com.nexusengine.core.domain.catalog.repository.ProductTypeRepository;
 import com.nexusengine.core.domain.catalog.entity.ProductType;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -57,14 +56,14 @@ public class ProductTypeServiceImpl implements ProductTypeService {
 
     @Override
     public List<ProductTypeWithAttributes> getListWithAttr() {
-        
+
         List<ProductType> allCategories = productAttributeCategoryRepository.findAll();
         List<ProductTypeWithAttributes> result = new ArrayList<>();
-        
+
         for (ProductType category : allCategories) {
             // fetch attributes
             List<AttributeDefinition> attrs = productAttributeRepository.findByProductAttributeCategoryId(category.getId());
-            
+
             ProductTypeWithAttributes item = new ProductTypeWithAttributes(category, attrs);
             result.add(item);
         }

@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import com.nexusengine.core.domain.ordering.repository.CustomerOrderRepository;
 
-import com.nexusengine.core.domain.ordering.entity.CustomerOrder;
 import com.nexusengine.core.domain.customer.entity.Member;
 
 import org.springframework.web.bind.annotation.RestController;
@@ -17,7 +16,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -112,10 +110,10 @@ public class OrderController {
         try {
             OrderDetail orderDetail = portalOrderService.detail(orderId);
             if (orderDetail == null) return CommonResult.failed("Order not found");
-            
+
             int amount = orderDetail.customerOrder().getPayAmount().multiply(new java.math.BigDecimal("100")).intValue();
             Map<String, String> result = paymentGatewayService.createOrder(amount, orderDetail.customerOrder().getOrderSn());
-            
+
             return CommonResult.success(result);
         } catch (RuntimeException e) {
             log.error("Failed to create Razorpay order", e);
@@ -132,7 +130,7 @@ public class OrderController {
     @Operation(summary = "Verify Razorpay Payment")
     @PostMapping("/verifyRazorpayPayment")
 
-    public CommonResult verifyRazorpayPayment(@RequestParam("orderId") Long orderId, 
+    public CommonResult verifyRazorpayPayment(@RequestParam("orderId") Long orderId,
                                               @RequestParam("razorpayPaymentId") String razorpayPaymentId,
                                               @RequestParam("razorpayOrderId") String razorpayOrderId,
                                               @RequestParam("razorpaySignature") String razorpaySignature) {
@@ -147,46 +145,49 @@ public class OrderController {
             if (orderDetail.customerOrder().getStatus() != 0) {
                  return CommonResult.failed("Order already paid or closed");
             }
-            
-            
+
+
             boolean isValid = paymentGatewayService.verifySignature(razorpayOrderId, razorpayPaymentId, razorpaySignature);
             if (!isValid) return CommonResult.failed("Invalid signature");
-            
+
             int expectedAmount = orderDetail.customerOrder().getPayAmount().multiply(new java.math.BigDecimal("100")).intValue();
             boolean isAmountValid = paymentGatewayService.verifyPaymentAmount(razorpayPaymentId, expectedAmount);
             if (!isAmountValid) return CommonResult.failed("Payment amount does not match order amount");
-            
-            // Store paymentId to prevent replay
-            CustomerOrder dbOrder = customerOrderRepository.findById(orderId).orElse(null);
-            if (dbOrder != null) {
-                customerOrderRepository.save(dbOrder);
+
+            Integer payResult = portalOrderService.paySuccess(orderId, 2, razorpayPaymentId);
+            if (payResult == null || payResult <= 0) {
+                return CommonResult.failed("Payment processing failed or already paid");
             }
-            
-            portalOrderService.paySuccess(orderId, 2);
             return CommonResult.success("Payment successful");
         } catch (org.springframework.dao.DataAccessException e) {
             log.error("Database error during payment verification", e);
             return CommonResult.failed("Payment verification failed due to database error");
         } catch (RuntimeException e) {
             log.error("Payment verification failed", e);
-            return CommonResult.failed("Payment verification failed");
+            return CommonResult.failed("Payment verification failed: " + e.getMessage());
         }
     }
 
     @Operation(summary = "Razorpay Webhook Endpoint")
     @PostMapping("/webhook")
-    public CommonResult handlePaymentWebhook(
+    public org.springframework.http.ResponseEntity<String> handlePaymentWebhook(
             @RequestHeader(value = "X-Razorpay-Signature", required = false) String signature,
             @RequestBody String payload) {
+        if (signature == null || signature.isBlank()) {
+            log.warn("Rejected Razorpay webhook missing signature header");
+            return org.springframework.http.ResponseEntity.status(org.springframework.http.HttpStatus.UNAUTHORIZED).body("Missing X-Razorpay-Signature header");
+        }
+        if (!paymentGatewayService.verifyWebhookSignature(payload, signature)) {
+            log.warn("Rejected Razorpay webhook with invalid signature");
+            return org.springframework.http.ResponseEntity.status(org.springframework.http.HttpStatus.UNAUTHORIZED).body("Invalid webhook signature");
+        }
         try {
-            log.info("Received Razorpay Webhook: {}", payload);
+            log.info("Processing verified Razorpay Webhook");
             portalOrderService.handlePaymentWebhook(payload, signature);
-            return CommonResult.success("Webhook processed successfully");
+            return org.springframework.http.ResponseEntity.ok("Webhook processed successfully");
         } catch (Exception e) {
-            log.error("Webhook processing failed", e);
-            // Return 200 even on failure so Razorpay doesn't blindly retry badly formed requests, 
-            // or 500 if we want retries. We will return failed but HTTP 200.
-            return CommonResult.failed(e.getMessage());
+            log.error("Verified webhook processing failed", e);
+            return org.springframework.http.ResponseEntity.status(org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR).body("Webhook processing failed");
         }
     }
 

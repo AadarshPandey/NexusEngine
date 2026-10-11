@@ -9,13 +9,10 @@ import com.nexusengine.core.domain.ai.repository.ProductEmbeddingRepository;
 import com.nexusengine.core.domain.catalog.repository.ProductRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.embedding.EmbeddingModel;
-import org.springframework.ai.embedding.EmbeddingResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.PageRequest;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,21 +37,21 @@ public class SemanticSearchServiceImpl implements SemanticSearchService {
 
         List<Product> products = productRepository.findAll(PageRequest.of(0, 1000)).getContent();
         int count = 0;
-        
+
         // Batch processing to avoid rate limits
         int batchSize = 100;
         for (int i = 0; i < products.size(); i += batchSize) {
             int end = Math.min(products.size(), i + batchSize);
             List<Product> batch = products.subList(i, end);
-            
+
             List<String> contents = batch.stream()
                 .map(this::buildProductContent)
                 .collect(Collectors.toList());
-                
+
             List<float[]> vectors = contents.stream()
                 .map(content -> embeddingModel.embed(content))
                 .collect(Collectors.toList());
-                
+
             List<ProductEmbedding> embeddingsToSave = new ArrayList<>();
             for (int j = 0; j < batch.size(); j++) {
                 float[] vector = vectors.get(j);
@@ -67,7 +64,7 @@ public class SemanticSearchServiceImpl implements SemanticSearchService {
                 }
             }
             productEmbeddingRepository.saveAll(embeddingsToSave);
-            
+
             // Sleep to avoid rate limits
             try {
                 java.util.concurrent.TimeUnit.MILLISECONDS.sleep(1000);

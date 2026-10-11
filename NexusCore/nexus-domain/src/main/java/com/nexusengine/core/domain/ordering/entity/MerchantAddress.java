@@ -1,6 +1,5 @@
 package com.nexusengine.core.domain.ordering.entity;
 
-import com.nexusengine.core.domain.shared.converter.IntegerToBooleanConverter;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
@@ -18,12 +17,12 @@ public class MerchantAddress implements Serializable {
 
         @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    
+
 private Long id;
 
         @Column(name = "label")
     @Schema(title = "Address name")
-    
+
 private String addressName;
 
         @Column(name = "is_default_ship_from")
@@ -45,15 +44,15 @@ private String name;
 private String phone;
 
         @Schema(title = "State")
-    
+
 private String state;
 
         @Schema(title = "City")
-    
+
 private String city;
 
         @Column(name = "address_line")
     @Schema(title = "Detail address")
-    
+
 private String detailAddress;
 }

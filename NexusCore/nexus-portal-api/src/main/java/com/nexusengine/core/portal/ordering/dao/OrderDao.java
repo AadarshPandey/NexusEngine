@@ -6,20 +6,15 @@ import com.nexusengine.core.domain.ordering.repository.ReturnRequestRepository;
 
 import com.nexusengine.core.domain.ordering.entity.CustomerOrder;
 import com.nexusengine.core.domain.ordering.entity.OrderLine;
-import com.nexusengine.core.domain.catalog.entity.ProductSku;
 import com.nexusengine.core.domain.catalog.entity.Product;
 import com.nexusengine.core.domain.ordering.repository.OrderLineRepository;
 import com.nexusengine.core.domain.ordering.repository.CustomerOrderRepository;
 import com.nexusengine.core.domain.catalog.repository.ProductSkuRepository;
 import com.nexusengine.core.domain.catalog.repository.ProductRepository;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.time.LocalDateTime;
 import java.util.List;
 import com.nexusengine.core.portal.ordering.dto.OrderDetail;
 
@@ -40,7 +35,7 @@ public class OrderDao {
     public OrderDetail getDetail(Long orderId) {
         CustomerOrder order = orderRepository.findById(orderId).orElse(null);
         if (order == null) return null;
-        
+
         List<OrderLine> orderItemList = orderItemRepository.findByOrderId(orderId);
         List<ReturnRequest> applyList = returnApplyRepository.findByOrderIdIn(java.util.Collections.singletonList(orderId));
         return new OrderDetail(order, orderItemList, applyList);
@@ -48,12 +43,12 @@ public class OrderDao {
 
     public List<OrderDetail> getTimeOutOrders(Integer minutes) {
         java.time.LocalDateTime deadline = java.time.LocalDateTime.now().minusMinutes(minutes);
-        
-        
+
+
         List<CustomerOrder> orders = orderRepository.findByStatusAndDeleteStatusIsNullAndCreateTimeBefore(0, deadline);
         List<OrderDetail> result = new ArrayList<>();
         for (CustomerOrder order : orders) {
-            
+
             List<OrderLine> orderItemList = orderItemRepository.findByOrderId(order.getId());
             List<ReturnRequest> applyList = returnApplyRepository.findByOrderIdIn(java.util.Collections.singletonList(order.getId()));
             result.add(new OrderDetail(order, orderItemList, applyList));
@@ -75,12 +70,7 @@ public class OrderDao {
         int count = 0;
         for (OrderLine item : orderItemList) {
             if (item.getProductSkuId() != null) {
-                ProductSku skuStock = skuStockRepository.findById(item.getProductSkuId()).orElse(null);
-                if (skuStock != null) {
-                    skuStock.setOnHandQty(skuStock.getOnHandQty() - item.getProductQuantity());
-                    skuStock.setReservedQty(Math.max(0, skuStock.getReservedQty() - item.getProductQuantity()));
-                    skuStockRepository.save(skuStock);
-                }
+                skuStockRepository.deductStockOnPayment(item.getProductSkuId(), item.getProductQuantity());
             }
             Product product = productRepository.findById(item.getProductId()).orElse(null);
             if (product != null) {
@@ -95,13 +85,8 @@ public class OrderDao {
     public void releaseSkuStockLock(List<OrderLine> orderItemList) {
         for (OrderLine item : orderItemList) {
             if (item.getProductSkuId() != null) {
-                ProductSku skuStock = skuStockRepository.findById(item.getProductSkuId()).orElse(null);
-                if (skuStock != null) {
-                    skuStock.setReservedQty(Math.max(0, skuStock.getReservedQty() - item.getProductQuantity()));
-                    skuStockRepository.save(skuStock);
-                }
+                skuStockRepository.releaseReservedStock(item.getProductSkuId(), item.getProductQuantity());
             }
-            
         }
     }
 }

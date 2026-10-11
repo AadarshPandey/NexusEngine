@@ -8,10 +8,7 @@ import com.nexusengine.core.domain.catalog.entity.ProductSku;
 import com.nexusengine.core.domain.promotion.entity.Coupon;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import com.nexusengine.core.portal.customer.dto.MemberDetails;
@@ -31,7 +28,7 @@ public final class TestFixtures {
 
     public static void setAuthenticatedMember(Member member) {
         MemberDetails memberDetails = new MemberDetails(member);
-        UsernamePasswordAuthenticationToken authentication = 
+        UsernamePasswordAuthenticationToken authentication =
             new UsernamePasswordAuthenticationToken(memberDetails, null, memberDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
@@ -78,7 +75,7 @@ public final class TestFixtures {
         CustomerOrder order = new CustomerOrder();
         order.setId(1000L);
         order.setMemberId(memberId);
-        
+
         order.setTotalAmount(new BigDecimal("500.00"));
         order.setPayAmount(new BigDecimal("500.00"));
         order.setStatus(0);

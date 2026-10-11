@@ -43,7 +43,7 @@ public class ChatbotController {
         }
         return CommonResult.success(new ChatResponse(request.question(), answer, request.sessionId()));
     }
-    
+
     @Operation(summary = "Get conversation history by session ID")
     @GetMapping("/history")
     public CommonResult<List<ChatMessage>> getHistory(@RequestParam("slotId") String sessionId) {

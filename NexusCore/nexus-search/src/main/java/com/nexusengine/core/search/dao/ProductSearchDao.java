@@ -1,7 +1,5 @@
 package com.nexusengine.core.search.dao;
 
-import com.nexusengine.core.domain.catalog.entity.Category;
-import com.nexusengine.core.domain.catalog.repository.CategoryRepository;
 
 import com.nexusengine.core.domain.catalog.entity.Product;
 import com.nexusengine.core.domain.catalog.entity.ProductAttributeValue;
@@ -62,7 +60,7 @@ public class ProductSearchDao {
             esProduct.setProductCategoryId(product.getProductCategoryId());
             esProduct.setPic(product.getPrimaryImageUrl());
             esProduct.setName(product.getName());
-            
+
             String keywords = product.getKeywords() != null ? product.getKeywords() : "";
             try {
                 if (product.getProductCategoryId() != null) {
@@ -79,7 +77,7 @@ public class ProductSearchDao {
                 }
             } catch (Exception e) {}
             esProduct.setKeywords(keywords.trim());
-            
+
             List<com.nexusengine.core.domain.catalog.entity.ProductSku> skus = skuRepository.findByProductId(product.getId());
             BigDecimal price = skus.stream()
                 .map(com.nexusengine.core.domain.catalog.entity.ProductSku::getListPrice)

@@ -1,6 +1,5 @@
 package com.nexusengine.core.search.component;
 
-import com.nexusengine.core.domain.catalog.entity.Product;
 
 import com.nexusengine.core.search.service.ProductSearchService;
 import org.slf4j.Logger;

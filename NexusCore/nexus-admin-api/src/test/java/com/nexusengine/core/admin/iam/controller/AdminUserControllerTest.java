@@ -1,7 +1,6 @@
 package com.nexusengine.core.admin.iam.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nexusengine.core.common.api.CommonResult;
 import com.nexusengine.core.admin.iam.dto.AdminLoginParam;
 import com.nexusengine.core.admin.iam.dto.AdminUserParam;
 import com.nexusengine.core.domain.iam.entity.AdminUser;
@@ -21,10 +20,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.security.Principal;
 import java.util.Collections;
-import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -74,8 +71,8 @@ class AdminUserControllerTest {
     @Test
     void login() throws Exception {
         AdminLoginParam param = new AdminLoginParam("testuser", "password");
-        
-        
+
+
 
         when(adminService.login("testuser", "password")).thenReturn("dummy-token");
 
@@ -93,7 +90,7 @@ class AdminUserControllerTest {
         AdminUser admin = new AdminUser();
         admin.setId(1L);
         admin.setUsername("admin");
-        
+
         Role role = new Role();
         role.setName("ROLE_ADMIN");
 

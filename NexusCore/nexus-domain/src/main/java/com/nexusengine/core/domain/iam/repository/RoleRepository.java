@@ -1,8 +1,5 @@
 package com.nexusengine.core.domain.iam.repository;
 
-import com.nexusengine.core.domain.iam.entity.RolePermission;
-import com.nexusengine.core.domain.iam.entity.RoleMenu;
-import com.nexusengine.core.domain.iam.entity.AdminUserRole;
 
 import com.nexusengine.core.domain.iam.entity.ConsoleMenu;
 import com.nexusengine.core.domain.iam.entity.Permission;
@@ -15,7 +12,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface RoleRepository extends JpaRepository<Role, Long>, JpaSpecificationExecutor<Role> {
-    
+
     @Query("SELECT m FROM ConsoleMenu m INNER JOIN RoleMenu rmr ON m.id = rmr.menuId INNER JOIN AdminUserRole arr ON rmr.roleId = arr.roleId WHERE arr.adminId = :adminId GROUP BY m.id")
     List<ConsoleMenu> getMenuList(@Param("adminId") Long adminId);
 

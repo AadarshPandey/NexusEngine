@@ -5,7 +5,6 @@ import com.nexusengine.core.domain.promotion.entity.Coupon;
 import com.nexusengine.core.admin.promotion.dto.CouponParam;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 
 
 /**

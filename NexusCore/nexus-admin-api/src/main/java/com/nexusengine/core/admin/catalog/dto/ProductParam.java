@@ -9,8 +9,6 @@ import com.nexusengine.core.domain.catalog.entity.Product;
 
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 

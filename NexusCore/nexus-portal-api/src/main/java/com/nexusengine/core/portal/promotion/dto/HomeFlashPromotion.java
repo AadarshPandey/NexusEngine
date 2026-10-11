@@ -1,11 +1,8 @@
 package com.nexusengine.core.portal.promotion.dto;
 
-import com.nexusengine.core.domain.catalog.entity.Product;
 
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Getter;
-import lombok.Setter;
 import java.time.LocalDateTime;
 import java.util.List;
 

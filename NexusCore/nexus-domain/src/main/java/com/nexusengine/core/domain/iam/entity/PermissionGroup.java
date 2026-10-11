@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.OffsetDateTime;
-import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,16 +17,16 @@ public class PermissionGroup implements Serializable {
 
         @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    
+
 private Long id;
 
         @Column(name = "created_at")
     @Schema(title = "Create time")
-    
+
 private OffsetDateTime createTime;
 
         @Schema(title = "Name")
-    
+
 private String name;
 
             @Schema(title = "Sort")

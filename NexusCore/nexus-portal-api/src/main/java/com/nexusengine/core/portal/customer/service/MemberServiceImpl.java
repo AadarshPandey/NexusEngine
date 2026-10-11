@@ -2,7 +2,7 @@ package com.nexusengine.core.portal.customer.service;
 
 import lombok.RequiredArgsConstructor;
 
-import cn.hutool.core.util.StrUtil;
+import org.springframework.util.StringUtils;
 
 import com.nexusengine.core.common.exception.Asserts;
 import com.nexusengine.core.domain.customer.entity.Member;
@@ -10,7 +10,6 @@ import com.nexusengine.core.domain.customer.repository.MemberRepository;
 import com.nexusengine.core.security.util.JwtTokenUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,7 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.security.SecureRandom;
 import com.nexusengine.core.portal.customer.dto.MemberDetails;
@@ -71,7 +69,7 @@ public class MemberServiceImpl implements MemberService {
         if (username == null || !username.matches("^[a-zA-Z0-9_]+$")) {
             Asserts.fail("Username can only contain alphanumeric characters and underscores");
         }
-        
+
         // Password strength validation
         if (password == null || password.length() < 8) {
             Asserts.fail("Password must be at least 8 characters long");
@@ -79,7 +77,7 @@ public class MemberServiceImpl implements MemberService {
         if (!password.matches(".*[A-Z].*") || !password.matches(".*[a-z].*") || !password.matches(".*\\d.*")) {
             Asserts.fail("Password must contain at least one uppercase letter, one lowercase letter, and one digit");
         }
-        
+
         if (!verifyAuthCode(authCode, email)) {
             Asserts.fail("Invalid verification code");
         }
@@ -107,7 +105,7 @@ public class MemberServiceImpl implements MemberService {
             sb.append(random.nextInt(10));
         }
         memberCacheService.setAuthCode(email, sb.toString());
-        
+
         // Send email
         LOGGER.info("OTP code generated: " + sb.toString());
     }
@@ -192,7 +190,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     private boolean verifyAuthCode(String authCode, String email) {
-        if (StrUtil.isEmpty(authCode)) {
+        if (!StringUtils.hasText(authCode)) {
             return false;
         }
         String realAuthCode = memberCacheService.getAuthCode(email);

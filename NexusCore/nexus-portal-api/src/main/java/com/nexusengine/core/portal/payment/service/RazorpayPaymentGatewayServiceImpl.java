@@ -1,6 +1,5 @@
 package com.nexusengine.core.portal.payment.service;
 
-import com.nexusengine.core.portal.payment.service.PaymentGatewayService;
 
 import com.razorpay.RazorpayClient;
 import org.json.JSONObject;
@@ -21,6 +20,9 @@ public class RazorpayPaymentGatewayServiceImpl implements PaymentGatewayService 
 
     @Value("${razorpay.keySecret}")
     private String razorpayKeySecret;
+
+    @Value("${razorpay.webhookSecret:placeholder_webhook_secret}")
+    private String razorpayWebhookSecret;
 
     @Override
     @io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker(name = "razorpay", fallbackMethod = "createOrderFallback")
@@ -72,6 +74,19 @@ public class RazorpayPaymentGatewayServiceImpl implements PaymentGatewayService 
             return amount == expectedAmount;
         } catch (com.razorpay.RazorpayException e) {
             throw new RuntimeException("Failed to fetch payment amount", e);
+        }
+    }
+
+    @Override
+    public boolean verifyWebhookSignature(String payload, String signature) {
+        if (signature == null || signature.isBlank() || payload == null) {
+            return false;
+        }
+        try {
+            return com.razorpay.Utils.verifyWebhookSignature(payload, signature, razorpayWebhookSecret);
+        } catch (com.razorpay.RazorpayException e) {
+            log.warn("Razorpay webhook signature verification error: {}", e.getMessage());
+            return false;
         }
     }
 }

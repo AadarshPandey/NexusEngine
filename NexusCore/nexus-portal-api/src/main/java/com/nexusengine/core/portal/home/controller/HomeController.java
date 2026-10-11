@@ -52,7 +52,7 @@ public class HomeController {
         return CommonResult.success(productCategoryList);
     }
 
-    
+
     @Operation(summary = "Hot product list Operation")
     @GetMapping("/hotProductList")
 

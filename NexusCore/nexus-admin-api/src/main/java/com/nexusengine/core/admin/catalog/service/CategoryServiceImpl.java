@@ -11,10 +11,7 @@ import com.nexusengine.core.domain.catalog.repository.CategoryRepository;
 import com.nexusengine.core.domain.catalog.repository.ProductRepository;
 
 
-import cn.hutool.core.collection.CollUtil;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +34,7 @@ public class CategoryServiceImpl implements CategoryService {
         setCategoryLevel(productCategory);
         productCategoryRepository.save(productCategory);
         List<Long> productAttributeIdList = categoryParam.productAttributeIdList();
-        if (!CollUtil.isEmpty(productAttributeIdList)) {
+        if (productAttributeIdList != null && !productAttributeIdList.isEmpty()) {
             insertRelationList(productCategory.getId(), productAttributeIdList);
         }
         return 1;
@@ -61,7 +58,7 @@ public class CategoryServiceImpl implements CategoryService {
         BeanUtils.copyProperties(categoryParam, productCategory);
         setCategoryLevel(productCategory);
         productCategoryAttributeRelationRepository.deleteByProductCategoryId(id);
-        if (!CollUtil.isEmpty(categoryParam.productAttributeIdList())) {
+        if (categoryParam.productAttributeIdList() != null && !categoryParam.productAttributeIdList().isEmpty()) {
             insertRelationList(id, categoryParam.productAttributeIdList());
         }
         productCategoryRepository.save(productCategory);
@@ -71,7 +68,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public org.springframework.data.domain.Page<Category> getList(Long parentId, Integer pageSize, Integer pageNum) {
         org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(pageNum > 0 ? pageNum - 1 : 0, pageSize, Sort.by(Sort.Direction.ASC, "id"));
-        
+
         return productCategoryRepository.findByParentId(parentId, pageable);
     }
 
@@ -108,10 +105,10 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<CategoryWithChildrenItem> listWithChildren() {
-        
+
         List<Category> allCategories = productCategoryRepository.findAll();
         List<CategoryWithChildrenItem> result = new ArrayList<>();
-        
+
         for (Category category : allCategories) {
             if (category.getParentId() == 0) {
                 List<Category> children = new ArrayList<>();
@@ -120,7 +117,7 @@ public class CategoryServiceImpl implements CategoryService {
                         children.add(child);
                     }
                 }
-                
+
                 CategoryWithChildrenItem item = new CategoryWithChildrenItem(category, children);
                 result.add(item);
             }

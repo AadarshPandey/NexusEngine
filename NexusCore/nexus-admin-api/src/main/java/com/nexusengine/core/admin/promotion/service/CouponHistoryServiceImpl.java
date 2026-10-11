@@ -6,7 +6,6 @@ import com.nexusengine.core.domain.promotion.repository.MemberCouponRepository;
 
 
 import com.nexusengine.core.domain.promotion.entity.MemberCoupon;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.PageRequest;
 import java.util.List;

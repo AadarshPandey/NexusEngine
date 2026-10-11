@@ -12,8 +12,6 @@ import org.springframework.ai.chat.messages.MessageType;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -37,7 +35,7 @@ public class JpaChatMemory implements ChatMemory {
     @Override
     public List<Message> get(String conversationId) {
         List<ChatMessage> records = conversationRepository.findBySessionIdOrderByCreateTimeAsc(conversationId);
-        
+
         List<Message> messages = new ArrayList<>();
         for (ChatMessage rec : records) {
             if (MessageType.USER.getValue().equalsIgnoreCase(rec.getRole())) {

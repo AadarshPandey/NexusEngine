@@ -6,7 +6,6 @@ import com.nexusengine.core.domain.ordering.repository.MerchantAddressRepository
 
 
 import com.nexusengine.core.domain.ordering.entity.MerchantAddress;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 

@@ -67,7 +67,7 @@ public abstract class AbstractNexusChatService implements NexusChatService {
                 }
                 return builder.build();
             });
-            
+
             String finalQuestion = question;
             if (vectorStore != null) {
                 List<Document> docs = vectorStore.similaritySearch(
@@ -78,7 +78,7 @@ public abstract class AbstractNexusChatService implements NexusChatService {
                     finalQuestion = question + "\n\nContext Information:\n" + contextStr;
                 }
             }
-            
+
             return sessionClient.prompt()
                     .user(finalQuestion)
                     .advisors(a -> a.param("chat_memory_conversation_id", sessionId))

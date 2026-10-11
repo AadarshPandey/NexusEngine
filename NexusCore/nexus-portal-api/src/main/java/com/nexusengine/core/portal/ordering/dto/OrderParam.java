@@ -1,12 +1,8 @@
 package com.nexusengine.core.portal.ordering.dto;
 
-import com.nexusengine.core.domain.promotion.entity.Coupon;
 
-import com.nexusengine.core.domain.customer.entity.Member;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 import java.util.List;
 
 

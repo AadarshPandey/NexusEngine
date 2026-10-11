@@ -8,8 +8,7 @@ import com.nexusengine.core.domain.iam.entity.Permission;
 import com.nexusengine.core.domain.iam.entity.AdminLoginEvent;
 import com.nexusengine.core.domain.iam.entity.AdminUserRole;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.StrUtil;
+import org.springframework.util.StringUtils;
 import com.nexusengine.core.admin.iam.dto.AdminUserDetails;
 import com.nexusengine.core.common.exception.Asserts;
 import com.nexusengine.core.common.util.RequestUtil;
@@ -23,7 +22,6 @@ import com.nexusengine.core.security.util.SpringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
@@ -41,7 +39,6 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
-import java.time.LocalDateTime;
 import java.util.List;
 import com.nexusengine.core.admin.iam.dto.AdminUserParam;
 import com.nexusengine.core.admin.iam.dto.UpdatePasswordParam;
@@ -140,7 +137,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Override
     public org.springframework.data.domain.Page<AdminUser> list(String keyword, Integer pageSize, Integer pageNum) {
         Pageable pageable = PageRequest.of(pageNum > 0 ? pageNum - 1 : 0, pageSize, org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.ASC, "id"));
-        if (cn.hutool.core.util.StrUtil.isNotEmpty(keyword)) {
+        if (StringUtils.hasText(keyword)) {
             return adminRepository.findAll((Specification<AdminUser>) (root, query, cb) -> {
                 String pattern = "%" + keyword + "%";
                 return cb.or(
@@ -160,7 +157,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             if(rawAdmin.getPassword().equals(admin.getPassword())){
                 admin.setPassword(null);
             }else{
-                if(StrUtil.isEmpty(admin.getPassword())){
+                if(!StringUtils.hasText(admin.getPassword())){
                     admin.setPassword(null);
                 }else{
                     admin.setPassword(passwordEncoder.encode(admin.getPassword()));
@@ -206,11 +203,11 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Override
     public List<Permission> getResourceList(Long adminId) {
         List<Permission> resourceList = getCacheService().getResourceList(adminId);
-        if(CollUtil.isNotEmpty(resourceList)){
+        if (resourceList != null && !resourceList.isEmpty()) {
             return resourceList;
         }
         resourceList = adminRoleRelationRepository.getResourceList(adminId);
-        if(CollUtil.isNotEmpty(resourceList)){
+        if (resourceList != null && !resourceList.isEmpty()) {
             getCacheService().setResourceList(adminId,resourceList);
         }
         return resourceList;
@@ -218,9 +215,9 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Override
     public int updatePassword(UpdatePasswordParam param) {
-        if(StrUtil.isEmpty(param.username())
-                ||StrUtil.isEmpty(param.oldPassword())
-                ||StrUtil.isEmpty(param.newPassword())){
+        if (!StringUtils.hasText(param.username())
+                || !StringUtils.hasText(param.oldPassword())
+                || !StringUtils.hasText(param.newPassword())) {
             return -1;
         }
         if (param.newPassword().length() < 8) {

@@ -2,7 +2,6 @@ package com.nexusengine.core.security.component;
 
 
 
-import cn.hutool.core.collection.CollUtil;
 import com.nexusengine.core.security.config.IgnoreUrlsConfig;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpMethod;
@@ -52,7 +51,7 @@ public class DynamicAuthorizationManager implements AuthorizationManager<Request
         if(request.getMethod().equals(HttpMethod.OPTIONS.name())){
             return new AuthorizationDecision(true);
         }
-        
+
         // Portal APIs are customer-facing and do not require admin backend permissions
         if(pathMatcher.match("/portal/**", path)) {
             Authentication currentAuth = authentication.get();
@@ -64,7 +63,7 @@ public class DynamicAuthorizationManager implements AuthorizationManager<Request
         }
 
         List<String> needAuthorities = securityDataSource.getConfigAttributesWithPath(path);
-        if (CollUtil.isEmpty(needAuthorities)) {
+        if (needAuthorities == null || needAuthorities.isEmpty()) {
             // If the endpoint is not explicitly mapped in Permission, allow access
             // ONLY if the user is an admin.
             Authentication currentAuth = authentication.get();
@@ -81,7 +80,7 @@ public class DynamicAuthorizationManager implements AuthorizationManager<Request
             List<? extends GrantedAuthority> hasAuth = grantedAuthorities.stream()
                     .filter(item -> needAuthorities.contains(item.getAuthority()))
                     .collect(Collectors.toList());
-            if(CollUtil.isNotEmpty(hasAuth)){
+            if(!hasAuth.isEmpty()){
                 return new AuthorizationDecision(true);
             }else{
                 return new AuthorizationDecision(false);

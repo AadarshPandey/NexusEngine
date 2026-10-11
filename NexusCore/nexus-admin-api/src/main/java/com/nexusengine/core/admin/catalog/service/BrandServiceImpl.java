@@ -2,14 +2,12 @@ package com.nexusengine.core.admin.catalog.service;
 
 import lombok.RequiredArgsConstructor;
 
-import cn.hutool.core.util.StrUtil;
 
 import com.nexusengine.core.admin.catalog.dto.BrandParam;
 import com.nexusengine.core.domain.catalog.repository.BrandRepository;
 import com.nexusengine.core.domain.catalog.repository.ProductRepository;
 import com.nexusengine.core.domain.catalog.entity.Brand;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;

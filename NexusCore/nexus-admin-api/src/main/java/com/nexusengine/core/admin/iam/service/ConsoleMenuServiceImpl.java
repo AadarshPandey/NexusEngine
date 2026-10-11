@@ -7,13 +7,10 @@ import com.nexusengine.core.domain.iam.entity.ConsoleMenu;
 import com.nexusengine.core.domain.iam.repository.ConsoleMenuRepository;
 
 
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import com.nexusengine.core.admin.iam.dto.MenuNode;

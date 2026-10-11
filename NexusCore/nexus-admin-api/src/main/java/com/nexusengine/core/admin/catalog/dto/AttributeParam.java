@@ -1,14 +1,11 @@
 package com.nexusengine.core.admin.catalog.dto;
 
-import com.nexusengine.core.domain.catalog.entity.Product;
 
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.nexusengine.core.admin.shared.validator.FlagValidator;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 import jakarta.validation.constraints.NotEmpty;
 
 

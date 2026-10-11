@@ -7,7 +7,6 @@ import com.nexusengine.core.common.service.RedisService;
 import com.nexusengine.core.domain.customer.repository.MemberRepository;
 import com.nexusengine.core.domain.customer.entity.Member;
 import com.nexusengine.core.security.annotation.CacheException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 

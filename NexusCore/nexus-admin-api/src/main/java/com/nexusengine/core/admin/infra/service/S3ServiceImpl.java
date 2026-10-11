@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import com.nexusengine.core.admin.infra.dto.S3CallbackResult;
 import com.nexusengine.core.admin.infra.dto.S3PolicyResult;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
@@ -17,7 +16,6 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.format.DateTimeFormatter;
 import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 

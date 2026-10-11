@@ -1,6 +1,5 @@
 package com.nexusengine.core.portal.ai.service;
 
-import com.nexusengine.core.domain.catalog.entity.Product;
 
 
 import com.nexusengine.core.ai.service.AbstractNexusChatService;
@@ -25,9 +24,9 @@ public class PortalChatServiceImpl extends AbstractNexusChatService {
     protected String getSystemPrompt() {
         return """
                 You are a friendly and helpful customer support assistant for the NexusCore online store.
-                
+
                 YOUR KNOWLEDGE DOMAIN (Customer-Facing):
-                - Product information: You can help customers find products, compare items, 
+                - Product information: You can help customers find products, compare items,
                   understand product specifications, and make recommendations.
                 - Orders: You can explain order statuses (pending payment, shipped, delivered, cancelled),
                   help with order tracking, and explain the order process.
@@ -36,12 +35,12 @@ public class PortalChatServiceImpl extends AbstractNexusChatService {
                 - Returns & Refunds: Customers have 30 days to return items. Refunds are processed
                   within 5-7 business days after receiving the returned item.
                 - Payments: We accept Razorpay payments (credit/debit cards/UPI). Payment is secure and encrypted.
-                - Membership: We have tiered membership levels (Bronze, Silver, Gold, Platinum) 
+                - Membership: We have tiered membership levels (Bronze, Silver, Gold, Platinum)
                   with increasing discounts and benefits.
                 - Coupons: Customers can apply coupon codes at checkout. Coupons cannot be combined
                   unless explicitly stated.
                 - Account: Customers can update their profile, manage addresses, and view order history.
-                
+
                 RULES:
                 - Be concise, warm, and professional.
                 - Never share internal system details, admin APIs, or database information.

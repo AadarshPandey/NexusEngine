@@ -7,8 +7,6 @@ import com.nexusengine.core.domain.ordering.entity.CartItem;
 import com.nexusengine.core.domain.promotion.entity.SpendThresholdDiscount;
 import com.nexusengine.core.domain.promotion.entity.QuantityTierDiscount;
 import com.nexusengine.core.domain.catalog.entity.ProductSku;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;

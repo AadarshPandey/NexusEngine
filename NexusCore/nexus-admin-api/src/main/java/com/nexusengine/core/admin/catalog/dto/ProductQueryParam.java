@@ -1,13 +1,9 @@
 package com.nexusengine.core.admin.catalog.dto;
 
-import com.nexusengine.core.domain.catalog.entity.Brand;
 
 
-import com.nexusengine.core.domain.catalog.entity.Product;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 
 /**

@@ -6,7 +6,6 @@ import com.nexusengine.core.domain.customer.entity.Member;
 
 import com.nexusengine.core.domain.customer.entity.MemberAddress;
 import com.nexusengine.core.domain.customer.repository.MemberAddressRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

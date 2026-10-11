@@ -1,9 +1,7 @@
 package com.nexusengine.core.admin.infra.dto;
 
-import lombok.Getter;
 
 
-import lombok.Setter;
 
 
 /**

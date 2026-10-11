@@ -1,8 +1,6 @@
 package com.nexusengine.core.portal.ordering.dto;
 
-import lombok.Getter;
 
-import lombok.Setter;
 import java.io.Serializable;
 
 

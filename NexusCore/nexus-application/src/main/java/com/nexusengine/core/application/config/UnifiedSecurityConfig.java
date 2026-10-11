@@ -2,7 +2,6 @@ package com.nexusengine.core.application.config;
 
 import com.nexusengine.core.admin.iam.service.AdminUserService;
 import com.nexusengine.core.portal.customer.service.MemberService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;

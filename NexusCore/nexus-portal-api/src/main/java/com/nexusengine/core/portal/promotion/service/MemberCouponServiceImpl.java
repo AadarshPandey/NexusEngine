@@ -13,20 +13,16 @@ import com.nexusengine.core.domain.promotion.repository.MemberCouponRepository;
 import com.nexusengine.core.domain.promotion.repository.CouponProductRepository;
 import com.nexusengine.core.domain.customer.entity.Member;
 import com.nexusengine.core.domain.promotion.entity.CouponCategory;
-
-import cn.hutool.core.collection.CollUtil;
 import com.nexusengine.core.common.exception.Asserts;
 
 
 
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.security.SecureRandom;
@@ -86,7 +82,7 @@ public class MemberCouponServiceImpl implements MemberCouponService {
                 couponHistory.setGetType(1);
                 couponHistory.setUseStatus(0);
                 couponHistoryRepository.save(couponHistory);
-                
+
                 // Atomic stock decrement
                 int countUpdated = couponRepository.decrementCouponStock(couponId);
                 if (countUpdated == 0) {
@@ -190,7 +186,7 @@ public class MemberCouponServiceImpl implements MemberCouponService {
             histories = couponHistoryRepository.findByMemberId(member.getId());
         }
         List<Long> couponIds = histories.stream().map(MemberCoupon::getCouponId).distinct().collect(Collectors.toList());
-        if (CollUtil.isEmpty(couponIds)) return new ArrayList<>();
+        if (couponIds.isEmpty()) return new ArrayList<>();
         return couponRepository.findAllById(couponIds);
     }
 

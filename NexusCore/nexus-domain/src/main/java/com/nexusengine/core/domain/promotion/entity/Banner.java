@@ -1,12 +1,10 @@
 package com.nexusengine.core.domain.promotion.entity;
 
-import com.nexusengine.core.domain.shared.converter.IntegerToBooleanConverter;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.OffsetDateTime;
-import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,7 +18,7 @@ public class Banner implements Serializable {
 
         @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    
+
 private Long id;
 
             @Column(name = "title")
@@ -36,12 +34,12 @@ private Integer type;
 private String primaryImageUrl;
 
         @Column(name = "starts_at")
-    
+
 @com.fasterxml.jackson.annotation.JsonProperty("startsAt")
     private OffsetDateTime startTime;
 
         @Column(name = "ends_at")
-    
+
 @com.fasterxml.jackson.annotation.JsonProperty("endsAt")
     private OffsetDateTime endTime;
 
@@ -52,12 +50,12 @@ private Integer status;
 
         @Column(name = "click_count")
     @Schema(title = "Click count")
-    
+
 private Integer clickCount;
 
         @Column(name = "order_count")
     @Schema(title = "Order count")
-    
+
 private Integer orderCount;
 
             @Schema(title = "Url")

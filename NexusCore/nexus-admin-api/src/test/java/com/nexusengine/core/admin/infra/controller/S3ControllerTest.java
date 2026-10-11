@@ -1,6 +1,5 @@
 package com.nexusengine.core.admin.infra.controller;
 
-import com.nexusengine.core.common.api.CommonResult;
 import com.nexusengine.core.admin.infra.dto.S3CallbackResult;
 import com.nexusengine.core.admin.infra.dto.S3PolicyResult;
 import com.nexusengine.core.admin.infra.service.S3Service;
@@ -10,7 +9,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 

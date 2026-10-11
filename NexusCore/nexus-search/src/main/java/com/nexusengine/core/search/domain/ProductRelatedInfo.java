@@ -1,7 +1,6 @@
 package com.nexusengine.core.search.domain;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import java.util.List;
 
@@ -17,7 +16,7 @@ public class ProductRelatedInfo {
     private List<ProductAttr> productAttrs;
 
     @Data
-    
+
     public static class ProductAttr {
         private Long attrId;
         private String attrName;

@@ -43,7 +43,7 @@ public class RateLimitInterceptor implements HandlerInterceptor {
             RRateLimiter rateLimiter = redissonClient.getRateLimiter("rate_limit:ip:" + clientIp);
             // 100 requests per minute
             rateLimiter.trySetRate(RateType.OVERALL, 100, 1, RateIntervalUnit.MINUTES);
-            
+
             if (!rateLimiter.tryAcquire(1)) {
                 handleRateLimitResponse(response, 60);
                 return false;
@@ -56,20 +56,20 @@ public class RateLimitInterceptor implements HandlerInterceptor {
                 // User not authenticated — skip user-level rate limiting, proceed with request
                 log.debug("Could not resolve current member for rate limiting: {}", e.getMessage());
             }
-            
+
             if (currentMember != null) {
                 String username = currentMember.getUsername();
                 RRateLimiter rateLimiter = redissonClient.getRateLimiter("rate_limit:user:" + username);
                 // 10 requests per minute
                 rateLimiter.trySetRate(RateType.OVERALL, 10, 1, RateIntervalUnit.MINUTES);
-                
+
                 if (!rateLimiter.tryAcquire(1)) {
                     handleRateLimitResponse(response, 60);
                     return false;
                 }
             }
         }
-        
+
         return true;
     }
 
@@ -77,7 +77,7 @@ public class RateLimitInterceptor implements HandlerInterceptor {
         response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
         response.setHeader("Retry-After", String.valueOf(retryAfterSeconds));
         response.setContentType("application/json;charset=UTF-8");
-        
+
         CommonResult<Object> result = CommonResult.failed("Too Many Requests. Please try again later.");
         response.getWriter().write(objectMapper.writeValueAsString(result));
     }

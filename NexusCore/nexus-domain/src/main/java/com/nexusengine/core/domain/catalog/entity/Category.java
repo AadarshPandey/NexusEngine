@@ -1,6 +1,5 @@
 package com.nexusengine.core.domain.catalog.entity;
 
-import com.nexusengine.core.domain.shared.converter.IntegerToBooleanConverter;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
@@ -18,12 +17,12 @@ public class Category implements Serializable {
 
         @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    
+
 private Long id;
 
         @Column(name = "parent_id")
     @Schema(title = "Parent id")
-    
+
 private Long parentId;
 
     private String name;

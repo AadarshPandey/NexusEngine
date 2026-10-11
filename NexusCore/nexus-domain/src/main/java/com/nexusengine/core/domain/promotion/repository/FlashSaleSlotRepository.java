@@ -9,6 +9,6 @@ import java.util.Optional;
 
 public interface FlashSaleSlotRepository extends JpaRepository<FlashSaleSlot, Long> {
     List<FlashSaleSlot> findByStatus(Integer status);
-    
+
     Optional<FlashSaleSlot> findFirstByStatusAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(Integer status, LocalTime startTime, LocalTime endTime);
 }

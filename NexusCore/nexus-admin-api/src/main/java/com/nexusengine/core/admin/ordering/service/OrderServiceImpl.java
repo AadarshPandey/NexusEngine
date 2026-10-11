@@ -17,12 +17,8 @@ import com.nexusengine.core.domain.ordering.repository.CustomerOrderRepository;
 import com.nexusengine.core.domain.ordering.repository.OrderLineRepository;
 import com.nexusengine.core.domain.ordering.repository.OrderStatusHistoryRepository;
 import com.nexusengine.core.domain.ordering.entity.CustomerOrder;
-import com.nexusengine.core.domain.ordering.entity.OrderLine;
 import com.nexusengine.core.domain.ordering.entity.OrderStatusHistory;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,7 +35,7 @@ public class OrderServiceImpl implements OrderService {
     public List<CustomerOrder> list(OrderQueryParam queryParam, Integer pageSize, Integer pageNum) {
         String username = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getName();
         AdminUser admin = adminService.getAdminByUsername(username);
-        
+
         return orderRepository.findAll(org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.DESC, "createTime"));
     }
 

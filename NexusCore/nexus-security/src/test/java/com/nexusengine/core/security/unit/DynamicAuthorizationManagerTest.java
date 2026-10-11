@@ -17,12 +17,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.access.intercept.RequestAuthorizationContext;
 import jakarta.servlet.http.HttpServletRequest;
 
-import java.util.Arrays;
 import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.doReturn;
 
@@ -114,7 +112,7 @@ public class DynamicAuthorizationManagerTest {
         when(request.getMethod()).thenReturn("GET");
         when(securityDataSource.getConfigAttributesWithPath("/admin/list"))
                 .thenReturn(Collections.singletonList("ROLE_ADMIN"));
-        
+
         when(authentication.isAuthenticated()).thenReturn(true);
         doReturn(Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN"))).when(authentication).getAuthorities();
 
@@ -130,7 +128,7 @@ public class DynamicAuthorizationManagerTest {
         when(request.getMethod()).thenReturn("GET");
         when(securityDataSource.getConfigAttributesWithPath("/admin/list"))
                 .thenReturn(Collections.singletonList("ROLE_SUPERADMIN"));
-        
+
         when(authentication.isAuthenticated()).thenReturn(true);
         doReturn(Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN"))).when(authentication).getAuthorities();
 

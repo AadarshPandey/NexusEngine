@@ -50,4 +50,3 @@ public class PortalSpringDocConfig implements WebMvcConfigurer {
     }
 
 }
-

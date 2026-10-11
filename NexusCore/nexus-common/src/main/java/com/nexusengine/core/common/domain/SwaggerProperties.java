@@ -1,8 +1,6 @@
 package com.nexusengine.core.common.domain;
 
-import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 /**
  * Auto-generated documentation

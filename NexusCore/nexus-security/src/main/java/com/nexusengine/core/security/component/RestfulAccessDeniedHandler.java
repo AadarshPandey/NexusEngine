@@ -1,12 +1,10 @@
 package com.nexusengine.core.security.component;
 
-import cn.hutool.json.JSONUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nexusengine.core.common.api.CommonResult;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
-import org.springframework.stereotype.Component;
 
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -16,6 +14,8 @@ import java.io.IOException;
  * Provides core functionality and operations for RestfulAccessDeniedHandler.
  */
 public class RestfulAccessDeniedHandler implements AccessDeniedHandler{
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
     @Override
     public void handle(HttpServletRequest request,
                        HttpServletResponse response,
@@ -24,7 +24,7 @@ public class RestfulAccessDeniedHandler implements AccessDeniedHandler{
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json");
         response.setStatus(403);
-        response.getWriter().println(JSONUtil.toJsonStr(CommonResult.forbidden(e.getMessage())));
+        response.getWriter().println(OBJECT_MAPPER.writeValueAsString(CommonResult.forbidden(e.getMessage())));
         response.getWriter().flush();
     }
 }

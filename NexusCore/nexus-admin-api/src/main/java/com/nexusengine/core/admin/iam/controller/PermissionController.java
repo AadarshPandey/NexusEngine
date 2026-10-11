@@ -11,7 +11,6 @@ import com.nexusengine.core.domain.iam.entity.Permission;
 import com.nexusengine.core.security.component.DynamicSecurityMetadataSource;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

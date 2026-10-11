@@ -18,9 +18,7 @@ import com.nexusengine.core.domain.promotion.repository.SpendThresholdDiscountRe
 import com.nexusengine.core.domain.catalog.entity.ProductApprovalEvent;
 import com.nexusengine.core.domain.promotion.entity.QuantityTierDiscount;
 import org.springframework.data.domain.Sort;
-
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.StrUtil;
+import org.springframework.util.StringUtils;
 
 
 
@@ -28,15 +26,12 @@ import cn.hutool.core.util.StrUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.util.CollectionUtils;
 
-import java.lang.reflect.Method;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import com.nexusengine.core.admin.iam.service.AdminUserService;
@@ -57,8 +52,8 @@ public class ProductServiceImpl implements ProductService {
     private final SpendThresholdDiscountRepository productSpendDiscountRepository;
     private final ProductSkuRepository skuStockRepository;
     private final ProductAttributeValueRepository productAttributeValueRepository;
-    
-    
+
+
     private final ProductApprovalEventRepository productApprovalHistoryRepository;
     private final ProductPriceChangeRepository productAuditLogRepository;
 
@@ -73,7 +68,7 @@ public class ProductServiceImpl implements ProductService {
         saveProductLadderList(productParam.productVolumeDiscountList(), productId);
         saveProductFullReductionList(productParam.productSpendDiscountList(), productId);
         handleSkuStockCode(productParam.skuStockList(), productId);
-        if (CollUtil.isEmpty(productParam.skuStockList())) {
+        if (productParam.skuStockList() == null || productParam.skuStockList().isEmpty()) {
             ProductSku defaultSku = new ProductSku();
             defaultSku.setProductId(productId);
             defaultSku.setSkuCode(java.util.UUID.randomUUID().toString().replace("-","").substring(0,20));
@@ -84,8 +79,8 @@ public class ProductServiceImpl implements ProductService {
             saveSkuStockList(productParam.skuStockList(), productId);
         }
         saveProductAttributeValueList(productParam.productAttributeValueList(), productId);
-        
-        
+
+
         return 1;
     }
 
@@ -93,7 +88,7 @@ public class ProductServiceImpl implements ProductService {
         if (CollectionUtils.isEmpty(skuStockList)) return;
         for (int i = 0; i < skuStockList.size(); i++) {
             ProductSku skuStock = skuStockList.get(i);
-            if (StrUtil.isEmpty(skuStock.getSkuCode())) {
+            if (!StringUtils.hasText(skuStock.getSkuCode())) {
                 DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyyMMdd");
                 StringBuilder sb = new StringBuilder();
                 sb.append(java.time.LocalDateTime.now().format(sdf));
@@ -125,14 +120,14 @@ public class ProductServiceImpl implements ProductService {
         handleUpdateSkuStockList(id, productParam);
         productAttributeValueRepository.deleteByProductId(id);
         saveProductAttributeValueList(productParam.productAttributeValueList(), id);
-                
-                
+
+
         return 1;
     }
 
     private void handleUpdateSkuStockList(Long id, ProductParam productParam) {
         List<ProductSku> currSkuList = productParam.skuStockList();
-        if (CollUtil.isEmpty(currSkuList)) {
+        if (currSkuList == null || currSkuList.isEmpty()) {
             List<ProductSku> existing = skuStockRepository.findByProductId(id);
             if (existing.isEmpty()) {
                 ProductSku defaultSku = new ProductSku();
@@ -151,16 +146,16 @@ public class ProductServiceImpl implements ProductService {
         List<ProductSku> removeSkuList = oriStuList.stream().filter(item -> !updateSkuIds.contains(item.getId())).collect(Collectors.toList());
         handleSkuStockCode(insertSkuList, id);
         handleSkuStockCode(updateSkuList, id);
-        if (CollUtil.isNotEmpty(insertSkuList)) {
+        if (!insertSkuList.isEmpty()) {
             for (ProductSku sku : insertSkuList) {
                 sku.setProductId(id);
             }
             skuStockRepository.saveAll(insertSkuList);
         }
-        if (CollUtil.isNotEmpty(removeSkuList)) {
+        if (!removeSkuList.isEmpty()) {
             skuStockRepository.deleteAll(removeSkuList);
         }
-        if (CollUtil.isNotEmpty(updateSkuList)) {
+        if (!updateSkuList.isEmpty()) {
             skuStockRepository.saveAll(updateSkuList);
         }
     }
@@ -172,7 +167,7 @@ public class ProductServiceImpl implements ProductService {
         String username = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getName();
         AdminUser admin = adminService.getAdminByUsername(username);
         org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(pageNum - 1 > 0 ? pageNum - 1 : 0, pageSize, Sort.by(Sort.Direction.ASC, "id"));
-        
+
         return productRepository.findAll((root, query, cb) -> {
             var predicates = new java.util.ArrayList<jakarta.persistence.criteria.Predicate>();
             if (queryParam.publishStatus() != null) {
@@ -181,10 +176,10 @@ public class ProductServiceImpl implements ProductService {
             if (queryParam.verifyStatus() != null) {
                 predicates.add(cb.equal(root.get("verifyStatus"), queryParam.verifyStatus()));
             }
-            if (StrUtil.isNotEmpty(queryParam.keyword())) {
+            if (StringUtils.hasText(queryParam.keyword())) {
                 predicates.add(cb.like(cb.lower(root.get("name")), "%" + queryParam.keyword().toLowerCase() + "%"));
             }
-            if (StrUtil.isNotEmpty(queryParam.productSn())) {
+            if (StringUtils.hasText(queryParam.productSn())) {
                 predicates.add(cb.equal(root.get("productSn"), queryParam.productSn()));
             }
             if (queryParam.brandId() != null) {
@@ -266,9 +261,9 @@ public class ProductServiceImpl implements ProductService {
     public List<Product> list(String keyword) {
         String username = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getName();
         AdminUser admin = adminService.getAdminByUsername(username);
-        
-        boolean hasKeyword = StrUtil.isNotEmpty(keyword);
-        
+
+        boolean hasKeyword = StringUtils.hasText(keyword);
+
         if (hasKeyword) {
             return productRepository.findByNameContaining(keyword);
         }

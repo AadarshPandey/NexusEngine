@@ -9,7 +9,6 @@ import com.nexusengine.core.admin.iam.dto.AdminUserParam;
 import com.nexusengine.core.admin.iam.service.AdminUserService;
 import com.nexusengine.core.admin.iam.service.RoleService;
 import com.nexusengine.core.admin.iam.dto.UpdatePasswordParam;
-import cn.hutool.core.collection.CollUtil;
 import com.nexusengine.core.common.api.CommonPage;
 import com.nexusengine.core.common.api.CommonResult;
 import com.nexusengine.core.domain.iam.entity.AdminUser;
@@ -17,11 +16,9 @@ import com.nexusengine.core.domain.iam.entity.Role;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.security.access.prepost.PreAuthorize;
 
 import jakarta.servlet.http.HttpServletRequest;
 import java.security.Principal;
@@ -101,7 +98,7 @@ public class AdminUserController {
         data.put("menus", roleService.getMenuList(adminUser.getId()));
         data.put("icon", adminUser.getIcon());
         List<Role> roleList = adminService.getRoleList(adminUser.getId());
-        if(CollUtil.isNotEmpty(roleList)){
+        if (roleList != null && !roleList.isEmpty()) {
             List<String> roles = roleList.stream().map(Role::getName).collect(Collectors.toList());
             data.put("roles",roles);
         }

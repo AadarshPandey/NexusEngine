@@ -81,7 +81,7 @@ public class CouponConcurrencyIntegrationTest {
                 }
             });
         }
-        
+
         latch.countDown();
         executor.awaitTermination(10, TimeUnit.SECONDS);
 

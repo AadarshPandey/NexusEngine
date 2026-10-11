@@ -18,23 +18,23 @@ public class SpendThresholdDiscount implements Serializable {
 
         @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    
+
 private Long id;
 
         @Column(name = "product_id")
-    
+
 private Long productId;
         @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "product_id", insertable = false, updatable = false)
-    
+
 private Product product;
 
         @Column(name = "min_spend_amount")
-    
+
 private BigDecimal fullPrice;
 
         @Column(name = "discount_amount")
-    
+
 private BigDecimal reducePrice;
 }

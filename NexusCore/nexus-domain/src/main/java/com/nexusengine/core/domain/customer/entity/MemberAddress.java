@@ -1,6 +1,5 @@
 package com.nexusengine.core.domain.customer.entity;
 
-import com.nexusengine.core.domain.shared.converter.IntegerToBooleanConverter;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
@@ -18,16 +17,16 @@ public class MemberAddress implements Serializable {
 
         @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    
+
 private Long id;
 
         @Column(name = "member_id")
-    
+
 private Long memberId;
         @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "member_id", insertable = false, updatable = false)
-    
+
 private Member member;
 
             @Schema(title = "Name")
@@ -35,7 +34,7 @@ private Member member;
 private String name;
 
         @Column(name = "recipient_phone")
-    
+
 private String phoneNumber;
 
         @Column(name = "is_default")
@@ -45,7 +44,7 @@ private Integer defaultStatus;
 
         @Column(name = "postal_code")
     @Schema(title = "Post code")
-    
+
 private String postCode;
 
             @Schema(title = "State")
@@ -53,7 +52,7 @@ private String postCode;
 private String state;
 
         @Schema(title = "City")
-    
+
 private String city;
 
             @Schema(title = "Region")
@@ -62,6 +61,6 @@ private String region;
 
         @Column(name = "address_line")
     @Schema(title = "Detail address")
-    
+
 private String detailAddress;
 }

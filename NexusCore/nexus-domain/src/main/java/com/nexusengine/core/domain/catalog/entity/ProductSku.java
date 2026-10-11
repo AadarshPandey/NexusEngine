@@ -17,21 +17,21 @@ public class ProductSku implements Serializable {
 
         @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    
+
 private Long id;
 
         @Column(name = "product_id")
-    
+
 private Long productId;
         @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "product_id", insertable = false, updatable = false)
-    
+
 private Product product;
 
         @Column(name = "sku_code")
     @Schema(title = "Sku code")
-    
+
 private String skuCode;
 
     @Column(name = "list_price")

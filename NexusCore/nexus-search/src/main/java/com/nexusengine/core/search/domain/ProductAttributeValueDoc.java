@@ -1,7 +1,6 @@
 package com.nexusengine.core.search.domain;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 

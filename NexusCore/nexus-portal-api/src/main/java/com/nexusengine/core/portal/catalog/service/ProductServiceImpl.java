@@ -22,14 +22,11 @@ import com.nexusengine.core.domain.catalog.entity.AttributeDefinition;
 import com.nexusengine.core.domain.catalog.repository.AttributeDefinitionRepository;
 import com.nexusengine.core.domain.promotion.entity.QuantityTierDiscount;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.StrUtil;
+import org.springframework.util.StringUtils;
 
 
 
 
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -89,16 +86,16 @@ public class ProductServiceImpl implements ProductService {
             predicates.add(cb.isNull(root.get("deleteStatus")));
             predicates.add(cb.equal(root.get("publishStatus"), 1));
 
-            if (StrUtil.isNotEmpty(keyword)) {
+            if (StringUtils.hasText(keyword)) {
                 String kw = "%" + keyword.toLowerCase() + "%";
                 jakarta.persistence.criteria.Join<Object, Object> categoryJoin = root.join("productCategory", jakarta.persistence.criteria.JoinType.LEFT);
                 jakarta.persistence.criteria.Join<Object, Object> brandJoin = root.join("brand", jakarta.persistence.criteria.JoinType.LEFT);
-                
+
                 Predicate namePredicate = cb.like(cb.lower(root.get("name")), kw);
                 Predicate keywordsPredicate = cb.like(cb.lower(root.get("keywords")), kw);
                 Predicate categoryPredicate = cb.like(cb.lower(categoryJoin.get("name")), kw);
                 Predicate brandPredicate = cb.like(cb.lower(brandJoin.get("name")), kw);
-                
+
                 predicates.add(cb.or(namePredicate, keywordsPredicate, categoryPredicate, brandPredicate));
             }
             if (brandId != null) {
@@ -131,39 +128,39 @@ public class ProductServiceImpl implements ProductService {
             org.hibernate.Hibernate.initialize(product.getGalleryList());
         }
         if (product == null) return new ProductDetail(null, null, null, null, null, null, null, null, null);
-        
+
         Brand brand = null;
         if (product.getBrandId() != null) {
             brand = brandRepository.findById(product.getBrandId()).orElse(null);
         }
-        
+
         List<AttributeDefinition> productAttributeList = productAttributeRepository
                 .findByProductAttributeCategoryId(product.getProductAttributeCategoryId());
-                
+
         List<ProductAttributeValue> valueList = null;
-        if (CollUtil.isNotEmpty(productAttributeList)) {
+        if (productAttributeList != null && !productAttributeList.isEmpty()) {
             List<Long> attributeIds = productAttributeList.stream().map(AttributeDefinition::getId).collect(Collectors.toList());
             valueList = productAttributeValueRepository.findByProductIdAndProductAttributeIdIn(product.getId(), attributeIds);
         }
-        
+
         List<ProductSku> skuStockList = skuStockRepository.findByProductId(product.getId());
-        
+
         List<QuantityTierDiscount> productVolumeDiscountList = null;
         if (product.getPromotionType() != null && product.getPromotionType() == 3) {
             productVolumeDiscountList = productVolumeDiscountRepository.findByProductId(product.getId());
         }
-        
+
         List<SpendThresholdDiscount> productSpendDiscountList = null;
         if (product.getPromotionType() != null && product.getPromotionType() == 4) {
             productSpendDiscountList = productSpendDiscountRepository.findByProductId(product.getId());
         }
-        
+
         List<Coupon> couponList = productDao.getAvailableCouponList(product.getId(), product.getProductCategoryId());
-        
+
         java.time.LocalDate today = java.time.LocalDate.now();
         List<FlashSale> promotions = flashPromotionRepository.findByStatusAndStartDateLessThanEqualAndEndDateGreaterThanEqual(1, today, today);
         Boolean flashSaleActive = !promotions.isEmpty();
-        
+
         return new ProductDetail(product, brand, productAttributeList, valueList, skuStockList, productVolumeDiscountList, productSpendDiscountList, couponList, flashSaleActive);
     }
 

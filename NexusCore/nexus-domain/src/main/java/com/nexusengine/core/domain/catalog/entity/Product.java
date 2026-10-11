@@ -1,7 +1,5 @@
 package com.nexusengine.core.domain.catalog.entity;
 
-import com.nexusengine.core.domain.shared.converter.IntegerToDeletedAtConverter;
-import com.nexusengine.core.domain.shared.converter.IntegerToBooleanConverter;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
@@ -10,7 +8,6 @@ import java.util.List;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.JoinColumn;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,33 +21,33 @@ public class Product implements Serializable {
 
         @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    
+
 private Long id;
         @Column(name = "brand_id")
-    
+
 private Long brandId;
         @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "brand_id", insertable = false, updatable = false)
-    
+
 private Brand brand;
 
         @Column(name = "category_id")
-    
+
 private Long productCategoryId;
         @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "category_id", insertable = false, updatable = false)
-    
+
 private Category productCategory;
 
         @Column(name = "product_type_id")
-    
+
 private Long productAttributeCategoryId;
         @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "product_type_id", insertable = false, updatable = false)
-    
+
 private ProductType productAttributeCategory;
 
     private String name;
@@ -61,14 +58,14 @@ private String primaryImageUrl;
 
         @Column(name = "product_code")
     @Schema(title = "Product sn")
-    
+
 @com.fasterxml.jackson.annotation.JsonProperty("productCode")
     private String productSn;
 
         @Convert(converter = com.nexusengine.core.domain.shared.converter.IntegerToDeletedAtConverter.class)
     @Column(name = "deleted_at")
     @Schema(title = "Delete status")
-    
+
 private Integer deleteStatus;
 
         @Column(name = "is_published")
@@ -105,7 +102,7 @@ private String keywords;
         @OneToMany(fetch = jakarta.persistence.FetchType.EAGER)
     @JoinColumn(name = "product_id")
     @com.fasterxml.jackson.annotation.JsonManagedReference
-    
+
 private List<ProductMedia> galleryList;
 
 
@@ -125,7 +122,7 @@ private Integer promotionType;
     private String brandName;
 
         @Schema(title = "Description")
-    
+
 private String description;
 
 

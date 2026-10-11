@@ -2,18 +2,14 @@ package com.nexusengine.core.portal.ordering.service;
 
 import lombok.RequiredArgsConstructor;
 
-import cn.hutool.core.collection.CollUtil;
-
 import com.nexusengine.core.domain.ordering.entity.CartItem;
 import com.nexusengine.core.domain.customer.entity.Member;
 import com.nexusengine.core.domain.ordering.repository.CartItemRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import com.nexusengine.core.portal.ordering.dto.CartProduct;
@@ -68,7 +64,7 @@ public class CartServiceImpl implements CartService {
     @Override
     public List<CartPromotionItem> listPromotion(Long memberId, List<Long> cartIds) {
         List<CartItem> cartItemList = list(memberId);
-        if (CollUtil.isNotEmpty(cartIds)) {
+        if (cartIds != null && !cartIds.isEmpty()) {
             cartItemList = cartItemList.stream()
                     .filter(item -> cartIds.contains(item.getId()))
                     .collect(Collectors.toList());
@@ -97,7 +93,7 @@ public class CartServiceImpl implements CartService {
         for (CartItem item : items) {
             if (item.getMemberId().equals(memberId)) {
                 cartItemRepository.delete(item);
-                
+
             }
         }
         return ids.size();
@@ -115,7 +111,7 @@ public class CartServiceImpl implements CartService {
         if (updateCart != null && updateCart.getMemberId().equals(currentMember.getId())) {
             updateCart.setModifyDate(java.time.OffsetDateTime.now());
             cartItemRepository.delete(updateCart);
-            
+
         }
         cartItem.setId(null);
         add(cartItem);

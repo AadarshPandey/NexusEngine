@@ -2,7 +2,6 @@ package com.nexusengine.core.portal.engagement.controller;
 
 import lombok.RequiredArgsConstructor;
 
-import com.nexusengine.core.domain.catalog.entity.Product;
 
 
 import com.nexusengine.core.common.api.CommonPage;
@@ -11,7 +10,6 @@ import com.nexusengine.core.domain.engagement.entity.ProductReview;
 import com.nexusengine.core.portal.engagement.service.ReviewService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.List;

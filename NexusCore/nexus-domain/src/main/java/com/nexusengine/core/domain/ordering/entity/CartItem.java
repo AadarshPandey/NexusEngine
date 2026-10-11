@@ -9,7 +9,6 @@ import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.OffsetDateTime;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,33 +22,33 @@ public class CartItem implements Serializable {
 
         @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    
+
 private Long id;
 
         @Column(name = "product_id")
-    
+
 private Long productId;
         @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "product_id", insertable = false, updatable = false)
-    
+
 private Product product;
 
         @Column(name = "sku_id")
-    
+
 private Long productSkuId;
 
         @Column(name = "member_id")
-    
+
 private Long memberId;
         @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "member_id", insertable = false, updatable = false)
-    
+
 private Member member;
 
         @Schema(title = "Quantity")
-    
+
 private Integer quantity;
 
             @Schema(title = "Price")
@@ -67,17 +66,17 @@ private BigDecimal price;
 
         @Column(name = "created_at")
     @Schema(title = "Create date")
-    
+
 private OffsetDateTime createDate;
 
         @Column(name = "updated_at")
     @Schema(title = "Modify date")
-    
+
 private OffsetDateTime modifyDate;
 
         @Transient
     @Schema(title = "Delete status")
-    
+
 private Integer deleteStatus;
 
             @org.hibernate.annotations.Formula("(SELECT p.category_id FROM catalog.product p WHERE p.id = product_id)")

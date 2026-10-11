@@ -6,22 +6,15 @@ import com.nexusengine.core.common.api.CommonPage;
 
 import com.nexusengine.core.domain.engagement.entity.ProductReview;
 import com.nexusengine.core.domain.engagement.entity.ReviewMedia;
-import com.nexusengine.core.domain.catalog.entity.Product;
-import com.nexusengine.core.domain.catalog.entity.Brand;
-import com.nexusengine.core.portal.engagement.service.ReviewService;
 import com.nexusengine.core.domain.engagement.repository.ReviewMediaRepository;
 import com.nexusengine.core.domain.engagement.repository.ProductReviewRepository;
 import com.nexusengine.core.domain.catalog.repository.ProductRepository;
 import com.nexusengine.core.domain.catalog.repository.BrandRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import java.io.File;
-import java.io.IOException;
 import java.util.*;
 import com.nexusengine.core.portal.customer.service.MemberService;
 import com.nexusengine.core.portal.engagement.dto.ReviewParam;
@@ -89,19 +82,19 @@ public class ReviewServiceImpl implements ReviewService {
         review.setDislikeCount(0);
         review.setStatus(1); // Auto approve for now
         review.setCreatedTime(java.time.OffsetDateTime.now());
-        
+
         ProductReview saved = reviewRepository.save(review);
-        
+
         String pics = "";
         if (param.attachmentList() != null && !param.attachmentList().isEmpty()) {
             List<ReviewMedia> attachmentList = new ArrayList<>();
             List<String> picUrls = new ArrayList<>();
-            
+
             io.minio.MinioClient minioClient = io.minio.MinioClient.builder()
                     .endpoint("http://minio:9000")
                     .credentials("minioadmin", "minioadmin")
                     .build();
-                    
+
             for (var m : param.attachmentList()) {
                 String mediaUrl = m.mediaUrl();
                 // Move from temp folder to final folder if it's a new upload
@@ -110,7 +103,7 @@ public class ReviewServiceImpl implements ReviewService {
                         String oldObjectName = mediaUrl.substring(mediaUrl.indexOf("public/users/comments/temp_"));
                         String uuidAndExt = oldObjectName.substring(oldObjectName.lastIndexOf("/") + 1);
                         String newObjectName = "public/users/comments/" + member.getId() + "/" + param.productId() + "/" + saved.getId() + "_" + uuidAndExt;
-                        
+
                         // Just copy for now, temp folder can be cleaned by a cron job or we can delete it directly
                         minioClient.copyObject(
                                 io.minio.CopyObjectArgs.builder()
@@ -121,13 +114,13 @@ public class ReviewServiceImpl implements ReviewService {
                                                 .object(oldObjectName)
                                                 .build())
                                         .build());
-                        
+
                         mediaUrl = "http://localhost:9000/nexus-media/" + newObjectName;
                     } catch (Exception e) {
                         org.slf4j.LoggerFactory.getLogger(ReviewServiceImpl.class).error("Failed to copy media object", e);
                     }
                 }
-                
+
                 ReviewMedia media = new ReviewMedia();
                 media.setReviewId(saved.getId());
                 media.setMediaType(m.mediaType());
@@ -140,7 +133,7 @@ public class ReviewServiceImpl implements ReviewService {
             saved.setAttachmentList(attachmentList);
             pics = String.join(",", picUrls);
         }
-        
+
 
         return saved;
     }
@@ -154,21 +147,21 @@ public class ReviewServiceImpl implements ReviewService {
             String ext = originalFilename != null && originalFilename.contains(".") ? originalFilename.substring(originalFilename.lastIndexOf(".")) : ".png";
             String uuid = UUID.randomUUID().toString();
             String objectName = "public/users/comments/temp_" + userId + "/" + uuid + ext;
-            
+
             io.minio.MinioClient minioClient = io.minio.MinioClient.builder()
                     .endpoint("http://minio:9000") // Docker internal host
                     .credentials("minioadmin", "minioadmin")
                     .build();
-                    
+
             minioClient.putObject(io.minio.PutObjectArgs.builder()
                     .bucket("nexus-media")
                     .object(objectName)
                     .stream(file.getInputStream(), file.getSize(), -1)
                     .contentType(file.getContentType())
                     .build());
-            
+
             Map<String, String> result = new HashMap<>();
-            result.put("url", "http://localhost:9000/nexus-media/" + objectName); 
+            result.put("url", "http://localhost:9000/nexus-media/" + objectName);
             return result;
         } catch (Exception e) {
             throw new RuntimeException("Upload failed", e);
@@ -181,14 +174,14 @@ public class ReviewServiceImpl implements ReviewService {
         if (member == null) {
             throw new RuntimeException("Must be logged in to like");
         }
-        
+
         String likeKey = "review:like:" + id;
         String dislikeKey = "review:dislike:" + id;
         Long userId = member.getId();
-        
+
         ProductReview review = reviewRepository.findById(id).orElse(null);
         if (review == null) return 0;
-        
+
         if (redisService.sIsMember(likeKey, userId)) {
             // Undo like
             redisService.sRemove(likeKey, (Object) userId);
@@ -197,16 +190,16 @@ public class ReviewServiceImpl implements ReviewService {
             // Do like
             redisService.sAdd(likeKey, (Object) userId);
             review.setLikeCount((review.getLikeCount() == null ? 0 : review.getLikeCount()) + 1);
-            
+
             // If already disliked, undo dislike
             if (redisService.sIsMember(dislikeKey, userId)) {
                 redisService.sRemove(dislikeKey, (Object) userId);
                 review.setDislikeCount(Math.max(0, (review.getDislikeCount() == null ? 0 : review.getDislikeCount()) - 1));
             }
         }
-        
+
         reviewRepository.save(review);
-        
+
         return review.getLikeCount();
     }
 
@@ -216,14 +209,14 @@ public class ReviewServiceImpl implements ReviewService {
         if (member == null) {
             throw new RuntimeException("Must be logged in to dislike");
         }
-        
+
         String likeKey = "review:like:" + id;
         String dislikeKey = "review:dislike:" + id;
         Long userId = member.getId();
-        
+
         ProductReview review = reviewRepository.findById(id).orElse(null);
         if (review == null) return 0;
-        
+
         if (redisService.sIsMember(dislikeKey, userId)) {
             // Undo dislike
             redisService.sRemove(dislikeKey, (Object) userId);
@@ -232,16 +225,16 @@ public class ReviewServiceImpl implements ReviewService {
             // Do dislike
             redisService.sAdd(dislikeKey, (Object) userId);
             review.setDislikeCount((review.getDislikeCount() == null ? 0 : review.getDislikeCount()) + 1);
-            
+
             // If already liked, undo like
             if (redisService.sIsMember(likeKey, userId)) {
                 redisService.sRemove(likeKey, (Object) userId);
                 review.setLikeCount(Math.max(0, (review.getLikeCount() == null ? 0 : review.getLikeCount()) - 1));
             }
         }
-        
+
         reviewRepository.save(review);
-        
+
         return review.getDislikeCount();
     }
 }

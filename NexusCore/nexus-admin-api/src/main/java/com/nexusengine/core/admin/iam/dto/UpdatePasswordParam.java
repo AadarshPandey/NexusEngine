@@ -3,8 +3,6 @@ package com.nexusengine.core.admin.iam.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 
-import lombok.Getter;
-import lombok.Setter;
 import jakarta.validation.constraints.NotEmpty;
 
 

@@ -42,7 +42,7 @@ public class FlashSaleOrderReceiver {
     @org.springframework.transaction.annotation.Transactional
     public void handle(FlashSaleOrderMessage message) {
         log.info("Received flash order message for member: {}, product: {}", message.memberId(), message.productId());
-        
+
         // Fix 3: Idempotency check
         String idempotencyKey = "flash:order_processed:" + message.flashPromotionSessionId() + ":" + message.productId() + ":" + message.memberId();
         Boolean isFirstProcess = stringRedisTemplate.opsForValue().setIfAbsent(idempotencyKey, "1", java.time.Duration.ofHours(24));
@@ -72,7 +72,7 @@ public class FlashSaleOrderReceiver {
             order.setDeleteStatus(0);
             order.setOrderType(1); // 1 = flash sale
             orderRepository.save(order);
-            
+
             OrderLine orderItem = new OrderLine();
             orderItem.setOrderId(order.getId());
             orderItem.setProductId(message.productId());
@@ -96,7 +96,7 @@ public class FlashSaleOrderReceiver {
         } catch (Exception e) {
             log.error("Failed to process flash order for member: {}", message.memberId(), e);
             stringRedisTemplate.delete(idempotencyKey); // allow retry
-            
+
             // Log failure
             FlashSalePurchase logEntry = new FlashSalePurchase();
             logEntry.setMemberId(message.memberId());
@@ -107,12 +107,12 @@ public class FlashSaleOrderReceiver {
             logEntry.setStatus("FAILED");
             logEntry.setCreateTime(java.time.OffsetDateTime.now());
             flashPromotionLogRepository.save(logEntry);
-            
+
             try {
                 // Fix 7: Safe compensation
                 String stockKey = "flash:stock:" + message.flashPromotionId() + ":" + message.flashPromotionSessionId() + ":" + message.productId();
                 redisService.incr(stockKey, message.quantity());
-                
+
                 String userSetKey = "flash:users:" + message.flashPromotionId() + ":" + message.flashPromotionSessionId() + ":" + message.productId();
                 stringRedisTemplate.opsForSet().remove(userSetKey, String.valueOf(message.memberId()));
                 log.info("Compensated Redis stock for key: {}, quantity: {}", stockKey, message.quantity());

@@ -5,8 +5,6 @@ import com.nexusengine.core.domain.ordering.entity.MerchantAddress;
 
 import com.nexusengine.core.domain.ordering.entity.ReturnRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Getter;
-import lombok.Setter;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
 

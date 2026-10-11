@@ -1,7 +1,6 @@
 package com.nexusengine.core.domain.ai.repository;
 
 import com.nexusengine.core.domain.ai.entity.ProductEmbedding;
-import com.pgvector.PGvector;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

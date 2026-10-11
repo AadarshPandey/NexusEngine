@@ -5,8 +5,6 @@ import com.nexusengine.core.domain.catalog.entity.Product;
 import com.nexusengine.core.domain.promotion.entity.SpendThresholdDiscount;
 import com.nexusengine.core.domain.promotion.entity.QuantityTierDiscount;
 import com.nexusengine.core.domain.catalog.entity.ProductSku;
-import lombok.Getter;
-import lombok.Setter;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 

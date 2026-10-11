@@ -1,23 +1,15 @@
 package com.nexusengine.core.admin.analytics.service;
 
 import com.nexusengine.core.admin.analytics.dto.DashboardInfo;
-import com.nexusengine.core.domain.catalog.entity.Product;
-import com.nexusengine.core.domain.catalog.entity.ProductSku;
-import com.nexusengine.core.domain.customer.entity.Member;
-import com.nexusengine.core.domain.ordering.entity.CustomerOrder;
-import com.nexusengine.core.domain.ordering.entity.ReturnRequest;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -97,7 +89,7 @@ public class DashboardServiceImpl implements DashboardService {
         // Monthly Summary
         Long monthOrders = (Long) entityManager.createQuery("SELECT COUNT(o) FROM CustomerOrder o WHERE o.createTime >= :start AND o.status IN (1,2,3)")
                 .setParameter("start", monthStart).getSingleResult();
-        
+
         LocalDate firstDayOfWeek = today.minusDays(today.getDayOfWeek().getValue() - 1);
         OffsetDateTime weekStart = firstDayOfWeek.atStartOfDay().atOffset(ZoneOffset.UTC);
         Long weekOrders = (Long) entityManager.createQuery("SELECT COUNT(o) FROM CustomerOrder o WHERE o.createTime >= :start AND o.status IN (1,2,3)")
@@ -124,12 +116,12 @@ public class DashboardServiceImpl implements DashboardService {
             LocalDate d = today.minusDays(i);
             OffsetDateTime dStart = d.atStartOfDay().atOffset(ZoneOffset.UTC);
             OffsetDateTime dEnd = d.plusDays(1).atStartOfDay().atOffset(ZoneOffset.UTC);
-            
+
             Long cnt = (Long) entityManager.createQuery("SELECT COUNT(o) FROM CustomerOrder o WHERE o.createTime >= :start AND o.createTime < :end AND o.status IN (1,2,3)")
                 .setParameter("start", dStart).setParameter("end", dEnd).getSingleResult();
             BigDecimal amt = (BigDecimal) entityManager.createQuery("SELECT SUM(o.payAmount) FROM CustomerOrder o WHERE o.createTime >= :start AND o.createTime < :end AND o.status IN (1,2,3)")
                 .setParameter("start", dStart).setParameter("end", dEnd).getSingleResult();
-                
+
             chartList.add(new DashboardInfo.ChartData(
                 d.getMonthValue() + "/" + d.getDayOfMonth(),
                 cnt != null ? cnt : 0L,

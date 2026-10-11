@@ -2,15 +2,11 @@ package com.nexusengine.core.admin.iam.service;
 
 import lombok.RequiredArgsConstructor;
 
-import cn.hutool.core.collection.CollUtil;
-
-
 import com.nexusengine.core.common.service.RedisService;
 import com.nexusengine.core.domain.iam.repository.AdminUserRoleRepository;
 import com.nexusengine.core.domain.iam.entity.AdminUser;
 import com.nexusengine.core.domain.iam.entity.AdminUserRole;
 import com.nexusengine.core.domain.iam.entity.Permission;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -55,7 +51,7 @@ public class AdminUserCacheServiceImpl implements AdminUserCacheService {
     @Override
     public void delResourceListByRole(Long roleId) {
         List<AdminUserRole> relationList = adminRoleRelationRepository.findByRoleId(roleId);
-        if (CollUtil.isNotEmpty(relationList)) {
+        if (relationList != null && !relationList.isEmpty()) {
             String keyPrefix = REDIS_DATABASE + ":" + REDIS_KEY_RESOURCE_LIST + ":";
             List<String> keys = relationList.stream().map(relation -> keyPrefix + relation.getAdminId()).collect(Collectors.toList());
             redisService.del(keys);
@@ -65,7 +61,7 @@ public class AdminUserCacheServiceImpl implements AdminUserCacheService {
     @Override
     public void delResourceListByRoleIds(List<Long> roleIds) {
         List<AdminUserRole> relationList = adminRoleRelationRepository.findByRoleIdIn(roleIds);
-        if (CollUtil.isNotEmpty(relationList)) {
+        if (relationList != null && !relationList.isEmpty()) {
             String keyPrefix = REDIS_DATABASE + ":" + REDIS_KEY_RESOURCE_LIST + ":";
             List<String> keys = relationList.stream().map(relation -> keyPrefix + relation.getAdminId()).collect(Collectors.toList());
             redisService.del(keys);
@@ -75,7 +71,7 @@ public class AdminUserCacheServiceImpl implements AdminUserCacheService {
     @Override
     public void delResourceListByResource(Long resourceId) {
         List<Long> adminIdList = adminRoleRelationRepository.getAdminIdList(resourceId);
-        if (CollUtil.isNotEmpty(adminIdList)) {
+        if (adminIdList != null && !adminIdList.isEmpty()) {
             String keyPrefix = REDIS_DATABASE + ":" + REDIS_KEY_RESOURCE_LIST + ":";
             List<String> keys = adminIdList.stream().map(adminId -> keyPrefix + adminId).collect(Collectors.toList());
             redisService.del(keys);

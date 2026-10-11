@@ -1,7 +1,5 @@
 package com.nexusengine.core.security.component;
 
-import cn.hutool.core.util.URLUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
 
@@ -15,7 +13,7 @@ import java.util.*;
 public class DynamicSecurityMetadataSource {
 
     private static Map<String, String> configAttributeMap = null;
-    
+
     private final DynamicSecurityService dynamicSecurityService;
 
     public DynamicSecurityMetadataSource(DynamicSecurityService dynamicSecurityService) {

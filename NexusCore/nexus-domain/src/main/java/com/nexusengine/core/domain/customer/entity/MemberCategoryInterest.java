@@ -17,24 +17,24 @@ public class MemberCategoryInterest implements Serializable {
 
         @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    
+
 private Long id;
 
         @Column(name = "member_id")
-    
+
 private Long memberId;
         @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "member_id", insertable = false, updatable = false)
-    
+
 private Member member;
 
         @Column(name = "category_id")
-    
+
 private Long productCategoryId;
         @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "category_id", insertable = false, updatable = false)
-    
+
 private Category productCategory;
 }

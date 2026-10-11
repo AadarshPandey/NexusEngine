@@ -70,10 +70,7 @@
             
         </dependency>
         
-        <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-all</artifactId>
-        </dependency>
+
         <!--Testcontainers for Integration Testing-->
         <dependency>
             <groupId>org.testcontainers</groupId>

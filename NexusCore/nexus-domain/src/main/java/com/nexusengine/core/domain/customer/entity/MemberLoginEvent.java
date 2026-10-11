@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.OffsetDateTime;
-import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,20 +17,20 @@ public class MemberLoginEvent implements Serializable {
 
         @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    
+
 private Long id;
 
         @Column(name = "member_id")
-    
+
 private Long memberId;
         @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "member_id", insertable = false, updatable = false)
-    
+
 private Member member;
 
         @Column(name = "occurred_at")
-    
+
 private OffsetDateTime createTime;
 
             @Column(name = "ip_address")

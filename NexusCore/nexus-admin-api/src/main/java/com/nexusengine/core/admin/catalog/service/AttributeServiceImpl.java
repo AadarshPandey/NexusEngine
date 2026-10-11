@@ -13,7 +13,6 @@ import com.nexusengine.core.domain.catalog.repository.AttributeDefinitionReposit
 import com.nexusengine.core.domain.catalog.entity.AttributeDefinition;
 import com.nexusengine.core.domain.catalog.entity.ProductType;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -88,10 +87,10 @@ public class AttributeServiceImpl implements AttributeService {
 
     @Override
     public List<AttributeInfo> getProductAttrInfo(Long productCategoryId) {
-        
+
         List<CategoryAttribute> relations = relationRepository.findAll();
         List<AttributeInfo> result = new ArrayList<>();
-        
+
         for (CategoryAttribute rel : relations) {
             if (rel.getProductCategoryId() != null && rel.getProductCategoryId().equals(productCategoryId)) {
                 AttributeDefinition attr = productAttributeRepository.findById(rel.getProductAttributeId()).orElse(null);

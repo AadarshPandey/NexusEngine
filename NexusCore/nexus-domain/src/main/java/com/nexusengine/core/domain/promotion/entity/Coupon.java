@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.OffsetDateTime;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,7 +18,7 @@ public class Coupon implements Serializable {
 
         @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    
+
 private Long id;
 
             @Schema(title = "Type")
@@ -29,7 +28,7 @@ private Integer type;
 
     private String name;
 
-    
+
             @Schema(title = "Count")
     @Column(name = "remaining_quantity")
 private Integer count;
@@ -45,15 +44,15 @@ private Integer perLimit;
 
         @Column(name = "min_spend_amount")
     @Schema(title = "Min point")
-    
+
 private BigDecimal minOrderAmount;
 
         @Column(name = "starts_at")
-    
+
 private OffsetDateTime startTime;
 
         @Column(name = "ends_at")
-    
+
 private OffsetDateTime endTime;
 
         @Column(name = "applicability_scope")
@@ -61,22 +60,22 @@ private OffsetDateTime endTime;
     @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.SMALLINT)
 private Integer useType;
 
-    
-    
-    
+
+
+
         @Column(name = "claimed_count")
     @Schema(title = "Receive count")
-    
+
 private Integer receiveCount;
 
-    
+
         @Schema(title = "Code")
-    
+
 private String code;
 
         @Column(name = "max_discount_amount")
     @Schema(title = "Max discount amount")
-    
+
 private BigDecimal maxDiscountAmount;
 
     @jakarta.persistence.Version

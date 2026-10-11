@@ -1,12 +1,8 @@
 package com.nexusengine.core.portal.ordering.dto;
 
-import com.nexusengine.core.domain.catalog.entity.Product;
 
-import com.nexusengine.core.domain.customer.entity.Member;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Getter;
-import lombok.Setter;
 import java.math.BigDecimal;
 
 

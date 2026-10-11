@@ -1,7 +1,6 @@
 package com.nexusengine.core.search.service.impl;
 
-import cn.hutool.core.collection.ListUtil;
-import cn.hutool.core.util.StrUtil;
+import org.springframework.util.StringUtils;
 import co.elastic.clients.elasticsearch._types.aggregations.*;
 import co.elastic.clients.elasticsearch._types.aggregations.Aggregation;
 import co.elastic.clients.elasticsearch._types.query_dsl.*;
@@ -13,7 +12,6 @@ import com.nexusengine.core.search.repository.ProductSearchRepository;
 import com.nexusengine.core.search.service.ProductSearchService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.data.elasticsearch.client.elc.*;
 import org.springframework.data.elasticsearch.core.SearchHit;
@@ -82,7 +80,7 @@ public class ProductSearchServiceImpl implements ProductSearchService {
         Pageable pageable = PageRequest.of(pageNum, pageSize);
         NativeQueryBuilder nativeQueryBuilder = new NativeQueryBuilder();
         nativeQueryBuilder.withPageable(pageable);
-        if (StrUtil.isEmpty(keyword)) {
+        if (!StringUtils.hasText(keyword)) {
             nativeQueryBuilder.withQuery(QueryBuilders.matchAll(builder -> builder));
         } else {
             nativeQueryBuilder.withQuery(QueryBuilders.multiMatch(builder -> builder
@@ -93,7 +91,7 @@ public class ProductSearchServiceImpl implements ProductSearchService {
         NativeQuery nativeQuery = nativeQueryBuilder.build();
         SearchHits<ProductDocument> searchHits = elasticsearchTemplate.search(nativeQuery, ProductDocument.class);
         if (searchHits.getTotalHits() <= 0) {
-            return new PageImpl<>(ListUtil.empty(), pageable, 0);
+            return new PageImpl<>(Collections.emptyList(), pageable, 0);
         }
         List<ProductDocument> searchProductList = searchHits.stream().map(SearchHit::getContent).collect(Collectors.toList());
         return new PageImpl<>(searchProductList, pageable, searchHits.getTotalHits());
@@ -116,7 +114,7 @@ public class ProductSearchServiceImpl implements ProductSearchService {
             });
             nativeQueryBuilder.withFilter(boolQuery);
         }
-        if (StrUtil.isEmpty(keyword)) {
+        if (!StringUtils.hasText(keyword)) {
             nativeQueryBuilder.withQuery(QueryBuilders.matchAll(builder -> builder));
         } else {
             List<FunctionScore> functionScoreList = new ArrayList<>();
@@ -153,7 +151,7 @@ public class ProductSearchServiceImpl implements ProductSearchService {
         LOGGER.info("DSL:{}", nativeQuery.getQuery().toString());
         SearchHits<ProductDocument> searchHits = elasticsearchTemplate.search(nativeQuery, ProductDocument.class);
         if (searchHits.getTotalHits() <= 0) {
-            return new PageImpl<>(ListUtil.empty(), pageable, 0);
+            return new PageImpl<>(Collections.emptyList(), pageable, 0);
         }
         List<ProductDocument> searchProductList = searchHits.stream().map(SearchHit::getContent).collect(Collectors.toList());
         return new PageImpl<>(searchProductList, pageable, searchHits.getTotalHits());
@@ -194,18 +192,18 @@ public class ProductSearchServiceImpl implements ProductSearchService {
             LOGGER.info("DSL:{}", nativeQuery.getQuery().toString());
             SearchHits<ProductDocument> searchHits = elasticsearchTemplate.search(nativeQuery, ProductDocument.class);
             if (searchHits.getTotalHits() <= 0) {
-                return new PageImpl<>(ListUtil.empty(), pageable, 0);
+                return new PageImpl<>(Collections.emptyList(), pageable, 0);
             }
             List<ProductDocument> searchProductList = searchHits.stream().map(SearchHit::getContent).collect(Collectors.toList());
             return new PageImpl<>(searchProductList, pageable, searchHits.getTotalHits());
         }
-        return new PageImpl<>(ListUtil.empty());
+        return new PageImpl<>(Collections.emptyList());
     }
 
     @Override
     public ProductRelatedInfo searchRelatedInfo(String keyword) {
         NativeQueryBuilder nativeQueryBuilder = new NativeQueryBuilder();
-        if (StrUtil.isEmpty(keyword)) {
+        if (!StringUtils.hasText(keyword)) {
             nativeQueryBuilder.withQuery(QueryBuilders.matchAll(builder -> builder));
         } else {
             nativeQueryBuilder.withQuery(QueryBuilders.multiMatch(builder -> builder.fields("name", "subTitle", "keywords").query(keyword)));

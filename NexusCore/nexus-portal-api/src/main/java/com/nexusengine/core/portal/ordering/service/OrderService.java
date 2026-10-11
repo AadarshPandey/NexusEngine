@@ -40,6 +40,8 @@ public interface OrderService {
      */
     Integer paySuccess(Long orderId, Integer payType);
 
+    Integer paySuccess(Long orderId, Integer payType, String paymentId);
+
 /**
      * Cancels all orders that have timed out pending payment.
      *

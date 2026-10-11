@@ -41,16 +41,16 @@ public class OutboxEventProcessor {
         try {
             if (lock.tryLock(0, 5, TimeUnit.SECONDS)) {
                 List<OutboxEvent> pendingEvents = outboxEventRepository.findByStatusOrderByCreatedAtAsc("PENDING", PageRequest.of(0, 50));
-                
+
                 for (OutboxEvent event : pendingEvents) {
                     try {
                         if ("CancelOrder".equals(event.getType())) {
                             Long orderId = Long.parseLong(event.getAggregateId());
                             Long delayTimes = Long.parseLong(event.getPayload());
-                            
+
                             // Actually push to RabbitMQ now
                             cancelOrderSender.sendMessage(orderId, delayTimes);
-                            
+
                             // Mark as sent
                             event.setStatus("SENT");
                             outboxEventRepository.save(event);

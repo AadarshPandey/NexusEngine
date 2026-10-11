@@ -20,7 +20,6 @@ import com.nexusengine.core.domain.promotion.repository.FlashSaleSlotRepository;
 
 
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -65,33 +64,33 @@ public class HomeServiceImpl implements HomeService {
         resBrandList = (homeDao.getRecommendBrandList(0, 6));
         resNewProductList = (homeDao.getNewProductList(0, 4));
         resHotProductList = (homeDao.getHotProductList(0, 4));
-        
+
         initializeMediaList(resNewProductList);
         initializeMediaList(resHotProductList);
-        
+
         // Fix 4: Wire HomeFlashPromotion to query active session
         java.time.LocalDateTime hfpStartTime = null; java.time.LocalDateTime hfpEndTime = null; java.time.LocalDateTime hfpNextStartTime = null; java.time.LocalDateTime hfpNextEndTime = null; java.util.List<FlashPromotionProduct> hfpProductList = new java.util.ArrayList<>();
         try {
             java.time.LocalDateTime now = java.time.LocalDateTime.now();
             java.time.LocalTime currentTime = java.time.LocalTime.now();
-            
+
             // Find active promotion event today
             java.time.LocalDate today = java.time.LocalDate.now();
             List<FlashSale> promotions = flashPromotionRepository.findByStatusAndStartDateLessThanEqualAndEndDateGreaterThanEqual(1, today, today);
             if (!promotions.isEmpty()) {
                 FlashSale promotion = promotions.get(0);
-                
+
                 // Find active session right now
                 java.util.Optional<FlashSaleSlot> currentSessionOpt = flashPromotionSessionRepository.findFirstByStatusAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(1, currentTime, currentTime);
-                
+
                 if (currentSessionOpt.isPresent()) {
                     FlashSaleSlot currentSession = currentSessionOpt.get();
-                    
+
                     // Set times based on today + session time
                     today = java.time.LocalDate.now();
                     hfpStartTime = (java.time.LocalDateTime.of(today, currentSession.getStartTime()));
                     hfpEndTime = (java.time.LocalDateTime.of(today, currentSession.getEndTime()));
-                    
+
                     // Fetch products
                     List<FlashSaleItem> relations = flashPromotionProductRelationRepository.findByFlashPromotionIdAndFlashPromotionSessionId(promotion.getId(), currentSession.getId());
                     List<FlashPromotionProduct> flashProductList = new java.util.ArrayList<>();
@@ -107,8 +106,8 @@ public class HomeServiceImpl implements HomeService {
         } catch (Exception e) {
             // fallback
         }
-        
-        
+
+
         try {
             resAiRecommendProductList = (semanticSearchService.semanticSearch(null, "latest trending electronics smartphones laptops"));
             initializeMediaList(resAiRecommendProductList);

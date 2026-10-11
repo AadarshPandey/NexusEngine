@@ -3,8 +3,6 @@ package com.nexusengine.core.portal.ordering.dto;
 import com.nexusengine.core.domain.ordering.entity.CartItem;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Getter;
-import lombok.Setter;
 import java.math.BigDecimal;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 

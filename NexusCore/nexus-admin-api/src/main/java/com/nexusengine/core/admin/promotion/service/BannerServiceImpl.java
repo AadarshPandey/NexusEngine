@@ -2,12 +2,10 @@ package com.nexusengine.core.admin.promotion.service;
 
 import lombok.RequiredArgsConstructor;
 
-import cn.hutool.core.util.StrUtil;
 
 
 import com.nexusengine.core.domain.promotion.repository.BannerRepository;
 import com.nexusengine.core.domain.promotion.entity.Banner;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;

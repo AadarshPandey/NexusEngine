@@ -6,7 +6,6 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.sql.SQLSyntaxErrorException;
@@ -40,7 +39,7 @@ public class GlobalExceptionHandler {
         } else if (e instanceof BindException) {
             bindingResult = ((BindException) e).getBindingResult();
         }
-        
+
         String message = "Validation failed";
         if (bindingResult != null && bindingResult.hasErrors()) {
             message = bindingResult.getFieldErrors().stream()

@@ -219,10 +219,12 @@
                     <version>${spotless.version}</version>
                     <configuration>
                         <java>
-                            <googleJavaFormat>
-                                <version>1.25.2</version>
-                                <style>GOOGLE</style>
-                            </googleJavaFormat>
+                            <trimTrailingWhitespace/>
+                            <endWithNewline/>
+                            <indent>
+                                <spaces>true</spaces>
+                                <spacesPerTab>4</spacesPerTab>
+                            </indent>
                             <removeUnusedImports/>
                         </java>
                     </configuration>

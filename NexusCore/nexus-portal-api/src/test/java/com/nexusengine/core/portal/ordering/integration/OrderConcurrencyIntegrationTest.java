@@ -25,10 +25,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -61,7 +59,7 @@ public class OrderConcurrencyIntegrationTest {
 
     @Autowired
     private ProductRepository productRepository;
-    
+
     @Autowired
     private OrderPolicyRepository orderSettingRepository;
 
@@ -72,7 +70,7 @@ public class OrderConcurrencyIntegrationTest {
         productRepository.deleteAll();
         memberRepository.deleteAll();
         addressRepository.deleteAll();
-        
+
         OrderPolicy orderSetting = new OrderPolicy();
         orderSetting.setId(1L);
         orderSetting.setPaymentTimeoutMin(60);

@@ -97,7 +97,7 @@ public class WebLogAspect {
             LOGGER.error("Failed to serialize webLog", e);
         }
         logJson = logJson.replaceAll("\"(?i)(.*?password.*?)\":\"[^\"]+\"", "\"$1\":\"***\"");
-        
+
         // Also mask in the map for structural logging
         if (webLog.getParameter() != null) {
             String paramStr = "";

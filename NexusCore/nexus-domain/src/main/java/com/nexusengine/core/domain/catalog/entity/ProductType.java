@@ -1,6 +1,5 @@
 package com.nexusengine.core.domain.catalog.entity;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import java.io.Serializable;
 import lombok.Getter;
@@ -16,7 +15,7 @@ public class ProductType implements Serializable {
 
         @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    
+
 private Long id;
 
     private String name;

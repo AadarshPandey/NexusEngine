@@ -16,16 +16,16 @@ public class AttributeDefinition implements Serializable {
 
         @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    
+
 private Long id;
 
         @Column(name = "product_type_id")
-    
+
 private Long productAttributeCategoryId;
         @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "product_type_id", insertable = false, updatable = false)
-    
+
 private ProductType productAttributeCategory;
 
     private String name;
@@ -45,7 +45,7 @@ private Integer inputType;
         @com.fasterxml.jackson.annotation.JsonProperty("allowedValues")
         @Column(name = "allowed_values")
     @Schema(title = "Input list")
-    
+
 private String inputList;
 
     @Column(name = "kind")

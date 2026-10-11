@@ -8,11 +8,8 @@ import com.nexusengine.core.admin.ordering.dto.OrderStatusUpdateParam;
 import com.nexusengine.core.admin.ordering.dto.ReturnRequestQueryParam;
 import com.nexusengine.core.admin.ordering.dto.ReturnRequestResult;
 import com.nexusengine.core.domain.ordering.entity.ReturnRequest;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.PageRequest;
-import java.time.LocalDateTime;
 import java.util.List;
 
 

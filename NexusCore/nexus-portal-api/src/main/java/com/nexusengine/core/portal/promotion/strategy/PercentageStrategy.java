@@ -14,13 +14,13 @@ public class PercentageStrategy implements CouponDiscountStrategy {
         BigDecimal total = calcEligibleTotal(items);
         BigDecimal discount = total.multiply(coupon.getAmount())
             .divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
-            
+
         if (coupon.getMaxDiscountAmount() != null && coupon.getMaxDiscountAmount().compareTo(BigDecimal.ZERO) > 0) {
             discount = discount.min(coupon.getMaxDiscountAmount());
         }
         return discount;
     }
-    
+
     private BigDecimal calcEligibleTotal(List<OrderLine> items) {
         BigDecimal total = BigDecimal.ZERO;
         for (OrderLine item : items) {

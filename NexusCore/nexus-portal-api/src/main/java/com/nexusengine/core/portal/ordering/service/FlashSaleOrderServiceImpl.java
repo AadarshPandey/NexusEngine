@@ -5,19 +5,14 @@ import lombok.RequiredArgsConstructor;
 import com.nexusengine.core.common.api.CommonResult;
 
 import com.nexusengine.core.domain.customer.entity.Member;
-import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
-import io.github.bucket4j.Refill;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.AmqpTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
 
 import jakarta.annotation.PostConstruct;
-import java.time.Duration;
-import java.util.Collections;
 import java.util.concurrent.ConcurrentHashMap;
 import com.nexusengine.core.portal.ordering.dto.FlashSaleOrderMessage;
 import com.nexusengine.core.portal.customer.service.MemberService;
@@ -85,7 +80,7 @@ public class FlashSaleOrderServiceImpl implements FlashSaleOrderService {
         String stockKey = "flash:stock:" + flashPromotionId + ":" + flashPromotionSessionId + ":" + productId;
         String userSetKey = "flash:users:" + flashPromotionId + ":" + flashPromotionSessionId + ":" + productId;
         Long result = redisTemplate.execute(stockScript, java.util.Arrays.asList(stockKey, userSetKey), String.valueOf(quantity), String.valueOf(currentMember.getId()));
-        
+
         if (result == null || result == 0L) {
             return CommonResult.failed("Flash sale inventory is sold out!");
         } else if (result == -1L) {

@@ -5,7 +5,6 @@ import com.nexusengine.core.domain.iam.entity.Permission;
 import com.nexusengine.core.admin.iam.service.AdminUserService;
 import com.nexusengine.core.admin.iam.service.PermissionService;
 import com.nexusengine.core.security.component.DynamicSecurityService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

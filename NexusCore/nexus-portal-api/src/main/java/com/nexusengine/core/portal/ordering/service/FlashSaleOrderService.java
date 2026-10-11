@@ -5,7 +5,7 @@ import com.nexusengine.core.common.api.CommonResult;
 
 
 public interface FlashSaleOrderService {
-    
+
     /**
      * Handle flash sale order generation
      * Uses Bucket4j for rate limiting and Redis Lua script for atomic stock deduction

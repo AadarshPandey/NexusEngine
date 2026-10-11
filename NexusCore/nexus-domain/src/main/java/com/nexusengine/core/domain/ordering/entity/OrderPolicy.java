@@ -16,31 +16,31 @@ public class OrderPolicy implements Serializable {
 
         @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    
+
 private Long id;
 
         @Column(name = "flash_payment_timeout_min")
     @Schema(title = "Flash order overtime")
-    
+
 private Integer flashPaymentTimeoutMin;
 
         @Column(name = "payment_timeout_min")
     @Schema(title = "Normal order overtime")
-    
+
 private Integer paymentTimeoutMin;
 
         @Column(name = "auto_confirm_receipt_days")
     @Schema(title = "Confirm overtime")
-    
+
 private Integer autoConfirmReceiptDays;
 
         @Column(name = "auto_complete_days")
     @Schema(title = "Finish overtime")
-    
+
 private Integer autoCompleteDays;
 
         @Column(name = "review_window_days")
     @Schema(title = "Comment overtime")
-    
+
 private Integer reviewWindowDays;
 }

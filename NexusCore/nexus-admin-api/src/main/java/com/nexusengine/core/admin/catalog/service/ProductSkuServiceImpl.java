@@ -7,10 +7,9 @@ import com.nexusengine.core.domain.catalog.repository.ProductPriceChangeReposito
 
 import com.nexusengine.core.domain.catalog.entity.ProductPriceChange;
 
-import cn.hutool.core.util.StrUtil;
+import org.springframework.util.StringUtils;
 import com.nexusengine.core.domain.catalog.repository.ProductSkuRepository;
 import com.nexusengine.core.domain.catalog.entity.ProductSku;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,7 +27,7 @@ public class ProductSkuServiceImpl implements ProductSkuService {
 
     @Override
     public List<ProductSku> getList(Long pid, String keyword) {
-        if (!StrUtil.isEmpty(keyword)) {
+        if (StringUtils.hasText(keyword)) {
             return skuStockRepository.findByProductIdAndSkuCodeContaining(pid, keyword);
         }
         return skuStockRepository.findByProductId(pid);
@@ -39,7 +38,7 @@ public class ProductSkuServiceImpl implements ProductSkuService {
         List<ProductSku> filterSkuList = skuStockList.stream()
                 .filter(item -> pid.equals(item.getProductId()))
                 .collect(Collectors.toList());
-        
+
         // Fetch old to log changes
         List<ProductSku> oldSkus = skuStockRepository.findByProductId(pid);
         String username = "admin";
@@ -61,7 +60,7 @@ public class ProductSkuServiceImpl implements ProductSkuService {
                 productAuditLogRepository.save(log);
             }
         }
-        
+
         skuStockRepository.saveAll(filterSkuList);
         return filterSkuList.size();
     }

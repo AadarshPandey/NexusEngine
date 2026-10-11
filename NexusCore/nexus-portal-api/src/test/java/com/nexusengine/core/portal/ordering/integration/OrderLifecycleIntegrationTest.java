@@ -75,7 +75,7 @@ public class OrderLifecycleIntegrationTest {
         String signature = "test_sig";
 
         portalOrderService.handlePaymentWebhook(payload, signature);
-        
+
         // Second call with same transaction ID
         portalOrderService.handlePaymentWebhook(payload, signature);
 
