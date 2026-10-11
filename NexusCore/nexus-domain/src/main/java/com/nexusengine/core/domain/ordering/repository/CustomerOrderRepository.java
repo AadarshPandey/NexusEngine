@@ -14,4 +14,5 @@ public interface CustomerOrderRepository extends JpaRepository<CustomerOrder, Lo
     Page<CustomerOrder> findByMemberIdAndStatusAndDeleteStatusIsNullOrderByCreateTimeDesc(Long memberId, Integer status, Pageable pageable);
     List<CustomerOrder> findByIdAndStatusAndDeleteStatusIsNull(Long id, Integer status);
     List<CustomerOrder> findByStatusAndDeleteStatusIsNullAndCreateTimeBefore(Integer status, java.time.LocalDateTime deadline);
+    List<CustomerOrder> findByStatusAndDeleteStatusIsNullAndDeliveryTimeBefore(Integer status, java.time.OffsetDateTime deadline);
 }

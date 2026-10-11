@@ -90,6 +90,7 @@ public class OrderServiceImpl implements OrderService {
     private final org.redisson.api.RedissonClient redissonClient;
     private final OutboxEventRepository outboxEventRepository;
     private final ReturnRequestRepository returnApplyRepository;
+    private final com.nexusengine.core.domain.customer.repository.MemberCategoryInterestRepository memberCategoryInterestRepository;
 
     @Override
     public ConfirmOrderResult generateConfirmOrder(List<Long> cartIds) {
@@ -101,7 +102,7 @@ public class OrderServiceImpl implements OrderService {
         result.setMemberReceiveAddressList(memberReceiveAddressList);
         List<CouponHistoryDetail> couponHistoryDetailList = memberCouponService.listCart(cartPromotionItemList, 1);
         result.setCouponHistoryDetailList(couponHistoryDetailList);
-        result.setMemberPoints(currentMember.getPointsBalance());
+        result.setMemberPoints(0);
         ConfirmOrderResult.CalcAmount calcAmount = calcCartAmount(cartPromotionItemList);
         result.setCalcAmount(calcAmount);
         return result;
@@ -239,6 +240,24 @@ public class OrderServiceImpl implements OrderService {
             updateCouponStatus(orderParam.couponId(), currentMember.getId(), 1, order);
         }
         deleteCartItemList(cartPromotionItemList, currentMember);
+        if (currentMember != null) {
+            cartPromotionItemList.stream()
+                .map(item -> item.cartItem() != null ? item.cartItem().getProductCategoryId() : null)
+                .filter(java.util.Objects::nonNull)
+                .distinct()
+                .forEach(catId -> {
+                    try {
+                        if (!memberCategoryInterestRepository.existsByMemberIdAndProductCategoryId(currentMember.getId(), catId)) {
+                            var interest = new com.nexusengine.core.domain.customer.entity.MemberCategoryInterest();
+                            interest.setMemberId(currentMember.getId());
+                            interest.setProductCategoryId(catId);
+                            memberCategoryInterestRepository.save(interest);
+                        }
+                    } catch (Exception ex) {
+                        log.debug("Category interest record skipped: {}", ex.getMessage());
+                    }
+                });
+        }
         sendDelayMessageCancelOrder(order.getId());
         orderRepository.flush();
         orderItemRepository.flush();
@@ -365,11 +384,16 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void sendDelayMessageCancelOrder(Long orderId) {
+        CustomerOrder order = orderRepository.findById(orderId).orElse(null);
         OrderPolicy orderSetting = orderSettingRepository.findById(1L).orElse(null);
-        long timeoutMin = (orderSetting != null && orderSetting.getPaymentTimeoutMin() != null)
-                ? orderSetting.getPaymentTimeoutMin()
-                : 30L;
-        if (orderSetting == null) {
+        long timeoutMin = 30L;
+        if (orderSetting != null) {
+            if (order != null && Integer.valueOf(1).equals(order.getOrderType()) && orderSetting.getFlashPaymentTimeoutMin() != null) {
+                timeoutMin = orderSetting.getFlashPaymentTimeoutMin();
+            } else if (orderSetting.getPaymentTimeoutMin() != null) {
+                timeoutMin = orderSetting.getPaymentTimeoutMin();
+            }
+        } else {
             log.warn("Order policy record not found in database; using default {}-minute timeout for order {}", timeoutMin, orderId);
         }
 
@@ -739,4 +763,12 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
+    @Override
+    public int autoConfirmShippedOrders() {
+        OrderPolicy orderSetting = orderSettingRepository.findById(1L).orElse(null);
+        int days = (orderSetting != null && orderSetting.getAutoConfirmReceiptDays() != null)
+                ? orderSetting.getAutoConfirmReceiptDays()
+                : 7;
+        return orderDao.autoConfirmShippedOrders(days);
+    }
 }

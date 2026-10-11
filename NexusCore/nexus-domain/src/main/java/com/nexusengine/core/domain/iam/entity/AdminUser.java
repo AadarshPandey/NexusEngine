@@ -58,9 +58,4 @@ private OffsetDateTime loginTime;
     @Column(name = "is_enabled")
     @jakarta.persistence.Convert(converter = com.nexusengine.core.domain.shared.converter.IntegerToBooleanConverter.class)
 private Integer status;
-
-        @Column(name = "vendor_id")
-    @Schema(title = "Vendor ID")
-
-private Long vendorId;
 }

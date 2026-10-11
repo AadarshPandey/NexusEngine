@@ -110,7 +110,7 @@ spring:
             model: gemini-2.5-flash
     vectorstore:
       pgvector:
-        initialize-schema: true
+        initialize-schema: false
         schema-name: ai
   application:
     name: nexus-monolith
@@ -128,12 +128,8 @@ spring:
         endpoint: ${AWS_S3_ENDPOINT:http://localhost:4566}
         bucket-name: ${AWS_S3_BUCKET:nexus-media}
   flyway:
-    baseline-on-migrate: true
-    baseline-version: 0
-    default-schema: migration
     enabled: true
-    out-of-order: true
-    schemas: migration,catalog,orders,users,marketing,ai,system,messaging
+    schemas: catalog,ordering,customer,iam,promotion,engagement,payment,ai,messaging
   jackson:
     default-property-inclusion: non_null
   jpa:

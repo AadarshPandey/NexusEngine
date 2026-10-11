@@ -60,14 +60,6 @@ public interface MemberService {
     Member getCurrentMember();
     void updateMember(Member member);
 
-        /**
-     * Updates the integration (points) for a specific member.
-     *
-     * @param id the unique identifier of the member
-     * @param integration the integration points to set or add
-     */
-    void updatePoints(Long id,Integer integration);
-
 
         /**
      * Loads user details for Spring Security authentication.

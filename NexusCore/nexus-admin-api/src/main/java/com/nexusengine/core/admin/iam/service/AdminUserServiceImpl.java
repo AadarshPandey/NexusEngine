@@ -122,6 +122,8 @@ public class AdminUserServiceImpl implements AdminUserService {
         HttpServletRequest request = attributes.getRequest();
         loginLog.setIp(RequestUtil.getRequestIp(request));
         loginLogRepository.save(loginLog);
+        admin.setLoginTime(loginLog.getCreateTime());
+        adminRepository.save(admin);
     }
 
     @Override

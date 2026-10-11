@@ -1,78 +1,53 @@
 package com.nexusengine.core.portal.catalog.service;
 
-import lombok.RequiredArgsConstructor;
-
 import com.nexusengine.core.domain.catalog.entity.Product;
-
-import com.nexusengine.core.domain.ai.entity.ProductEmbedding;
-import com.nexusengine.core.domain.ai.repository.ProductEmbeddingRepository;
 import com.nexusengine.core.domain.catalog.repository.ProductRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.ai.embedding.EmbeddingModel;
-import org.springframework.stereotype.Service;
+import org.springframework.ai.document.Document;
+import org.springframework.ai.vectorstore.SearchRequest;
+import org.springframework.ai.vectorstore.VectorStore;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
-
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class SemanticSearchServiceImpl implements SemanticSearchService {
 
     private final ProductRepository productRepository;
+    private final VectorStore vectorStore;
 
-    private final ProductEmbeddingRepository productEmbeddingRepository;
-
-    private final EmbeddingModel embeddingModel;
+    public SemanticSearchServiceImpl(
+            ProductRepository productRepository,
+            @Autowired(required = false) VectorStore vectorStore) {
+        this.productRepository = productRepository;
+        this.vectorStore = vectorStore;
+    }
 
     @Override
     public int generateAllProductEmbeddings() {
-        if (embeddingModel == null) {
-            log.error("EmbeddingModel is not available. Please check OpenAI API key.");
+        if (vectorStore == null) {
+            log.error("VectorStore is not available.");
             return 0;
         }
 
         List<Product> products = productRepository.findAll(PageRequest.of(0, 1000)).getContent();
-        int count = 0;
-
-        // Batch processing to avoid rate limits
-        int batchSize = 100;
-        for (int i = 0; i < products.size(); i += batchSize) {
-            int end = Math.min(products.size(), i + batchSize);
-            List<Product> batch = products.subList(i, end);
-
-            List<String> contents = batch.stream()
-                .map(this::buildProductContent)
-                .collect(Collectors.toList());
-
-            List<float[]> vectors = contents.stream()
-                .map(content -> embeddingModel.embed(content))
-                .collect(Collectors.toList());
-
-            List<ProductEmbedding> embeddingsToSave = new ArrayList<>();
-            for (int j = 0; j < batch.size(); j++) {
-                float[] vector = vectors.get(j);
-                if (vector != null && vector.length > 0) {
-                    ProductEmbedding embedding = new ProductEmbedding();
-                    embedding.setProductId(batch.get(j).getId());
-                    embedding.setEmbedding(vector);
-                    embeddingsToSave.add(embedding);
-                    count++;
-                }
-            }
-            productEmbeddingRepository.saveAll(embeddingsToSave);
-
-            // Sleep to avoid rate limits
-            try {
-                java.util.concurrent.TimeUnit.MILLISECONDS.sleep(1000);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
+        if (products.isEmpty()) {
+            return 0;
         }
-        return count;
+
+        List<Document> docs = products.stream()
+                .map(p -> new Document(buildProductContent(p), Map.of("productId", p.getId())))
+                .collect(Collectors.toList());
+
+        vectorStore.add(docs);
+        return docs.size();
     }
 
     @Override
@@ -80,41 +55,50 @@ public class SemanticSearchServiceImpl implements SemanticSearchService {
     @io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker(name = "gemini", fallbackMethod = "semanticSearchFallback")
     @io.github.resilience4j.retry.annotation.Retry(name = "gemini")
     public List<Product> semanticSearch(Long memberId, String searchContext) {
-        if (embeddingModel == null || searchContext == null || searchContext.trim().isEmpty()) {
+        if (vectorStore == null || searchContext == null || searchContext.trim().isEmpty()) {
             return new ArrayList<>();
         }
 
-        // Get embedding for the user context
-        float[] searchVector = embeddingModel.embed(searchContext);
-        if (searchVector == null || searchVector.length == 0) {
+        List<Document> results = vectorStore.similaritySearch(
+                SearchRequest.builder().query(searchContext).topK(5).build()
+        );
+
+        if (results == null || results.isEmpty()) {
             return new ArrayList<>();
         }
 
-        // Format vector as string for PostgreSQL native query: "[0.1, 0.2, ...]"
-        String vectorString = "[" + java.util.stream.IntStream.range(0, searchVector.length)
-                .mapToObj(i -> String.valueOf(searchVector[i]))
-                .collect(Collectors.joining(",")) + "]";
+        List<Long> productIds = results.stream()
+                .map(doc -> {
+                    Object idObj = doc.getMetadata().get("productId");
+                    if (idObj instanceof Number num) {
+                        return num.longValue();
+                    } else if (idObj != null) {
+                        try {
+                            return Long.parseLong(idObj.toString());
+                        } catch (NumberFormatException ignored) {
+                        }
+                    }
+                    return null;
+                })
+                .filter(Objects::nonNull)
+                .distinct()
+                .collect(Collectors.toList());
 
-        // Find nearest 5 products
-        List<Long> nearestIds = productEmbeddingRepository.findNearestProducts(vectorString, 5);
-        if (nearestIds.isEmpty()) {
+        if (productIds.isEmpty()) {
             return new ArrayList<>();
         }
 
-        return productRepository.findAllById(nearestIds);
+        return productRepository.findAllById(productIds);
     }
 
     public List<Product> semanticSearchFallback(Long memberId, String searchContext, Throwable t) {
-        log.warn("OpenAI/pgvector service temporarily unavailable, falling back to static/cached recommendations: {}", t.getMessage());
-        // Simple fallback: just return an empty list or the top latest products.
-        // Returning an empty list gracefully degrades the UI.
+        log.warn("Vector search service temporarily unavailable, falling back to empty list: {}", t.getMessage());
         return new ArrayList<>();
     }
 
     private String buildProductContent(Product product) {
-        return String.format("%s %s %s %s",
+        return String.format("%s %s %s",
                 product.getName() != null ? product.getName() : "",
-                "",
                 product.getDescription() != null ? product.getDescription() : "",
                 product.getKeywords() != null ? product.getKeywords() : "");
     }

@@ -71,6 +71,7 @@ public class OrderDao {
         for (OrderLine item : orderItemList) {
             if (item.getProductSkuId() != null) {
                 skuStockRepository.deductStockOnPayment(item.getProductSkuId(), item.getProductQuantity());
+                skuStockRepository.incrementUnitsSold(item.getProductSkuId(), item.getProductQuantity());
             }
             Product product = productRepository.findById(item.getProductId()).orElse(null);
             if (product != null) {
@@ -88,5 +89,19 @@ public class OrderDao {
                 skuStockRepository.releaseReservedStock(item.getProductSkuId(), item.getProductQuantity());
             }
         }
+    }
+
+    public int autoConfirmShippedOrders(int days) {
+        java.time.OffsetDateTime deadline = java.time.OffsetDateTime.now().minusDays(days);
+        List<CustomerOrder> orders = orderRepository.findByStatusAndDeleteStatusIsNullAndDeliveryTimeBefore(2, deadline);
+        int count = 0;
+        for (CustomerOrder order : orders) {
+            order.setStatus(3);
+            order.setConfirmStatus(1);
+            order.setReceiveTime(java.time.OffsetDateTime.now());
+            orderRepository.save(order);
+            count++;
+        }
+        return count;
     }
 }

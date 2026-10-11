@@ -5,4 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 public interface MemberCategoryInterestRepository extends JpaRepository<MemberCategoryInterest, Long>, JpaSpecificationExecutor<MemberCategoryInterest> {
+    boolean existsByMemberIdAndProductCategoryId(Long memberId, Long productCategoryId);
+    java.util.List<MemberCategoryInterest> findByMemberId(Long memberId);
 }

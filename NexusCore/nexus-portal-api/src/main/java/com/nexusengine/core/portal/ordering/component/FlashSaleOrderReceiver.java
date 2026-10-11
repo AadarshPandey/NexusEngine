@@ -37,6 +37,8 @@ public class FlashSaleOrderReceiver {
     private FlashSalePurchaseRepository flashPromotionLogRepository;
     @org.springframework.beans.factory.annotation.Autowired
     private OrderLineRepository orderItemRepository;
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.nexusengine.core.portal.ordering.service.OrderService orderService;
 
     @RabbitHandler
     @org.springframework.transaction.annotation.Transactional
@@ -79,6 +81,8 @@ public class FlashSaleOrderReceiver {
             orderItem.setProductQuantity(message.quantity());
             orderItem.setProductPrice(relation.getFlashPromotionPrice());
             orderItemRepository.save(orderItem);
+
+            orderService.sendDelayMessageCancelOrder(order.getId());
 
             // (c) log to sms_flash_promotion_log
             FlashSalePurchase logEntry = new FlashSalePurchase();

@@ -28,6 +28,10 @@ public class JpaChatMemory implements ChatMemory {
             conv.setRole(msg.getMessageType().getValue());
             conv.setContent(msg.getText());
             conv.setCreateTime(java.time.OffsetDateTime.now());
+            conv.setModel("gemini-2.5-flash");
+            if (msg.getText() != null) {
+                conv.setTokensUsed(Math.max(1, (msg.getText().length() + 3) / 4));
+            }
             conversationRepository.save(conv);
         }
     }

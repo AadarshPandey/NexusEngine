@@ -11,4 +11,5 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product> {
     List<Product> findByNameContaining(String name);
     Page<Product> findByBrandIdAndDeleteStatusAndPublishStatus(Long brandId, Integer deleteStatus, Integer publishStatus, Pageable pageable);
+    Page<Product> findByProductCategoryIdIn(List<Long> categoryIds, Pageable pageable);
 }

@@ -45,6 +45,8 @@ public class HomeServiceImpl implements HomeService {
     private final FlashSaleRepository flashPromotionRepository;
     private final FlashSaleSlotRepository flashPromotionSessionRepository;
     private final FlashSaleItemRepository flashPromotionProductRelationRepository;
+    private final com.nexusengine.core.portal.customer.service.MemberService memberService;
+    private final com.nexusengine.core.domain.customer.repository.MemberCategoryInterestRepository memberCategoryInterestRepository;
 
     private void initializeMediaList(List<Product> products) {
         if (products != null) {
@@ -119,6 +121,21 @@ public class HomeServiceImpl implements HomeService {
 
     @Override
     public List<Product> recommendProductList(Integer pageSize, Integer pageNum) {
+        try {
+            var currentMember = memberService.getCurrentMember();
+            if (currentMember != null) {
+                var interests = memberCategoryInterestRepository.findByMemberId(currentMember.getId());
+                if (interests != null && !interests.isEmpty()) {
+                    List<Long> catIds = interests.stream().map(com.nexusengine.core.domain.customer.entity.MemberCategoryInterest::getProductCategoryId).toList();
+                    List<Product> interestProducts = productRepository.findByProductCategoryIdIn(catIds, PageRequest.of(pageNum, pageSize)).getContent();
+                    if (!interestProducts.isEmpty()) {
+                        initializeMediaList(interestProducts);
+                        return interestProducts;
+                    }
+                }
+            }
+        } catch (Exception ignored) {
+        }
         List<Product> list = productRepository.findAll(PageRequest.of(pageNum, pageSize)).getContent();
         initializeMediaList(list);
         return list;

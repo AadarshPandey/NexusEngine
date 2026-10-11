@@ -28,6 +28,7 @@ public class ReviewServiceImpl implements ReviewService {
     private final MemberService memberService;
     private final ProductRepository productRepository;
     private final BrandRepository brandRepository;
+    private final com.nexusengine.core.domain.ordering.repository.CustomerOrderRepository customerOrderRepository;
     private final com.nexusengine.core.common.service.RedisService redisService;
 
     @Override
@@ -134,6 +135,12 @@ public class ReviewServiceImpl implements ReviewService {
             pics = String.join(",", picUrls);
         }
 
+        if (param.orderId() != null) {
+            customerOrderRepository.findById(param.orderId()).ifPresent(order -> {
+                order.setCommentTime(java.time.OffsetDateTime.now());
+                customerOrderRepository.save(order);
+            });
+        }
 
         return saved;
     }

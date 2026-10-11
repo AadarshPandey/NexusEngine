@@ -41,6 +41,7 @@ public class MemberServiceImpl implements MemberService {
     private final JwtTokenUtil jwtTokenUtil;
     private final MemberRepository memberRepository;
     private final MemberCacheService memberCacheService;
+    private final com.nexusengine.core.domain.customer.repository.MemberLoginEventRepository memberLoginEventRepository;
     @Value("${redis.key.authCode}")
     private String REDIS_KEY_PREFIX_AUTH_CODE;
     @Value("${redis.expire.authCode}")
@@ -149,16 +150,6 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void updatePoints(Long id, Integer integration) {
-        Member member = memberRepository.findById(id).orElse(null);
-        if (member != null) {
-            member.setPointsBalance(integration);
-            memberRepository.save(member);
-            memberCacheService.delMember(id);
-        }
-    }
-
-    @Override
     public UserDetails loadUserByUsername(String username) {
         Member member = getByUsername(username);
         if (member != null) {
@@ -178,10 +169,31 @@ public class MemberServiceImpl implements MemberService {
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
             token = jwtTokenUtil.generateToken(userDetails);
+
+            if (userDetails instanceof MemberDetails memberDetails && memberDetails.member() != null) {
+                recordLoginEvent(memberDetails.member().getId());
+            }
         } catch (AuthenticationException e) {
             LOGGER.warn("Login exception: {}", e.getMessage());
         }
         return token;
+    }
+
+    private void recordLoginEvent(Long memberId) {
+        try {
+            com.nexusengine.core.domain.customer.entity.MemberLoginEvent event = new com.nexusengine.core.domain.customer.entity.MemberLoginEvent();
+            event.setMemberId(memberId);
+            event.setCreateTime(java.time.OffsetDateTime.now());
+            event.setLoginType(1); // 1 = Web / API login
+            org.springframework.web.context.request.ServletRequestAttributes attrs =
+                    (org.springframework.web.context.request.ServletRequestAttributes) org.springframework.web.context.request.RequestContextHolder.getRequestAttributes();
+            if (attrs != null && attrs.getRequest() != null) {
+                event.setIp(com.nexusengine.core.common.util.RequestUtil.getRequestIp(attrs.getRequest()));
+            }
+            memberLoginEventRepository.save(event);
+        } catch (Exception ex) {
+            LOGGER.debug("Could not record login event: {}", ex.getMessage());
+        }
     }
 
     @Override

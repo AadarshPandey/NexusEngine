@@ -103,4 +103,5 @@ public interface OrderService {
      */
     void paySuccessByOrderSn(String orderSn, Integer payType);
     void handlePaymentWebhook(String payload, String signature);
+    int autoConfirmShippedOrders();
 }

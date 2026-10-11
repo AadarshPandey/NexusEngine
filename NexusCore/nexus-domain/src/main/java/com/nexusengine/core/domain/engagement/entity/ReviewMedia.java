@@ -37,11 +37,6 @@ private String mediaType;
 
 private String mediaUrl;
 
-        @Column(name = "thumbnail_url")
-
-private String thumbnailUrl;
-
         @Column(name = "display_order")
-
-private Integer sortOrder;
+        private Integer sortOrder;
 }

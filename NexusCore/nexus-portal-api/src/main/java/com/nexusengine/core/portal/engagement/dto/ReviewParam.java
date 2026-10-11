@@ -9,7 +9,10 @@ public record ReviewParam(
     Long parentId,
     Integer rating,
     String content,
-    List<ReviewMediaParam> attachmentList
+    List<ReviewMediaParam> attachmentList,
+    Long orderId
 ) {
-
+    public ReviewParam(Long productId, Long parentId, Integer rating, String content, List<ReviewMediaParam> attachmentList) {
+        this(productId, parentId, rating, content, attachmentList, null);
+    }
 }

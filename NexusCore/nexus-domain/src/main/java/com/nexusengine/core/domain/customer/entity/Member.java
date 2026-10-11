@@ -66,13 +66,5 @@ private Integer gender;
         @Column(name = "signup_channel")
     @Schema(title = "Source type")
     @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.SMALLINT)
-private Integer signupChannel;
-            @Column(name = "points_balance")
-private Integer pointsBalance;
-
-
-        @Column(name = "lifetime_points_earned")
-    @Schema(title = "History integration")
-
-private Integer lifetimePointsEarned;
+    private Integer signupChannel;
 }

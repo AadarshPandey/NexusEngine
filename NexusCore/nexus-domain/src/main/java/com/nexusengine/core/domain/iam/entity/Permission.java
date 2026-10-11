@@ -1,6 +1,5 @@
 package com.nexusengine.core.domain.iam.entity;
 
-import com.nexusengine.core.domain.catalog.entity.Category;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
@@ -46,6 +45,5 @@ private Long categoryId;
         @com.fasterxml.jackson.annotation.JsonIgnore
     @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
     @jakarta.persistence.JoinColumn(name = "permission_group_id", insertable = false, updatable = false)
-
-private Category category;
+    private PermissionGroup permissionGroup;
 }

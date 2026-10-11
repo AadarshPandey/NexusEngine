@@ -22,7 +22,6 @@ public final class TestFixtures {
         member.setPassword("encodedPassword");
         member.setContactPhone("1234567890");
         member.setStatus(1);
-        member.setPointsBalance(100);
         return member;
     }
 
