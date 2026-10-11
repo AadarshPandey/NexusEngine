@@ -60,8 +60,8 @@ const ReturnReasonList: React.FC = () => {
 
   const handleStatusChange = async (id: number, currentStatus: number) => {
     try {
-      const isNewArrival = currentStatus === 1 ? 0 : 1;
-      await returnReasonUpdateStatusAPI({ ids: String(id), status: isNewArrival });
+      const newStatus = currentStatus === 1 ? 0 : 1;
+      await returnReasonUpdateStatusAPI({ ids: String(id), status: newStatus });
       fetchList();
     } catch (e) {
       console.error(e);
@@ -159,7 +159,7 @@ const ReturnReasonList: React.FC = () => {
                     <TableCell>{row.name}</TableCell>
                     <TableCell align="center">{row.displayOrder}</TableCell>
                     <TableCell align="center">
-                      <Switch size="small" checked={row.status === 1} onChange={() => handleStatusChange(row.id!, row.status)} />
+                      <Switch size="small" checked={Boolean(row.status)} onChange={() => handleStatusChange(row.id!, row.status)} />
                     </TableCell>
                     <TableCell>{row.createdAt ? dayjs(row.createdAt).format('YYYY-MM-DD HH:mm:ss') : 'N/A'}</TableCell>
                     <TableCell align="center">
@@ -211,7 +211,7 @@ const ReturnReasonList: React.FC = () => {
           <Box sx={{ display: 'flex', alignItems: 'center', mt: 2 }}>
             <Typography sx={{ mr: 2 }}>Status:</Typography>
             <Switch
-              checked={editData?.status === 1}
+              checked={Boolean(editData?.status)}
               onChange={(e) => setEditData({ ...editData!, status: e.target.checked ? 1 : 0 })}
             />
           </Box>

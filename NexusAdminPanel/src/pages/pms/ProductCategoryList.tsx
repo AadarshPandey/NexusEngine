@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router';
 
 const ProductCategoryList: React.FC = () => {
   const [categories, setCategories] = useState<PmsProductCategory[]>([]);
-  const [parentReviewId, setParentId] = useState<number>(0);
+  const [parentId, setParentId] = useState<number>(0);
   const [pageNum, setPageNum] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [total, setTotal] = useState(0);
@@ -14,11 +14,11 @@ const ProductCategoryList: React.FC = () => {
 
   useEffect(() => {
     fetchCategories();
-  }, [parentReviewId, pageNum, pageSize]);
+  }, [parentId, pageNum, pageSize]);
 
   const fetchCategories = async () => {
     try {
-      const res = await getProductCategoryListAPI(parentReviewId, { pageNum, pageSize });
+      const res = await getProductCategoryListAPI(parentId, { pageNum, pageSize });
       setCategories(res.data.list);
       setTotal(res.data.total);
     } catch (e) {
@@ -60,7 +60,7 @@ const ProductCategoryList: React.FC = () => {
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
         <Typography variant="h5">Product Categories</Typography>
         <Box>
-          {parentReviewId !== 0 && (
+          {parentId !== 0 && (
             <Button variant="outlined" sx={{ mr: 2 }} onClick={() => setParentId(0)}>Back to Root</Button>
           )}
           <Button variant="contained" color="primary" onClick={() => navigate('/pms/addProductCate')}>Add Category</Button>
@@ -75,10 +75,8 @@ const ProductCategoryList: React.FC = () => {
               <TableCell>Category Name</TableCell>
               <TableCell>Level</TableCell>
               <TableCell>Product Count</TableCell>
-              <TableCell>Product Unit</TableCell>
               <TableCell>Nav Status</TableCell>
               <TableCell>Show Status</TableCell>
-              <TableCell>Sort</TableCell>
               <TableCell align="center">Settings</TableCell>
               <TableCell align="right">Action</TableCell>
             </TableRow>
@@ -90,22 +88,20 @@ const ProductCategoryList: React.FC = () => {
                 <TableCell>{row.name}</TableCell>
                 <TableCell>{row.depth === 0 ? 'Level 1' : 'Level 2'}</TableCell>
                 <TableCell>{row.quantity}</TableCell>
-                <TableCell>{row.unitOfMeasure}</TableCell>
                 <TableCell>
                   <Switch 
-                    checked={row.isInNavigation === 1} 
+                    checked={Boolean(row.isInNavigation)} 
                     onChange={(e) => handleNavStatusChange(row.id as number, e.target.checked)} 
                     color="primary" 
                   />
                 </TableCell>
                 <TableCell>
                   <Switch 
-                    checked={row.isVisible === 1} 
+                    checked={Boolean(row.isVisible)} 
                     onChange={(e) => handleShowStatusChange(row.id as number, e.target.checked)} 
                     color="primary" 
                   />
                 </TableCell>
-                <TableCell>{row.displayOrder}</TableCell>
                 <TableCell align="center">
                   <Button 
                     size="small" 
@@ -124,7 +120,7 @@ const ProductCategoryList: React.FC = () => {
             ))}
             {categories.length === 0 && (
               <TableRow>
-                <TableCell colSpan={10} align="center" sx={{ py: 5 }}>No categories found.</TableCell>
+                <TableCell colSpan={8} align="center" sx={{ py: 5 }}>No categories found.</TableCell>
               </TableRow>
             )}
           </TableBody>

@@ -8,6 +8,8 @@ import {
   Skeleton,
   Chip,
   alpha,
+  Button,
+  Alert,
 } from '@mui/material';
 import {
   ShoppingCart,
@@ -160,27 +162,50 @@ const PendingItem: React.FC<PendingItemProps> = ({ label, minQuantity, iconUrl }
 const Dashboard: React.FC = () => {
   const [dashboardData, setDashboardData] = useState<DashboardInfo | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchDashboardData = () => {
+    setLoading(true);
+    setError(null);
+    getDashboardInfoAPI()
+      .then((res: any) => {
+        const data = res?.data || res;
+        if (data && data.chartData) {
+          data.chartData = [...data.chartData].reverse();
+        }
+        setDashboardData(data);
+        setLoading(false);
+      })
+      .catch((err: any) => {
+        console.error('Failed to load dashboard data:', err);
+        setError(err?.message || 'Failed to load dashboard data. Please check backend connection.');
+        setLoading(false);
+      });
+  };
 
   useEffect(() => {
-    getDashboardInfoAPI().then(res => {
-      // Reverse chart data so oldest is first
-      const data = res.data;
-      if (data && data.chartData) {
-        data.chartData = [...data.chartData].reverse();
-      }
-      setDashboardData(data);
-      setLoading(false);
-    }).catch(() => {
-      setLoading(false);
-    });
+    fetchDashboardData();
   }, []);
 
-  if (loading || !dashboardData) {
+  if (loading) {
     return (
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 4 }}>
         {[...Array(6)].map((_, i) => (
           <Skeleton key={i} variant="rectangular" height={100} sx={{ borderRadius: 2 }} />
         ))}
+      </Box>
+    );
+  }
+
+  if (error || !dashboardData) {
+    return (
+      <Box sx={{ pt: 4, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3 }}>
+        <Alert severity="error" sx={{ width: '100%', maxWidth: 600 }}>
+          {error || 'Unable to load dashboard information. Please try again.'}
+        </Alert>
+        <Button variant="contained" onClick={fetchDashboardData} sx={{ bgcolor: '#6366F1' }}>
+          Retry Loading Dashboard
+        </Button>
       </Box>
     );
   }

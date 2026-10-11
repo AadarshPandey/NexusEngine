@@ -104,10 +104,10 @@ const HomeBrand: React.FC = () => {
   };
 
   const handleRecommendStatusChange = async (row: SmsHomeBrand) => {
-    const isNewArrival = row.isFeatured === 1 ? 0 : 1;
+    const newFeatured = row.isFeatured ? 0 : 1;
     try {
-      await homeBrandUpdateRecommendStatusAPI({ ids: String(row.id), isFeatured: isNewArrival });
-      setList((prev) => prev.map((item) => (item.id === row.id ? { ...item, isFeatured: isNewArrival } : item)));
+      await homeBrandUpdateRecommendStatusAPI({ ids: String(row.id), isFeatured: newFeatured });
+      setList((prev) => prev.map((item) => (item.id === row.id ? { ...item, isFeatured: newFeatured } : item)));
       setSnackbar({ open: true, message: 'Status updated', severity: 'success' });
     } catch {
       setSnackbar({ open: true, message: 'Failed to update status', severity: 'error' });
@@ -312,7 +312,7 @@ const HomeBrand: React.FC = () => {
                     <TableCell sx={{ fontWeight: 500 }}>{row.brandName}</TableCell>
                     <TableCell align="center">
                       <Switch
-                        checked={row.isFeatured === 1}
+                        checked={Boolean(row.isFeatured)}
                         onChange={() => handleRecommendStatusChange(row)}
                         size="small"
                         color="primary"

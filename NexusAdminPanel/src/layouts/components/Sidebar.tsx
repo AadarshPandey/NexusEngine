@@ -46,6 +46,12 @@ import { constantRouterMap, asyncRouterMap } from '@/router/routeConfig';
 const iconComponents: Record<string, React.ReactElement> = {
   dashboard: <Dashboard />,
   home: <Dashboard />,
+  catalog: <Inventory2 />,
+  ordering: <ShoppingCart />,
+  iam: <AdminPanelSettings />,
+  promotion: <Campaign />,
+  analytics: <Dashboard />,
+  infra: <Source />,
   product: <Inventory2 />,
   'product-list': <ViewList />,
   'product-add': <AddBox />,

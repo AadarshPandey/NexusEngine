@@ -88,9 +88,9 @@ const ProductAttrDetailList: React.FC = () => {
       <Card sx={{ mb: 3 }}>
         <Box sx={{ p: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Box>
-            <Typography variant="h5">{type === 0 ? 'Attributes' : 'Parameters'} List</Typography>
+            <Typography variant="h5">{type === 0 ? 'Attributes' : 'Attribute Definitions'} List</Typography>
             <Typography variant="body2" color="text.secondary">
-              Manage {type === 0 ? 'SKU variant attributes (e.g. Color, Size)' : 'product parameters (e.g. Screen Size, CPU)'}.
+              Manage {type === 0 ? 'SKU variant attributes (e.g. Color, Size)' : 'product attribute definitions (e.g. Screen Size, CPU)'}.
             </Typography>
           </Box>
           <Box>
@@ -98,7 +98,7 @@ const ProductAttrDetailList: React.FC = () => {
               Back to Types
             </Button>
             <Button variant="contained" startIcon={<Add />} onClick={() => handleOpenDialog()}>
-              Add {type === 0 ? 'Attribute' : 'Parameter'}
+              Add {type === 0 ? 'Attribute' : 'Attribute Definition'}
             </Button>
           </Box>
         </Box>
@@ -111,8 +111,6 @@ const ProductAttrDetailList: React.FC = () => {
               <TableRow sx={{ bgcolor: 'background.default' }}>
                 <TableCell>ID</TableCell>
                 <TableCell>Name</TableCell>
-                <TableCell>Select Type</TableCell>
-                <TableCell>Input Type</TableCell>
                 <TableCell>Input List Options</TableCell>
                 <TableCell align="center">Actions</TableCell>
               </TableRow>
@@ -127,12 +125,6 @@ const ProductAttrDetailList: React.FC = () => {
                   <TableRow key={row.id} hover>
                     <TableCell>{row.id}</TableCell>
                     <TableCell>{row.name}</TableCell>
-                    <TableCell>
-                      {row.selectionMode === 0 ? 'Unique' : row.selectionMode === 1 ? 'Single Choice' : 'Multi Choice'}
-                    </TableCell>
-                    <TableCell>
-                      {row.inputMode === 0 ? 'Manual' : 'Select'}
-                    </TableCell>
                     <TableCell>
                       {row.allowedValues ? (
                         <Select size="small" value={row.allowedValues.split(',')[0]} sx={{ minWidth: 100 }}>
@@ -164,7 +156,7 @@ const ProductAttrDetailList: React.FC = () => {
       </Card>
 
       <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>{editData.id ? 'Edit' : 'Add'} {type === 0 ? 'Attribute' : 'Parameter'}</DialogTitle>
+        <DialogTitle>{editData.id ? 'Edit' : 'Add'} {type === 0 ? 'Attribute' : 'Attribute Definition'}</DialogTitle>
         <DialogContent>
           <Box sx={{ pt: 1, display: 'flex', flexDirection: 'column', gap: 2 }}>
             <TextField

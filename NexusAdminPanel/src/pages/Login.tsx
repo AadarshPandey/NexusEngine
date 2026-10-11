@@ -22,7 +22,7 @@ const Login: React.FC = () => {
   const savedUsername = useAppSelector((state) => state.user.userInfo.username);
 
   const [username, setUsername] = useState('');
-  const [passwordHash, setPassword] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -39,7 +39,7 @@ const Login: React.FC = () => {
       setError('Please enter a valid username');
       return;
     }
-    if (passwordHash.length < 3) {
+    if (password.length < 3) {
       setError('Password must be at least 3 characters');
       return;
     }
@@ -47,7 +47,7 @@ const Login: React.FC = () => {
     setLoading(true);
     try {
       await dispatch(
-        userLogin({ username: username.trim(), passwordHash }),
+        userLogin({ username: username.trim(), password }),
       ).unwrap();
       navigate('/');
     } catch (err: unknown) {
@@ -180,10 +180,10 @@ const Login: React.FC = () => {
             <TextField
               fullWidth
               label="Password"
-              type={showPassword ? 'text' : 'passwordHash'}
-              value={passwordHash}
+              type={showPassword ? 'text' : 'password'}
+              value={password}
               onChange={(e) => setPassword(e.target.value)}
-              autoComplete="current-passwordHash"
+              autoComplete="current-password"
               onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
               sx={{ mb: 3 }}
               InputProps={{

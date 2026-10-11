@@ -17,7 +17,7 @@ The audit is done in chunks. If the session dies, resume from the first unchecke
 - [x] Chunk D — Backend code quality (entities, controllers, services, DTOs, security, error handling)
 - [x] Chunk E — Database schema & data (postgres_data.sql, schemas, naming)
 - [x] Chunk F — Frontend: NexusFrontendWeb
-- [ ] Chunk G — Frontend: NexusAdminPanel
+- [x] Chunk G — Frontend: NexusAdminPanel
 - [ ] Chunk H — Testing, CI/CD, observability, docs
 - [ ] Final — Consolidated execution plan for Gemini
 
@@ -339,6 +339,24 @@ Also:
 - Vitest test suite: 5 test files, 8 unit tests passing 100% (`node ./node_modules/vitest/vitest.mjs run`).
 - TypeScript strict compilation (`tsc -b`): 0 errors.
 - Vite production bundle build (`vite build`): completed cleanly.
+
+### Chunk G — Frontend: NexusAdminPanel
+
+**G1. Architecture & Domain-Driven API Clients**
+- Structured domain-driven API modules under `src/apis/` corresponding to the 9 bounded contexts: `catalog/`, `ordering/`, `iam/`, `promotion/`, `analytics/`, and `infra/` (with unified re-export barrel `apis/index.ts`).
+- Created S3 presigned upload and asset URL resolution client (`src/apis/s3.ts`), replacing legacy Alibaba Cloud OSS (`oss.ts` and `oss.d.ts` moved to `trash/admin/`).
+- Standardized bounded-context TypeScript definitions: `types/catalog.d.ts`, `types/ordering.d.ts`, `types/iam.d.ts`, `types/promotion.d.ts`, `types/customer.d.ts`, `types/engagement.d.ts`, `types/s3.d.ts`.
+
+**G2. Anti-Pattern & Bug Remediation**
+- Eliminated all copy-paste naming bugs where `isNewArrival` was mistakenly used for status toggles across `BrandList`, `AdminList`, `RoleList`, `AdvertiseList`, `HomeHot`, `HomeNew`, `HomeBrand`, `HomeSubject`, and `ReturnReasonList`.
+- Eliminated integer-as-boolean comparisons (`=== 1`) in favor of canonical boolean representations (`Boolean(row.status)`, `Boolean(row.isVisible)`, `Boolean(row.isInNavigation)`, `Boolean(row.isPublished)`, `Boolean(row.isFeatured)`).
+- Replaced dead Alipay references with modern payment provider display (`Razorpay` / `Stripe`) in `OrderList`.
+- Cleaned up SKU stock attributes parsing and variant management in `ProductAdd` and `ProductUpdate`.
+- Corrected campaign deletion text in `FlashList` from corrupted phrase to clean `"Delete this flash sale campaign?"`.
+
+**G3. Verification**
+- TypeScript strict build (`node ./node_modules/typescript/bin/tsc -b`): 0 errors.
+- Vite production bundle build (`node ./node_modules/vite/bin/vite.js build`): built cleanly in < 2s with all route chunks generated.
 
 ---
 

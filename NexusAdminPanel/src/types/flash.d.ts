@@ -8,6 +8,7 @@ export type SmsFlashPromotion = {
   startsOn?: string
   endsOn?: string
   status: number
+  isActive?: boolean
   createdAt?: string
 }
 

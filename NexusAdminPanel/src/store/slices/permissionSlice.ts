@@ -1,8 +1,8 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type { UmsMenu } from '@/types/menu';
+import type { UmsMenu, ConsoleMenu } from '@/types/iam';
 import { asyncRouterMap, constantRouterMap } from '@/router/routeConfig';
 
-// Route definition for the React app (mirrors the Vue RouteRecordExt)
+// Route definition for the React app
 export interface RouteConfig {
   path: string;
   name?: string;
@@ -12,6 +12,7 @@ export interface RouteConfig {
   meta?: {
     title?: string;
     iconUrl?: string;
+    icon?: string;
   };
   children?: RouteConfig[];
 }
@@ -19,28 +20,76 @@ export interface RouteConfig {
 interface PermissionState {
   addRouters: RouteConfig[];
   routers: RouteConfig[];
+  menus: ConsoleMenu[];
 }
 
 const initialState: PermissionState = {
   addRouters: [],
   routers: [],
+  menus: [],
+};
+
+// Route name aliases across legacy and modern bounded contexts
+const ROUTE_NAME_ALIASES: Record<string, string[]> = {
+  catalog: ['catalog', 'pms'],
+  pms: ['pms', 'catalog'],
+  ordering: ['ordering', 'oms'],
+  oms: ['oms', 'ordering'],
+  iam: ['iam', 'ums'],
+  ums: ['ums', 'iam'],
+  promotion: ['promotion', 'sms'],
+  sms: ['sms', 'promotion'],
+  product: ['product', 'products'],
+  products: ['products', 'product'],
+  order: ['order', 'orders'],
+  orders: ['orders', 'order'],
+  brand: ['brand', 'brands'],
+  brands: ['brands', 'brand'],
+  productCate: ['productCate', 'categories'],
+  categories: ['categories', 'productCate'],
+  skuAttributes: ['skuAttributes', 'attributes'],
+  attributes: ['attributes', 'skuAttributes'],
+  coupon: ['coupon', 'coupons'],
+  coupons: ['coupons', 'coupon'],
+  homeAdvertise: ['homeAdvertise', 'banners', 'advertise'],
+  banners: ['banners', 'homeAdvertise', 'advertise'],
+  advertise: ['advertise', 'banners', 'homeAdvertise'],
+  admin: ['admin', 'admins'],
+  admins: ['admins', 'admin'],
+  role: ['role', 'roles'],
+  roles: ['roles', 'role'],
+  menu: ['menu', 'menus'],
+  menus: ['menus', 'menu'],
+  resource: ['resource', 'permissions'],
+  permissions: ['permissions', 'resource'],
 };
 
 // Check if a route has permission based on menus
-function hasPermission(menus: UmsMenu[], route: RouteConfig): boolean {
+function hasPermission(menus: (UmsMenu | ConsoleMenu)[], route: RouteConfig): boolean {
   if (route.name) {
-    const currMenu = menus.find((menu) => menu.name === route.name) || null;
+    const aliasCandidates = ROUTE_NAME_ALIASES[route.name] || [route.name];
+    const currMenu = menus.find((menu) => {
+      const menuIdentifier = menu.routeName || menu.name;
+      return Boolean(menuIdentifier && aliasCandidates.includes(menuIdentifier));
+    }) || null;
+
     if (currMenu != null) {
       if (currMenu.title != null && currMenu.title !== '') {
         if (!route.meta) route.meta = {};
         route.meta.title = currMenu.title;
       }
-      if (currMenu.iconUrl != null && currMenu.iconUrl !== '') {
+      const icon = currMenu.icon || (currMenu as any).iconUrl;
+      if (icon != null && icon !== '') {
         if (!route.meta) route.meta = {};
-        route.meta.iconUrl = currMenu.iconUrl;
+        route.meta.iconUrl = icon;
+        route.meta.icon = icon;
       }
-      if (currMenu.hidden != null) {
-        route.hidden = currMenu.hidden !== 0;
+      if (currMenu.isHidden !== undefined) {
+        route.hidden = Boolean(currMenu.isHidden);
+      } else if ((currMenu as any).is_hidden !== undefined) {
+        route.hidden = Boolean((currMenu as any).is_hidden);
+      } else if ((currMenu as any).hidden !== undefined) {
+        route.hidden = (currMenu as any).hidden !== 0;
       }
       if (currMenu.displayOrder != null) {
         route.displayOrder = currMenu.displayOrder;
@@ -82,9 +131,10 @@ const permissionSlice = createSlice({
   reducers: {
     generateRoutes(
       state,
-      action: PayloadAction<{ menus: UmsMenu[]; username: string }>,
+      action: PayloadAction<{ menus: (UmsMenu | ConsoleMenu)[]; username: string }>,
     ) {
       const { menus, username } = action.payload;
+      state.menus = menus;
 
       // Deep clone to avoid mutating the original config
       const clonedAsyncRoutes = deepCloneRoutes(asyncRouterMap);
@@ -109,12 +159,18 @@ const permissionSlice = createSlice({
       state.addRouters = accessedRouters;
       state.routers = [...constantRouterMap, ...accessedRouters];
     },
+    setMenus(state, action: PayloadAction<ConsoleMenu[]>) {
+      state.menus = action.payload.filter(
+        (m) => !m.isHidden && !(m as any).is_hidden && (m as any).hidden !== 1
+      );
+    },
     clearPermissions(state) {
       state.addRouters = [];
       state.routers = [];
+      state.menus = [];
     },
   },
 });
 
-export const { generateRoutes, clearPermissions } = permissionSlice.actions;
+export const { generateRoutes, setMenus, clearPermissions } = permissionSlice.actions;
 export default permissionSlice.reducer;

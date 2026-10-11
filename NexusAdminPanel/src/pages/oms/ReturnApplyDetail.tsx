@@ -3,6 +3,7 @@ import { Card, Typography, Paper, Grid, Box, Button, TextField, Chip, Divider } 
 import { useParams, useNavigate } from 'react-router';
 import { getReturnApplyByIdAPI, returnApplyUpdateStatusAPI } from '@/apis/returnApply';
 import type { OmsOrderReturnApplyResult } from '@/types/returnApply';
+import { resolveImageUrl } from '@/utils/media';
 
 const ReturnApplyDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -82,7 +83,7 @@ const ReturnApplyDetail: React.FC = () => {
       <Paper sx={{ p: 3, mb: 3 }} variant="outlined">
         <Typography variant="h6" gutterBottom>Product Information</Typography>
         <Box sx={{ display: 'flex', gap: 3, alignItems: 'center' }}>
-          <img src={comment.productImageUrl} alt={comment.productName} style={{ width: 100, height: 100, objectFit: 'cover' }} />
+          <img src={resolveImageUrl(comment.productImageUrl)} alt={comment.productName} style={{ width: 100, height: 100, objectFit: 'cover' }} />
           <Box>
             <Typography variant="subtitle1" fontWeight="bold">{comment.productName}</Typography>
             <Typography color="text.secondary">Brand: {comment.brandName}</Typography>

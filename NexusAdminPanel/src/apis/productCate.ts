@@ -13,9 +13,9 @@ export function getProductCategoryListWithChildrenAPI() {
 
 /**
  */
-export function getProductCategoryListAPI(parentReviewId: number, params: PageParam) {
+export function getProductCategoryListAPI(parentId: number, params: PageParam) {
   return http<CommonPage<PmsProductCategory>>({
-    url: '/productCategory/list/' + parentReviewId,
+    url: '/productCategory/list/' + parentId,
     method: 'get',
     params: params,
   })

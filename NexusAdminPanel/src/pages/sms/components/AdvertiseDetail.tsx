@@ -16,6 +16,7 @@ import {
 } from '@mui/material';
 import { homeAdvertiseCreateAPI, getHomeAdvertiseByIdAPI, homeAdvertiseUpdateAPI } from '@/apis/homeAdvertise';
 import type { SmsHomeAdvertise } from '@/types/homeAdvertist';
+import { resolveImageUrl } from '@/utils/media';
 
 interface Props {
   isEdit?: boolean;
@@ -45,6 +46,9 @@ const AdvertiseDetail: React.FC<Props> = ({ isEdit = false }) => {
       getHomeAdvertiseByIdAPI(Number(id)).then(res => {
         // format dates for datetime-local input
         const data = res.data;
+        if (!data.primaryImageUrl && (data.pic || data.imageUrl)) {
+          data.primaryImageUrl = data.pic || data.imageUrl;
+        }
         if (data.startsAt) data.startsAt = new Date(data.startsAt).toISOString().slice(0, 16);
         if (data.endsAt) data.endsAt = new Date(data.endsAt).toISOString().slice(0, 16);
         setFormData(data);
@@ -97,6 +101,11 @@ const AdvertiseDetail: React.FC<Props> = ({ isEdit = false }) => {
               fullWidth
               required
             />
+            {formData.primaryImageUrl && (
+              <Box sx={{ mt: 1 }}>
+                <img src={resolveImageUrl(formData.primaryImageUrl)} alt="Preview" style={{ height: 100, objectFit: 'contain' }} />
+              </Box>
+            )}
             
             <TextField
               label="Start Time"
@@ -119,7 +128,7 @@ const AdvertiseDetail: React.FC<Props> = ({ isEdit = false }) => {
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
               <Typography>Online Status</Typography>
               <Switch
-                checked={formData.status === 1}
+                checked={Boolean(formData.status)}
                 onChange={e => setFormData({ ...formData, status: e.target.checked ? 1 : 0 })}
                 color="primary"
               />

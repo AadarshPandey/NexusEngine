@@ -3,6 +3,8 @@ import { Box, Typography, Paper, TextField, Button, Grid, CircularProgress, Form
 import { productUpdateByIdAPI, getPruductUpdateInfoAPI } from '@/apis/product';
 import { getBrandListAPI } from '@/apis/brand';
 import { getProductCategoryListWithChildrenAPI } from '@/apis/productCate';
+import { getProductAttributeCategoryListAPI } from '@/apis/productAttrCate';
+import { resolveImageUrl } from '@/utils/media';
 import { useNavigate, useSearchParams } from 'react-router';
 
 const ProductUpdate: React.FC = () => {
@@ -12,22 +14,22 @@ const ProductUpdate: React.FC = () => {
 
   const [brands, setBrands] = useState<import('@/types/brand').PmsBrand[]>([]);
   const [categories, setCategories] = useState<import('@/types/productCate').PmsProductCategory[]>([]);
+  const [productTypes, setProductTypes] = useState<any[]>([]);
   
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
     name: '',
-    customerComment: '',
-    listPrice: '',
-    originalPrice: '',
-    onHandQty: '',
+    description: '',
     primaryImageUrl: '',
-    permissionGroupId: '',
+    productCategoryId: '',
+    productAttributeCategoryId: '',
     brandId: '',
+    keywords: '',
     isPublished: 1,
     isNewArrival: 1,
     isFeatured: 1,
     approvalStatus: 1,
-    skuStockList: [{ skuCode: '', listPrice: '', onHandQty: '' }]
+    skuStockList: [{ skuCode: '', listPrice: '', onHandQty: '', promotionPrice: '', lowStock: '', pic: '', sale: '', lockStock: '', spDataList: [] as {key: string, value: string}[], version: '' }]
   });
 
   useEffect(() => {
@@ -42,30 +44,38 @@ const ProductUpdate: React.FC = () => {
   const fetchDependenciesAndProduct = async (orderLineId: number) => {
     try {
       setLoading(true);
-      const [brandRes, cateRes, prodRes] = await Promise.all([
+      const [brandRes, cateRes, typeRes, prodRes] = await Promise.all([
         getBrandListAPI({ pageNum: 1, pageSize: 100 }),
         getProductCategoryListWithChildrenAPI(),
+        getProductAttributeCategoryListAPI({ pageNum: 1, pageSize: 100 }),
         getPruductUpdateInfoAPI(orderLineId)
       ]);
       setBrands(brandRes.data?.list || []);
       setCategories(cateRes.data || []);
+      setProductTypes(typeRes.data?.list || []);
       
       if (prodRes.data) {
         setFormData({
           ...formData,
           ...prodRes.data,
-          // ensure listPrice/onHandQty are strings for the inputs if they come back as numbers
-          listPrice: prodRes.data.listPrice?.toString() || '',
-          originalPrice: prodRes.data.originalPrice?.toString() || '',
-          onHandQty: prodRes.data.onHandQty?.toString() || '',
-          permissionGroupId: prodRes.data.permissionGroupId?.toString() || '',
+          productCategoryId: prodRes.data.productCategoryId?.toString() || prodRes.data.permissionGroupId?.toString() || '',
+          productAttributeCategoryId: prodRes.data.productAttributeCategoryId?.toString() || prodRes.data.productAttributeCategoryId?.toString() || '',
           brandId: prodRes.data.brandId?.toString() || '',
-          skuStockList: prodRes.data.skuStockList?.length ? prodRes.data.skuStockList.map((sku: import('@/types/skuStock').PmsSkuStock) => ({
+          keywords: prodRes.data.keywords || '',
+          description: prodRes.data.description || prodRes.data.customerComment || '',
+          skuStockList: prodRes.data.skuStockList?.length ? prodRes.data.skuStockList.map((sku: any) => ({
             id: sku.id,
             skuCode: sku.skuCode || '',
-            listPrice: sku.listPrice?.toString() || '',
-            onHandQty: sku.onHandQty?.toString() || ''
-          })) : [{ skuCode: '', listPrice: '', onHandQty: '' }]
+            listPrice: sku.price?.toString() || sku.listPrice?.toString() || '',
+            promotionPrice: sku.promotionPrice?.toString() || sku.salePrice?.toString() || '',
+            onHandQty: sku.stock?.toString() || sku.onHandQty?.toString() || '',
+            lowStock: sku.lowStock?.toString() || sku.lowStockThreshold?.toString() || '',
+            pic: sku.pic || sku.primaryImageUrl || '',
+            sale: sku.sale?.toString() || sku.unitsSold?.toString() || '',
+            lockStock: sku.lockStock?.toString() || sku.reservedQty?.toString() || '',
+            spDataList: sku.spData ? (typeof sku.spData === 'string' ? (() => { try { return JSON.parse(sku.spData); } catch (e) { return []; } })() : sku.spData) : [],
+            version: sku.version?.toString() || ''
+          })) : [{ skuCode: '', listPrice: '', onHandQty: '', promotionPrice: '', lowStock: '', pic: '', sale: '', lockStock: '', spDataList: [] as {key: string, value: string}[], version: '' }]
         });
       }
     } catch (error) {
@@ -78,7 +88,7 @@ const ProductUpdate: React.FC = () => {
   const handleAddSku = () => {
     setFormData({
       ...formData,
-      skuStockList: [...formData.skuStockList, { skuCode: '', listPrice: '', onHandQty: '' }]
+      skuStockList: [...formData.skuStockList, { skuCode: '', listPrice: '', onHandQty: '', promotionPrice: '', lowStock: '', pic: '', sale: '', lockStock: '', spDataList: [] as {key: string, value: string}[], version: '' }]
     });
   };
 
@@ -91,6 +101,29 @@ const ProductUpdate: React.FC = () => {
   const handleSkuChange = (index: number, field: string, value: string) => {
     const newList = [...formData.skuStockList];
     newList[index] = { ...newList[index], [field]: value };
+    setFormData({ ...formData, skuStockList: newList });
+  };
+
+  const handleAddSkuAttribute = (skuIndex: number) => {
+    const newList = [...formData.skuStockList];
+    const spDataList = newList[skuIndex].spDataList || [];
+    newList[skuIndex] = { ...newList[skuIndex], spDataList: [...spDataList, { key: '', value: '' }] };
+    setFormData({ ...formData, skuStockList: newList });
+  };
+
+  const handleRemoveSkuAttribute = (skuIndex: number, attrIndex: number) => {
+    const newList = [...formData.skuStockList];
+    const spDataList = [...(newList[skuIndex].spDataList || [])];
+    spDataList.splice(attrIndex, 1);
+    newList[skuIndex] = { ...newList[skuIndex], spDataList };
+    setFormData({ ...formData, skuStockList: newList });
+  };
+
+  const handleSkuAttributeChange = (skuIndex: number, attrIndex: number, field: string, value: string) => {
+    const newList = [...formData.skuStockList];
+    const spDataList = [...(newList[skuIndex].spDataList || [])];
+    spDataList[attrIndex] = { ...spDataList[attrIndex], [field]: value };
+    newList[skuIndex] = { ...newList[skuIndex], spDataList };
     setFormData({ ...formData, skuStockList: newList });
   };
 
@@ -113,18 +146,22 @@ const ProductUpdate: React.FC = () => {
     try {
       const cleanNumber = (val: string | number) => Number(String(val).replace(/,/g, ''));
       
-      const formattedSkus = formData.skuStockList.map((sku: {id?: number, skuCode: string, listPrice: string, onHandQty: string}) => ({
+      const formattedSkus = formData.skuStockList.map((sku: any) => ({
         id: sku.id,
         skuCode: sku.skuCode,
         listPrice: cleanNumber(sku.listPrice),
-        onHandQty: cleanNumber(sku.onHandQty)
+        onHandQty: cleanNumber(sku.onHandQty),
+        salePrice: sku.promotionPrice ? cleanNumber(sku.promotionPrice) : undefined,
+        lowStockThreshold: sku.lowStock ? cleanNumber(sku.lowStock) : undefined,
+        imageUrl: sku.pic,
+        unitsSold: sku.sale ? cleanNumber(sku.sale) : undefined,
+        reservedQty: sku.lockStock ? cleanNumber(sku.lockStock) : undefined,
+        skuAttributes: sku.spDataList && sku.spDataList.length > 0 ? JSON.stringify(sku.spDataList) : undefined,
+        version: sku.version ? cleanNumber(sku.version) : undefined
       }));
 
       await productUpdateByIdAPI(Number(id), {
         ...formData,
-        listPrice: cleanNumber(formData.listPrice),
-        originalPrice: cleanNumber(formData.originalPrice),
-        onHandQty: cleanNumber(formData.onHandQty),
         skuStockList: formattedSkus
       } as unknown as import('@/types/product').PmsProductParam);
       alert('Product updated successfully!');
@@ -154,10 +191,10 @@ const ProductUpdate: React.FC = () => {
             <Grid size={{ xs: 12 }}>
             </Grid>
             
-            <Grid size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 12, md: 4 }}>
               <FormControl fullWidth required>
                 <InputLabel>Product Category</InputLabel>
-                <Select label="Product Category" value={formData.permissionGroupId} onChange={e => setFormData({...formData, permissionGroupId: e.target.value as string})}>
+                <Select label="Product Category" value={formData.productCategoryId} onChange={e => setFormData({...formData, productCategoryId: e.target.value as string})}>
                   {categories.map((parent: import('@/types/productCate').PmsProductCategory) => [
                     <ListSubheader key={`header-${parent.id}`}>{parent.name}</ListSubheader>,
                     ...((parent as any).children || []).map((child: import('@/types/productCate').PmsProductCategory) => (
@@ -169,7 +206,17 @@ const ProductUpdate: React.FC = () => {
                 </Select>
               </FormControl>
             </Grid>
-            <Grid size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 12, md: 4 }}>
+              <FormControl fullWidth required>
+                <InputLabel>Product Type</InputLabel>
+                <Select label="Product Type" value={formData.productAttributeCategoryId} onChange={e => setFormData({...formData, productAttributeCategoryId: e.target.value as string})}>
+                  {productTypes.map((type: any) => (
+                    <MenuItem key={type.id} value={type.id?.toString() || ''}>{type.name}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid size={{ xs: 12, md: 4 }}>
               <FormControl fullWidth required>
                 <InputLabel>Brand</InputLabel>
                 <Select label="Brand" value={formData.brandId} onChange={e => setFormData({...formData, brandId: e.target.value as string})}>
@@ -180,35 +227,64 @@ const ProductUpdate: React.FC = () => {
               </FormControl>
             </Grid>
 
-            <Grid size={{ xs: 12, md: 6 }}>
-              <TextField fullWidth label="Price (₹)" type="text" required value={formData.listPrice || ''} onChange={e => setFormData({...formData, listPrice: e.target.value})} />
-            </Grid>
-            <Grid size={{ xs: 12, md: 6 }}>
-              <TextField fullWidth label="Original Price (₹)" type="text" value={formData.originalPrice || ''} onChange={e => setFormData({...formData, originalPrice: e.target.value})} />
-            </Grid>
-            <Grid size={{ xs: 12, md: 6 }}>
-              <TextField fullWidth label="Stock" type="text" required value={formData.onHandQty || ''} onChange={e => setFormData({...formData, onHandQty: e.target.value})} />
-            </Grid>
+
             <Grid size={{ xs: 12, md: 6 }}>
               <TextField fullWidth label="Image URL" value={formData.primaryImageUrl || ''} onChange={e => setFormData({...formData, primaryImageUrl: e.target.value})} />
+              {formData.primaryImageUrl && (
+                <Box sx={{ mt: 1 }}>
+                  <img src={resolveImageUrl(formData.primaryImageUrl)} alt="Preview" style={{ height: 60, objectFit: 'contain' }} />
+                </Box>
+              )}
+            </Grid>
+            <Grid size={{ xs: 12, md: 6 }}>
+              <TextField fullWidth label="Search Keywords" value={formData.keywords || ''} onChange={e => setFormData({...formData, keywords: e.target.value})} />
             </Grid>
             <Grid size={{ xs: 12 }}>
-              <TextField fullWidth label="Description" multiline rows={4} value={formData.customerComment || ''} onChange={e => setFormData({...formData, customerComment: e.target.value})} />
+              <TextField fullWidth label="Description" multiline rows={4} value={formData.description || ''} onChange={e => setFormData({...formData, description: e.target.value})} />
             </Grid>
             <Grid size={{ xs: 12 }}>
               <Box sx={{ mt: 2, mb: 2 }}>
                 <Typography variant="h6" sx={{ mb: 2 }}>Product SKUs (Variants)</Typography>
-                {formData.skuStockList.map((sku: {id?: number, skuCode: string, listPrice: string, onHandQty: string}, index: number) => (
+                {formData.skuStockList.map((sku: any, index: number) => (
                   <Paper key={index} variant="outlined" sx={{ p: 2, mb: 2 }}>
                     <Grid container spacing={2} alignItems="center">
                       <Grid size={{ xs: 12, md: 3 }}>
-                        <TextField fullWidth label="SKU Code" required size="small" value={sku.skuCode} onChange={e => handleSkuChange(index, 'skuCode', e.target.value)} />
+                        <TextField fullWidth label="SKU Code" required size="small" value={sku.skuCode || ''} onChange={e => handleSkuChange(index, 'skuCode', e.target.value)} />
                       </Grid>
                       <Grid size={{ xs: 12, md: 3 }}>
-                        <TextField fullWidth label="Price (₹)" required size="small" value={sku.listPrice} onChange={e => handleSkuChange(index, 'listPrice', e.target.value)} />
+                        <TextField fullWidth label="List Price (₹)" required size="small" value={sku.listPrice || ''} onChange={e => handleSkuChange(index, 'listPrice', e.target.value)} />
                       </Grid>
                       <Grid size={{ xs: 12, md: 3 }}>
-                        <TextField fullWidth label="Stock" required size="small" value={sku.onHandQty} onChange={e => handleSkuChange(index, 'onHandQty', e.target.value)} />
+                        <TextField fullWidth label="Sale Price (₹)" size="small" value={sku.promotionPrice || ''} onChange={e => handleSkuChange(index, 'promotionPrice', e.target.value)} />
+                      </Grid>
+                      <Grid size={{ xs: 12, md: 3 }}>
+                        <TextField fullWidth label="Stock" required size="small" value={sku.onHandQty || ''} onChange={e => handleSkuChange(index, 'onHandQty', e.target.value)} />
+                      </Grid>
+                      <Grid size={{ xs: 12, md: 3 }}>
+                        <TextField fullWidth label="Low Stock Threshold" size="small" value={sku.lowStock || ''} onChange={e => handleSkuChange(index, 'lowStock', e.target.value)} />
+                      </Grid>
+                      <Grid size={{ xs: 12, md: 3 }}>
+                        <TextField fullWidth label="Image URL" size="small" value={sku.pic || ''} onChange={e => handleSkuChange(index, 'pic', e.target.value)} />
+                      </Grid>
+                      <Grid size={{ xs: 12, md: 3 }}>
+                        <TextField fullWidth label="Units Sold" size="small" value={sku.sale || ''} onChange={e => handleSkuChange(index, 'sale', e.target.value)} />
+                      </Grid>
+                      <Grid size={{ xs: 12, md: 3 }}>
+                        <TextField fullWidth label="Reserved Qty" size="small" value={sku.lockStock || ''} onChange={e => handleSkuChange(index, 'lockStock', e.target.value)} />
+                      </Grid>
+                      <Grid size={{ xs: 12 }}>
+                        <Typography variant="subtitle2" sx={{ mb: 1 }}>Attributes</Typography>
+                        {(sku.spDataList || []).map((attr: any, attrIndex: number) => (
+                          <Box key={attrIndex} sx={{ display: 'flex', gap: 1, mb: 1 }}>
+                            <TextField label="Key" size="small" value={attr.key || ''} onChange={e => handleSkuAttributeChange(index, attrIndex, 'key', e.target.value)} />
+                            <TextField label="Value" size="small" value={attr.value || ''} onChange={e => handleSkuAttributeChange(index, attrIndex, 'value', e.target.value)} />
+                            <Button color="error" size="small" onClick={() => handleRemoveSkuAttribute(index, attrIndex)}>X</Button>
+                          </Box>
+                        ))}
+                        <Button size="small" variant="outlined" onClick={() => handleAddSkuAttribute(index)}>+ Add Attribute</Button>
+                      </Grid>
+                      <Grid size={{ xs: 12, md: 3 }}>
+                        <TextField fullWidth label="Version" size="small" value={sku.version || ''} onChange={e => handleSkuChange(index, 'version', e.target.value)} />
                       </Grid>
                       <Grid size={{ xs: 12, md: 3 }}>
                         <Button color="error" variant="outlined" disabled={formData.skuStockList.length === 1} onClick={() => handleRemoveSku(index)}>Remove</Button>

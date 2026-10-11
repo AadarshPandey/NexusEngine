@@ -40,6 +40,7 @@ import {
   deleteHomeAdvertiseAPI
 } from '@/apis/homeAdvertise';
 import type { SmsHomeAdvertise } from '@/types/homeAdvertist';
+import { resolveImageUrl } from '@/utils/media';
 
 const AdvertiseList: React.FC = () => {
   const navigate = useNavigate();
@@ -96,10 +97,10 @@ const AdvertiseList: React.FC = () => {
   };
 
   const handleStatusChange = async (row: SmsHomeAdvertise) => {
-    const isNewArrival = row.status === 1 ? 0 : 1;
+    const newStatus = row.status === 1 ? 0 : 1;
     try {
-      await homeAdvertiseUpdateStatusAPI({ id: row.id!, status: isNewArrival });
-      setList((prev) => prev.map((item) => (item.id === row.id ? { ...item, status: isNewArrival } : item)));
+      await homeAdvertiseUpdateStatusAPI({ id: row.id!, status: newStatus });
+      setList((prev) => prev.map((item) => (item.id === row.id ? { ...item, status: newStatus } : item)));
       setSnackbar({ open: true, message: 'Status updated', severity: 'success' });
     } catch {
       setSnackbar({ open: true, message: 'Failed to update status', severity: 'error' });
@@ -251,7 +252,7 @@ const AdvertiseList: React.FC = () => {
                     <TableCell>
                       <Box
                         component="img"
-                        src={row.primaryImageUrl}
+                        src={resolveImageUrl(row.primaryImageUrl || row.imageUrl || row.pic)}
                         alt="Ad"
                         sx={{ height: 60, width: 120, objectFit: 'cover', borderRadius: 1 }}
                       />
@@ -262,7 +263,7 @@ const AdvertiseList: React.FC = () => {
                     </TableCell>
                     <TableCell align="center">
                       <Switch
-                        checked={row.status === 1}
+                        checked={Boolean(row.status)}
                         onChange={() => handleStatusChange(row)}
                         size="small"
                         color="primary"

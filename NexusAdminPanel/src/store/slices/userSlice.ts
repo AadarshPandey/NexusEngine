@@ -1,20 +1,29 @@
 import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/toolkit';
 import { adminLoginAPI, getAdminInfoAPI, adminLogoutAPI } from '@/apis/admin';
-import type { LoginParam, UserInfo } from '@/types/admin';
-import type { UmsMenu } from '@/types/menu';
+import type { LoginParam, UserInfo, AdminUser } from '@/types/admin';
+import type { ConsoleMenu, UmsMenu } from '@/types/iam';
 
 interface UserState {
-  userInfo: UserInfo;
+  userInfo: UserInfo & {
+    displayName?: string;
+    avatarUrl?: string;
+  };
+  adminUser: AdminUser | null;
+  isAuthenticated: boolean;
 }
 
 const initialState: UserState = {
   userInfo: {
     username: '',
     avatar: '',
+    avatarUrl: '',
+    displayName: '',
     roles: [],
     token: '',
     menus: [],
   },
+  adminUser: null,
+  isAuthenticated: false,
 };
 
 // Async thunk: login
@@ -53,17 +62,29 @@ const userSlice = createSlice({
   reducers: {
     setToken(state, action: PayloadAction<string>) {
       state.userInfo.token = action.payload;
+      state.isAuthenticated = !!action.payload;
     },
     setCredentials(state, action: PayloadAction<LoginParam>) {
       state.userInfo.username = action.payload.username;
     },
+    setAdminUser(state, action: PayloadAction<AdminUser>) {
+      state.adminUser = action.payload;
+      state.userInfo.username = action.payload.username;
+      state.userInfo.avatar = action.payload.avatarUrl || action.payload.iconUrl || '';
+      state.userInfo.avatarUrl = state.userInfo.avatar;
+      state.userInfo.displayName = action.payload.displayName || action.payload.nickName || '';
+    },
     fedLogout(state) {
       state.userInfo.token = '';
+      state.isAuthenticated = false;
+      state.adminUser = null;
     },
     clearUser(state) {
       state.userInfo.token = '';
       state.userInfo.roles = [];
       state.userInfo.menus = [];
+      state.adminUser = null;
+      state.isAuthenticated = false;
     },
   },
   extraReducers: (builder) => {
@@ -73,14 +94,28 @@ const userSlice = createSlice({
         state.userInfo.roles = data.roles;
       }
       state.userInfo.menus = data.menus;
-      state.userInfo.avatar = data.iconUrl;
+      const avatar = data.avatarUrl || data.iconUrl || data.icon || '';
+      state.userInfo.avatar = avatar;
+      state.userInfo.avatarUrl = avatar;
+      state.userInfo.displayName = (data as any).displayName || (data as any).nickName || state.userInfo.username;
+      state.adminUser = {
+        username: data.username,
+        avatarUrl: avatar,
+        displayName: state.userInfo.displayName,
+        roles: data.roles as any,
+        menus: data.menus as any,
+        isEnabled: true,
+      };
+      state.isAuthenticated = true;
     });
     builder.addCase(userLogout.fulfilled, (state) => {
       state.userInfo.token = '';
       state.userInfo.roles = [];
+      state.adminUser = null;
+      state.isAuthenticated = false;
     });
   },
 });
 
-export const { setToken, setCredentials, fedLogout, clearUser } = userSlice.actions;
+export const { setToken, setCredentials, setAdminUser, fedLogout, clearUser } = userSlice.actions;
 export default userSlice.reducer;

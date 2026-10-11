@@ -67,7 +67,7 @@ const AdminList: React.FC = () => {
   const [isEdit, setIsEdit] = useState(false);
   const [formData, setFormData] = useState<UmsAdmin>({
     username: '',
-    passwordHash: '',
+    password: '',
     nickName: '',
     email: '',
     status: 1,
@@ -136,10 +136,10 @@ const AdminList: React.FC = () => {
   };
 
   const handleStatusChange = async (row: UmsAdmin) => {
-    const isNewArrival = row.status === 1 ? 0 : 1;
+    const newStatus = row.status === 1 ? 0 : 1;
     try {
-      await adminUpdateStatusByIdAPI(row.id!, { status: isNewArrival });
-      setList((prev) => prev.map((item) => (item.id === row.id ? { ...item, status: isNewArrival } : item)));
+      await adminUpdateStatusByIdAPI(row.id!, { status: newStatus });
+      setList((prev) => prev.map((item) => (item.id === row.id ? { ...item, status: newStatus } : item)));
       setSnackbar({ open: true, message: 'Status updated', severity: 'success' });
     } catch {
       setSnackbar({ open: true, message: 'Failed to update status', severity: 'error' });
@@ -149,13 +149,13 @@ const AdminList: React.FC = () => {
   // Form handling
   const openAddDialog = () => {
     setIsEdit(false);
-    setFormData({ username: '', passwordHash: '', nickName: '', email: '', status: 1, note: '' });
+    setFormData({ username: '', password: '', nickName: '', email: '', status: 1, note: '' });
     setFormDialogOpen(true);
   };
 
   const openEditDialog = (row: UmsAdmin) => {
     setIsEdit(true);
-    setFormData({ ...row, passwordHash: '' }); // Don't pre-fill passwordHash for security
+    setFormData({ ...row, password: '' }); // Don't pre-fill password for security
     setFormDialogOpen(true);
   };
 
@@ -286,13 +286,13 @@ const AdminList: React.FC = () => {
                   <TableRow key={row.id} hover>
                     <TableCell>{row.id}</TableCell>
                     <TableCell sx={{ fontWeight: 500 }}>{row.username}</TableCell>
-                    <TableCell>{row.nickName}</TableCell>
-                    <TableCell>{row.email}</TableCell>
-                    <TableCell>{formatTime(row.createdAt)}</TableCell>
-                    <TableCell>{formatTime(row.lastLoginAt)}</TableCell>
+                    <TableCell>{row.displayName || row.nickName || '-'}</TableCell>
+                    <TableCell>{row.email || '-'}</TableCell>
+                    <TableCell>{formatTime(row.createdAt || (row as any).createTime)}</TableCell>
+                    <TableCell>{formatTime(row.lastLoginAt || (row as any).loginTime)}</TableCell>
                     <TableCell align="center">
                       <Switch
-                        checked={row.status === 1}
+                        checked={Boolean(row.status)}
                         onChange={() => handleStatusChange(row)}
                         size="small"
                         color="primary"
@@ -373,9 +373,9 @@ const AdminList: React.FC = () => {
             />
             <TextField
               label={isEdit ? "Password (leave blank to keep current)" : "Password"}
-              type="passwordHash"
-              value={formData.passwordHash || ''}
-              onChange={e => setFormData({ ...formData, passwordHash: e.target.value })}
+              type="password"
+              value={formData.password || ''}
+              onChange={e => setFormData({ ...formData, password: e.target.value })}
               fullWidth
               required={!isEdit}
             />
@@ -391,7 +391,7 @@ const AdminList: React.FC = () => {
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                 <Typography>Enabled</Typography>
                 <Switch
-                  checked={formData.status === 1}
+                  checked={Boolean(formData.status)}
                   onChange={e => setFormData({ ...formData, status: e.target.checked ? 1 : 0 })}
                   color="primary"
                 />

@@ -159,7 +159,7 @@ const OrderList: React.FC = () => {
                 <TableCell>{order.orderNumber}</TableCell>
                 
                 <TableCell>₹{order.subtotalAmount?.toFixed(2)}</TableCell>
-                <TableCell>{order.paymentMethod === 1 ? 'Alipay' : order.paymentMethod === 2 ? 'Razorpay' : 'Unpaid'}</TableCell>
+                <TableCell>{order.paymentMethod === 1 ? 'Razorpay' : order.paymentMethod === 2 ? 'Stripe' : 'Unpaid'}</TableCell>
                 <TableCell>{getStatusChip(order.status)}</TableCell>
                 <TableCell>{new Date(order.createdAt).toLocaleString()}</TableCell>
                 <TableCell align="right">

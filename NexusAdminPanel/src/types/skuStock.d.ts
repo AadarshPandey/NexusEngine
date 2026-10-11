@@ -3,6 +3,8 @@ export type PmsSkuStock = {
   id?: number
   orderLineId?: number
   skuCode?: string
+  price?: number
+  stock?: number
   listPrice?: number
   onHandQty?: number
   lowStockThreshold?: number

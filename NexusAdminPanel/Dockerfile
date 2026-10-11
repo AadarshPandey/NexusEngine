@@ -1,4 +1,4 @@
-FROM node:20-alpine as build
+FROM node:20-alpine AS build
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci
@@ -21,7 +21,7 @@ RUN echo 'server { \
         proxy_set_header X-Real-IP $remote_addr; \
     } \
     location /admin/ { \
-        proxy_pass http://nexus-application:8080/; \
+        proxy_pass http://nexus-application:8080/admin/; \
         proxy_set_header Host $host; \
         proxy_set_header X-Real-IP $remote_addr; \
     } \

@@ -1,19 +1,31 @@
 import type { PageParam } from './common'
+import type { Coupon, MemberCoupon } from './promotion'
+
+export type { Coupon, MemberCoupon } from './promotion'
 
 export type SmsCoupon = {
   /** ID */
   id?: number
   type: number
+  discountType?: number
   name: string
-    count?: number
+  count?: number
+  remainingQuantity?: number
   amount: number
+  discountValue?: number
   perLimit: number
+  perMemberLimit?: number
   minOrderAmount?: number
+  minSpendAmount?: number
   startTime?: string
+  startsAt?: string
   endTime?: string
+  endsAt?: string
   useType: number
-        receiveCount?: number
-    code?: string
+  applicabilityScope?: number
+  receiveCount?: number
+  claimedCount?: number
+  code?: string
 }
 
 export type SmsCouponExt = SmsCoupon & {
@@ -36,6 +48,7 @@ export type CouponSelectProductOptionVo = {
 export type CouponQueryParam = PageParam & {
   name?: string
   type?: number
+  discountType?: number
 }
 
 export type SmsCouponHistory = {
@@ -46,11 +59,15 @@ export type SmsCouponHistory = {
   couponCode?: string
   memberNickname?: string
   getType?: number
+  acquisitionChannel?: number
   createTime?: string
+  claimedAt?: string
   useStatus?: number
+  status?: number
   redeemedAt?: string
   orderId?: number
   orderSn?: string
+  orderNumber?: string
 }
 
 export type CouponHistoryQueryParam = PageParam & {

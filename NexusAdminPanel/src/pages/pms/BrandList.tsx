@@ -86,10 +86,10 @@ const BrandList: React.FC = () => {
   };
 
   const handleShowStatusChange = async (row: PmsBrand) => {
-    const isNewArrival = row.isVisible === 1 ? 0 : 1;
+    const newVisibility = row.isVisible ? 0 : 1;
     try {
-      await brandUpdateShowStatusAPI({ ids: String(row.id), isVisible: isNewArrival });
-      setList((prev) => prev.map((item) => (item.id === row.id ? { ...item, isVisible: isNewArrival } : item)));
+      await brandUpdateShowStatusAPI({ ids: String(row.id), isVisible: newVisibility });
+      setList((prev) => prev.map((item) => (item.id === row.id ? { ...item, isVisible: newVisibility } : item)));
       setSnackbar({ open: true, message: 'Status updated', severity: 'success' });
     } catch {
       setSnackbar({ open: true, message: 'Failed to update status', severity: 'error' });
@@ -227,7 +227,7 @@ const BrandList: React.FC = () => {
                     <TableCell sx={{ fontWeight: 500 }}>{row.name}</TableCell>
                     <TableCell align="center">
                       <Switch
-                        checked={row.isVisible === 1}
+                        checked={Boolean(row.isVisible)}
                         onChange={() => handleShowStatusChange(row)}
                         size="small"
                         color="primary"

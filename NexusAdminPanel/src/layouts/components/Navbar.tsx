@@ -60,7 +60,7 @@ const findRouteTitle = (pathname: string, search: string, routes: RouteConfig[])
             }
             let childTitle = child.meta?.title || '';
             if (child.path === 'productAttrList') {
-              childTitle = typeParam === '0' ? 'Manage Attributes' : typeParam === '1' ? 'Manage Parameters' : childTitle;
+              childTitle = typeParam === '0' ? 'Manage Attributes' : typeParam === '1' ? 'Attribute definition' : childTitle;
             }
             if (childTitle) titles.push(childTitle);
             break;

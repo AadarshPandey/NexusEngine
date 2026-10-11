@@ -119,7 +119,7 @@ const ProductAttrList: React.FC = () => {
                         Manage Attributes
                       </Button>
                       <Button size="small" variant="outlined" color="secondary" onClick={() => navigate(`/pms/productAttrList?cid=${row.id}&type=1`)}>
-                        Manage Parameters
+                        Attribute Definition
                       </Button>
                     </TableCell>
                     <TableCell align="center">

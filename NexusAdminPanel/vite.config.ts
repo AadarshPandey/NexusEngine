@@ -18,6 +18,11 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
       },
+      '/s3': {
+        target: 'http://localhost:4566',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/s3/, '/nexus-media'),
+      },
     },
   },
 })

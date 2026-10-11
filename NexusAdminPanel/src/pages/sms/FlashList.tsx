@@ -37,7 +37,7 @@ const FlashList: React.FC = () => {
   };
 
   const handleDelete = async (id: number) => {
-    if(confirm('Delete this flash unitsSold campaign?')) {
+    if (confirm('Delete this flash sale campaign?')) {
       try {
         await flashDeleteByIdAPI(id);
         fetchList();
@@ -94,10 +94,10 @@ const FlashList: React.FC = () => {
                 <TableCell>{row.id}</TableCell>
                 <TableCell>{row.title}</TableCell>
                 <TableCell>
-                  <Switch size="small" checked={row.status === 1} onChange={() => handleStatusChange(row.id!, row.status)} />
+                  <Switch size="small" checked={Boolean(row.isActive ?? (row.status === 1))} onChange={() => handleStatusChange(row.id!, row.status)} />
                 </TableCell>
-                <TableCell>{row.startsOn ? dayjs(row.startsOn).format('DD/MM/YYYY') : 'N/A'}</TableCell>
-                <TableCell>{row.endsOn ? dayjs(row.endsOn).format('DD/MM/YYYY') : 'N/A'}</TableCell>
+                <TableCell>{(row.startsOn || (row as any).startDate) ? dayjs(row.startsOn || (row as any).startDate).format('DD/MM/YYYY') : 'N/A'}</TableCell>
+                <TableCell>{(row.endsOn || (row as any).endDate) ? dayjs(row.endsOn || (row as any).endDate).format('DD/MM/YYYY') : 'N/A'}</TableCell>
                 <TableCell align="center">
                   <Button size="small" onClick={() => navigate(`/sms/selectSession?flashSaleId=${row.id}`)}>Manage Sessions</Button>
                   <Button size="small" color="primary" onClick={() => openDialog(row)}>Edit</Button>

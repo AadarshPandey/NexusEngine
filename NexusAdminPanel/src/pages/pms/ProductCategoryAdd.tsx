@@ -8,14 +8,10 @@ const ProductCategoryAdd: React.FC = () => {
   const navigate = useNavigate();
   const [categories, setCategories] = useState<PmsProductCategoryExt[]>([]);
   const [formData, setFormData] = useState<PmsProductCategory>({
-    parentReviewId: 0,
+    parentId: 0,
     name: '',
-    unitOfMeasure: '',
     isInNavigation: 0,
-    isVisible: 1,
-    displayOrder: 0,
-    searchKeywords: '',
-    customerComment: ''
+    isVisible: 1
   });
 
   useEffect(() => {
@@ -51,24 +47,18 @@ const ProductCategoryAdd: React.FC = () => {
             
             <FormControl fullWidth margin="normal">
               <InputLabel>Parent Category</InputLabel>
-              <Select value={formData.parentReviewId} label="Parent Category" onChange={(e) => setFormData({...formData, parentReviewId: Number(e.target.value)})}>
+              <Select value={formData.parentId} label="Parent Category" onChange={(e) => setFormData({...formData, parentId: Number(e.target.value)})}>
                 <MenuItem value={0}>None (Top Level)</MenuItem>
                 {categories.map(c => (
                   <MenuItem key={c.id} value={c.id}>{c.name}</MenuItem>
                 ))}
               </Select>
             </FormControl>
-
-            <TextField fullWidth margin="normal" label="Product Unit" value={formData.unitOfMeasure} onChange={(e) => setFormData({...formData, unitOfMeasure: e.target.value})} />
-            <TextField fullWidth margin="normal" type="number" label="Sort Order" value={formData.displayOrder} onChange={(e) => setFormData({...formData, displayOrder: Number(e.target.value)})} />
             
             <Box sx={{ display: 'flex', gap: 4, mt: 2, mb: 2 }}>
-              <FormControlLabel control={<Switch checked={formData.isVisible === 1} onChange={(e) => setFormData({...formData, isVisible: e.target.checked ? 1 : 0})} />} label="Show Status" />
-              <FormControlLabel control={<Switch checked={formData.isInNavigation === 1} onChange={(e) => setFormData({...formData, isInNavigation: e.target.checked ? 1 : 0})} />} label="Navigation Bar" />
+              <FormControlLabel control={<Switch checked={Boolean(formData.isVisible)} onChange={(e) => setFormData({...formData, isVisible: e.target.checked ? 1 : 0})} />} label="Show Status" />
+              <FormControlLabel control={<Switch checked={Boolean(formData.isInNavigation)} onChange={(e) => setFormData({...formData, isInNavigation: e.target.checked ? 1 : 0})} />} label="Navigation Bar" />
             </Box>
-
-            <TextField fullWidth margin="normal" label="Keywords" value={formData.searchKeywords} onChange={(e) => setFormData({...formData, searchKeywords: e.target.value})} />
-            <TextField fullWidth margin="normal" label="Description" multiline rows={4} value={formData.customerComment} onChange={(e) => setFormData({...formData, customerComment: e.target.value})} />
 
             <Box sx={{ mt: 3, display: 'flex', gap: 2 }}>
               <Button type="submit" variant="contained" color="primary">Submit</Button>

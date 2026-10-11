@@ -123,10 +123,10 @@ const RoleList: React.FC = () => {
   };
 
   const handleStatusChange = async (row: UmsRole) => {
-    const isNewArrival = row.status === 1 ? 0 : 1;
+    const newStatus = row.status === 1 ? 0 : 1;
     try {
-      await roleUpdateStatusAPI(row.id!, { status: isNewArrival });
-      setList((prev) => prev.map((item) => (item.id === row.id ? { ...item, status: isNewArrival } : item)));
+      await roleUpdateStatusAPI(row.id!, { status: newStatus });
+      setList((prev) => prev.map((item) => (item.id === row.id ? { ...item, status: newStatus } : item)));
       setSnackbar({ open: true, message: 'Status updated', severity: 'success' });
     } catch {
       setSnackbar({ open: true, message: 'Failed to update status', severity: 'error' });
@@ -282,12 +282,12 @@ const RoleList: React.FC = () => {
                     </TableCell>
                     <TableCell>{row.id}</TableCell>
                     <TableCell sx={{ fontWeight: 500 }}>{row.name}</TableCell>
-                    <TableCell>{row.customerComment}</TableCell>
-                    <TableCell>{row.adminCount}</TableCell>
-                    <TableCell>{formatTime(row.createdAt)}</TableCell>
+                    <TableCell>{row.customerComment || (row as any).description || '-'}</TableCell>
+                    <TableCell>{row.adminCount ?? '-'}</TableCell>
+                    <TableCell>{formatTime(row.createdAt || (row as any).createTime)}</TableCell>
                     <TableCell align="center">
                       <Switch
-                        checked={row.status === 1}
+                        checked={Boolean(row.status)}
                         onChange={() => handleStatusChange(row)}
                         size="small"
                         color="primary"
@@ -378,7 +378,7 @@ const RoleList: React.FC = () => {
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                 <Typography>Enabled</Typography>
                 <Switch
-                  checked={formData.status === 1}
+                  checked={Boolean(formData.status)}
                   onChange={e => setFormData({ ...formData, status: e.target.checked ? 1 : 0 })}
                   color="primary"
                 />

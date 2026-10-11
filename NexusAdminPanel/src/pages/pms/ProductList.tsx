@@ -5,6 +5,7 @@ import { getProductListAPI, productUpdateDeleteStatusAPI, productUpdatePublishSt
 import http from '@/utils/http';
 import { getBrandListAPI } from '@/apis/brand';
 import { getProductCategoryListWithChildrenAPI } from '@/apis/productCate';
+import { resolveImageUrl } from '@/utils/media';
 
 interface PmsProductAuditLog {
   id?: number;
@@ -239,11 +240,11 @@ const ProductList: React.FC = () => {
           </Grid>
           <Grid size={{ xs: 12, md: 4 }}>
             <FormControl fullWidth size="small">
-              <InputLabel>Available now</InputLabel>
-              <Select label="Available now" value={searchParams.isPublished} onChange={(e) => setSearchParams({ ...searchParams, isPublished: e.target.value as string })}>
+              <InputLabel>Published</InputLabel>
+              <Select label="Published" value={searchParams.isPublished} onChange={(e) => setSearchParams({ ...searchParams, isPublished: e.target.value as string })}>
                 <MenuItem value="">All</MenuItem>
-                <MenuItem value={1}>On shelves</MenuItem>
-                <MenuItem value={0}>Off shelves</MenuItem>
+                <MenuItem value={1}>Yes</MenuItem>
+                <MenuItem value={0}>No</MenuItem>
               </Select>
             </FormControl>
           </Grid>
@@ -277,7 +278,6 @@ const ProductList: React.FC = () => {
                 <TableCell>Product name</TableCell>
                 <TableCell>Price/item number</TableCell>
                 <TableCell>Label</TableCell>
-                <TableCell>SKU inventory</TableCell>
                 <TableCell>Sales volume</TableCell>
                 <TableCell>Available onHandQty</TableCell>
                 <TableCell>Review status</TableCell>
@@ -289,7 +289,16 @@ const ProductList: React.FC = () => {
                 <TableRow key={row.id}>
                   <TableCell>{row.id}</TableCell>
                   <TableCell>
-                    <Box component="img" src={row.primaryImageUrl || 'https://via.placeholder.com/80'} alt="primaryImageUrl" sx={{ width: 80, height: 80, objectFit: 'contain', border: '1px solid #eee', borderRadius: 1 }} />
+                    <Box
+                      component="img"
+                      src={resolveImageUrl(row.primaryImageUrl || row.pic)}
+                      alt={row.name || 'product'}
+                      onError={(e: React.SyntheticEvent<HTMLImageElement>) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = 'https://via.placeholder.com/80?text=No+Image';
+                      }}
+                      sx={{ width: 80, height: 80, objectFit: 'contain', border: '1px solid #eee', borderRadius: 1 }}
+                    />
                   </TableCell>
                   <TableCell>
                     <Typography variant="body2" sx={{ fontWeight: 'bold' }}>{row.name}</Typography>
@@ -301,20 +310,17 @@ const ProductList: React.FC = () => {
                   </TableCell>
                   <TableCell>
                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
-                      <Typography variant="caption" sx={{ width: 80 }}>On shelves:</Typography>
-                      <Switch size="small" checked={row.isPublished === 1} onChange={(e) => handleStatusChange(row.id!, 'publish', e.target.checked)} />
+                      <Typography variant="caption" sx={{ width: 80 }}>Published:</Typography>
+                      <Switch size="small" checked={Boolean(row.isPublished)} onChange={(e) => handleStatusChange(row.id!, 'publish', e.target.checked)} />
                     </Box>
                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
-                      <Typography variant="caption" sx={{ width: 80 }}>New:</Typography>
-                      <Switch size="small" checked={row.isNewArrival === 1} onChange={(e) => handleStatusChange(row.id!, 'new', e.target.checked)} />
+                      <Typography variant="caption" sx={{ width: 80 }}>New Arrival:</Typography>
+                      <Switch size="small" checked={Boolean(row.isNewArrival)} onChange={(e) => handleStatusChange(row.id!, 'new', e.target.checked)} />
                     </Box>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                      <Typography variant="caption" sx={{ width: 80 }}>recommend:</Typography>
-                      <Switch size="small" checked={row.isFeatured === 1} onChange={(e) => handleStatusChange(row.id!, 'recommend', e.target.checked)} />
+                      <Typography variant="caption" sx={{ width: 80 }}>Featured:</Typography>
+                      <Switch size="small" checked={Boolean(row.isFeatured)} onChange={(e) => handleStatusChange(row.id!, 'recommend', e.target.checked)} />
                     </Box>
-                  </TableCell>
-                  <TableCell align="center">
-                    <Button variant="outlined" size="small" sx={{ borderRadius: 20 }}>0</Button>
                   </TableCell>
                   <TableCell>{row.unitsSold || 0}</TableCell>
                   <TableCell>{row.onHandQty || 0}</TableCell>

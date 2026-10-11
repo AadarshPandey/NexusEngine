@@ -145,18 +145,18 @@ const CouponList: React.FC = () => {
                     <TableCell>{row.name}</TableCell>
                     <TableCell>{formatType(row.type)}</TableCell>
                     <TableCell>{row.count !== undefined ? row.count : 'N/A'}</TableCell>
-                    <TableCell>₹{row.amount}</TableCell>
-                    <TableCell>₹{row.minOrderAmount}</TableCell>
+                    <TableCell>₹{row.discountValue !== undefined ? row.discountValue : row.amount}</TableCell>
+                    <TableCell>₹{row.minSpendAmount !== undefined ? row.minSpendAmount : row.minOrderAmount}</TableCell>
                     <TableCell>
                       <Typography variant="caption" display="block">
-                        {row.startTime ? dayjs(row.startTime).format('YYYY-MM-DD') : 'N/A'}
+                        {(row.startsAt || row.startTime) ? dayjs(row.startsAt || row.startTime).format('YYYY-MM-DD') : 'N/A'}
                       </Typography>
                       <Typography variant="caption" display="block">
-                        to {row.endTime ? dayjs(row.endTime).format('YYYY-MM-DD') : 'N/A'}
+                        to {(row.endsAt || row.endTime) ? dayjs(row.endsAt || row.endTime).format('YYYY-MM-DD') : 'N/A'}
                       </Typography>
                     </TableCell>
                     <TableCell>
-                      {row.endTime && new Date(row.endTime).getTime() < new Date().getTime() ? (
+                      {((row.endsAt || row.endTime) && new Date(row.endsAt || row.endTime!).getTime() < new Date().getTime()) ? (
                         <Chip label="Expired" size="small" color="error" />
                       ) : (
                         <Chip label="Active" size="small" color="success" />
