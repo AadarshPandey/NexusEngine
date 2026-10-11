@@ -1,33 +1,10 @@
 package com.nexusengine.core.admin.analytics.service;
 
-import com.nexusengine.core.domain.catalog.entity.ProductSku;
-import com.nexusengine.core.dto.DashboardInfo;
-
-import com.nexusengine.core.domain.catalog.entity.*;
-import com.nexusengine.core.domain.ordering.entity.*;
-import com.nexusengine.core.domain.customer.entity.*;
-import com.nexusengine.core.domain.promotion.entity.*;
-import com.nexusengine.core.domain.iam.entity.*;
-import com.nexusengine.core.domain.catalog.repository.*;
-import com.nexusengine.core.domain.ordering.repository.*;
-import com.nexusengine.core.domain.customer.repository.*;
-import com.nexusengine.core.domain.promotion.repository.*;
-import com.nexusengine.core.domain.iam.repository.*;
-import com.nexusengine.core.admin.catalog.dto.*;
-import com.nexusengine.core.admin.catalog.service.*;
-import com.nexusengine.core.admin.analytics.service.*;
-import com.nexusengine.core.admin.ordering.dto.*;
-import com.nexusengine.core.admin.ordering.service.*;
-import com.nexusengine.core.admin.promotion.dto.*;
-import com.nexusengine.core.admin.promotion.service.*;
-import com.nexusengine.core.admin.ai.service.*;
-import com.nexusengine.core.admin.infra.dto.*;
-import com.nexusengine.core.admin.infra.service.*;
-import com.nexusengine.core.admin.iam.dto.*;
-import com.nexusengine.core.admin.iam.service.*;
+import com.nexusengine.core.admin.analytics.dto.DashboardInfo;
 import com.nexusengine.core.domain.catalog.entity.Product;
-import com.nexusengine.core.domain.ordering.entity.CustomerOrder;
+import com.nexusengine.core.domain.catalog.entity.ProductSku;
 import com.nexusengine.core.domain.customer.entity.Member;
+import com.nexusengine.core.domain.ordering.entity.CustomerOrder;
 import com.nexusengine.core.domain.ordering.entity.ReturnRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,7 +72,7 @@ public class DashboardServiceImpl implements DashboardService {
             (Long) entityManager.createQuery("SELECT COUNT(o) FROM CustomerOrder o WHERE o.status = 2").getSingleResult(),
             (Long) entityManager.createQuery("SELECT COUNT(o) FROM ReturnRequest o WHERE o.status = 0").getSingleResult(),
             (Long) entityManager.createQuery("SELECT COUNT(o) FROM ReturnRequest o WHERE o.status = 1").getSingleResult(),
-            (Long) entityManager.createQuery("SELECT COUNT(p) FROM Product p WHERE NOT EXISTS (SELECT 1 FROM ProductSku s WHERE s.productId = p.id AND (s.stock - s.lockStock) > 0)").getSingleResult(),
+            (Long) entityManager.createQuery("SELECT COUNT(p) FROM Product p WHERE NOT EXISTS (SELECT 1 FROM ProductSku s WHERE s.productId = p.id AND (COALESCE(s.onHandQty, 0) - COALESCE(s.reservedQty, 0)) > 0)").getSingleResult(),
             0L // Mock for now
         );
 
@@ -103,7 +80,7 @@ public class DashboardServiceImpl implements DashboardService {
         DashboardInfo.ProductOverview pOverview = new DashboardInfo.ProductOverview(
             (Long) entityManager.createQuery("SELECT COUNT(p) FROM Product p WHERE p.publishStatus = 0").getSingleResult(),
             (Long) entityManager.createQuery("SELECT COUNT(p) FROM Product p WHERE p.publishStatus = 1").getSingleResult(),
-            (Long) entityManager.createQuery("SELECT COUNT(p) FROM Product p WHERE EXISTS (SELECT 1 FROM ProductSku s WHERE s.productId = p.id AND (s.stock - s.lockStock) < s.lowStock)").getSingleResult(),
+            (Long) entityManager.createQuery("SELECT COUNT(p) FROM Product p WHERE EXISTS (SELECT 1 FROM ProductSku s WHERE s.productId = p.id AND (COALESCE(s.onHandQty, 0) - COALESCE(s.reservedQty, 0)) < COALESCE(s.lowStockThreshold, 0))").getSingleResult(),
             totalProducts
         );
 

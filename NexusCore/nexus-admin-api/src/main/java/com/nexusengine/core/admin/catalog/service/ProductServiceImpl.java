@@ -3,18 +3,6 @@ package com.nexusengine.core.admin.catalog.service;
 import lombok.RequiredArgsConstructor;
 
 import com.nexusengine.core.domain.catalog.repository.ProductAttributeValueRepository;
-import com.nexusengine.core.admin.catalog.dto.*;
-import com.nexusengine.core.admin.catalog.service.*;
-import com.nexusengine.core.admin.analytics.service.*;
-import com.nexusengine.core.admin.ordering.dto.*;
-import com.nexusengine.core.admin.ordering.service.*;
-import com.nexusengine.core.admin.promotion.dto.*;
-import com.nexusengine.core.admin.promotion.service.*;
-import com.nexusengine.core.admin.ai.service.*;
-import com.nexusengine.core.admin.infra.dto.*;
-import com.nexusengine.core.admin.infra.service.*;
-import com.nexusengine.core.admin.iam.dto.*;
-import com.nexusengine.core.admin.iam.service.*;
 import com.nexusengine.core.domain.catalog.entity.ProductSku;
 import com.nexusengine.core.domain.catalog.repository.ProductApprovalEventRepository;
 import com.nexusengine.core.domain.catalog.repository.ProductSkuRepository;
@@ -34,28 +22,8 @@ import org.springframework.data.domain.Sort;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 
-import com.nexusengine.core.domain.catalog.entity.*;
-import com.nexusengine.core.domain.ordering.entity.*;
-import com.nexusengine.core.domain.customer.entity.*;
-import com.nexusengine.core.domain.promotion.entity.*;
-import com.nexusengine.core.domain.iam.entity.*;
-import com.nexusengine.core.domain.catalog.repository.*;
-import com.nexusengine.core.domain.ordering.repository.*;
-import com.nexusengine.core.domain.customer.repository.*;
-import com.nexusengine.core.domain.promotion.repository.*;
-import com.nexusengine.core.domain.iam.repository.*;
 
 
-import com.nexusengine.core.domain.catalog.entity.*;
-import com.nexusengine.core.domain.ordering.entity.*;
-import com.nexusengine.core.domain.customer.entity.*;
-import com.nexusengine.core.domain.promotion.entity.*;
-import com.nexusengine.core.domain.iam.entity.*;
-import com.nexusengine.core.domain.catalog.repository.*;
-import com.nexusengine.core.domain.ordering.repository.*;
-import com.nexusengine.core.domain.customer.repository.*;
-import com.nexusengine.core.domain.promotion.repository.*;
-import com.nexusengine.core.domain.iam.repository.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,6 +39,10 @@ import java.util.ArrayList;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+import com.nexusengine.core.admin.iam.service.AdminUserService;
+import com.nexusengine.core.admin.catalog.dto.ProductParam;
+import com.nexusengine.core.admin.catalog.dto.ProductQueryParam;
+import com.nexusengine.core.admin.catalog.dto.ProductResult;
 
 
 /**
@@ -105,8 +77,8 @@ public class ProductServiceImpl implements ProductService {
             ProductSku defaultSku = new ProductSku();
             defaultSku.setProductId(productId);
             defaultSku.setSkuCode(java.util.UUID.randomUUID().toString().replace("-","").substring(0,20));
-            defaultSku.setPrice(productParam.product().getPrice());
-            defaultSku.setStock(productParam.product().getStock() != null ? productParam.product().getStock() : 0);
+            defaultSku.setListPrice(java.math.BigDecimal.ZERO);
+            defaultSku.setOnHandQty(0);
             skuStockRepository.save(defaultSku);
         } else {
             saveSkuStockList(productParam.skuStockList(), productId);
@@ -166,15 +138,9 @@ public class ProductServiceImpl implements ProductService {
                 ProductSku defaultSku = new ProductSku();
                 defaultSku.setProductId(id);
                 defaultSku.setSkuCode(java.util.UUID.randomUUID().toString().replace("-","").substring(0,20));
-                defaultSku.setPrice(productParam.product().getPrice());
-                defaultSku.setStock(productParam.product().getStock() != null ? productParam.product().getStock() : 0);
+                defaultSku.setListPrice(java.math.BigDecimal.ZERO);
+                defaultSku.setOnHandQty(0);
                 skuStockRepository.save(defaultSku);
-            } else {
-                for (ProductSku sku : existing) {
-                    if (productParam.product().getPrice() != null) sku.setPrice(productParam.product().getPrice());
-                    if (productParam.product().getStock() != null) sku.setStock(productParam.product().getStock());
-                }
-                skuStockRepository.saveAll(existing);
             }
             return;
         }

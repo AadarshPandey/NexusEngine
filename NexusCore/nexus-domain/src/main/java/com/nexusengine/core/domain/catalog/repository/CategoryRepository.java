@@ -8,6 +8,6 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import java.util.List;
 
 public interface CategoryRepository extends JpaRepository<Category, Long>, JpaSpecificationExecutor<Category> {
-    Page<Category> findByParentIdOrderBySortDesc(Long parentId, Pageable pageable);
-    Page<Category> findByParentIdIsNullOrderBySortDesc(Pageable pageable);
+    Page<Category> findByParentId(Long parentId, Pageable pageable);
+    Page<Category> findByParentIdIsNull(Pageable pageable);
 }

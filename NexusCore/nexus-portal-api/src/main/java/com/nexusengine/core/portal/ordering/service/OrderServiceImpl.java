@@ -1,23 +1,6 @@
 package com.nexusengine.core.portal.ordering.service;
 
 import lombok.RequiredArgsConstructor;
-import com.nexusengine.core.portal.catalog.dto.*;
-import com.nexusengine.core.portal.catalog.service.*;
-import com.nexusengine.core.portal.catalog.dao.*;
-import com.nexusengine.core.portal.payment.service.*;
-import com.nexusengine.core.portal.ordering.dto.*;
-import com.nexusengine.core.portal.ordering.service.*;
-import com.nexusengine.core.portal.ordering.dao.*;
-import com.nexusengine.core.portal.customer.dto.*;
-import com.nexusengine.core.portal.customer.service.*;
-import com.nexusengine.core.portal.promotion.dto.*;
-import com.nexusengine.core.portal.promotion.service.*;
-import com.nexusengine.core.portal.promotion.strategy.*;
-import com.nexusengine.core.portal.ai.service.*;
-import com.nexusengine.core.portal.home.dto.*;
-import com.nexusengine.core.portal.home.service.*;
-import com.nexusengine.core.portal.engagement.dto.*;
-import com.nexusengine.core.portal.engagement.service.*;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -53,29 +36,9 @@ import com.nexusengine.core.common.api.CommonPage;
 import com.nexusengine.core.common.exception.Asserts;
 import com.nexusengine.core.common.service.RedisService;
 
-import com.nexusengine.core.domain.catalog.entity.*;
-import com.nexusengine.core.domain.ordering.entity.*;
-import com.nexusengine.core.domain.customer.entity.*;
-import com.nexusengine.core.domain.promotion.entity.*;
-import com.nexusengine.core.domain.iam.entity.*;
-import com.nexusengine.core.domain.catalog.repository.*;
-import com.nexusengine.core.domain.ordering.repository.*;
-import com.nexusengine.core.domain.customer.repository.*;
-import com.nexusengine.core.domain.promotion.repository.*;
-import com.nexusengine.core.domain.iam.repository.*;
 
 import com.nexusengine.core.portal.component.CancelOrderSender;
 
-import com.nexusengine.core.domain.catalog.entity.*;
-import com.nexusengine.core.domain.ordering.entity.*;
-import com.nexusengine.core.domain.customer.entity.*;
-import com.nexusengine.core.domain.promotion.entity.*;
-import com.nexusengine.core.domain.iam.entity.*;
-import com.nexusengine.core.domain.catalog.repository.*;
-import com.nexusengine.core.domain.ordering.repository.*;
-import com.nexusengine.core.domain.customer.repository.*;
-import com.nexusengine.core.domain.promotion.repository.*;
-import com.nexusengine.core.domain.iam.repository.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -90,6 +53,17 @@ import java.math.RoundingMode;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
+import com.nexusengine.core.portal.ordering.dto.CartPromotionItem;
+import com.nexusengine.core.portal.ordering.dto.ConfirmOrderResult;
+import com.nexusengine.core.portal.promotion.strategy.CouponDiscountStrategy;
+import com.nexusengine.core.portal.promotion.dto.CouponHistoryDetail;
+import com.nexusengine.core.portal.promotion.strategy.CouponStrategyFactory;
+import com.nexusengine.core.portal.customer.service.MemberAddressService;
+import com.nexusengine.core.portal.promotion.service.MemberCouponService;
+import com.nexusengine.core.portal.customer.service.MemberService;
+import com.nexusengine.core.portal.ordering.dao.OrderDao;
+import com.nexusengine.core.portal.ordering.dto.OrderDetail;
+import com.nexusengine.core.portal.ordering.dto.OrderParam;
 
 
 /**
@@ -189,7 +163,7 @@ public class OrderServiceImpl implements OrderService {
                 
                 if (item.cartItem().getProductSkuId() != null) {
                     ProductSku skuStock = skuStockRepository.findById(item.cartItem().getProductSkuId()).orElse(null);
-                    if (skuStock == null || (skuStock.getStock() - (skuStock.getLockStock() == null ? 0 : skuStock.getLockStock())) < item.cartItem().getQuantity()) {
+                    if (skuStock == null || (skuStock.getOnHandQty() - (skuStock.getReservedQty() == null ? 0 : skuStock.getReservedQty())) < item.cartItem().getQuantity()) {
                         Asserts.fail("Insufficient stock for SKU");
                     }
                 }
@@ -663,7 +637,7 @@ public class OrderServiceImpl implements OrderService {
             if (item.cartItem().getProductSkuId() != null) {
                 ProductSku skuStock = skuStockRepository.findById(item.cartItem().getProductSkuId()).orElse(null);
                 if (skuStock != null) {
-                    skuStock.setLockStock(skuStock.getLockStock() + item.cartItem().getQuantity());
+                    skuStock.setReservedQty(skuStock.getReservedQty() + item.cartItem().getQuantity());
                     skuStockRepository.save(skuStock);
                 }
             }

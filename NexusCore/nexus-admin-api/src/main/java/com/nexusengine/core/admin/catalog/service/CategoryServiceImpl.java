@@ -3,18 +3,6 @@ package com.nexusengine.core.admin.catalog.service;
 import lombok.RequiredArgsConstructor;
 
 import com.nexusengine.core.domain.catalog.entity.Category;
-import com.nexusengine.core.admin.catalog.dto.*;
-import com.nexusengine.core.admin.catalog.service.*;
-import com.nexusengine.core.admin.analytics.service.*;
-import com.nexusengine.core.admin.ordering.dto.*;
-import com.nexusengine.core.admin.ordering.service.*;
-import com.nexusengine.core.admin.promotion.dto.*;
-import com.nexusengine.core.admin.promotion.service.*;
-import com.nexusengine.core.admin.ai.service.*;
-import com.nexusengine.core.admin.infra.dto.*;
-import com.nexusengine.core.admin.infra.service.*;
-import com.nexusengine.core.admin.iam.dto.*;
-import com.nexusengine.core.admin.iam.service.*;
 import com.nexusengine.core.domain.catalog.entity.CategoryAttribute;
 import org.springframework.data.domain.Sort;
 
@@ -22,16 +10,6 @@ import com.nexusengine.core.domain.catalog.repository.CategoryAttributeRepositor
 import com.nexusengine.core.domain.catalog.repository.CategoryRepository;
 import com.nexusengine.core.domain.catalog.repository.ProductRepository;
 
-import com.nexusengine.core.domain.catalog.entity.*;
-import com.nexusengine.core.domain.ordering.entity.*;
-import com.nexusengine.core.domain.customer.entity.*;
-import com.nexusengine.core.domain.promotion.entity.*;
-import com.nexusengine.core.domain.iam.entity.*;
-import com.nexusengine.core.domain.catalog.repository.*;
-import com.nexusengine.core.domain.ordering.repository.*;
-import com.nexusengine.core.domain.customer.repository.*;
-import com.nexusengine.core.domain.promotion.repository.*;
-import com.nexusengine.core.domain.iam.repository.*;
 
 import cn.hutool.core.collection.CollUtil;
 import org.springframework.beans.BeanUtils;
@@ -40,6 +18,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
+import com.nexusengine.core.admin.catalog.dto.CategoryParam;
+import com.nexusengine.core.admin.catalog.dto.CategoryWithChildrenItem;
 
 
 @Service
@@ -92,7 +72,7 @@ public class CategoryServiceImpl implements CategoryService {
     public org.springframework.data.domain.Page<Category> getList(Long parentId, Integer pageSize, Integer pageNum) {
         org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(pageNum > 0 ? pageNum - 1 : 0, pageSize, Sort.by(Sort.Direction.ASC, "id"));
         
-        return productCategoryRepository.findByParentIdOrderBySortDesc(parentId, pageable);
+        return productCategoryRepository.findByParentId(parentId, pageable);
     }
 
     @Override

@@ -1,23 +1,6 @@
 package com.nexusengine.core.portal.home.service;
 
 import lombok.RequiredArgsConstructor;
-import com.nexusengine.core.portal.catalog.dto.*;
-import com.nexusengine.core.portal.catalog.service.*;
-import com.nexusengine.core.portal.catalog.dao.*;
-import com.nexusengine.core.portal.payment.service.*;
-import com.nexusengine.core.portal.ordering.dto.*;
-import com.nexusengine.core.portal.ordering.service.*;
-import com.nexusengine.core.portal.ordering.dao.*;
-import com.nexusengine.core.portal.customer.dto.*;
-import com.nexusengine.core.portal.customer.service.*;
-import com.nexusengine.core.portal.promotion.dto.*;
-import com.nexusengine.core.portal.promotion.service.*;
-import com.nexusengine.core.portal.promotion.strategy.*;
-import com.nexusengine.core.portal.ai.service.*;
-import com.nexusengine.core.portal.home.dto.*;
-import com.nexusengine.core.portal.home.service.*;
-import com.nexusengine.core.portal.engagement.dto.*;
-import com.nexusengine.core.portal.engagement.service.*;
 
 import com.nexusengine.core.domain.promotion.entity.Banner;
 import com.nexusengine.core.domain.promotion.entity.FlashSaleItem;
@@ -34,33 +17,18 @@ import com.nexusengine.core.domain.promotion.repository.BannerRepository;
 import com.nexusengine.core.domain.promotion.repository.FlashSaleSlotRepository;
 
 
-import com.nexusengine.core.domain.catalog.entity.*;
-import com.nexusengine.core.domain.ordering.entity.*;
-import com.nexusengine.core.domain.customer.entity.*;
-import com.nexusengine.core.domain.promotion.entity.*;
-import com.nexusengine.core.domain.iam.entity.*;
-import com.nexusengine.core.domain.catalog.repository.*;
-import com.nexusengine.core.domain.ordering.repository.*;
-import com.nexusengine.core.domain.customer.repository.*;
-import com.nexusengine.core.domain.promotion.repository.*;
-import com.nexusengine.core.domain.iam.repository.*;
 
 
-import com.nexusengine.core.domain.catalog.entity.*;
-import com.nexusengine.core.domain.ordering.entity.*;
-import com.nexusengine.core.domain.customer.entity.*;
-import com.nexusengine.core.domain.promotion.entity.*;
-import com.nexusengine.core.domain.iam.entity.*;
-import com.nexusengine.core.domain.catalog.repository.*;
-import com.nexusengine.core.domain.ordering.repository.*;
-import com.nexusengine.core.domain.customer.repository.*;
-import com.nexusengine.core.domain.promotion.repository.*;
-import com.nexusengine.core.domain.iam.repository.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import com.nexusengine.core.portal.promotion.dto.FlashPromotionProduct;
+import com.nexusengine.core.portal.home.dto.HomeContentResult;
+import com.nexusengine.core.portal.catalog.dao.HomeDao;
+import com.nexusengine.core.portal.promotion.dto.HomeFlashPromotion;
+import com.nexusengine.core.portal.catalog.service.SemanticSearchService;
 
 
 /**
@@ -160,9 +128,9 @@ public class HomeServiceImpl implements HomeService {
     @Override
     public List<Category> getProductCateList(Long parentId) {
         if (parentId != null && parentId == 0L) {
-            return productCategoryRepository.findByParentIdIsNullOrderBySortDesc(org.springframework.data.domain.PageRequest.of(0, 100)).getContent();
+            return productCategoryRepository.findByParentIdIsNull(org.springframework.data.domain.PageRequest.of(0, 100)).getContent();
         }
-        return productCategoryRepository.findByParentIdOrderBySortDesc(parentId, org.springframework.data.domain.PageRequest.of(0, 100)).getContent();
+        return productCategoryRepository.findByParentId(parentId, org.springframework.data.domain.PageRequest.of(0, 100)).getContent();
     }
 
     @Override

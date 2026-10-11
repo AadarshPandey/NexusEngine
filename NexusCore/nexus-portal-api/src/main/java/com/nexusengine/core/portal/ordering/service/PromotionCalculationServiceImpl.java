@@ -1,36 +1,9 @@
 package com.nexusengine.core.portal.ordering.service;
 
 import lombok.RequiredArgsConstructor;
-import com.nexusengine.core.portal.catalog.dto.*;
-import com.nexusengine.core.portal.catalog.service.*;
-import com.nexusengine.core.portal.catalog.dao.*;
-import com.nexusengine.core.portal.payment.service.*;
-import com.nexusengine.core.portal.ordering.dto.*;
-import com.nexusengine.core.portal.ordering.service.*;
-import com.nexusengine.core.portal.ordering.dao.*;
-import com.nexusengine.core.portal.customer.dto.*;
-import com.nexusengine.core.portal.customer.service.*;
-import com.nexusengine.core.portal.promotion.dto.*;
-import com.nexusengine.core.portal.promotion.service.*;
-import com.nexusengine.core.portal.promotion.strategy.*;
-import com.nexusengine.core.portal.ai.service.*;
-import com.nexusengine.core.portal.home.dto.*;
-import com.nexusengine.core.portal.home.service.*;
-import com.nexusengine.core.portal.engagement.dto.*;
-import com.nexusengine.core.portal.engagement.service.*;
 
 import com.nexusengine.core.domain.ordering.entity.CartItem;
 
-import com.nexusengine.core.domain.catalog.entity.*;
-import com.nexusengine.core.domain.ordering.entity.*;
-import com.nexusengine.core.domain.customer.entity.*;
-import com.nexusengine.core.domain.promotion.entity.*;
-import com.nexusengine.core.domain.iam.entity.*;
-import com.nexusengine.core.domain.catalog.repository.*;
-import com.nexusengine.core.domain.ordering.repository.*;
-import com.nexusengine.core.domain.customer.repository.*;
-import com.nexusengine.core.domain.promotion.repository.*;
-import com.nexusengine.core.domain.iam.repository.*;
 import com.nexusengine.core.domain.promotion.entity.SpendThresholdDiscount;
 import com.nexusengine.core.domain.promotion.entity.QuantityTierDiscount;
 import com.nexusengine.core.domain.catalog.entity.ProductSku;
@@ -41,6 +14,9 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
+import com.nexusengine.core.portal.ordering.dto.CartPromotionItem;
+import com.nexusengine.core.portal.catalog.dao.ProductDao;
+import com.nexusengine.core.portal.catalog.dto.PromotionProduct;
 
 
 /**
@@ -76,13 +52,13 @@ public class PromotionCalculationServiceImpl implements PromotionCalculationServ
                     Integer realStock = 0;
                     ProductSku skuStock = getOriginalPrice(promotionProduct, item.getProductSkuId());
                     if (skuStock != null) {
-                        BigDecimal originalPrice = skuStock.getPrice();
+                        BigDecimal originalPrice = skuStock.getListPrice();
                         item.setPrice(originalPrice);
                         reduceAmount = originalPrice.subtract(
-                                skuStock.getPromotionPrice() != null ? skuStock.getPromotionPrice() : originalPrice);
-                        realStock = skuStock.getStock() - skuStock.getLockStock();
+                                skuStock.getSalePrice() != null ? skuStock.getSalePrice() : originalPrice);
+                        realStock = skuStock.getOnHandQty() - skuStock.getReservedQty();
                     } else {
-                        realStock = promotionProduct.skuStockList() != null ? promotionProduct.skuStockList().stream().mapToInt(s -> (s.getStock() != null ? s.getStock() : 0) - (s.getLockStock() != null ? s.getLockStock() : 0)).sum() : 0;
+                        realStock = promotionProduct.skuStockList() != null ? promotionProduct.skuStockList().stream().mapToInt(s -> (s.getOnHandQty() != null ? s.getOnHandQty() : 0) - (s.getReservedQty() != null ? s.getReservedQty() : 0)).sum() : 0;
                     }
                     cartPromotionItemList.add(new CartPromotionItem(item, promotionMessage, reduceAmount, realStock, null));
                 }
@@ -96,11 +72,11 @@ public class PromotionCalculationServiceImpl implements PromotionCalculationServ
                         Integer realStock = 0;
                         ProductSku skuStock = getOriginalPrice(promotionProduct, item.getProductSkuId());
                         if (skuStock != null) {
-                            BigDecimal originalPrice = skuStock.getPrice();
+                            BigDecimal originalPrice = skuStock.getListPrice();
                             reduceAmount = originalPrice.subtract(ladder.getDiscount().multiply(originalPrice));
-                            realStock = skuStock.getStock() - skuStock.getLockStock();
+                            realStock = skuStock.getOnHandQty() - skuStock.getReservedQty();
                         } else {
-                            realStock = promotionProduct.skuStockList() != null ? promotionProduct.skuStockList().stream().mapToInt(s -> (s.getStock() != null ? s.getStock() : 0) - (s.getLockStock() != null ? s.getLockStock() : 0)).sum() : 0;
+                            realStock = promotionProduct.skuStockList() != null ? promotionProduct.skuStockList().stream().mapToInt(s -> (s.getOnHandQty() != null ? s.getOnHandQty() : 0) - (s.getReservedQty() != null ? s.getReservedQty() : 0)).sum() : 0;
                         }
                         cartPromotionItemList.add(new CartPromotionItem(item, promotionMessage, reduceAmount, realStock, null));
                     }
@@ -117,11 +93,11 @@ public class PromotionCalculationServiceImpl implements PromotionCalculationServ
                         Integer realStock = 0;
                         ProductSku skuStock = getOriginalPrice(promotionProduct, item.getProductSkuId());
                         if (skuStock != null) {
-                            BigDecimal originalPrice = skuStock.getPrice();
+                            BigDecimal originalPrice = skuStock.getListPrice();
                             reduceAmount = originalPrice.divide(totalAmount, RoundingMode.HALF_EVEN).multiply(fullReduction.getReducePrice());
-                            realStock = skuStock.getStock() - skuStock.getLockStock();
+                            realStock = skuStock.getOnHandQty() - skuStock.getReservedQty();
                         } else {
-                            realStock = promotionProduct.skuStockList() != null ? promotionProduct.skuStockList().stream().mapToInt(s -> (s.getStock() != null ? s.getStock() : 0) - (s.getLockStock() != null ? s.getLockStock() : 0)).sum() : 0;
+                            realStock = promotionProduct.skuStockList() != null ? promotionProduct.skuStockList().stream().mapToInt(s -> (s.getOnHandQty() != null ? s.getOnHandQty() : 0) - (s.getReservedQty() != null ? s.getReservedQty() : 0)).sum() : 0;
                         }
                         cartPromotionItemList.add(new CartPromotionItem(item, promotionMessage, reduceAmount, realStock, null));
                     }
@@ -159,9 +135,9 @@ public class PromotionCalculationServiceImpl implements PromotionCalculationServ
             if (promotionProduct != null) {
                 ProductSku skuStock = getOriginalPrice(promotionProduct, item.getProductSkuId());
                 if (skuStock != null) {
-                    realStock = skuStock.getStock() - skuStock.getLockStock();
+                    realStock = skuStock.getOnHandQty() - skuStock.getReservedQty();
                 } else {
-                    realStock = promotionProduct.skuStockList() != null ? promotionProduct.skuStockList().stream().mapToInt(s -> (s.getStock() != null ? s.getStock() : 0) - (s.getLockStock() != null ? s.getLockStock() : 0)).sum() : 0;
+                    realStock = promotionProduct.skuStockList() != null ? promotionProduct.skuStockList().stream().mapToInt(s -> (s.getOnHandQty() != null ? s.getOnHandQty() : 0) - (s.getReservedQty() != null ? s.getReservedQty() : 0)).sum() : 0;
                 }
             }
             cartPromotionItemList.add(new CartPromotionItem(item, promotionMessage, reduceAmount, realStock, null));
@@ -205,7 +181,7 @@ public class PromotionCalculationServiceImpl implements PromotionCalculationServ
             if (promotionProduct != null) {
                 ProductSku skuStock = getOriginalPrice(promotionProduct, item.getProductSkuId());
                 if (skuStock != null) {
-                    amount = amount.add(skuStock.getPrice().multiply(new BigDecimal(item.getQuantity())));
+                    amount = amount.add(skuStock.getListPrice().multiply(new BigDecimal(item.getQuantity())));
                 }
             }
         }

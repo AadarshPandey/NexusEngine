@@ -29,13 +29,16 @@ public class ProductSearchDao {
     private final ProductRepository productRepository;
     private final ProductAttributeValueRepository attributeValueRepository;
     private final com.nexusengine.core.domain.catalog.repository.CategoryRepository categoryRepository;
+    private final com.nexusengine.core.domain.catalog.repository.ProductSkuRepository skuRepository;
 
     public ProductSearchDao(ProductRepository productRepository,
                         ProductAttributeValueRepository attributeValueRepository,
-                        com.nexusengine.core.domain.catalog.repository.CategoryRepository categoryRepository) {
+                        com.nexusengine.core.domain.catalog.repository.CategoryRepository categoryRepository,
+                        com.nexusengine.core.domain.catalog.repository.ProductSkuRepository skuRepository) {
         this.productRepository = productRepository;
         this.attributeValueRepository = attributeValueRepository;
         this.categoryRepository = categoryRepository;
+        this.skuRepository = skuRepository;
     }
 
     /**
@@ -77,11 +80,20 @@ public class ProductSearchDao {
             } catch (Exception e) {}
             esProduct.setKeywords(keywords.trim());
             
-            esProduct.setPrice(product.getPrice());
+            List<com.nexusengine.core.domain.catalog.entity.ProductSku> skus = skuRepository.findByProductId(product.getId());
+            BigDecimal price = skus.stream()
+                .map(com.nexusengine.core.domain.catalog.entity.ProductSku::getListPrice)
+                .filter(java.util.Objects::nonNull)
+                .min(BigDecimal::compareTo)
+                .orElse(BigDecimal.ZERO);
+            Integer stock = skus.stream()
+                .mapToInt(s -> s.getOnHandQty() != null ? s.getOnHandQty() : 0)
+                .sum();
+            esProduct.setPrice(price);
             esProduct.setSale(product.getSale());
             esProduct.setNewStatus(product.getNewStatus());
             esProduct.setRecommendStatus(product.getRecommendStatus());
-            esProduct.setStock(product.getStock());
+            esProduct.setStock(stock);
             esProduct.setPromotionType(product.getPromotionType());
             // Load attribute values
             List<ProductAttributeValue> attrValues = attributeValueRepository.findByProductIdAndProductAttributeIdIn(

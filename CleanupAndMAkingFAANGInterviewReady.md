@@ -172,6 +172,23 @@ nexus-engine/
 - Cross-context communication: direct call through the other module's `api` facade (sync), or `@ApplicationModuleListener` on domain events (async). Modulith **Event Publication Registry** = transactional outbox; externalize selected events to RabbitMQ (`@Externalized`) for the search indexer.
 - Kill `nexus-search` as a separate app; `search` module listens to `ProductPublished/Updated/Deleted` events and writes to Elasticsearch.
 
+**Execution Status (Chunk C Completed):**
+- [x] Deleted split-package hack (`WebMvcProperties.java`) and removed `spring.mvc: null` workaround from `application.yml`.
+- [x] Deleted conflicting `application.properties` that overrode SQL logging and profile configs.
+- [x] Fixed sensitive logging leaks in `application.yml` (reduced Hibernate bind TRACE and SQL DEBUG to INFO).
+- [x] Closed security holes in `application.yml` by removing public whitelisting for un-namespaced admin endpoints (`/dashboard/**`, `/productCategory/**`, `/productAttribute/**`) and dead `/portal/stripe/**`.
+- [x] Renamed Resilience4j circuit breaker instance from `openai` to `gemini` in both `application.yml` and `SemanticSearchServiceImpl.java`.
+- [x] Standardized Redis key templates to clean domain prefixes (`iam:admin`, `ordering:orderId`, `customer:member`).
+- [x] Decoupled `nexus-common` from `cn.hutool`: refactored `WebLogAspect` to standard JDK and Jackson, and eliminated `hutool-all` from `nexus-common/pom.xml`.
+- [x] Eliminated sensitive internal exception/SQL leaks in `GlobalExceptionHandler.java` (returns generic error, logs with SLF4J server-side) and updated unit tests.
+- [x] Replaced 3,400+ lines of copy-pasted wildcard imports (`import com.nexusengine...*`) across 125 files with clean, explicit single-type imports.
+- [x] Eliminated stray root packages in `nexus-admin-api`: relocated `DashboardInfo` to `com.nexusengine.core.admin.analytics.dto`, `AdminUserDetails` to `com.nexusengine.core.admin.iam.dto`, and `ProductSyncSender` to `com.nexusengine.core.admin.catalog.component`.
+- [x] Relocated `NexusApplication` to root package `com.nexusengine.core` and removed redundant `@ComponentScan("com.nexusengine.core")`.
+- [x] Deleted duplicate `JpaConfig.java` classes in `nexus-admin-api` and `nexus-search` in favor of standard Spring Boot auto-configuration.
+- [x] Integrated `nexus-search` as a library module within the monolith (`nexus-application`), removed separate executable spring-boot plugin from `nexus-search/pom.xml`, and verified clean multi-module build and packaging (`mvn package -DskipTests`).
+- [x] Updated `TestFixtures` and `OrderConcurrencyIntegrationTest` to match canonical `ProductSku` schema (`onHandQty`, `reservedQty`, `salePrice`, `listPrice`).
+- [x] Strictly preserved all `.md` files without deletion.
+
 ### Chunk D — Backend code quality
 
 **D1. 🔴 Critical bugs / security (fix first, they are interview-killers if found)**

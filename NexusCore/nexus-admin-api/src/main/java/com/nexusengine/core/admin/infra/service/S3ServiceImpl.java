@@ -4,28 +4,8 @@ import lombok.RequiredArgsConstructor;
 
 import org.slf4j.Logger;
 
-import com.nexusengine.core.domain.catalog.entity.*;
-import com.nexusengine.core.domain.ordering.entity.*;
-import com.nexusengine.core.domain.customer.entity.*;
-import com.nexusengine.core.domain.promotion.entity.*;
-import com.nexusengine.core.domain.iam.entity.*;
-import com.nexusengine.core.domain.catalog.repository.*;
-import com.nexusengine.core.domain.ordering.repository.*;
-import com.nexusengine.core.domain.customer.repository.*;
-import com.nexusengine.core.domain.promotion.repository.*;
-import com.nexusengine.core.domain.iam.repository.*;
-import com.nexusengine.core.admin.catalog.dto.*;
-import com.nexusengine.core.admin.catalog.service.*;
-import com.nexusengine.core.admin.analytics.service.*;
-import com.nexusengine.core.admin.ordering.dto.*;
-import com.nexusengine.core.admin.ordering.service.*;
-import com.nexusengine.core.admin.promotion.dto.*;
-import com.nexusengine.core.admin.promotion.service.*;
-import com.nexusengine.core.admin.ai.service.*;
-import com.nexusengine.core.admin.infra.dto.*;
-import com.nexusengine.core.admin.infra.service.*;
-import com.nexusengine.core.admin.iam.dto.*;
-import com.nexusengine.core.admin.iam.service.*;
+import com.nexusengine.core.admin.infra.dto.S3CallbackResult;
+import com.nexusengine.core.admin.infra.dto.S3PolicyResult;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -51,7 +31,7 @@ public class S3ServiceImpl implements S3Service {
 
     private final S3Presigner s3Presigner;
 
-    @Value("${spring.cloud.aws.s3.bucket-name:nexus-storage}")
+    @Value("${spring.cloud.aws.s3.bucket-name:nexus-media}")
     private String bucketName;
     @Value("${spring.cloud.aws.s3.policy.expire:300}")
     private int expireSeconds;

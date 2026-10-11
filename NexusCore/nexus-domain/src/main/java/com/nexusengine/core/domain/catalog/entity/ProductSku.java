@@ -34,41 +34,37 @@ private Product product;
     
 private String skuCode;
 
-            @Column(name = "list_price")
-private BigDecimal price;
+    @Column(name = "list_price")
+    private BigDecimal listPrice;
 
-            @Schema(title = "Stock")
+    @Schema(title = "Stock")
     @Column(name = "on_hand_qty")
-private Integer stock;
+    private Integer onHandQty;
 
-        @Column(name = "low_stock_threshold")
+    @Column(name = "low_stock_threshold")
     @Schema(title = "Low stock")
-    
-private Integer lowStock;
+    private Integer lowStockThreshold;
 
-            @Schema(title = "Pic")
+    @Schema(title = "Pic")
     @Column(name = "image_url")
-private String pic;
+    private String imageUrl;
 
-            @Schema(title = "Sale")
+    @Schema(title = "Sale")
     @Column(name = "units_sold")
-private Integer sale;
+    private Integer unitsSold;
 
-        @Column(name = "sale_price")
-    @Schema(title = "Promotion price")
-    
-private BigDecimal promotionPrice;
+    @Column(name = "sale_price")
+    @Schema(title = "Sale price")
+    private BigDecimal salePrice;
 
-        @Column(name = "reserved_qty")
-    @Schema(title = "Lock stock")
-    
-private Integer lockStock;
+    @Column(name = "reserved_qty")
+    @Schema(title = "Reserved stock")
+    private Integer reservedQty;
 
-        @Schema(title = "Sp data")
+    @Schema(title = "Sp data")
     @Column(name = "sku_attributes", columnDefinition = "jsonb")
     @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.JSON)
-    
-private String spData;
+    private String skuAttributes;
 
     @jakarta.persistence.Version
     private Integer version;

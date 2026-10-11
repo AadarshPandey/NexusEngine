@@ -1,36 +1,9 @@
 package com.nexusengine.core.portal.catalog.service;
 
 import lombok.RequiredArgsConstructor;
-import com.nexusengine.core.portal.catalog.dto.*;
-import com.nexusengine.core.portal.catalog.service.*;
-import com.nexusengine.core.portal.catalog.dao.*;
-import com.nexusengine.core.portal.payment.service.*;
-import com.nexusengine.core.portal.ordering.dto.*;
-import com.nexusengine.core.portal.ordering.service.*;
-import com.nexusengine.core.portal.ordering.dao.*;
-import com.nexusengine.core.portal.customer.dto.*;
-import com.nexusengine.core.portal.customer.service.*;
-import com.nexusengine.core.portal.promotion.dto.*;
-import com.nexusengine.core.portal.promotion.service.*;
-import com.nexusengine.core.portal.promotion.strategy.*;
-import com.nexusengine.core.portal.ai.service.*;
-import com.nexusengine.core.portal.home.dto.*;
-import com.nexusengine.core.portal.home.service.*;
-import com.nexusengine.core.portal.engagement.dto.*;
-import com.nexusengine.core.portal.engagement.service.*;
 
 import com.nexusengine.core.domain.catalog.entity.Product;
 
-import com.nexusengine.core.domain.catalog.entity.*;
-import com.nexusengine.core.domain.ordering.entity.*;
-import com.nexusengine.core.domain.customer.entity.*;
-import com.nexusengine.core.domain.promotion.entity.*;
-import com.nexusengine.core.domain.iam.entity.*;
-import com.nexusengine.core.domain.catalog.repository.*;
-import com.nexusengine.core.domain.ordering.repository.*;
-import com.nexusengine.core.domain.customer.repository.*;
-import com.nexusengine.core.domain.promotion.repository.*;
-import com.nexusengine.core.domain.iam.repository.*;
 import com.nexusengine.core.domain.ai.entity.ProductEmbedding;
 import com.nexusengine.core.domain.ai.repository.ProductEmbeddingRepository;
 import com.nexusengine.core.domain.catalog.repository.ProductRepository;
@@ -107,8 +80,8 @@ public class SemanticSearchServiceImpl implements SemanticSearchService {
 
     @Override
     @org.springframework.transaction.annotation.Transactional(propagation = org.springframework.transaction.annotation.Propagation.NOT_SUPPORTED)
-    @io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker(name = "openai", fallbackMethod = "semanticSearchFallback")
-    @io.github.resilience4j.retry.annotation.Retry(name = "openai")
+    @io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker(name = "gemini", fallbackMethod = "semanticSearchFallback")
+    @io.github.resilience4j.retry.annotation.Retry(name = "gemini")
     public List<Product> semanticSearch(Long memberId, String searchContext) {
         if (embeddingModel == null || searchContext == null || searchContext.trim().isEmpty()) {
             return new ArrayList<>();

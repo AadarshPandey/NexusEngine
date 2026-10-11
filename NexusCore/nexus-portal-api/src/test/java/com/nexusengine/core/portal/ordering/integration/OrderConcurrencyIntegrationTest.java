@@ -1,40 +1,6 @@
 package com.nexusengine.core.portal.ordering.integration;
 
 import com.nexusengine.core.domain.catalog.entity.ProductSku;
-import com.nexusengine.core.domain.catalog.entity.*;
-import com.nexusengine.core.domain.ordering.entity.*;
-import com.nexusengine.core.domain.customer.entity.*;
-import com.nexusengine.core.domain.promotion.entity.*;
-import com.nexusengine.core.domain.iam.entity.*;
-import com.nexusengine.core.domain.catalog.repository.*;
-import com.nexusengine.core.domain.ordering.repository.*;
-import com.nexusengine.core.domain.customer.repository.*;
-import com.nexusengine.core.domain.promotion.repository.*;
-import com.nexusengine.core.domain.iam.repository.*;
-import com.nexusengine.core.portal.catalog.dto.*;
-import com.nexusengine.core.portal.catalog.service.*;
-import com.nexusengine.core.portal.catalog.dao.*;
-import com.nexusengine.core.portal.catalog.controller.*;
-import com.nexusengine.core.portal.payment.service.*;
-import com.nexusengine.core.portal.ordering.dto.*;
-import com.nexusengine.core.portal.ordering.service.*;
-import com.nexusengine.core.portal.ordering.dao.*;
-import com.nexusengine.core.portal.ordering.controller.*;
-import com.nexusengine.core.portal.customer.dto.*;
-import com.nexusengine.core.portal.customer.service.*;
-import com.nexusengine.core.portal.customer.controller.*;
-import com.nexusengine.core.portal.promotion.dto.*;
-import com.nexusengine.core.portal.promotion.service.*;
-import com.nexusengine.core.portal.promotion.strategy.*;
-import com.nexusengine.core.portal.promotion.controller.*;
-import com.nexusengine.core.portal.ai.service.*;
-import com.nexusengine.core.portal.ai.controller.*;
-import com.nexusengine.core.portal.home.dto.*;
-import com.nexusengine.core.portal.home.service.*;
-import com.nexusengine.core.portal.home.controller.*;
-import com.nexusengine.core.portal.engagement.dto.*;
-import com.nexusengine.core.portal.engagement.service.*;
-import com.nexusengine.core.portal.engagement.controller.*;
 import com.nexusengine.core.domain.catalog.repository.ProductSkuRepository;
 import com.nexusengine.core.domain.catalog.entity.Product;
 import com.nexusengine.core.domain.customer.entity.MemberAddress;
@@ -70,6 +36,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import com.nexusengine.core.portal.ordering.dto.OrderParam;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(TestcontainersConfig.class)
@@ -114,16 +81,15 @@ public class OrderConcurrencyIntegrationTest {
 
     @Test
     void testConcurrentOrderGeneration_PreventsOverselling() throws InterruptedException {
-        // 1. Setup Product and SKU with exactly 10 stock
         Product product = new Product();
-        product.setPrice(new BigDecimal("100.00"));
         product = productRepository.save(product);
 
         ProductSku sku = new ProductSku();
         sku.setProductId(product.getId());
-        sku.setStock(10);
-        sku.setLockStock(0);
-        sku.setPrice(new BigDecimal("100.00"));
+        sku.setOnHandQty(10);
+        sku.setReservedQty(0);
+        sku.setSalePrice(new BigDecimal("100.00"));
+        sku.setListPrice(new BigDecimal("100.00"));
         sku = skuStockRepository.save(sku);
 
         // 2. Setup Customer A (wants 7)
@@ -222,7 +188,7 @@ public class OrderConcurrencyIntegrationTest {
 
         // Verify Database state
         ProductSku updatedSku = skuStockRepository.findById(sku.getId()).orElseThrow();
-        // The lockStock should be either 7 or 5 depending on who won.
-        assertThat(updatedSku.getLockStock()).isIn(5, 7);
+        // The reservedQty should be either 7 or 5 depending on who won.
+        assertThat(updatedSku.getReservedQty()).isIn(5, 7);
     }
 }

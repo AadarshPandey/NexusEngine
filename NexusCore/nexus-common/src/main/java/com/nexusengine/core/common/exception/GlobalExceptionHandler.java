@@ -59,9 +59,12 @@ public class GlobalExceptionHandler {
         return pd;
     }
 
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
     @ExceptionHandler(Exception.class)
     public ProblemDetail handleGlobalException(Exception e) {
-        ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        log.error("Unhandled exception caught by GlobalExceptionHandler", e);
+        ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected internal error occurred. Please contact support.");
         pd.setTitle("Internal Server Error");
         return pd;
     }

@@ -3,31 +3,9 @@ package com.nexusengine.core.admin.iam.service;
 import lombok.RequiredArgsConstructor;
 
 import com.nexusengine.core.domain.iam.entity.ConsoleMenu;
-import com.nexusengine.core.admin.catalog.dto.*;
-import com.nexusengine.core.admin.catalog.service.*;
-import com.nexusengine.core.admin.analytics.service.*;
-import com.nexusengine.core.admin.ordering.dto.*;
-import com.nexusengine.core.admin.ordering.service.*;
-import com.nexusengine.core.admin.promotion.dto.*;
-import com.nexusengine.core.admin.promotion.service.*;
-import com.nexusengine.core.admin.ai.service.*;
-import com.nexusengine.core.admin.infra.dto.*;
-import com.nexusengine.core.admin.infra.service.*;
-import com.nexusengine.core.admin.iam.dto.*;
-import com.nexusengine.core.admin.iam.service.*;
 
 import com.nexusengine.core.domain.iam.repository.ConsoleMenuRepository;
 
-import com.nexusengine.core.domain.catalog.entity.*;
-import com.nexusengine.core.domain.ordering.entity.*;
-import com.nexusengine.core.domain.customer.entity.*;
-import com.nexusengine.core.domain.promotion.entity.*;
-import com.nexusengine.core.domain.iam.entity.*;
-import com.nexusengine.core.domain.catalog.repository.*;
-import com.nexusengine.core.domain.ordering.repository.*;
-import com.nexusengine.core.domain.customer.repository.*;
-import com.nexusengine.core.domain.promotion.repository.*;
-import com.nexusengine.core.domain.iam.repository.*;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+import com.nexusengine.core.admin.iam.dto.MenuNode;
 
 
 @Service

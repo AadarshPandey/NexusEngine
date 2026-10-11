@@ -57,6 +57,6 @@ class GlobalExceptionHandlerTest {
         ProblemDetail pd = handler.handleGlobalException(ex);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), pd.getStatus());
         assertEquals("Internal Server Error", pd.getTitle());
-        assertEquals("Some internal error", pd.getDetail());
+        assertEquals("An unexpected internal error occurred. Please contact support.", pd.getDetail());
     }
 }

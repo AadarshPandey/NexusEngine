@@ -8,6 +8,9 @@ spring:
     schemas: migration,catalog,orders,users,marketing,ai,system,messaging
     enabled: false
   ai:
+    google:
+      genai:
+        api-key: test-key
     openai:
       api-key: test-key
 

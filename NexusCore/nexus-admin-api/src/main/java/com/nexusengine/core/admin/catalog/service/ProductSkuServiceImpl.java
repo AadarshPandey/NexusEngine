@@ -4,28 +4,7 @@ import lombok.RequiredArgsConstructor;
 
 import com.nexusengine.core.domain.catalog.repository.ProductPriceChangeRepository;
 
-import com.nexusengine.core.domain.catalog.entity.*;
-import com.nexusengine.core.domain.ordering.entity.*;
-import com.nexusengine.core.domain.customer.entity.*;
-import com.nexusengine.core.domain.promotion.entity.*;
-import com.nexusengine.core.domain.iam.entity.*;
-import com.nexusengine.core.domain.catalog.repository.*;
-import com.nexusengine.core.domain.ordering.repository.*;
-import com.nexusengine.core.domain.customer.repository.*;
-import com.nexusengine.core.domain.promotion.repository.*;
-import com.nexusengine.core.domain.iam.repository.*;
-import com.nexusengine.core.admin.catalog.dto.*;
-import com.nexusengine.core.admin.catalog.service.*;
-import com.nexusengine.core.admin.analytics.service.*;
-import com.nexusengine.core.admin.ordering.dto.*;
-import com.nexusengine.core.admin.ordering.service.*;
-import com.nexusengine.core.admin.promotion.dto.*;
-import com.nexusengine.core.admin.promotion.service.*;
-import com.nexusengine.core.admin.ai.service.*;
-import com.nexusengine.core.admin.infra.dto.*;
-import com.nexusengine.core.admin.infra.service.*;
-import com.nexusengine.core.admin.iam.dto.*;
-import com.nexusengine.core.admin.iam.service.*;
+
 import com.nexusengine.core.domain.catalog.entity.ProductPriceChange;
 
 import cn.hutool.core.util.StrUtil;
@@ -72,13 +51,13 @@ public class ProductSkuServiceImpl implements ProductSkuService {
 
         for (ProductSku newSku : filterSkuList) {
             ProductSku oldSku = oldSkus.stream().filter(o -> o.getId().equals(newSku.getId())).findFirst().orElse(null);
-            if (oldSku != null && newSku.getPrice() != null && oldSku.getPrice() != null && newSku.getPrice().compareTo(oldSku.getPrice()) != 0) {
+            if (oldSku != null && newSku.getListPrice() != null && oldSku.getListPrice() != null && newSku.getListPrice().compareTo(oldSku.getListPrice()) != 0) {
                 ProductPriceChange log = new ProductPriceChange();
                 log.setProductId(pid);
                 log.setCreateTime(java.time.OffsetDateTime.now());
                 log.setOperateMan(username);
-                log.setPriceOld(oldSku.getPrice());
-                log.setPriceNew(newSku.getPrice());
+                log.setPriceOld(oldSku.getListPrice());
+                log.setPriceNew(newSku.getListPrice());
                 productAuditLogRepository.save(log);
             }
         }

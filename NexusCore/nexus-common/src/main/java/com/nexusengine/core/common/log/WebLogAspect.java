@@ -1,8 +1,7 @@
 package com.nexusengine.core.common.log;
 
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.core.util.URLUtil;
-import cn.hutool.json.JSONUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.nexusengine.core.common.domain.WebLog;
 import com.nexusengine.core.common.util.RequestUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,6 +23,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import jakarta.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,6 +38,7 @@ import java.util.Map;
 @Order(1)
 public class WebLogAspect {
     private static final Logger LOGGER = LoggerFactory.getLogger(WebLogAspect.class);
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().registerModule(new JavaTimeModule());
 
     @Pointcut("execution(public * com.nexusengine.core.controller.*.*(..))||execution(public * com.nexusengine.core.*.controller.*.*(..))")
     public void webLog() {
@@ -67,7 +68,12 @@ public class WebLogAspect {
         }
         long endTime = System.currentTimeMillis();
         String urlStr = request.getRequestURL().toString();
-        webLog.setBasePath(StrUtil.removeSuffix(urlStr, URLUtil.url(urlStr).getPath()));
+        try {
+            String path = URI.create(urlStr).getPath();
+            webLog.setBasePath(urlStr.endsWith(path) ? urlStr.substring(0, urlStr.length() - path.length()) : urlStr);
+        } catch (Exception e) {
+            webLog.setBasePath(urlStr);
+        }
         webLog.setUsername(request.getRemoteUser());
         webLog.setIp(RequestUtil.getRequestIp(request));
         webLog.setMethod(request.getMethod());
@@ -84,11 +90,9 @@ public class WebLogAspect {
         logMap.put("parameter",webLog.getParameter());
         logMap.put("spendTime",webLog.getSpendTime());
         logMap.put("description",webLog.getDescription());
-        com.fasterxml.jackson.databind.ObjectMapper objectMapper = new com.fasterxml.jackson.databind.ObjectMapper();
-        objectMapper.registerModule(new com.fasterxml.jackson.datatype.jsr310.JavaTimeModule());
         String logJson = "";
         try {
-            logJson = objectMapper.writeValueAsString(webLog);
+            logJson = OBJECT_MAPPER.writeValueAsString(webLog);
         } catch (Exception e) {
             LOGGER.error("Failed to serialize webLog", e);
         }
@@ -98,14 +102,14 @@ public class WebLogAspect {
         if (webLog.getParameter() != null) {
             String paramStr = "";
             try {
-                paramStr = objectMapper.writeValueAsString(webLog.getParameter());
+                paramStr = OBJECT_MAPPER.writeValueAsString(webLog.getParameter());
             } catch (Exception e) {
                 LOGGER.warn("Failed to serialize parameters", e);
             }
             paramStr = paramStr.replaceAll("\"(?i)(.*?password.*?)\":\"[^\"]+\"", "\"$1\":\"***\"");
             if (!paramStr.isEmpty()) {
                 try {
-                    logMap.put("parameter", cn.hutool.json.JSONUtil.parse(paramStr));
+                    logMap.put("parameter", OBJECT_MAPPER.readTree(paramStr));
                 } catch (Exception e) {
                     logMap.put("parameter", paramStr);
                 }
@@ -118,7 +122,7 @@ public class WebLogAspect {
         return result;
     }
 
-        /**
+    /**
      * Executes the operation.
      * @param method the method
      * @param args the args
@@ -136,7 +140,7 @@ public class WebLogAspect {
             if (requestParam != null) {
                 Map<String, Object> map = new HashMap<>();
                 String key = parameters[i].getName();
-                if (!StrUtil.isEmpty(requestParam.value())) {
+                if (requestParam.value() != null && !requestParam.value().isEmpty()) {
                     key = requestParam.value();
                 }
                 if(args[i]!=null){

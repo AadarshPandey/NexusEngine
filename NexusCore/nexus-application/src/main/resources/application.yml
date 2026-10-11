@@ -5,8 +5,8 @@ jwt:
   tokenHeader: Authorization
 logging:
   level:
-    org.hibernate.SQL: DEBUG
-    org.hibernate.orm.jdbc.bind: TRACE
+    org.hibernate.SQL: INFO
+    org.hibernate.orm.jdbc.bind: INFO
   structured:
     format:
       console: logstash
@@ -32,11 +32,11 @@ redis:
     authCode: 90
     common: 86400
   key:
-    admin: ums:admin
-    authCode: ums:authCode
-    member: ums:member
-    orderId: oms:orderId
-    resourceList: ums:resourceList
+    admin: iam:admin
+    authCode: customer:authCode
+    member: customer:member
+    orderId: ordering:orderId
+    resourceList: iam:resourceList
 resilience4j:
   circuitbreaker:
     instances:
@@ -46,7 +46,7 @@ resilience4j:
         registerHealthIndicator: true
         slidingWindowSize: 10
         waitDurationInOpenState: 10000
-      openai:
+      gemini:
         automaticTransitionFromOpenToHalfOpenEnabled: true
         failureRateThreshold: 50
         minimumNumberOfCalls: 10
@@ -70,7 +70,7 @@ resilience4j:
         timeoutDuration: 0
   retry:
     instances:
-      openai:
+      gemini:
         maxAttempts: 3
         waitDuration: 2s
       razorpay:
@@ -90,13 +90,9 @@ secure:
     - /favicon.ico
     - /portal/sso/**
     - /portal/home/**
-    - /dashboard/**
-    - /productAttribute/**
-    - /productCategory/**
     - /error
     - /portal/product/**
     - /portal/brand/**
-    - /portal/stripe/**
     - /portal/review/product/**
     - /portal/review/*/replies
     - /portal/chat/**
@@ -124,12 +120,13 @@ spring:
   cloud:
     aws:
       credentials:
-        access-key: ${AWS_ACCESS_KEY:minioadmin}
-        secret-key: ${AWS_SECRET_KEY:minioadmin}
+        access-key: ${AWS_ACCESS_KEY:test}
+        secret-key: ${AWS_SECRET_KEY:test}
       region:
-        static: us-east-1
+        static: ${AWS_REGION:us-east-1}
       s3:
-        endpoint: http://localhost:9000
+        endpoint: ${AWS_S3_ENDPOINT:http://localhost:4566}
+        bucket-name: ${AWS_S3_BUCKET:nexus-media}
   flyway:
     baseline-on-migrate: true
     baseline-version: 0
@@ -147,7 +144,6 @@ spring:
       hibernate:
         format_sql: true
     show-sql: false
-  mvc: null
   profiles:
     active: dev
   servlet:
@@ -158,10 +154,25 @@ springdoc:
   api-docs:
     enabled: true
     path: /v3/api-docs
-  group-configs:
-  - group: default
-    packages-to-scan: com.nexusengine.core.portal.controller,com.nexusengine.core.controller
+  packages-to-scan: com.nexusengine.core.admin,com.nexusengine.core.portal
+  paths-to-match: /**
   swagger-ui:
     doc-expansion: none
     enabled: true
     path: /swagger-ui.html
+    operations-sorter: alpha
+    tags-sorter: alpha
+  group-configs:
+    - group: default
+      display-name: "All Operations"
+      packages-to-scan: com.nexusengine.core.admin,com.nexusengine.core.portal
+      paths-to-match: /**
+    - group: admin
+      display-name: "Admin Management API"
+      packages-to-scan: com.nexusengine.core.admin
+      paths-to-match: /**
+      paths-to-exclude: /portal/**
+    - group: portal
+      display-name: "Customer Portal API"
+      packages-to-scan: com.nexusengine.core.portal
+      paths-to-match: /portal/**

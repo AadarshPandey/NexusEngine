@@ -5,7 +5,7 @@ spring:
   application:
     name: nexus-search
   profiles:
-    active: prod
+    active: dev
   elasticsearch:
     uris: http://elasticsearch:9200
   datasource:

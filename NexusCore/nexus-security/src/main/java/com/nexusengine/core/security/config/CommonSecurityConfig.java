@@ -1,6 +1,5 @@
 package com.nexusengine.core.security.config;
 
-import com.nexusengine.core.security.component.*;
 import com.nexusengine.core.security.util.JwtTokenUtil;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
@@ -9,6 +8,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import com.nexusengine.core.security.component.DynamicAuthorizationManager;
+import com.nexusengine.core.security.component.DynamicSecurityMetadataSource;
+import com.nexusengine.core.security.component.DynamicSecurityService;
+import com.nexusengine.core.security.component.JwtAuthenticationTokenFilter;
+import com.nexusengine.core.security.component.RestAuthenticationEntryPoint;
+import com.nexusengine.core.security.component.RestfulAccessDeniedHandler;
 
 /**
  * Represents the CommonSecurityConfig component.

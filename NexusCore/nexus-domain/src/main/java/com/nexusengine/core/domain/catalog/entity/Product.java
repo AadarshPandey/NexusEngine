@@ -115,23 +115,18 @@ private List<ProductMedia> galleryList;
     @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.SMALLINT)
 private Integer promotionType;
 
+    @Schema(title = "List Price")
+    @org.hibernate.annotations.Formula("(SELECT COALESCE(min(s.list_price), 0) FROM catalog.product_sku s WHERE s.product_id = id)")
+    @com.fasterxml.jackson.annotation.JsonProperty("listPrice")
+    private BigDecimal listPrice;
+
+
             @org.hibernate.annotations.Formula("(SELECT b.name FROM catalog.brand b WHERE b.id = brand_id)")
     private String brandName;
 
         @Schema(title = "Description")
     
 private String description;
-
-    @org.hibernate.annotations.Formula("(SELECT COALESCE(MIN(s.list_price), 0) FROM catalog.product_sku s WHERE s.product_id = id)")
-    @com.fasterxml.jackson.annotation.JsonProperty("listPrice")
-    private BigDecimal price;
-
-    @org.hibernate.annotations.Formula("(SELECT COALESCE(MIN(s.list_price), 0) FROM catalog.product_sku s WHERE s.product_id = id)")
-    private BigDecimal originalPrice;
-
-    @org.hibernate.annotations.Formula("(SELECT COALESCE(SUM(s.on_hand_qty), 0) FROM catalog.product_sku s WHERE s.product_id = id)")
-    @com.fasterxml.jackson.annotation.JsonProperty("onHandQty")
-    private Integer stock;
 
 
     @jakarta.persistence.Version
