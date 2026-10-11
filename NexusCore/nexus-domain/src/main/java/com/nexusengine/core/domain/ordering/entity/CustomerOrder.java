@@ -170,4 +170,40 @@ private OffsetDateTime modifyTime;
 
     @jakarta.persistence.Version
     private Integer version;
+
+    public String getOrderNumber() {
+        return orderSn;
+    }
+
+    public OffsetDateTime getCreatedAt() {
+        return createTime;
+    }
+
+    public BigDecimal getSubtotalAmount() {
+        return totalAmount;
+    }
+
+    public BigDecimal getGrandTotalAmount() {
+        return payAmount;
+    }
+
+    public BigDecimal getShippingAmount() {
+        return freightAmount;
+    }
+
+    public BigDecimal getPromotionDiscountAmount() {
+        return promotionAmount;
+    }
+
+    public BigDecimal getCouponDiscountAmount() {
+        return couponAmount;
+    }
+
+    public BigDecimal getManualAdjustmentAmount() {
+        return discountAmount;
+    }
+
+    public Integer getPaymentMethod() {
+        return payType;
+    }
 }

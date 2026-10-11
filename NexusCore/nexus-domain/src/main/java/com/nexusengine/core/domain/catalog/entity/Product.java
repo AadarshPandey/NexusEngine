@@ -128,4 +128,8 @@ private String description;
 
     @jakarta.persistence.Version
     private Integer version;
+
+    public BigDecimal getPrice() {
+        return listPrice != null ? listPrice : BigDecimal.ZERO;
+    }
 }

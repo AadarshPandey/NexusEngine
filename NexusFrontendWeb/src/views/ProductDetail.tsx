@@ -3,11 +3,13 @@ import { useParams, useNavigate } from 'react-router';
 import { Box, Typography, Button, Grid, Paper, CircularProgress, Divider, Stack, Chip } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch, RootState } from '../store';
-import { fetchProductDetail } from '../api/product';
-import type { PmsPortalProductDetail, PmsSkuStock } from '../api/product';
+import { getProductDetail } from '../api/catalog';
+import type { ProductDetailResult } from '../api/catalog';
+import type { ProductSku } from '../types/catalog';
 import { addItemToCart } from '../store/slices/cartSlice';
 import ReactMarkdown from 'react-markdown';
 import { ReviewSection } from '../components/ReviewSection';
+import { resolveImageUrl } from '../utils/media';
 
 const ProductDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -16,7 +18,7 @@ const ProductDetail: React.FC = () => {
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
   const cartItems = useSelector((state: RootState) => state.cart.items);
   
-  const [productDetail, setProductDetail] = useState<PmsPortalProductDetail | null>(null);
+  const [productDetail, setProductDetail] = useState<ProductDetailResult | null>(null);
   const [loading, setLoading] = useState(true);
   const [addingToCart, setAddingToCart] = useState(false);
 
@@ -25,7 +27,7 @@ const ProductDetail: React.FC = () => {
   
   // SKU Selection State
   const [selectedAttributes, setSelectedAttributes] = useState<Record<string, string>>({});
-  const [activeSku, setActiveSku] = useState<PmsSkuStock | null>(null);
+  const [activeSku, setActiveSku] = useState<ProductSku | null>(null);
 
   useEffect(() => {
     if (id) {
@@ -33,10 +35,10 @@ const ProductDetail: React.FC = () => {
     }
   }, [id]);
 
-  const loadDetail = async (orderLineId: number) => {
+  const loadDetail = async (productId: number) => {
     try {
       setLoading(true);
-      const res = await fetchProductDetail(orderLineId);
+      const res = await getProductDetail(productId);
       setProductDetail(res.data);
       if (res.data?.product?.primaryImageUrl) {
         setActiveImage(res.data.product.primaryImageUrl);
@@ -48,41 +50,49 @@ const ProductDetail: React.FC = () => {
     }
   };
 
+  // Helper to parse SKU attributes
+  const parseSkuAttrs = (raw: unknown): { key: string; value: string }[] => {
+    if (!raw) return [];
+    if (typeof raw === 'string') {
+      try {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) return parsed;
+        if (typeof parsed === 'object') return Object.entries(parsed).map(([key, value]) => ({ key, value: String(value) }));
+      } catch {
+        return [];
+      }
+    }
+    if (Array.isArray(raw)) return raw;
+    if (typeof raw === 'object') return Object.entries(raw).map(([key, value]) => ({ key, value: String(value) }));
+    return [];
+  };
+
   // Handle attribute selection
   const handleSelectAttribute = (attrName: string, attrValue: string) => {
     const newSelections = { ...selectedAttributes, [attrName]: attrValue };
     setSelectedAttributes(newSelections);
 
     if (productDetail?.skuStockList) {
-      // Try to find a matching SKU
       const matchedSku = productDetail.skuStockList.find(sku => {
-        try {
-          const spData = JSON.parse(sku.spData || '[]');
-          // Match if the SKU contains ALL of the attributes the user has currently selected
-          return Object.keys(newSelections).every(key => 
-            spData.some((sp: {key: string, value: string}) => sp.key === key && sp.value === newSelections[key])
-          );
-        } catch (e) {
-          return false;
-        }
+        const attrs = parseSkuAttrs(sku.skuAttributes);
+        return Object.keys(newSelections).every(key => 
+          attrs.some(sp => sp.key === key && sp.value === newSelections[key])
+        );
       });
 
       if (matchedSku) {
         setActiveSku(matchedSku);
-        if (matchedSku.pic) setActiveImage(matchedSku.pic);
+        if (matchedSku.imageUrl) setActiveImage(matchedSku.imageUrl);
       } else {
         setActiveSku(null);
-        // Look for ANY sku that has the selected color to at least update the image
         const partialSku = productDetail.skuStockList.find(sku => {
-           try {
-             const sp = JSON.parse(sku.spData || '[]');
-             return sp.some((s: {key: string, value: string}) => s.key === 'Color' && s.value === newSelections['Color']);
-           } catch(e) { return false; }
+          const attrs = parseSkuAttrs(sku.skuAttributes);
+          return attrs.some(s => s.key === 'Color' && s.value === newSelections['Color']);
         });
-        if (partialSku && partialSku.pic) {
-           setActiveImage(partialSku.pic);
+        if (partialSku && partialSku.imageUrl) {
+          setActiveImage(partialSku.imageUrl);
         } else if (productDetail.product.primaryImageUrl) {
-           setActiveImage(productDetail.product.primaryImageUrl);
+          setActiveImage(productDetail.product.primaryImageUrl);
         }
       }
     }
@@ -92,16 +102,18 @@ const ProductDetail: React.FC = () => {
   const isInCart = currentCartQuantity > 0;
   
   // Display Price & Stock based on SKU selection
-  const isPromotionActive = productDetail?.product.promotionType === 1 || productDetail?.flashSaleActive;
+  const isPromotionActive = Boolean(productDetail?.flashSaleActive);
   const displayPrice = activeSku 
-    ? (isPromotionActive && activeSku.promotionPrice ? activeSku.promotionPrice : activeSku.price) 
+    ? (isPromotionActive && activeSku.salePrice ? activeSku.salePrice : (activeSku.salePrice ?? activeSku.listPrice)) 
     : (isPromotionActive && productDetail?.product.salePrice ? productDetail.product.salePrice : productDetail?.product.listPrice);
-  const displayStock = activeSku ? Math.max(0, activeSku.stock - (activeSku.lockStock || 0)) : (productDetail ? productDetail.product.onHandQty : 0);
+  const displayStock = activeSku 
+    ? (activeSku.availableQty ?? Math.max(0, activeSku.onHandQty - (activeSku.reservedQty || 0))) 
+    : (productDetail?.skuStockList ? productDetail.skuStockList.reduce((sum, s) => sum + (s.availableQty ?? Math.max(0, s.onHandQty - (s.reservedQty || 0))), 0) : 0);
   const isOutOfStock = !displayStock || displayStock <= 0;
 
   // Has user selected all required attributes?
-  const requiredAttributes = productDetail?.productAttributeList?.filter(a => a.type === 0) || [];
-  const isFullySelected = requiredAttributes.length === 0 || requiredAttributes.every(attr => selectedAttributes[attr.name]);
+  const requiredAttributes = productDetail?.productAttributeList?.filter((a: any) => a.type === 0) || [];
+  const isFullySelected = requiredAttributes.length === 0 || requiredAttributes.every((attr: any) => selectedAttributes[attr.name]);
 
   const handleAddToCart = async () => {
     if (!isAuthenticated) {
@@ -120,11 +132,8 @@ const ProductDetail: React.FC = () => {
         productId: productDetail.product.id,
         quantity: 1,
         price: displayPrice || 0,
-        productPic: activeSku?.pic || productDetail.product.primaryImageUrl,
-        productName: productDetail.product.name + (activeSku ? ` (${Object.values(selectedAttributes).join(', ')})` : ''),
+        skuId: activeSku?.id,
         productSkuId: activeSku?.id,
-        productSkuCode: activeSku?.skuCode,
-        productAttr: JSON.stringify(Object.entries(selectedAttributes).map(([key, value]) => ({ key, value }))),
       })).unwrap();
       alert('Item added to cart!');
     } catch (error: unknown) {
@@ -143,12 +152,12 @@ const ProductDetail: React.FC = () => {
   }
 
   const { product, productAttributeList, productAttributeValueList } = productDetail;
-  const allImages = [product.primaryImageUrl, ...(product.galleryList ? [...product.galleryList].sort((a,b)=>a.displayOrder-b.displayOrder).map(m=>m.url) : [])].filter(Boolean) as string[];
+  const allImages = [product.primaryImageUrl, ...(product.galleryList ? [...product.galleryList].sort((a,b)=>((a.displayOrder ?? 0)-(b.displayOrder ?? 0))).map(m=>m.url) : [])].filter(Boolean) as string[];
 
   // Group attribute values for rendering
-  const attributesToRender = productAttributeList?.filter(attr => attr.type === 0).map(attr => {
-    const valObj = productAttributeValueList?.find(val => val.productAttributeId === attr.id);
-    const values = valObj?.value ? valObj.value.split(',') : [];
+  const attributesToRender = productAttributeList?.filter((attr: any) => attr.type === 0).map((attr: any) => {
+    const valObj = productAttributeValueList?.find((val: any) => val.productAttributeId === attr.id);
+    const values: string[] = valObj?.value ? valObj.value.split(',') : [];
     return { ...attr, values };
   }) || [];
 
@@ -160,7 +169,7 @@ const ProductDetail: React.FC = () => {
           <Grid size={{ xs: 12, md: 6 }}>
             <Box
               component="img"
-              src={activeImage?.includes('file') ? 'https://via.placeholder.com/400' : (activeImage || 'https://via.placeholder.com/400')}
+              src={resolveImageUrl(activeImage)}
               alt={product.name}
               sx={{ width: '100%', maxHeight: 500, objectFit: 'contain', borderRadius: 2 }}
             />
@@ -170,7 +179,7 @@ const ProductDetail: React.FC = () => {
                   <Box
                     key={idx}
                     component="img"
-                    src={img}
+                    src={resolveImageUrl(img)}
                     onClick={() => setActiveImage(img)}
                     sx={{
                       width: 80,
@@ -194,11 +203,11 @@ const ProductDetail: React.FC = () => {
             <Typography variant="h3" color="primary" gutterBottom>₹{displayPrice?.toFixed(2)}</Typography>
             
             {/* SKU Variants */}
-            {attributesToRender.map(attr => (
+            {attributesToRender.map((attr: any) => (
               <Box key={attr.id} sx={{ mb: 3 }}>
                 <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 'bold' }}>{attr.name}</Typography>
                 <Stack direction="row" spacing={1} sx={{ flexWrap: "wrap" }} useFlexGap>
-                  {attr.values.map(val => (
+                  {attr.values.map((val: string) => (
                     <Chip
                       key={val}
                       label={val}

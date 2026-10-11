@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { Box, TextField, Button, Typography, Paper, Alert } from '@mui/material';
 import { useNavigate, Link } from 'react-router';
 import request from '../utils/request';
+import { getAuthCode } from '../api/customer';
 
 const Register: React.FC = () => {
   const [username, setUsername] = useState('');
-  const [passwordHash, setPassword] = useState('');
+  const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
   const [authCode, setAuthCode] = useState('');
   const [error, setError] = useState('');
@@ -35,7 +36,7 @@ const Register: React.FC = () => {
     try {
       setGettingCode(true);
       setError('');
-      await request.get('/sso/getAuthCode', { params: { email } });
+      await getAuthCode(email);
       setSuccess('OTP sent successfully. Please check your email inbox.');
       setCountdown(60);
     } catch (err: unknown) {
@@ -47,18 +48,19 @@ const Register: React.FC = () => {
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!username || !passwordHash || !email || !authCode) {
+    if (!username || !password || !email || !authCode) {
       setError('Please fill in all fields.');
       return;
     }
-    if (passwordHash.length < 6) {
+    if (password.length < 6) {
       setError('Password must be at least 6 characters long.');
       return;
     }
     try {
       const params = new URLSearchParams();
       params.append('username', username);
-      params.append('passwordHash', passwordHash);
+      params.append('password', password);
+      params.append('passwordHash', password);
       params.append('email', email);
       params.append('authCode', authCode);
       await request.post('/sso/register', params);
@@ -93,9 +95,9 @@ const Register: React.FC = () => {
           <TextField
             fullWidth
             label="Password"
-            type="passwordHash"
+            type="password"
             margin="normal"
-            value={passwordHash}
+            value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
           <TextField

@@ -1,6 +1,8 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { fetchHomeContent, fetchRecommendProductList } from '../../api/home';
-import type { HomeContentResult, PmsProduct } from '../../api/home';
+import { fetchHomeContent, fetchRecommendProductList } from '../../api/catalog';
+import type { HomeContentResult } from '../../api/catalog';
+import type { Product } from '../../types/catalog';
+import type { Banner } from '../../types/promotion';
 
 export const loadHomeData = createAsyncThunk('home/loadData', async () => {
   const contentResponse = await fetchHomeContent();
@@ -11,9 +13,17 @@ export const loadHomeData = createAsyncThunk('home/loadData', async () => {
   };
 });
 
+export interface ModernHomeContent {
+  banners: Banner[];
+  newProducts: Product[];
+  hotProducts: Product[];
+  brandList?: unknown[];
+  homeFlashPromotion?: unknown;
+}
+
 interface HomeState {
   body: HomeContentResult | null;
-  recommendations: PmsProduct[];
+  recommendations: Product[];
   loading: boolean;
   error: string | null;
 }
@@ -38,7 +48,7 @@ export const homeSlice = createSlice({
       .addCase(loadHomeData.fulfilled, (state, action) => {
         state.loading = false;
         state.body = action.payload.body;
-        state.recommendations = action.payload.recommendations;
+        state.recommendations = action.payload.recommendations || [];
       })
       .addCase(loadHomeData.rejected, (state, action) => {
         state.loading = false;

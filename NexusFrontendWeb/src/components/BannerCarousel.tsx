@@ -3,16 +3,8 @@ import { useNavigate } from 'react-router';
 import { Box, IconButton, Typography } from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-
-export interface Banner {
-  id?: number | string;
-  url?: string;
-  primaryImageUrl?: string;
-  name?: string;
-  title?: string;
-  note?: string;
-  customerComment?: string;
-}
+import { resolveImageUrl } from '../utils/media';
+import type { Banner } from '../types/promotion';
 
 interface BannerCarouselProps {
   banners: Banner[];
@@ -37,59 +29,80 @@ const BannerCarousel: React.FC<BannerCarouselProps> = ({ banners }) => {
 
   return (
     <Box sx={{ position: 'relative', width: '100%', height: { xs: 200, md: 400 }, overflow: 'hidden', borderRadius: 2, bgcolor: '#000' }}>
-      {banners.map((banner, index) => (
-        <Box
-          key={banner.id || index}
-          onClick={() => banner.url && navigate(banner.url)}
-          sx={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            opacity: index === activeIndex ? 1 : 0,
-            transition: 'opacity 0.5s ease-in-out',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundImage: `url(${banner.primaryImageUrl})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            cursor: 'pointer',
-          }}
-        >
-          <Box sx={{ 
-            p: 2, 
-            bgcolor: 'rgba(0,0,0,0.5)', 
-            borderRadius: 1, 
-            textAlign: 'center',
-            mt: 'auto',
-            mb: 4
-          }}>
-            <Typography variant="h4" color="white" sx={{ fontWeight: "bold" }}>
-              {banner.name || banner.title || 'Special Promotion'}
-            </Typography>
-            <Typography variant="subtitle1" color="white">
-              {banner.note || banner.customerComment || 'Check out our latest deals!'}
-            </Typography>
-          </Box>
-        </Box>
-      ))}
+      {banners.map((banner, index) => {
+        const bgImg = resolveImageUrl(banner.primaryImageUrl || banner.imageUrl);
+        const linkUrl = banner.targetUrl || banner.url;
+        const bannerTitle = banner.title || banner.name || 'Special Promotion';
 
-      <IconButton 
-        onClick={handlePrev} 
-        sx={{ position: 'absolute', left: 16, top: '50%', transform: 'translateY(-50%)', color: 'white', bgcolor: 'rgba(0,0,0,0.3)', '&:hover': { bgcolor: 'rgba(0,0,0,0.5)' } }}
+        return (
+          <Box
+            key={banner.id || index}
+            onClick={() => linkUrl && navigate(linkUrl)}
+            sx={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              opacity: index === activeIndex ? 1 : 0,
+              transition: 'opacity 0.5s ease-in-out',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundImage: `url(${bgImg})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              cursor: 'pointer',
+            }}
+          >
+            <Box
+              sx={{
+                p: 2,
+                bgcolor: 'rgba(0,0,0,0.5)',
+                borderRadius: 1,
+                textAlign: 'center',
+                mt: 'auto',
+                mb: 4,
+              }}
+            >
+              <Typography variant="h4" color="white" sx={{ fontWeight: 'bold' }}>
+                {bannerTitle}
+              </Typography>
+            </Box>
+          </Box>
+        );
+      })}
+
+      <IconButton
+        onClick={handlePrev}
+        sx={{
+          position: 'absolute',
+          left: 16,
+          top: '50%',
+          transform: 'translateY(-50%)',
+          color: 'white',
+          bgcolor: 'rgba(0,0,0,0.3)',
+          '&:hover': { bgcolor: 'rgba(0,0,0,0.5)' },
+        }}
       >
         <ArrowBackIosIcon />
       </IconButton>
-      <IconButton 
-        onClick={handleNext} 
-        sx={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)', color: 'white', bgcolor: 'rgba(0,0,0,0.3)', '&:hover': { bgcolor: 'rgba(0,0,0,0.5)' } }}
+      <IconButton
+        onClick={handleNext}
+        sx={{
+          position: 'absolute',
+          right: 16,
+          top: '50%',
+          transform: 'translateY(-50%)',
+          color: 'white',
+          bgcolor: 'rgba(0,0,0,0.3)',
+          '&:hover': { bgcolor: 'rgba(0,0,0,0.5)' },
+        }}
       >
         <ArrowForwardIosIcon />
       </IconButton>
-      
+
       {/* Indicators */}
       <Box sx={{ position: 'absolute', bottom: 16, left: 0, right: 0, display: 'flex', justifyContent: 'center', gap: 1 }}>
         {banners.map((_, index) => (

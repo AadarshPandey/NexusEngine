@@ -7,12 +7,12 @@ import { configureStore } from '@reduxjs/toolkit';
 import { MemoryRouter } from 'react-router';
 
 // Mock the API calls
-vi.mock('../api/member', () => ({
-  fetchMemberInfo: vi.fn().mockResolvedValue({ data: { username: 'testuser', displayName: 'Test Nickname' } }),
-  fetchAddressList: vi.fn().mockResolvedValue({ data: [] }),
+vi.mock('../api/customer', () => ({
+  getCustomerProfile: vi.fn().mockResolvedValue({ data: { username: 'testuser', displayName: 'Test Nickname' } }),
+  getCustomerAddresses: vi.fn().mockResolvedValue({ data: [] }),
 }));
-vi.mock('../api/order', () => ({
-  fetchOrderList: vi.fn().mockResolvedValue({ data: { list: [] } }),
+vi.mock('../api/ordering', () => ({
+  getOrders: vi.fn().mockResolvedValue({ data: { list: [] } }),
 }));
 
 describe('Profile Component', () => {

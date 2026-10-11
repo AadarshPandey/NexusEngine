@@ -16,7 +16,7 @@ The audit is done in chunks. If the session dies, resume from the first unchecke
 - [x] Chunk C — Backend module structure & dependencies (NexusCore/*)
 - [x] Chunk D — Backend code quality (entities, controllers, services, DTOs, security, error handling)
 - [x] Chunk E — Database schema & data (postgres_data.sql, schemas, naming)
-- [ ] Chunk F — Frontend: NexusFrontendWeb
+- [x] Chunk F — Frontend: NexusFrontendWeb
 - [ ] Chunk G — Frontend: NexusAdminPanel
 - [ ] Chunk H — Testing, CI/CD, observability, docs
 - [ ] Final — Consolidated execution plan for Gemini
@@ -314,7 +314,31 @@ Also:
 - `created_at`/`updated_at` maintained by JPA auditing (`@CreatedDate`/`@LastModifiedDate`) — not duplicated as `create_time`/`modify_time` variants.
 - Cross-context references are **IDs only** (no FK across schemas except where you consciously accept it — document in ADR).
 
+### Chunk F — Frontend: NexusFrontendWeb
 
+**F1. Architecture & Domain-Driven API Clients**
+- Migrated legacy `src/api/{cart.ts, home.ts, member.ts, order.ts, product.ts}` to bounded-context clients: `api/catalog.ts`, `api/ordering.ts`, `api/customer.ts`, `api/payment.ts`, `api/promotion.ts`, `api/engagement.ts`, `api/ai.ts`, and barrel `api/index.ts`.
+- Preserved backward compatibility aliases while transitioning callers to canonical naming.
+- Moved archived legacy API files into `trash/frontend/api/`.
+
+**F2. Standardized Domain Types**
+- `src/types/catalog.d.ts`: canonical booleans (`isPublished`, `isNewArrival`, `isFeatured`), `listPrice: number`, `salePrice?: number`, `ProductSku` (`onHandQty`, `reservedQty`, `availableQty`, `skuAttributes`).
+- `src/types/ordering.d.ts`: canonical `CustomerOrder`, `OrderLine`, `EnrichedCartItem`, `ReturnRequest`.
+- `src/types/customer.d.ts`: canonical `Member`, `MemberAddress` (`isDefault: boolean`, `recipientName`, `recipientPhone`, `addressLine`, `postalCode`).
+- `src/types/promotion.d.ts`: canonical `Banner` (`primaryImageUrl`, `title`, `targetUrl`, `isActive`), `Coupon`, `FlashSale`.
+- `src/types/payment.d.ts` & `razorpay.d.ts`: resolved critical typo where `discountValue` erroneously replaced `amount` in Razorpay SDK options and API client signatures.
+
+**F3. Elimination of Anti-Patterns**
+- Eliminated fallback chains and alias ladders (`(a as any).x || (a as any).y || (a as any).z`).
+- Eliminated integer-as-boolean hacks (`=== 1` / `defaultStatus === 1`) in favor of canonical booleans (`isDefault`, `isActive`).
+- Replaced input `type="passwordHash"` with standard `type="password"` in `Login.tsx` and `Register.tsx`.
+- Corrected `Register.tsx` OTP request to invoke `POST /sso/getAuthCode` via `customer.ts`.
+- Integrated MinIO media CDN resolver in `src/utils/media.ts` across `ProductCard`, `BannerCarousel`, `ProductDetail`, and `Profile`.
+
+**F4. Verification**
+- Vitest test suite: 5 test files, 8 unit tests passing 100% (`node ./node_modules/vitest/vitest.mjs run`).
+- TypeScript strict compilation (`tsc -b`): 0 errors.
+- Vite production bundle build (`vite build`): completed cleanly.
 
 ---
 

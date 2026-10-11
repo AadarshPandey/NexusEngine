@@ -61,6 +61,29 @@ private String region;
 
         @Column(name = "address_line")
     @Schema(title = "Detail address")
+    private String detailAddress;
 
-private String detailAddress;
+    public String getRecipientName() {
+        return name;
+    }
+
+    public String getRecipientPhone() {
+        return phoneNumber;
+    }
+
+    public Boolean getIsDefault() {
+        return defaultStatus != null && defaultStatus == 1;
+    }
+
+    public String getAddressLine() {
+        return detailAddress;
+    }
+
+    public String getPostalCode() {
+        return postCode;
+    }
+
+    public String getDistrict() {
+        return region;
+    }
 }

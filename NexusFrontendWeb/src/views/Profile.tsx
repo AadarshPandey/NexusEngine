@@ -1,12 +1,45 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Paper, Tabs, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Avatar, Divider, CircularProgress, Button, TextField, Dialog, DialogTitle, DialogContent, DialogActions, Chip, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Paper,
+  Tabs,
+  Tab,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Avatar,
+  Divider,
+  CircularProgress,
+  Button,
+  TextField,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Chip,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+} from '@mui/material';
 import { useSelector } from 'react-redux';
-import { store } from '../store';
 import type { RootState } from '../store';
-import { fetchOrderList, submitReturnApply, getReturnReasons, cancelUserOrder } from '../api/order';
-import type { OmsOrderDetail } from '../api/order';
-import { fetchMemberInfo, fetchAddressList, addAddress, updateProfile } from '../api/member';
-import type { UmsMember, UmsMemberReceiveAddress } from '../api/member';
+import { getOrders, submitReturnApply, getReturnReasons, cancelUserOrder } from '../api/ordering';
+import type { CustomerOrder, OrderLine, ReturnRequest } from '../types/ordering';
+import {
+  getCustomerProfile,
+  getCustomerAddresses,
+  createCustomerAddress,
+  updateCustomerProfile,
+  uploadAvatar,
+} from '../api/customer';
+import type { Member, MemberAddress } from '../types/customer';
+import { createRazorpayOrder, verifyRazorpayPayment } from '../api/payment';
+import { resolveImageUrl } from '../utils/media';
 import { useNavigate } from 'react-router';
 
 interface TabPanelProps {
@@ -29,33 +62,38 @@ const Profile: React.FC = () => {
   const navigate = useNavigate();
 
   const [tabValue, setTabValue] = useState(0);
-  const [memberInfo, setMemberInfo] = useState<UmsMember | null>(null);
-  const [orders, setOrders] = useState<OmsOrderDetail[]>([]);
-  const [addresses, setAddresses] = useState<UmsMemberReceiveAddress[]>([]);
+  const [memberInfo, setMemberInfo] = useState<Member | null>(null);
+  const [orders, setOrders] = useState<CustomerOrder[]>([]);
+  const [addresses, setAddresses] = useState<MemberAddress[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [openAddAddress, setOpenAddAddress] = useState(false);
-  const [newAddress, setNewAddress] = useState<Partial<UmsMemberReceiveAddress> & { coordinates?: string }>({
-    name: '', receiverPhone: '', state: '', city: '', region: '', detailAddress: '', postCode: '', coordinates: ''
+  const [newAddress, setNewAddress] = useState<Partial<MemberAddress>>({
+    name: '',
+    phoneNumber: '',
+    detailAddress: '',
+    postCode: '',
+    city: '',
+    state: '',
+    region: '',
   });
 
   // Refund dialog states
   const [openRefundDialog, setOpenRefundDialog] = useState(false);
   const [openEditProfile, setOpenEditProfile] = useState(false);
-  const [editProfileData, setEditProfileData] = useState({ displayName: '', returnPhone: '', iconUrl: '' });
+  const [editProfileData, setEditProfileData] = useState({ displayName: '', iconUrl: '' });
 
   const handleEditProfileOpen = () => {
     setEditProfileData({
       displayName: memberInfo?.displayName || '',
-      returnPhone: memberInfo?.contactPhone || '',
-      iconUrl: memberInfo?.iconUrl || ''
+      iconUrl: memberInfo?.avatarUrl || memberInfo?.iconUrl || '',
     });
     setOpenEditProfile(true);
   };
 
   const handleEditProfileSubmit = async () => {
     try {
-      await updateProfile(editProfileData);
+      await updateCustomerProfile(editProfileData);
       setOpenEditProfile(false);
       loadDashboardData();
     } catch (e) {
@@ -64,10 +102,10 @@ const Profile: React.FC = () => {
     }
   };
 
-  const [refundOrder, setRefundOrder] = useState<OmsOrderDetail | null>(null);
-  const [selectedRefundItems, setSelectedRefundItems] = useState<(import('../api/order').OmsOrderItem & { returnQuantity: number })[]>([]);
+  const [refundOrder, setRefundOrder] = useState<CustomerOrder | null>(null);
+  const [selectedRefundItems, setSelectedRefundItems] = useState<(OrderLine & { returnQuantity: number })[]>([]);
   const [refundReason, setRefundReason] = useState('');
-  const [returnReasonsList, setReturnReasonsList] = useState<{ id: number, name: string }[]>([]);
+  const [returnReasonsList, setReturnReasonsList] = useState<{ id: number; name: string }[]>([]);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -82,16 +120,16 @@ const Profile: React.FC = () => {
       setLoading(true);
       setError(null);
       const [memberRes, orderRes, addressRes] = await Promise.all([
-        fetchMemberInfo(),
-        fetchOrderList(-1, 1, 100),
-        fetchAddressList()
+        getCustomerProfile(),
+        getOrders(-1, 1, 100),
+        getCustomerAddresses(),
       ]);
       setMemberInfo(memberRes.data);
       setOrders(orderRes.data.list || []);
       setAddresses(addressRes.data || []);
-    } catch (error) {
-      console.error('Failed to load dashboard data', error);
-      setError(error instanceof Error ? error.message : 'Failed to load dashboard data');
+    } catch (err: unknown) {
+      console.error('Failed to load dashboard data', err);
+      setError(err instanceof Error ? err.message : 'Failed to load dashboard data');
     } finally {
       setLoading(false);
     }
@@ -103,22 +141,18 @@ const Profile: React.FC = () => {
 
   const handleAddAddress = async () => {
     try {
-      const addressToSave = { ...newAddress };
-      if (addressToSave.coordinates) {
-        addressToSave.detailAddress = `${addressToSave.detailAddress} [Coords: ${addressToSave.coordinates}]`;
-      }
-      await addAddress(addressToSave);
+      await createCustomerAddress(newAddress);
       setOpenAddAddress(false);
-      const addressRes = await fetchAddressList();
+      const addressRes = await getCustomerAddresses();
       setAddresses(addressRes.data || []);
-      setNewAddress({ name: '', receiverPhone: '', state: '', city: '', region: '', detailAddress: '', postCode: '', coordinates: '' });
+      setNewAddress({ name: '', phoneNumber: '', detailAddress: '', postCode: '', city: '', state: '', region: '' });
       alert('Address added successfully!');
-    } catch (error) {
+    } catch {
       alert('Failed to add address');
     }
   };
 
-  const handleOpenRefund = async (order: OmsOrderDetail) => {
+  const handleOpenRefund = async (order: CustomerOrder) => {
     setRefundOrder(order);
     setSelectedRefundItems([]);
     setRefundReason('');
@@ -135,12 +169,16 @@ const Profile: React.FC = () => {
     setOpenRefundDialog(true);
   };
 
-  const handleRefundItemToggle = (item: import('../api/order').OmsOrderItem) => {
+  const handleRefundItemToggle = (item: OrderLine) => {
     const currentIndex = selectedRefundItems.findIndex((i) => i.id === item.id);
     const newSelected = [...selectedRefundItems];
     if (currentIndex === -1) {
-      const totalReturnedQty = refundOrder?.returnApplyList?.filter((r: import('../api/order').OmsOrderReturnApply) => r.productId === item.productId).reduce((sum, r) => sum + (r.productCount || 0), 0) || 0;
-      const maxReturnableQty = item.productQuantity - totalReturnedQty;
+      const totalReturnedQty =
+        refundOrder?.returnApplyList
+          ?.filter((r: ReturnRequest) => r.productId === item.productId)
+          .reduce((sum, r) => sum + (r.productCount || 0), 0) || 0;
+      const qty = item.productQuantity ?? item.quantity ?? 1;
+      const maxReturnableQty = Math.max(0, qty - totalReturnedQty);
       newSelected.push({ ...item, returnQuantity: maxReturnableQty });
     } else {
       newSelected.splice(currentIndex, 1);
@@ -154,30 +192,38 @@ const Profile: React.FC = () => {
       return;
     }
     if (!refundReason.trim()) {
-      alert('Please provide a reasonId for the refund.');
+      alert('Please provide a reason for the refund.');
       return;
     }
     if (!refundOrder) return;
 
     try {
-      await Promise.all(selectedRefundItems.map(item => 
-        submitReturnApply({
-          orderId: refundOrder.id,
-          productId: item.productId,
-          orderSn: refundOrder.orderSn,
-          returnName: memberInfo?.displayName || memberInfo?.username,
-          returnPhone: memberInfo?.contactPhone || '',
-          productPic: item.productPic,
-          productName: item.productName,
-          productBrand: item.productBrand,
-          productAttr: item.productAttr,
-          productCount: item.returnQuantity,
-          productPrice: item.productPrice,
-          returnAmount: (item.realAmount / item.productQuantity) * item.returnQuantity,
-          reason: refundReason,
-          description: refundReason
-        })
-      ));
+      await Promise.all(
+        selectedRefundItems.map((item) => {
+          const itemQty = item.productQuantity ?? item.quantity ?? 1;
+          const itemAmt = item.realAmount ?? item.lineTotalAmount ?? 0;
+          return submitReturnApply({
+            orderId: refundOrder.id,
+            productId: item.productId,
+            orderSn: refundOrder.orderNumber || refundOrder.orderSn,
+            returnName: memberInfo?.displayName || memberInfo?.username,
+            returnPhone: memberInfo?.phoneE164 || memberInfo?.contactPhone || '',
+            productPic: item.productPic || item.productImageUrl,
+            productName: item.productName,
+            productBrand: item.productBrand || item.brandName,
+            productAttr:
+              item.productAttr ||
+              (typeof item.skuAttributes === 'string'
+                ? item.skuAttributes
+                : JSON.stringify(item.skuAttributes || '')),
+            productCount: item.returnQuantity,
+            productPrice: item.productPrice ?? item.unitPrice,
+            returnAmount: (itemAmt / itemQty) * item.returnQuantity,
+            reason: refundReason,
+            description: refundReason,
+          });
+        }),
+      );
       alert('Refund application(s) submitted successfully!');
       setOpenRefundDialog(false);
       loadDashboardData();
@@ -190,14 +236,20 @@ const Profile: React.FC = () => {
   if (!isAuthenticated) return null;
 
   if (loading) {
-    return <Box sx={{ display: 'flex', justifyContent: 'center', mt: 10 }}><CircularProgress /></Box>;
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 10 }}>
+        <CircularProgress />
+      </Box>
+    );
   }
 
   if (error) {
     return (
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 10, gap: 2 }}>
         <Typography color="error">{error}</Typography>
-        <Button variant="contained" onClick={loadDashboardData}>Retry</Button>
+        <Button variant="contained" onClick={loadDashboardData}>
+          Retry
+        </Button>
       </Box>
     );
   }
@@ -207,11 +259,13 @@ const Profile: React.FC = () => {
       {/* Sidebar Profile Summary */}
       <Box sx={{ flex: 1 }}>
         <Paper sx={{ p: 4, textAlign: 'center' }}>
-          <Avatar 
-            src={memberInfo?.iconUrl?.includes('file') ? 'https://via.placeholder.com/100' : (memberInfo?.iconUrl || 'https://via.placeholder.com/100')} 
-            sx={{ width: 100, height: 100, mx: 'auto', mb: 2 }} 
+          <Avatar
+            src={resolveImageUrl(memberInfo?.avatarUrl || memberInfo?.iconUrl) || 'https://via.placeholder.com/100'}
+            sx={{ width: 100, height: 100, mx: 'auto', mb: 2 }}
           />
-          <Typography variant="h5" gutterBottom>{memberInfo?.displayName || authUser?.username}</Typography>
+          <Typography variant="h5" gutterBottom>
+            {memberInfo?.displayName || authUser?.displayName || authUser?.username}
+          </Typography>
           <Divider sx={{ my: 2 }} />
         </Paper>
       </Box>
@@ -226,22 +280,29 @@ const Profile: React.FC = () => {
               <Tab label="Address Book" />
             </Tabs>
           </Box>
-          
+
           <TabPanel value={tabValue} index={0}>
-            
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
               <Typography variant="h6">Personal Information</Typography>
-              <Button size="small" variant="outlined" onClick={handleEditProfileOpen}>Edit Profile</Button>
+              <Button size="small" variant="outlined" onClick={handleEditProfileOpen}>
+                Edit Profile
+              </Button>
             </Box>
 
             <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
               <Typography color="text.secondary">Username:</Typography>
               <Typography>{memberInfo?.username}</Typography>
+              <Typography color="text.secondary">Display Name:</Typography>
+              <Typography>{memberInfo?.displayName || '-'}</Typography>
+              <Typography color="text.secondary">Phone:</Typography>
+              <Typography>{memberInfo?.phoneE164 || memberInfo?.contactPhone || '-'}</Typography>
             </Box>
           </TabPanel>
-          
+
           <TabPanel value={tabValue} index={1}>
-            <Typography variant="h6" gutterBottom>Order History</Typography>
+            <Typography variant="h6" gutterBottom>
+              Order History
+            </Typography>
             {orders.length === 0 ? (
               <Typography color="text.secondary">You have no past orders.</Typography>
             ) : (
@@ -258,148 +319,167 @@ const Profile: React.FC = () => {
                   </TableHead>
                   <TableBody>
                     {orders.map((order) => {
-                      const totalOrderQty = order.orderItemList?.reduce((sum: number, item: import('../api/order').OmsOrderItem) => sum + item.productQuantity, 0) || 0;
-                      const totalReturnedQty = order.returnApplyList?.reduce((sum: number, r: import('../api/order').OmsOrderReturnApply) => sum + (r.productCount || 0), 0) || 0;
+                      const totalOrderQty =
+                        order.orderItemList?.reduce(
+                          (sum: number, item: OrderLine) => sum + (item.productQuantity ?? item.quantity ?? 0),
+                          0,
+                        ) || 0;
+                      const totalReturnedQty =
+                        order.returnApplyList?.reduce(
+                          (sum: number, r: ReturnRequest) => sum + (r.productCount || 0),
+                          0,
+                        ) || 0;
                       const isOrderFullyRefunded = totalOrderQty > 0 && totalReturnedQty >= totalOrderQty;
 
                       return (
-                      <TableRow key={order.id}>
-                        <TableCell>{order.orderSn}</TableCell>
-                        <TableCell>{new Date(order.createTime).toLocaleDateString()}</TableCell>
-                        <TableCell>
-                          <Typography variant="body2">
-                            {isOrderFullyRefunded ? 'Refunded' :
-                             order.status === 0 ? 'Pending Payment' : 
-                             order.status === 1 ? 'Awaiting Shipment' : 
-                             order.status === 2 ? 'Shipped' : 
-                             order.status === 3 ? 'Completed' : 
-                             order.status === 5 ? 'Out for Delivery' : 
-                             order.status === 6 ? 'Refunded' : 'Cancelled'}
-                          </Typography>
-                          {order.returnApplyList && order.returnApplyList.length > 0 && (
-                            <Chip 
-                              label={`${order.returnApplyList.length} Return(s) Logged`} 
-                              size="small" 
-                              color="warning" 
-                              sx={{ mt: 0.5, fontSize: '0.7rem', height: 20 }} 
-                            />
-                          )}
-                          <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
-                            Ordered: {totalOrderQty} | Refunded: {totalReturnedQty} | Remaining: {Math.max(0, totalOrderQty - totalReturnedQty)}
-                          </Typography>
-                        </TableCell>
-                        <TableCell align="right">₹{order.totalAmount?.toFixed(2)}</TableCell>
-                        <TableCell align="center">
-                          {order.status === 0 && (
-                            <Button 
-                              variant="contained" 
-                              size="small" 
-                              color="primary"
-                              onClick={async () => {
-                                try {
-                                  const { createRazorpayOrder, verifyRazorpayPayment } = await import('../api/order');
-                                  
-                                  // 1. Get Razorpay Order details from backend
-                                  const res = await createRazorpayOrder(order.id);
-                                  const { razorpayOrderId, keyId, discountValue } = res.data;
+                        <TableRow key={order.id}>
+                          <TableCell>{order.orderNumber || order.orderSn}</TableCell>
+                          <TableCell>{new Date(order.createTime || order.createdAt).toLocaleDateString()}</TableCell>
+                          <TableCell>
+                            <Typography variant="body2">
+                              {isOrderFullyRefunded
+                                ? 'Refunded'
+                                : order.status === 0
+                                  ? 'Pending Payment'
+                                  : order.status === 1
+                                    ? 'Awaiting Shipment'
+                                    : order.status === 2
+                                      ? 'Shipped'
+                                      : order.status === 3
+                                        ? 'Completed'
+                                        : order.status === 5
+                                          ? 'Out for Delivery'
+                                          : order.status === 6
+                                            ? 'Refunded'
+                                            : 'Cancelled'}
+                            </Typography>
+                            {order.returnApplyList && order.returnApplyList.length > 0 && (
+                              <Chip
+                                label={`${order.returnApplyList.length} Return(s) Logged`}
+                                size="small"
+                                color="warning"
+                                sx={{ mt: 0.5, fontSize: '0.7rem', height: 20 }}
+                              />
+                            )}
+                            <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
+                              Ordered: {totalOrderQty} | Refunded: {totalReturnedQty} | Remaining:{' '}
+                              {Math.max(0, totalOrderQty - totalReturnedQty)}
+                            </Typography>
+                          </TableCell>
+                          <TableCell align="right">
+                            ₹{(order.grandTotalAmount ?? order.totalAmount ?? 0).toFixed(2)}
+                          </TableCell>
+                          <TableCell align="center">
+                            {order.status === 0 && (
+                              <Button
+                                variant="contained"
+                                size="small"
+                                color="primary"
+                                onClick={async () => {
+                                  try {
+                                    // 1. Get Razorpay Order details from backend
+                                    const res = await createRazorpayOrder(order.id);
+                                    const { razorpayOrderId, keyId, amount } = res.data;
 
-                                  // 2. Load Razorpay script dynamically
-                                  const loadScript = (src: string) => new Promise((resolve) => {
-                                    if (window.Razorpay) {
-                                      resolve(true);
+                                    // 2. Load Razorpay script dynamically
+                                    const loadScript = (src: string) =>
+                                      new Promise((resolve) => {
+                                        if (window.Razorpay) {
+                                          resolve(true);
+                                          return;
+                                        }
+                                        const script = document.createElement('script');
+                                        script.src = src;
+                                        script.onload = () => resolve(true);
+                                        script.onerror = () => resolve(false);
+                                        document.body.appendChild(script);
+                                      });
+                                    const scriptLoaded = await loadScript(
+                                      'https://checkout.razorpay.com/v1/checkout.js',
+                                    );
+                                    if (!scriptLoaded) {
+                                      alert('Failed to load Razorpay SDK. Are you online?');
                                       return;
                                     }
-                                    const script = document.createElement('script');
-                                    script.src = src;
-                                    script.onload = () => resolve(true);
-                                    script.onerror = () => resolve(false);
-                                    document.body.appendChild(script);
-                                  });
-                                  const scriptLoaded = await loadScript('https://checkout.razorpay.com/v1/checkout.js');
-                                  if (!scriptLoaded) {
-                                    alert('Failed to load Razorpay SDK. Are you online?');
-                                    return;
-                                  }
 
-                                  // 3. Open Razorpay Checkout
-                                  const options: RazorpayOptions = {
-                                    key: keyId, 
-                                    discountValue: discountValue, 
-                                    currency: 'INR',
-                                    name: 'Nexus Engine',
-                                    description: `Payment for Order #${order.orderSn}`,
-                                    order_id: razorpayOrderId,
-                                    handler: async function (response: RazorpayResponse) {
-                                      try {
-                                        // 4. Verify payment on backend
-                                        await verifyRazorpayPayment(
-                                          order.id, 
-                                          response.razorpay_payment_id, 
-                                          response.razorpay_order_id, 
-                                          response.razorpay_signature
-                                        );
-                                        alert('Payment successful!');
-                                        loadDashboardData();
-                                      } catch (err) {
-                                        alert('Payment verification failed.');
-                                      }
-                                    },
-                                    prefill: {
-                                      name: memberInfo?.displayName || memberInfo?.username || 'Test Customer',
-                                      email: 'test@example.com',
-                                      contact: '9000090000'
-                                    },
-                                    theme: { color: '#3399cc' }
-                                  };
-                                  const rzp = new window.Razorpay(options);
-                                  rzp.on('payment.failed', function (response: RazorpayFailedResponse){
-                                    alert(`Payment Failed: ${response.error.description}`);
-                                  });
-                                  rzp.open();
-                                  
-                                } catch (e: unknown) {
-                                  alert('Failed to initiate payment. Please try again later.');
-                                  console.error(e);
-                                }
-                              }}
-                            >
-                              Pay Now
-                            </Button>
-                          )}
-                          {order.status === 0 && (
-                            <Button 
-                              variant="outlined" 
-                              size="small" 
-                              color="error"
-                              sx={{ ml: 1 }}
-                              onClick={async () => {
-                                if (window.confirm('Are you sure you want to cancel this order?')) {
-                                  try {
-                                    await cancelUserOrder(order.id);
-                                    alert('Order cancelled successfully.');
-                                    loadDashboardData();
-                                  } catch (e) {
-                                    alert('Failed to cancel order.');
+                                    // 3. Open Razorpay Checkout
+                                    const options: RazorpayOptions = {
+                                      key: keyId,
+                                      amount: amount,
+                                      currency: 'INR',
+                                      name: 'Nexus Engine',
+                                      description: `Payment for Order #${order.orderNumber || order.orderSn}`,
+                                      order_id: razorpayOrderId,
+                                      handler: async function (response: RazorpayResponse) {
+                                        try {
+                                          // 4. Verify payment on backend
+                                          await verifyRazorpayPayment(
+                                            order.id,
+                                            response.razorpay_payment_id,
+                                            response.razorpay_order_id,
+                                            response.razorpay_signature,
+                                          );
+                                          alert('Payment successful!');
+                                          loadDashboardData();
+                                        } catch {
+                                          alert('Payment verification failed.');
+                                        }
+                                      },
+                                      prefill: {
+                                        name: memberInfo?.displayName || memberInfo?.username || 'Test Customer',
+                                        email: 'test@example.com',
+                                        contact: memberInfo?.phoneE164 || memberInfo?.contactPhone || '9000090000',
+                                      },
+                                      theme: { color: '#3399cc' },
+                                    };
+                                    const rzp = new window.Razorpay(options);
+                                    rzp.on('payment.failed', function (response: RazorpayFailedResponse) {
+                                      alert(`Payment Failed: ${response.error.description}`);
+                                    });
+                                    rzp.open();
+                                  } catch (e: unknown) {
+                                    alert('Failed to initiate payment. Please try again later.');
                                     console.error(e);
                                   }
-                                }
-                              }}
-                            >
-                              Cancel Order
-                            </Button>
-                          )}
-                          {[1, 2, 3, 5].includes(order.status) && !isOrderFullyRefunded && (
-                            <Button 
-                              variant="outlined" 
-                              size="small" 
-                              color="secondary"
-                              onClick={() => handleOpenRefund(order)}
-                            >
-                              {order.status === 3 ? 'Request Refund' : 'Request Cancellation'}
-                            </Button>
-                          )}
-                        </TableCell>
-                      </TableRow>
+                                }}
+                              >
+                                Pay Now
+                              </Button>
+                            )}
+                            {order.status === 0 && (
+                              <Button
+                                variant="outlined"
+                                size="small"
+                                color="error"
+                                sx={{ ml: 1 }}
+                                onClick={async () => {
+                                  if (window.confirm('Are you sure you want to cancel this order?')) {
+                                    try {
+                                      await cancelUserOrder(order.id);
+                                      alert('Order cancelled successfully.');
+                                      loadDashboardData();
+                                    } catch (e) {
+                                      alert('Failed to cancel order.');
+                                      console.error(e);
+                                    }
+                                  }
+                                }}
+                              >
+                                Cancel Order
+                              </Button>
+                            )}
+                            {[1, 2, 3, 5].includes(order.status) && !isOrderFullyRefunded && (
+                              <Button
+                                variant="outlined"
+                                size="small"
+                                color="secondary"
+                                onClick={() => handleOpenRefund(order)}
+                              >
+                                {order.status === 3 ? 'Request Refund' : 'Request Cancellation'}
+                              </Button>
+                            )}
+                          </TableCell>
+                        </TableRow>
                       );
                     })}
                   </TableBody>
@@ -411,7 +491,9 @@ const Profile: React.FC = () => {
           <TabPanel value={tabValue} index={2}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
               <Typography variant="h6">My Addresses</Typography>
-              <Button variant="contained" onClick={() => setOpenAddAddress(true)}>Add Address</Button>
+              <Button variant="contained" onClick={() => setOpenAddAddress(true)}>
+                Add Address
+              </Button>
             </Box>
             {addresses.length === 0 ? (
               <Typography color="text.secondary">You have no saved addresses.</Typography>
@@ -419,9 +501,12 @@ const Profile: React.FC = () => {
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                 {addresses.map((address) => (
                   <Paper key={address.id} variant="outlined" sx={{ p: 2 }}>
-                    <Typography sx={{ fontWeight: 'bold' }}>{address.name} ({address.receiverPhone})</Typography>
+                    <Typography sx={{ fontWeight: 'bold' }}>
+                      {address.name} ({address.phoneNumber || address.receiverPhone})
+                    </Typography>
                     <Typography color="text.secondary">
-                      {[address.detailAddress, address.region, address.city, address.state].filter(Boolean).join(', ')} - PIN: {address.postCode}
+                      {[address.detailAddress, address.region, address.city, address.state].filter(Boolean).join(', ')}{' '}
+                      - PIN: {address.postCode}
                     </Typography>
                   </Paper>
                 ))}
@@ -436,72 +521,119 @@ const Profile: React.FC = () => {
         <DialogTitle>Add New Address</DialogTitle>
         <DialogContent>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
-            <TextField label="Name" fullWidth value={newAddress.name} onChange={e => setNewAddress({...newAddress, name: e.target.value})} />
-            <TextField label="Phone Number" fullWidth value={newAddress.receiverPhone} onChange={e => setNewAddress({...newAddress, receiverPhone: e.target.value})} />
-            <TextField label="Full Address" fullWidth multiline rows={3} value={newAddress.detailAddress} onChange={e => setNewAddress({...newAddress, detailAddress: e.target.value})} />
-            <TextField label="PIN Code" fullWidth value={newAddress.postCode} onChange={e => setNewAddress({...newAddress, postCode: e.target.value})} />
-            <TextField label="Geographic Coordinates (Lat, Long)" fullWidth value={newAddress.coordinates} onChange={e => setNewAddress({...newAddress, coordinates: e.target.value})} />
+            <TextField
+              label="Name"
+              fullWidth
+              value={newAddress.name}
+              onChange={(e) => setNewAddress({ ...newAddress, name: e.target.value })}
+            />
+            <TextField
+              label="Phone Number"
+              fullWidth
+              value={newAddress.phoneNumber}
+              onChange={(e) => setNewAddress({ ...newAddress, phoneNumber: e.target.value })}
+            />
+            <TextField
+              label="Full Address"
+              fullWidth
+              multiline
+              rows={3}
+              value={newAddress.detailAddress}
+              onChange={(e) => setNewAddress({ ...newAddress, detailAddress: e.target.value })}
+            />
+            <TextField
+              label="PIN Code"
+              fullWidth
+              value={newAddress.postCode}
+              onChange={(e) => setNewAddress({ ...newAddress, postCode: e.target.value })}
+            />
           </Box>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenAddAddress(false)}>Cancel</Button>
-          <Button variant="contained" onClick={handleAddAddress}>Save Address</Button>
+          <Button variant="contained" onClick={handleAddAddress}>
+            Save Address
+          </Button>
         </DialogActions>
       </Dialog>
+
       {/* Refund Dialog */}
       <Dialog open={openRefundDialog} onClose={() => setOpenRefundDialog(false)} maxWidth="sm" fullWidth>
         <DialogTitle>{refundOrder?.status === 3 ? 'Request Refund' : 'Request Cancellation'}</DialogTitle>
         <DialogContent>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-            Select the items you wish to return and provide a reasonId.
+            Select the items you wish to return and provide a reason.
           </Typography>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            {refundOrder?.orderItemList?.map((item: import('../api/order').OmsOrderItem) => {
-              const totalReturnedQty = refundOrder?.returnApplyList?.filter((r: import('../api/order').OmsOrderReturnApply) => r.productId === item.productId).reduce((sum, r) => sum + (r.productCount || 0), 0) || 0;
-              const maxReturnableQty = item.productQuantity - totalReturnedQty;
+            {refundOrder?.orderItemList?.map((item: OrderLine) => {
+              const totalReturnedQty =
+                refundOrder?.returnApplyList
+                  ?.filter((r: ReturnRequest) => r.productId === item.productId)
+                  .reduce((sum, r) => sum + (r.productCount || 0), 0) || 0;
+              const qty = item.productQuantity ?? item.quantity ?? 1;
+              const maxReturnableQty = Math.max(0, qty - totalReturnedQty);
               const isFullyReturned = maxReturnableQty <= 0;
-              const isSelected = selectedRefundItems.some(i => i.id === item.id);
+              const isSelected = selectedRefundItems.some((i) => i.id === item.id);
               return (
-                <Paper 
-                  key={item.id} 
-                  variant="outlined" 
-                  sx={{ 
-                    p: 2, 
-                    display: 'flex', 
-                    alignItems: 'center', 
+                <Paper
+                  key={item.id}
+                  variant="outlined"
+                  sx={{
+                    p: 2,
+                    display: 'flex',
+                    alignItems: 'center',
                     gap: 2,
                     cursor: isFullyReturned ? 'not-allowed' : 'pointer',
                     borderColor: isSelected ? 'primary.main' : 'divider',
-                    bgcolor: isSelected ? 'rgba(99, 102, 241, 0.08)' : isFullyReturned ? 'action.disabledBackground' : 'background.paper',
-                    opacity: isFullyReturned ? 0.6 : 1
+                    bgcolor: isSelected
+                      ? 'rgba(99, 102, 241, 0.08)'
+                      : isFullyReturned
+                        ? 'action.disabledBackground'
+                        : 'background.paper',
+                    opacity: isFullyReturned ? 0.6 : 1,
                   }}
                   onClick={() => {
                     if (!isFullyReturned) handleRefundItemToggle(item);
                   }}
                 >
-                  <img src={item.productPic?.includes('file') ? 'https://via.placeholder.com/60' : (item.productPic || 'https://via.placeholder.com/60')} alt={item.productName} style={{ width: 60, height: 60, objectFit: 'cover' }} />
+                  <img
+                    src={resolveImageUrl(item.productPic || item.productImageUrl) || 'https://via.placeholder.com/60'}
+                    alt={item.productName}
+                    style={{ width: 60, height: 60, objectFit: 'cover' }}
+                  />
                   <Box sx={{ flex: 1 }}>
                     <Typography variant="subtitle2">{item.productName}</Typography>
-                    <Typography variant="body2" color="text.secondary">{item.productAttr}</Typography>
-                    <Typography variant="body2">Qty: {item.productQuantity} | ₹{item.realAmount}</Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {item.productAttr ||
+                        (typeof item.skuAttributes === 'string'
+                          ? item.skuAttributes
+                          : JSON.stringify(item.skuAttributes || ''))}
+                    </Typography>
+                    <Typography variant="body2">
+                      Qty: {item.productQuantity ?? item.quantity} | ₹{item.realAmount ?? item.lineTotalAmount}
+                    </Typography>
                     {totalReturnedQty > 0 && isFullyReturned && (
-                      <Typography variant="caption" color="error" sx={{ fontWeight: 'bold' }}>Refund Requested (Fully)</Typography>
+                      <Typography variant="caption" color="error" sx={{ fontWeight: 'bold' }}>
+                        Refund Requested (Fully)
+                      </Typography>
                     )}
                     {totalReturnedQty > 0 && !isFullyReturned && (
-                      <Typography variant="caption" color="warning.main" sx={{ fontWeight: 'bold', display: 'block' }}>Refunded: {totalReturnedQty}</Typography>
+                      <Typography variant="caption" color="warning.main" sx={{ fontWeight: 'bold', display: 'block' }}>
+                        Refunded: {totalReturnedQty}
+                      </Typography>
                     )}
                     {isSelected && (
                       <TextField
                         type="number"
                         label="Return Qty"
                         size="small"
-                        slotProps={{ htmlInput: { min: 1, max: maxReturnableQty } }} //{{ min: 1, max: maxReturnableQty }}
-                        value={selectedRefundItems.find(i => i.id === item.id)?.returnQuantity || 1}
+                        slotProps={{ htmlInput: { min: 1, max: maxReturnableQty } }}
+                        value={selectedRefundItems.find((i) => i.id === item.id)?.returnQuantity || 1}
                         onChange={(e) => {
                           const val = parseInt(e.target.value);
                           if (!isNaN(val) && val >= 1 && val <= maxReturnableQty) {
                             const newSelected = [...selectedRefundItems];
-                            const idx = newSelected.findIndex(i => i.id === item.id);
+                            const idx = newSelected.findIndex((i) => i.id === item.id);
                             if (idx > -1) {
                               newSelected[idx].returnQuantity = val;
                               setSelectedRefundItems(newSelected);
@@ -513,11 +645,11 @@ const Profile: React.FC = () => {
                       />
                     )}
                   </Box>
-                  <input 
-                    type="checkbox" 
-                    checked={isSelected || isFullyReturned} 
+                  <input
+                    type="checkbox"
+                    checked={isSelected || isFullyReturned}
                     disabled={isFullyReturned}
-                    readOnly 
+                    readOnly
                     style={{ width: 20, height: 20 }}
                   />
                 </Paper>
@@ -528,11 +660,11 @@ const Profile: React.FC = () => {
               <Select
                 value={refundReason}
                 label="Reason for Refund"
-                onChange={e => setRefundReason(e.target.value)}
+                onChange={(e) => setRefundReason(e.target.value)}
               >
-                {returnReasonsList.map((reasonId) => (
-                  <MenuItem key={reasonId.id} value={reasonId.name}>
-                    {reasonId.name}
+                {returnReasonsList.map((reason) => (
+                  <MenuItem key={reason.id} value={reason.name}>
+                    {reason.name}
                   </MenuItem>
                 ))}
               </Select>
@@ -541,9 +673,9 @@ const Profile: React.FC = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenRefundDialog(false)}>Cancel</Button>
-          <Button 
-            variant="contained" 
-            color="primary" 
+          <Button
+            variant="contained"
+            color="primary"
             onClick={handleRefundSubmit}
             disabled={selectedRefundItems.length === 0}
           >
@@ -557,36 +689,27 @@ const Profile: React.FC = () => {
         <DialogTitle>Edit Profile</DialogTitle>
         <DialogContent>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
-            <TextField label="Nickname" fullWidth value={editProfileData.displayName} onChange={e => setEditProfileData({...editProfileData, displayName: e.target.value})} />
-            
-            
+            <TextField
+              label="Display Name"
+              fullWidth
+              value={editProfileData.displayName}
+              onChange={(e) => setEditProfileData({ ...editProfileData, displayName: e.target.value })}
+            />
+
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              <Avatar src={editProfileData.iconUrl} sx={{ width: 64, height: 64 }} />
-              <input 
-                type="file" 
-                accept="image/*" 
-                style={{ display: 'none' }} 
-                id="avatar-upload" 
+              <Avatar src={resolveImageUrl(editProfileData.iconUrl)} sx={{ width: 64, height: 64 }} />
+              <input
+                type="file"
+                accept="image/*"
+                style={{ display: 'none' }}
+                id="avatar-upload"
                 onChange={async (e) => {
                   if (e.target.files && e.target.files[0]) {
                     const file = e.target.files[0];
-                    const formData = new FormData();
-                    formData.append('file', file);
                     try {
-                      // Note: We need to hit the upload API
-                      const token = (store.getState() as RootState).auth.token;
-                      const res = await fetch('/api/portal/sso/uploadAvatar', {
-                        method: 'POST',
-                        headers: {
-                          'Authorization': `Bearer ${token}`
-                        },
-                        body: formData
-                      });
-                      const data = await res.json();
-                      if (data.code === 200) {
-                        setEditProfileData({...editProfileData, iconUrl: data.data});
-                      } else {
-                        alert('Upload failed: ' + data.message);
+                      const res = await uploadAvatar(file);
+                      if (res.data) {
+                        setEditProfileData({ ...editProfileData, iconUrl: res.data });
                       }
                     } catch (err) {
                       console.error(err);
@@ -601,17 +724,16 @@ const Profile: React.FC = () => {
                 </Button>
               </label>
             </Box>
-
-
           </Box>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenEditProfile(false)}>Cancel</Button>
-          <Button variant="contained" onClick={handleEditProfileSubmit}>Save Changes</Button>
+          <Button variant="contained" onClick={handleEditProfileSubmit}>
+            Save Changes
+          </Button>
         </DialogActions>
       </Dialog>
     </Box>
-
   );
 };
 

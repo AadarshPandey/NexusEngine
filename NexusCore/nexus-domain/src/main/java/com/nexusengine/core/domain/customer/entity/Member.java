@@ -67,4 +67,16 @@ private Integer gender;
     @Schema(title = "Source type")
     @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.SMALLINT)
     private Integer signupChannel;
+
+    public String getAvatarUrl() {
+        return iconUrl;
+    }
+
+    public String getPhoneE164() {
+        return contactPhone;
+    }
+
+    public Integer getAccountStatus() {
+        return status;
+    }
 }

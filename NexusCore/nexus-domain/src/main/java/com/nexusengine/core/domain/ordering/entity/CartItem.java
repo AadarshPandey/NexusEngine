@@ -92,4 +92,28 @@ private Category productCategory;
 
             @org.hibernate.annotations.Formula("(SELECT s.sku_attributes FROM catalog.product_sku s WHERE s.id = sku_id)")
     private String productAttr;
+
+    public String getPrimaryImageUrl() {
+        return productPic;
+    }
+
+    public String getName() {
+        return productName;
+    }
+
+    public String getSkuCode() {
+        return productSkuCode;
+    }
+
+    public String getProductCode() {
+        return productSn;
+    }
+
+    public BigDecimal getCurrentListPrice() {
+        return price;
+    }
+
+    public Long getSkuId() {
+        return productSkuId;
+    }
 }

@@ -5,13 +5,14 @@ import Cart from '../views/Cart';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import { MemoryRouter } from 'react-router';
+import type { EnrichedCartItem } from '../types/ordering';
 
 describe('Cart Component', () => {
   it('renders empty cart message when no items exist', () => {
     const store = configureStore({
       reducer: {
         auth: () => ({ isAuthenticated: true }),
-        cart: () => ({ items: [], totalQuantity: 0, loading: false })
+        cart: () => ({ items: [], totalQuantity: 0, totalSubtotal: 0, loading: false })
       }
     });
 
@@ -26,17 +27,38 @@ describe('Cart Component', () => {
     expect(screen.getByText('Your cart is empty.')).toBeInTheDocument();
   });
 
-  it('renders cart items and total listPrice', () => {
+  it('renders modern cart items and total amount', () => {
+    const mockItems: Partial<EnrichedCartItem>[] = [
+      {
+        id: 1,
+        productId: 101,
+        skuId: 201,
+        name: 'Test Product 1',
+        currentListPrice: 10,
+        quantity: 2,
+        skuCode: 'TEST-SKU-01',
+        isAvailable: true,
+      },
+      {
+        id: 2,
+        productId: 102,
+        skuId: 202,
+        name: 'Test Product 2',
+        currentListPrice: 20,
+        quantity: 1,
+        skuCode: 'TEST-SKU-02',
+        isAvailable: true,
+      },
+    ];
+
     const store = configureStore({
       reducer: {
         auth: () => ({ isAuthenticated: true }),
         cart: () => ({
-          items: [
-            { id: 1, productName: 'Test Product 1', listPrice: 10, quantity: 2 },
-            { id: 2, productName: 'Test Product 2', listPrice: 20, quantity: 1 },
-          ],
+          items: mockItems,
           totalQuantity: 3,
-          loading: false
+          totalSubtotal: 40,
+          loading: false,
         })
       }
     });

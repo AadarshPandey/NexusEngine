@@ -68,4 +68,10 @@ private String skuCode;
 
     @jakarta.persistence.Version
     private Integer version;
+
+    public Integer getAvailableQty() {
+        int onHand = onHandQty != null ? onHandQty : 0;
+        int reserved = reservedQty != null ? reservedQty : 0;
+        return Math.max(0, onHand - reserved);
+    }
 }

@@ -9,8 +9,9 @@ import { loadHomeData } from '../store/slices/homeSlice';
 import BannerCarousel from '../components/BannerCarousel';
 import SectionHeader from '../components/SectionHeader';
 import ProductCard from '../components/ProductCard';
-import { searchProducts } from '../api/product';
-import type { PmsProduct } from '../api/home';
+import { searchProducts } from '../api/catalog';
+import type { Product } from '../types/catalog';
+
 const Home: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { body, recommendations, loading, error } = useSelector((state: RootState) => state.home);
@@ -21,7 +22,7 @@ const Home: React.FC = () => {
 
   const [searchKeyword, setSearchKeyword] = useState(queryParam);
   const [isSearching, setIsSearching] = useState(!!queryParam);
-  const [searchResults, setSearchResults] = useState<PmsProduct[]>([]);
+  const [searchResults, setSearchResults] = useState<Product[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
 
   useEffect(() => {
@@ -89,6 +90,8 @@ const Home: React.FC = () => {
     );
   }
 
+  const banners = body?.banners || body?.advertiseList || [];
+
   return (
     <Box sx={{ mt: 2 }}>
       {/* Search Section */}
@@ -142,7 +145,7 @@ const Home: React.FC = () => {
       ) : (
         <>
           {/* Hero Banner Section */}
-          {body?.advertiseList && <BannerCarousel banners={body.advertiseList as any} />}
+          {banners.length > 0 && <BannerCarousel banners={banners} />}
 
           {/* New Arrivals Section */}
           {body?.newProductList && body.newProductList.length > 0 && (

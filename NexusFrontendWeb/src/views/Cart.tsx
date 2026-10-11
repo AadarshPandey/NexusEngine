@@ -1,15 +1,16 @@
 import React, { useEffect } from 'react';
-import { Box, Typography, Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton } from '@mui/material';
+import { Box, Typography, Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, Chip } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { useSelector, useDispatch } from 'react-redux';
 import type { RootState, AppDispatch } from '../store';
 import { loadCartData, removeCartItem, updateQuantity } from '../store/slices/cartSlice';
+import { resolveImageUrl } from '../utils/media';
 import { useNavigate } from 'react-router';
 
 const Cart: React.FC = () => {
-  const { items, totalQuantity } = useSelector((state: RootState) => state.cart);
+  const { items, totalQuantity, totalSubtotal } = useSelector((state: RootState) => state.cart);
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
@@ -33,11 +34,14 @@ const Cart: React.FC = () => {
     );
   }
 
-  const totalPrice = items.reduce((total, item) => total + (item.price * item.quantity), 0);
+  const effectiveTotal = totalSubtotal > 0 ? totalSubtotal : items.reduce((total, item) => {
+    const itemPrice = item.currentSalePrice ?? item.currentListPrice ?? item.price ?? 0;
+    return total + itemPrice * item.quantity;
+  }, 0);
 
   return (
     <Box sx={{ mt: 4 }}>
-      <Typography variant="h4" gutterBottom>Shopping Cart</Typography>
+      <Typography variant="h4" gutterBottom>Shopping Cart ({totalQuantity} items)</Typography>
       {items.length === 0 ? (
         <Paper sx={{ p: 4, textAlign: 'center' }}>
           <Typography variant="h6">Your cart is empty.</Typography>
@@ -58,43 +62,53 @@ const Cart: React.FC = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {items.map((item) => (
-                    <TableRow key={item.id}>
-                      <TableCell sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                        <img src={item.productPic?.includes('file') ? 'https://via.placeholder.com/50' : (item.productPic || 'https://via.placeholder.com/50')} alt={item.productName} style={{ width: 50, height: 50, objectFit: 'contain' }} />
-                        <Typography variant="body2">{item.productName}</Typography>
-                      </TableCell>
-                      <TableCell align="right">₹{item.price?.toFixed(2)}</TableCell>
-                      <TableCell align="center">
-                        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                  {items.map((item) => {
+                    const itemImg = resolveImageUrl(item.primaryImageUrl);
+                    const itemName = item.name;
+                    const itemPrice = item.currentSalePrice ?? item.currentListPrice ?? item.price ?? 0;
+                    const lineTotal = itemPrice * item.quantity;
+
+                    return (
+                      <TableRow key={item.id}>
+                        <TableCell sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                          <img
+                            src={itemImg}
+                            alt={itemName}
+                            style={{ width: 50, height: 50, objectFit: 'contain', borderRadius: 4 }}
+                          />
+                          <Box>
+                            <Typography variant="body2" sx={{ fontWeight: 600 }}>{itemName}</Typography>
+                            {item.skuCode && (
+                              <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
+                                SKU: {item.skuCode}
+                              </Typography>
+                            )}
+                            {item.hasPriceChanged && (
+                              <Chip label="Price updated" color="warning" size="small" sx={{ mt: 0.5, height: 20, fontSize: '0.7rem' }} />
+                            )}
+                          </Box>
+                        </TableCell>
+                        <TableCell align="right">₹{Number(itemPrice).toFixed(2)}</TableCell>
+                        <TableCell align="center">
                           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            <IconButton size="small" onClick={() => { if(item.quantity > 1) dispatch(updateQuantity({ id: item.id, quantity: item.quantity - 1 })) }}>
+                            <IconButton size="small" onClick={() => dispatch(updateQuantity({ id: item.id, quantity: Math.max(1, item.quantity - 1) }))}>
                               <RemoveIcon fontSize="small" />
                             </IconButton>
-                            <Typography sx={{ mx: 1 }}>{item.quantity}</Typography>
-                            <IconButton 
-                              size="small" 
-                              onClick={() => dispatch(updateQuantity({ id: item.id, quantity: item.quantity + 1 }))}
-                              disabled={item.realStock !== undefined && item.quantity >= item.realStock}
-                            >
+                            <Typography sx={{ mx: 2, minWidth: 20, textAlign: 'center' }}>{item.quantity}</Typography>
+                            <IconButton size="small" onClick={() => dispatch(updateQuantity({ id: item.id, quantity: item.quantity + 1 }))}>
                               <AddIcon fontSize="small" />
                             </IconButton>
                           </Box>
-                          {item.realStock !== undefined && (
-                            <Typography variant="caption" color="text.secondary">
-                              {item.realStock} available
-                            </Typography>
-                          )}
-                        </Box>
-                      </TableCell>
-                      <TableCell align="right">₹{(item.price * item.quantity).toFixed(2)}</TableCell>
-                      <TableCell align="right">
-                        <IconButton color="error" onClick={() => dispatch(removeCartItem(item.id))}>
-                          <DeleteIcon />
-                        </IconButton>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                        </TableCell>
+                        <TableCell align="right">₹{Number(lineTotal).toFixed(2)}</TableCell>
+                        <TableCell align="right">
+                          <IconButton color="error" onClick={() => dispatch(removeCartItem(item.id))}>
+                            <DeleteIcon />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
                 </TableBody>
               </Table>
             </TableContainer>
@@ -102,13 +116,13 @@ const Cart: React.FC = () => {
           <Box sx={{ flex: 1 }}>
             <Paper sx={{ p: 3 }}>
               <Typography variant="h6" gutterBottom>Order Summary</Typography>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                 <Typography>Items ({totalQuantity}):</Typography>
-                <Typography>₹{totalPrice.toFixed(2)}</Typography>
+                <Typography>₹{Number(effectiveTotal).toFixed(2)}</Typography>
               </Box>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
-                <Typography variant="h5" sx={{ fontWeight: 'bold' }}>Total:</Typography>
-                <Typography variant="h5" color="primary" sx={{ fontWeight: 'bold' }}>₹{totalPrice.toFixed(2)}</Typography>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+                <Typography variant="h6">Subtotal:</Typography>
+                <Typography variant="h6" color="primary">₹{Number(effectiveTotal).toFixed(2)}</Typography>
               </Box>
               <Button variant="contained" color="primary" fullWidth size="large" onClick={handleCheckout}>
                 Proceed to Checkout

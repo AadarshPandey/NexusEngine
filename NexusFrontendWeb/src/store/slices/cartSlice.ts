@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { fetchCartList, addToCart as apiAddToCart, deleteCartItem as apiDeleteCartItem, updateCartItemQuantity } from '../../api/cart';
-import type { OmsCartItem } from '../../api/cart';
+import { getCart, addItemToCart as apiAddToCart, removeCartItems as apiDeleteCartItem, updateItemQuantity as apiUpdateQuantity } from '../../api/ordering';
+import type { EnrichedCartItem } from '../../types/ordering';
 import type { RootState } from '../index';
 
 export const loadCartData = createAsyncThunk('cart/loadData', async (_, { getState }) => {
@@ -8,18 +8,43 @@ export const loadCartData = createAsyncThunk('cart/loadData', async (_, { getSta
   if (!state.auth.isAuthenticated) {
     return [];
   }
-  const response = await fetchCartList();
-  return response.data;
+  const response = await getCart();
+  const rawItems: any[] = response.data || [];
+  return rawItems.map((item: any) => ({
+    id: item.id,
+    productId: item.productId,
+    skuId: item.skuId || item.productSkuId || 0,
+    name: item.name || item.productName || '',
+    primaryImageUrl: item.primaryImageUrl || item.productPic || '',
+    skuCode: item.skuCode || item.productSkuCode || '',
+    productCode: item.productCode || item.productSn || '',
+    currentListPrice: item.currentListPrice ?? item.price ?? 0,
+    currentSalePrice: item.currentSalePrice ?? item.price,
+    price: item.currentSalePrice ?? item.currentListPrice ?? item.price ?? 0,
+    quantity: item.quantity || 1,
+    availableQty: item.availableQty ?? item.realStock ?? 999,
+    skuAttributes: item.skuAttributes,
+    isAvailable: item.isAvailable ?? true,
+    hasPriceChanged: item.hasPriceChanged ?? false,
+  })) as EnrichedCartItem[];
 });
 
-export const addItemToCart = createAsyncThunk('cart/addItem', async (item: Partial<OmsCartItem>, { dispatch, getState }) => {
-  const state = getState() as RootState;
-  if (!state.auth.isAuthenticated) {
-    throw new Error('Please login to add items to cart');
-  }
-  await apiAddToCart(item);
-  dispatch(loadCartData());
-});
+export const addItemToCart = createAsyncThunk(
+  'cart/addItem',
+  async (item: { productId: number; skuId?: number; productSkuId?: number; quantity: number; price?: number }, { dispatch, getState }) => {
+    const state = getState() as RootState;
+    if (!state.auth.isAuthenticated) {
+      throw new Error('Please login to add items to cart');
+    }
+    await apiAddToCart({
+      productId: item.productId,
+      skuId: item.skuId || item.productSkuId,
+      quantity: item.quantity || 1,
+      price: item.price,
+    });
+    dispatch(loadCartData());
+  },
+);
 
 export const removeCartItem = createAsyncThunk('cart/removeItem', async (id: number, { dispatch, getState }) => {
   const state = getState() as RootState;
@@ -28,18 +53,22 @@ export const removeCartItem = createAsyncThunk('cart/removeItem', async (id: num
   dispatch(loadCartData());
 });
 
-export const updateQuantity = createAsyncThunk('cart/updateQuantity', async ({ id, quantity }: { id: number, quantity: number }, { dispatch, getState }) => {
-  const state = getState() as RootState;
-  if (!state.auth.isAuthenticated) return;
-  await updateCartItemQuantity(id, quantity);
-  dispatch(loadCartData());
-});
+export const updateQuantity = createAsyncThunk(
+  'cart/updateQuantity',
+  async ({ id, quantity }: { id: number; quantity: number }, { dispatch, getState }) => {
+    const state = getState() as RootState;
+    if (!state.auth.isAuthenticated) return;
+    await apiUpdateQuantity(id, quantity);
+    dispatch(loadCartData());
+  },
+);
 
 interface CartState {
-  items: OmsCartItem[];
+  items: EnrichedCartItem[];
   loading: boolean;
   error: string | null;
   totalQuantity: number;
+  totalSubtotal: number;
 }
 
 const initialState: CartState = {
@@ -47,6 +76,7 @@ const initialState: CartState = {
   loading: false,
   error: null,
   totalQuantity: 0,
+  totalSubtotal: 0,
 };
 
 export const cartSlice = createSlice({
@@ -56,7 +86,8 @@ export const cartSlice = createSlice({
     clearCart: (state) => {
       state.items = [];
       state.totalQuantity = 0;
-    }
+      state.totalSubtotal = 0;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -67,6 +98,10 @@ export const cartSlice = createSlice({
         state.loading = false;
         state.items = action.payload;
         state.totalQuantity = action.payload.reduce((total, item) => total + item.quantity, 0);
+        state.totalSubtotal = action.payload.reduce(
+          (sum, item) => sum + (item.currentSalePrice ?? item.currentListPrice ?? item.price ?? 0) * item.quantity,
+          0,
+        );
       })
       .addCase(loadCartData.rejected, (state, action) => {
         state.loading = false;

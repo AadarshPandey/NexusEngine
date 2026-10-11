@@ -6,7 +6,7 @@ declare global {
 
   interface RazorpayOptions {
     key: string;
-    discountValue: string;
+    amount: string | number;
     currency: string;
     name: string;
     description: string;

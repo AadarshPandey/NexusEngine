@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Box, Typography, Button, Paper, Divider, Alert, CircularProgress, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 import type { RootState, AppDispatch } from '../store';
-import { generateConfirmOrder, generateOrder } from '../api/order';
-import type { ConfirmOrderResult } from '../api/order';
+import { generateConfirmOrder, createOrder } from '../api/ordering';
+import type { ConfirmOrderResult } from '../api/ordering';
+import { createRazorpayOrder, verifyRazorpayPayment } from '../api/payment';
 import { clearCart } from '../store/slices/cartSlice';
 import { useNavigate } from 'react-router';
 
@@ -35,13 +36,13 @@ const Checkout: React.FC = () => {
       const allowedCategories = comment.categoryRelationList?.map(c => c.productCategoryId) || [];
       applicableAmount = confirmData.cartPromotionItemList
         .filter(item => item.productCategoryId !== undefined && allowedCategories.includes(item.productCategoryId))
-        .reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        .reduce((sum, item) => sum + ((item.price ?? 0) * item.quantity), 0);
     } else if (coupon.applicabilityScope === 2) {
       // Specific products
       const allowedProducts = comment.productRelationList?.map(p => p.productId) || [];
       applicableAmount = confirmData.cartPromotionItemList
         .filter(item => allowedProducts.includes(item.productId))
-        .reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        .reduce((sum, item) => sum + ((item.price ?? 0) * item.quantity), 0);
     }
 
     // Minimum point/discountValue not met for the applicable items
@@ -81,7 +82,8 @@ const Checkout: React.FC = () => {
       const res = await generateConfirmOrder(cartIds);
       setConfirmData(res.data);
       if (res.data.memberReceiveAddressList && res.data.memberReceiveAddressList.length > 0) {
-        const defaultAddr = res.data.memberReceiveAddressList.find((a: import('../api/member').UmsMemberReceiveAddress) => a.defaultStatus === 1) || res.data.memberReceiveAddressList[0];
+        const addressList = res.data.memberReceiveAddressList;
+        const defaultAddr = addressList.find((a) => Boolean(a.isDefault)) || addressList[0];
         setSelectedAddressId(defaultAddr.id);
       }
     } catch (err: unknown) {
@@ -101,7 +103,7 @@ const Checkout: React.FC = () => {
       }
       
       // 1. Generate the actual order in the backend
-      const orderRes = await generateOrder({
+      const orderRes = await createOrder({
         memberReceiveAddressId: selectedAddressId as number,
         payType: 2, // 2 = Razorpay
         cartIds: items.map(i => i.id),
@@ -109,15 +111,13 @@ const Checkout: React.FC = () => {
       });
       
       const order = orderRes.data.order;
+      const orderNum = order.orderNumber || order.orderSn;
       
-      // 2. Import Razorpay APIs
-      const { createRazorpayOrder, verifyRazorpayPayment } = await import('../api/order');
-      
-      // 3. Get Razorpay specific order details from backend
+      // 2. Get Razorpay specific order details from backend
       const rzpRes = await createRazorpayOrder(order.id);
-      const { razorpayOrderId, keyId, discountValue } = rzpRes.data;
+      const { razorpayOrderId, keyId, amount } = rzpRes.data;
 
-      // 4. Load Razorpay script
+      // 3. Load Razorpay script
       const loadScript = (src: string) => new Promise((resolve) => {
         if (window.Razorpay) {
           resolve(true);
@@ -137,13 +137,13 @@ const Checkout: React.FC = () => {
         return;
       }
 
-      // 5. Open Razorpay Checkout overlay
+      // 4. Open Razorpay Checkout overlay
       const options: RazorpayOptions = {
         key: keyId, 
-        discountValue: discountValue, 
+        amount: amount, 
         currency: 'INR',
         name: 'Nexus Engine',
-        description: `Payment for Order #${order.orderSn}`,
+        description: `Payment for Order #${orderNum}`,
         image: 'https://cdn.razorpay.com/logos/FF7H1D9qU0R55R_medium.png',
         order_id: razorpayOrderId,
         handler: async function (response: RazorpayResponse) {
@@ -164,8 +164,8 @@ const Checkout: React.FC = () => {
         },
         prefill: {
           name: user?.displayName || user?.username || 'Test Customer',
-          email: 'test@example.com',
-          contact: '9000090000'
+          email: user?.email || 'test@example.com',
+          contact: user?.phoneE164 || '9000090000'
         },
         theme: { color: '#3399cc' },
         modal: {
@@ -210,11 +210,18 @@ const Checkout: React.FC = () => {
               label="Select Shipping Address"
               onChange={(e) => setSelectedAddressId(e.target.value as number)}
             >
-              {confirmData.memberReceiveAddressList.map((addr: import('../api/member').UmsMemberReceiveAddress) => (
-                <MenuItem key={addr.id} value={addr.id}>
-                  {addr.name} - {addr.receiverPhone} ({[addr.detailAddress, addr.region, addr.city, addr.state].filter(Boolean).join(', ')} - PIN: {addr.postCode})
-                </MenuItem>
-              ))}
+              {confirmData.memberReceiveAddressList.map((addr: any) => {
+                const name = addr.recipientName || addr.name;
+                const phone = addr.recipientPhone || addr.phoneNumber || addr.receiverPhone;
+                const line = addr.addressLine || addr.detailAddress;
+                const postal = addr.postalCode || addr.postCode;
+                const locality = [line, addr.district || addr.region, addr.city, addr.state].filter(Boolean).join(', ');
+                return (
+                  <MenuItem key={addr.id} value={addr.id}>
+                    {name} - {phone} ({locality} - PIN: {postal})
+                  </MenuItem>
+                );
+              })}
             </Select>
           </FormControl>
         ) : (
@@ -256,8 +263,8 @@ const Checkout: React.FC = () => {
         <Typography variant="h6" gutterBottom>Order Items</Typography>
         {confirmData?.cartPromotionItemList.map((item) => (
           <Box key={item.id} sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-            <Typography>{item.productName} x {item.quantity}</Typography>
-            <Typography>₹{(item.price * item.quantity).toFixed(2)}</Typography>
+            <Typography>{item.name || item.productName} x {item.quantity}</Typography>
+            <Typography>₹{((item.price ?? 0) * item.quantity).toFixed(2)}</Typography>
           </Box>
         ))}
         <Divider sx={{ my: 2 }} />

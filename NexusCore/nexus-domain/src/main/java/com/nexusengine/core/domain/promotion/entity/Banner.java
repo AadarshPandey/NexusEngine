@@ -68,6 +68,14 @@ private String note;
 
             @Schema(title = "Sort")
     @Column(name = "display_order")
-@com.fasterxml.jackson.annotation.JsonProperty("displayOrder")
+    @com.fasterxml.jackson.annotation.JsonProperty("displayOrder")
     private Integer sort;
+
+    public String getTitle() {
+        return name;
+    }
+
+    public String getTargetUrl() {
+        return url;
+    }
 }

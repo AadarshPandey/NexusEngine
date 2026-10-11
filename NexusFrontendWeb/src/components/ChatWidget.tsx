@@ -6,51 +6,41 @@ import {
 import ChatIcon from '@mui/icons-material/Chat';
 import CloseIcon from '@mui/icons-material/Close';
 import SendIcon from '@mui/icons-material/Send';
-import axios from 'axios';
+import { getChatHistory, sendChatMessage, type ChatMessageDto } from '../api/ai';
 
-// Interfaces
-interface ChatMessage {
-  id?: number;
-  role: 'USER' | 'ASSISTANT';
-  body: string;
-}
-
-const generateSessionId = () => {
-  const existing = localStorage.getItem('nexus_chat_session_id');
+const generateConversationId = () => {
+  const existing = localStorage.getItem('nexus_conversation_id') || localStorage.getItem('nexus_chat_session_id');
   if (existing) return existing;
-  const newId = 'session_' + Math.random().toString(36).substring(2, 15);
-  localStorage.setItem('nexus_chat_session_id', newId);
+  const newId = 'conv_' + Math.random().toString(36).substring(2, 15);
+  localStorage.setItem('nexus_conversation_id', newId);
   return newId;
 };
 
 const ChatWidget: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [messages, setMessages] = useState<ChatMessageDto[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [slotId, setSessionId] = useState('');
+  const [conversationId, setConversationId] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const sId = generateSessionId();
-    setSessionId(sId);
-    // Load history when component mounts
-    axios.get(`/api/portal/chat/history?slotId=${sId}`)
+    const cId = generateConversationId();
+    setConversationId(cId);
+    getChatHistory(cId)
       .then(res => {
-        if (res.data.code === 200 && res.data.data) {
-           const history = res.data.data.map((item: ChatMessage) => ({
-             role: item.role,
-             body: item.body
-           }));
-           if(history.length === 0) {
-              setMessages([{ role: 'ASSISTANT', body: 'Hi there! I am Nexus AI. How can I help you today?' }]);
-           } else {
-              setMessages(history);
-           }
+        const history = (res.data || []).map((item) => ({
+          role: item.role,
+          body: item.content || item.body || '',
+        }));
+        if (history.length === 0) {
+          setMessages([{ role: 'ASSISTANT', body: 'Hi there! I am Nexus AI. How can I help you today?' }]);
+        } else {
+          setMessages(history);
         }
       })
       .catch(err => {
-        console.error("Failed to load chat history", err);
+        console.error('Failed to load chat history', err);
         setMessages([{ role: 'ASSISTANT', body: 'Hi! How can I help you?' }]);
       });
   }, []);
@@ -63,22 +53,17 @@ const ChatWidget: React.FC = () => {
 
   const handleSend = async () => {
     if (!input.trim()) return;
-    
+
     const userMessage = input.trim();
     setInput('');
     setMessages(prev => [...prev, { role: 'USER', body: userMessage }]);
     setIsLoading(true);
 
     try {
-      const response = await axios.post('/api/portal/chat', {
-        question: userMessage,
-        slotId: slotId
-      });
-      
-      if (response.data.code === 200) {
-        setMessages(prev => [...prev, { role: 'ASSISTANT', body: response.data.data.answer }]);
-      }
-    } catch (error) {
+      const response = await sendChatMessage(conversationId, userMessage);
+      const answer = (response.data as any)?.answer || (response.data as any)?.reply || 'I am ready to help!';
+      setMessages(prev => [...prev, { role: 'ASSISTANT', body: answer }]);
+    } catch {
       setMessages(prev => [...prev, { role: 'ASSISTANT', body: 'Sorry, I am having trouble connecting right now.' }]);
     } finally {
       setIsLoading(false);
@@ -147,7 +132,7 @@ const ChatWidget: React.FC = () => {
                       }}
                     >
                       <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
-                        {msg.body}
+                        {msg.body || msg.content}
                       </Typography>
                     </Box>
                   </ListItem>
@@ -172,7 +157,7 @@ const ChatWidget: React.FC = () => {
               placeholder="Type your question..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              onKeyPress={(e) => {
+              onKeyDown={(e) => {
                 if (e.key === 'Enter') handleSend();
               }}
               disabled={isLoading}
