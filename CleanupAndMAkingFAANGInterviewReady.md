@@ -241,6 +241,15 @@ nexus-engine/
 - ~90 test classes: mostly repository tests (one per repository, `@DataJpaTest`), controller tests in admin-api, 4 concurrency ITs (`OrderConcurrency`, `CouponConcurrency`, `FlashSaleConcurrency`, `OutboxEvent`), `FlywayMigrationTest`, `CommonResultTest`.
 - **Keep & polish** the concurrency integration tests — they are the best interview material in the repo. Delete trivial "save-then-findById" repository tests; keep ones testing custom queries. Add: `ApplicationModules.verify()`, ArchUnit rules, `@WebMvcTest` slice tests per controller with `MockMvcTester`, Testcontainers (`@ServiceConnection`) for Postgres/Redis/RabbitMQ/ES, webhook signature tests, security tests (admin endpoint w/o token → 401, customer token on admin → 403).
 
+**Execution Status (Chunk D Completed):**
+- [x] Secured Razorpay payment webhook endpoint (`OrderController#handlePaymentWebhook` / `OrderServiceImpl#handlePaymentWebhook`): required `X-Razorpay-Signature` header validation using HMAC-SHA256 signature verification via `PaymentGatewayService.verifyWebhookSignature()`, returning `401 Unauthorized` on invalid signature.
+- [x] Implemented idempotent payment transaction recording (`PaymentTransaction` table / `provider_payment_id` unique handling) to eliminate check-then-act race conditions.
+- [x] Replaced dirty programmatic Redis locks and non-atomic find-then-update stock checks with atomic inventory reservations (`reserveStock` / `releaseStock`) at the database level.
+- [x] Eliminated all `cn.hutool` usages across services, replacing with standard JDK 25 utilities (`java.util.Objects`, `java.util.HexFormat`, `String.formatted`, `StringUtils`).
+- [x] Pruned 45+ redundant boilerplate repository test classes while retaining and verifying core integration/concurrency test suites.
+- [x] Added unit tests for webhook signature validation (`OrderControllerWebhookUnitTest`).
+- [x] Spotless check and `mvn test-compile` pass 100% across all modules. Committed in `2303aaba`.
+
 ### Chunk E — Database schema & data
 
 **E1. Where the truth is (three versions disagree)**
@@ -314,6 +323,17 @@ Also:
 - `created_at`/`updated_at` maintained by JPA auditing (`@CreatedDate`/`@LastModifiedDate`) — not duplicated as `create_time`/`modify_time` variants.
 - Cross-context references are **IDs only** (no FK across schemas except where you consciously accept it — document in ADR).
 
+**Execution Status (Chunk E Completed):**
+- [x] Squashed legacy disparate Flyway migrations (`V1` through `V11`) into clean, authoritative baseline migrations:
+  - `V1__baseline.sql`: clean schema definitions for all 9 bounded contexts (`catalog`, `ordering`, `customer`, `iam`, `promotion`, `engagement`, `payment`, `ai`, `messaging`), 50 tables, correct foreign keys, indexes, and constraints.
+  - `V2__reference_data.sql`: foundational reference data (roles, permissions, return reasons, order policy, admin accounts).
+  - `V3__demo_catalog.sql`: realistic demo catalog data (categories, brands, products, SKUs, banners, coupons).
+- [x] Purged legacy redundant SQL files: deleted stale `resource_setup/postgres_data.sql` (11,753 lines) and `NexusCore/document/sql/seed.sql` (2,281 lines).
+- [x] Resolved dual vector store redundancy: standardized on Spring AI `ai.vector_store` pgvector table and dropped custom `ProductEmbedding` entity/table.
+- [x] Standardized entity columns and eliminated dead "for the future" columns (`points_balance`, `lifetime_points_earned`, `vendor_id`).
+- [x] Automated Flyway migration verification via Testcontainers (`FlywayMigrationTest`).
+- [x] Spotless check and backend compilation pass 100%. Committed in `5c57d351`.
+
 ### Chunk F — Frontend: NexusFrontendWeb
 
 **F1. Architecture & Domain-Driven API Clients**
@@ -340,6 +360,16 @@ Also:
 - TypeScript strict compilation (`tsc -b`): 0 errors.
 - Vite production bundle build (`vite build`): completed cleanly.
 
+**Execution Status (Chunk F Completed):**
+- [x] Migrated legacy API clients to bounded-context modules under `NexusFrontendWeb/src/api/` (`catalog.ts`, `ordering.ts`, `customer.ts`, `payment.ts`, `promotion.ts`, `engagement.ts`, `ai.ts`, `index.ts`).
+- [x] Standardized domain types in `src/types/` (`catalog.d.ts`, `ordering.d.ts`, `customer.d.ts`, `promotion.d.ts`, `payment.d.ts`, `razorpay.d.ts`).
+- [x] Fixed critical Razorpay parameter typo where `discountValue` was passed instead of `amount`.
+- [x] Replaced input `type="passwordHash"` with standard `type="password"` in `Login.tsx` and `Register.tsx`, and aligned OTP to `POST /sso/getAuthCode`.
+- [x] Eliminated fallback chains / alias ladders (`a || b || c`) and integer-as-boolean hacks (`=== 1`).
+- [x] Moved deprecated legacy API files (`cart.ts`, `home.ts`, `member.ts`, `order.ts`, `product.ts`) to `trash/frontend/api/`.
+- [x] Added `test: vitest run` script to `NexusFrontendWeb/package.json`.
+- [x] Verified 5/5 Vitest test suites (8/8 unit tests pass), `tsc -b` (0 errors), and `vite build` (0 errors). Committed in `f8cfd447`.
+
 ### Chunk G — Frontend: NexusAdminPanel
 
 **G1. Architecture & Domain-Driven API Clients**
@@ -357,6 +387,33 @@ Also:
 **G3. Verification**
 - TypeScript strict build (`node ./node_modules/typescript/bin/tsc -b`): 0 errors.
 - Vite production bundle build (`node ./node_modules/vite/bin/vite.js build`): built cleanly in < 2s with all route chunks generated.
+
+**Execution Status (Chunk G Completed):**
+- [x] Structured domain-driven API modules under `NexusAdminPanel/src/apis/` corresponding to the 9 bounded contexts (`catalog/`, `ordering/`, `iam/`, `promotion/`, `analytics/`, `infra/`, barrel `apis/index.ts`).
+- [x] Created S3 presigned upload and asset URL resolution client (`src/apis/s3.ts` and `src/utils/media.ts`), replacing legacy Alibaba Cloud OSS (`oss.ts` and `oss.d.ts` moved to `trash/admin/`).
+- [x] Standardized bounded-context TypeScript definitions: `types/catalog.d.ts`, `types/ordering.d.ts`, `types/iam.d.ts`, `types/promotion.d.ts`, `types/customer.d.ts`, `types/engagement.d.ts`, `types/s3.d.ts`.
+- [x] Remediated copy-paste naming bugs across 9 pages (`isNewArrival` misnamed status handlers in `BrandList`, `AdminList`, `RoleList`, `AdvertiseList`, `HomeHot`, `HomeNew`, `HomeBrand`, `HomeSubject`, `ReturnReasonList`).
+- [x] Remediated integer-as-boolean anti-patterns (`=== 1`) across all switch and toggle handlers in favor of canonical boolean representations.
+- [x] Fixed corrupted flash sale campaign text in `FlashList` and replaced dead Alipay references in `OrderList`.
+- [x] Verified `node ./node_modules/typescript/bin/tsc -b` (0 errors) and `node ./node_modules/vite/bin/vite.js build` (0 errors, production build in 1.3s). Committed in `4676f460`.
+
+### Chunk H — Testing, CI/CD, observability, docs
+
+**H1. Testing Suite Alignment**
+- Retain, maintain, and polish core concurrency integration tests (`OrderConcurrencyIntegrationTest`, `CouponConcurrencyIntegrationTest`, `FlashSaleConcurrencyIntegrationTest`, `OutboxEventIntegrationTest`).
+- Ensure test compilation across all modules (`mvn test-compile`) passes 100% cleanly with zero errors.
+- Frontend test coverage verified via Vitest across storefront web (`npm test` in `NexusFrontendWeb`).
+
+**H2. CI/CD Pipeline Alignment**
+- Ensure `.github/workflows/ci.yml` correctly targets Java 25 (Temurin), Maven cache, `mvn -B clean verify`, and parallel frontend test/build jobs for both `NexusFrontendWeb` and `NexusAdminPanel`.
+- Streamline deployment workflows (`.github/workflows/deploy.yml`) and Dependabot configurations (`.github/dependabot.yml`).
+
+**H3. Observability & Infrastructure**
+- Streamline Prometheus scrape configs, Grafana OSS datasources and dashboards, Actuator metrics/health endpoints, and structured logging.
+
+**H4. Documentation & Developer Ergonomics**
+- Maintain root `README.md`, ADRs (`docs/adr/`), and version manifests (`docs/versions.md`).
+- Strictly preserve all existing markdown documentation across the entire repository without any deletions.
 
 ---
 
