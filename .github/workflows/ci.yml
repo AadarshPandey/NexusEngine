@@ -7,38 +7,71 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build-and-test:
+  backend:
+    name: Backend (Java 25)
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: ./NexusCore
 
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: Set up JDK 21
-      uses: actions/setup-java@v4
-      with:
-        java-version: '21'
-        distribution: 'temurin'
-        cache: maven
-        
-    - name: Build and Test
-      run: mvn -B clean verify
-      
-    - name: Build JARs
-      run: mvn -B package -DskipTests
-      
-    - name: Upload Build Artifacts (Monolith)
-      uses: actions/upload-artifact@v4
-      with:
-        name: nexus-monolith-jar
-        path: NexusCore/nexus-application/target/nexus-application-1.0-SNAPSHOT.jar
-        retention-days: 7
-        
-    - name: Upload Build Artifacts (Search)
-      uses: actions/upload-artifact@v4
-      with:
-        name: nexus-search-jar
-        path: NexusCore/nexus-search/target/nexus-search-1.0-SNAPSHOT.jar
-        retention-days: 7
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 25
+        uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Verify & Test
+        run: mvn -B clean verify
+
+  admin-panel:
+    name: Admin Panel (React 19)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./NexusAdminPanel
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: NexusAdminPanel/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck & Build
+        run: npm run build
+
+  storefront-web:
+    name: Storefront Web (React 19)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./NexusFrontendWeb
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: NexusFrontendWeb/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck & Build
+        run: npm run build

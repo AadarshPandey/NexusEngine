@@ -1,6 +1,6 @@
 resource "aws_security_group" "mq_sg" {
-  name        = "${var.env}-mq-sg"
-  vpc_id      = var.vpc_id
+  name   = "${var.env}-mq-sg"
+  vpc_id = var.vpc_id
   ingress {
     from_port   = 5671
     to_port     = 5671
@@ -16,7 +16,7 @@ resource "aws_mq_broker" "rabbitmq" {
   host_instance_type = var.mq_instance_type
   security_groups    = [aws_security_group.mq_sg.id]
   subnet_ids         = [var.subnet_ids[0]]
-  
+
   user {
     username = "admin"
     password = "AdminPassword123!"

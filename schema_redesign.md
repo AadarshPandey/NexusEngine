@@ -168,13 +168,13 @@ Legend: ✓ = name unchanged · **NEW** = column added · ~~DROP~~ = column remo
 | name | varchar(255) | name | varchar(100) NOT NULL | |
 | level | integer | depth | smallint | Optional: replace with an `ltree` `path` for subtree queries |
 | product_count | integer | ~~DROP~~ | — | Denormalized counter that drifts; compute with `COUNT` or a materialized view |
-| product_unit | varchar(255) | unit_of_measure | varchar(20) | |
+| product_unit | varchar(255) | ~~DROP~~ | — | Unnecessary column |
 | nav_status | integer | is_in_navigation | boolean | |
 | show_status | integer | is_visible | boolean | |
-| sort | integer | display_order | integer | `sort` is too vague |
+| sort | integer | ~~DROP~~ | — | Unnecessary column |
 | icon | varchar(255) | icon_url | varchar(512) | |
-| keywords | varchar(255) | search_keywords | text[] | |
-| description | varchar(255) | description | text | |
+| keywords | varchar(255) | ~~DROP~~ | — | Unnecessary column |
+| description | varchar(255) | ~~DROP~~ | — | Unnecessary column |
 | — | — | **slug** | varchar(120) UNIQUE | |
 
 #### `pms.pms_product_attribute_category` → `catalog.product_type`

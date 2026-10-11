@@ -71,9 +71,8 @@
         </dependency>
         
         <dependency>
-            <groupId>me.paulschwarz</groupId>
-            <artifactId>spring-dotenv</artifactId>
-            
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
         </dependency>
         <!--Testcontainers for Integration Testing-->
         <dependency>

@@ -10,10 +10,15 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - SPRING_PROFILES_ACTIVE=prod
-      - RAZORPAY_KEY_ID=${RAZORPAY_KEY_ID}
-      - RAZORPAY_KEY_SECRET=${RAZORPAY_KEY_SECRET}
-      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE:-docker}
+      - RAZORPAY_KEY_ID=${RAZORPAY_KEY_ID:-}
+      - RAZORPAY_KEY_SECRET=${RAZORPAY_KEY_SECRET:-}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - AWS_S3_ENDPOINT=http://localstack:4566
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-test}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-test}
+      - AWS_REGION=${AWS_REGION:-us-east-1}
+      - S3_BUCKET_NAME=${S3_BUCKET_NAME:-nexus-media}
     depends_on:
       postgres:
         condition: service_healthy
@@ -21,6 +26,8 @@ services:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
+      localstack:
+        condition: service_started
     networks:
       - nexus-network
 
@@ -35,7 +42,7 @@ services:
     ports:
       - "8081:8081"
     environment:
-      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE:-docker}
     depends_on:
       postgres:
         condition: service_healthy
@@ -81,15 +88,15 @@ services:
     container_name: postgres
     restart: always
     environment:
-      POSTGRES_DB: nexuscore
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ${POSTGRES_DB:-nexuscore}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
     ports:
       - "127.0.0.1:5433:5432"
     volumes:
-      - ./resource_setup/postgres-data:/var/lib/postgresql/data
+      - nexus_postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
       interval: 5s
       timeout: 3s
       retries: 5
@@ -131,7 +138,7 @@ services:
       - nexus-network
 
   elasticsearch:
-    image: elasticsearch:9.4.5
+    image: elasticsearch:8.17.2
     container_name: elasticsearch
     restart: always
     environment:
@@ -151,29 +158,27 @@ services:
     networks:
       - nexus-network
 
-  minio:
-    image: minio/minio:latest
-    container_name: minio
+  localstack:
+    image: localstack/localstack:3.8.0
+    container_name: localstack
     restart: always
-    command: server /data --console-address ":9001"
-    environment:
-      - MINIO_ROOT_USER=minioadmin
-      - MINIO_ROOT_PASSWORD=minioadmin
     ports:
-      - "127.0.0.1:9000:9000"
-      - "127.0.0.1:9001:9001"
+      - "4566:4566"
+    environment:
+      - SERVICES=s3
+      - AWS_DEFAULT_REGION=${AWS_REGION:-us-east-1}
+      - EXTRA_CORS_ALLOWED_ORIGINS=https://app.localstack.cloud,http://localhost:5173,http://localhost:5174
     volumes:
-      - ./resource_setup/minio-data:/data
+      - ./resource_setup/s3-init:/etc/localstack/init/ready.d
+      - localstack-data:/var/lib/localstack
     networks:
       - nexus-network
 
   # ─── Observability Stack ───────────────────────────────
 
   prometheus:
-    image: prom/prometheus:v3.15.0
+    image: prom/prometheus:v3.1.0
     container_name: prometheus
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
     restart: always
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
@@ -184,12 +189,12 @@ services:
       - nexus-network
 
   grafana:
-    image: grafana/grafana-enterprise:13.2.3
+    image: grafana/grafana:11.5.2
     container_name: grafana
     restart: always
     environment:
-      - GF_SECURITY_ADMIN_USER=admin
-      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin}
     ports:
       - "127.0.0.1:3000:3000"
     volumes:
@@ -203,9 +208,11 @@ services:
     networks:
       - nexus-network
 
-# ─── Volumes (Docker-managed, not host-mounted) ───────
+# ─── Named Volumes ───────────────────────────────────
 
 volumes:
+  nexus_postgres_data:
+  localstack-data:
   redis-data:
   rabbitmq-data:
   elasticsearch-data:

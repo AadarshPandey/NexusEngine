@@ -14,7 +14,7 @@ resource "aws_s3_bucket_ownership_controls" "frontend" {
 }
 
 resource "aws_s3_bucket_public_access_block" "frontend" {
-  bucket = aws_s3_bucket.frontend.id
+  bucket                  = aws_s3_bucket.frontend.id
   block_public_acls       = true
   block_public_policy     = true
   ignore_public_acls      = true
@@ -33,7 +33,7 @@ resource "aws_s3_bucket_ownership_controls" "media" {
 }
 
 resource "aws_s3_bucket_public_access_block" "media" {
-  bucket = aws_s3_bucket.media.id
+  bucket                  = aws_s3_bucket.media.id
   block_public_acls       = false
   block_public_policy     = false
   ignore_public_acls      = false
@@ -77,9 +77,9 @@ resource "aws_cloudfront_distribution" "frontend" {
   default_root_object = "index.html"
 
   default_cache_behavior {
-    allowed_methods  = ["GET", "HEAD"]
-    cached_methods   = ["GET", "HEAD"]
-    target_origin_id = "S3-${aws_s3_bucket.frontend.bucket}"
+    allowed_methods        = ["GET", "HEAD"]
+    cached_methods         = ["GET", "HEAD"]
+    target_origin_id       = "S3-${aws_s3_bucket.frontend.bucket}"
     viewer_protocol_policy = "redirect-to-https"
 
     forwarded_values {

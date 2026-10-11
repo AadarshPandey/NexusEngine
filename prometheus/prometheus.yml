@@ -9,7 +9,7 @@ scrape_configs:
   - job_name: 'nexus-application'
     metrics_path: '/actuator/prometheus'
     static_configs:
-      - targets: ['host.docker.internal:8080']
+      - targets: ['nexus-application:8080']
         labels:
           application: 'nexus-application'
           namespace: 'default'
@@ -17,4 +17,7 @@ scrape_configs:
   - job_name: 'nexus-search'
     metrics_path: '/actuator/prometheus'
     static_configs:
-      - targets: ['host.docker.internal:8081']
+      - targets: ['nexus-search:8081']
+        labels:
+          application: 'nexus-search'
+          namespace: 'default'

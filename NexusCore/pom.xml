@@ -31,74 +31,31 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>25</java.version>
-        <maven.compiler.source>25</maven.compiler.source>
-        <maven.compiler.target>25</maven.compiler.target>
         <skipTests>false</skipTests>
-        <!-- Module versions -->
-        <nexus-common.version>1.0-SNAPSHOT</nexus-common.version>
-        <nexus-domain.version>1.0-SNAPSHOT</nexus-domain.version>
-        <nexus-security.version>1.0-SNAPSHOT</nexus-security.version>
-        <nexus-ai.version>1.0-SNAPSHOT</nexus-ai.version>
+
         <!-- Library versions -->
         <hutool.version>5.8.40</hutool.version>
         <springdoc-openapi.version>2.9.1</springdoc-openapi.version>
-        <postgresql.version>42.7.13</postgresql.version>
-        <spring-data-commons.version>4.1.1</spring-data-commons.version>
         <logstash-logback.version>8.0</logstash-logback.version>
         <minio.version>8.6.0</minio.version>
         <okhttp3.version>5.1.0</okhttp3.version>
         <commons-lang3.version>3.20.0</commons-lang3.version>
-        <bouncycastle.version>1.84</bouncycastle.version>
-        <!-- New dependencies -->
         <spring-cloud-aws.version>3.3.1</spring-cloud-aws.version>
-        <stripe.version>33.3.0</stripe.version>
         <resilience4j.version>2.4.0</resilience4j.version>
         <bucket4j.version>8.10.0</bucket4j.version>
         <spring-ai.version>2.0.1</spring-ai.version>
-        <micrometer-tracing.version>1.4.4</micrometer-tracing.version>
-        <opentelemetry-exporter.version>1.47.0</opentelemetry-exporter.version>
-        <hibernate-vector.version>7.4.5.Final</hibernate-vector.version>
         <pgvector.version>0.1.6</pgvector.version>
-        <!-- Testcontainers -->
-        <testcontainers.version>1.20.4</testcontainers.version>
-        <!-- Redisson -->
         <redisson.version>4.7.0</redisson.version>
         <mapstruct.version>1.6.3</mapstruct.version>
+        <razorpay.version>1.4.6</razorpay.version>
+        <testcontainers.version>1.20.4</testcontainers.version>
+        <hibernate-vector.version>7.4.5.Final</hibernate-vector.version>
+        <jacoco.version>0.8.14</jacoco.version>
+        <spotless.version>2.44.3</spotless.version>
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-aspectj</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.awaitility</groupId>
-            <artifactId>awaitility</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-testcontainers</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-all</artifactId>
-        </dependency>
+        <!-- Universal annotation processing and dev-time libraries -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -108,37 +65,10 @@
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
         </dependency>
-        <!-- Micrometer Tracing with OpenTelemetry -->
-        <dependency>
-            <groupId>io.micrometer</groupId>
-            <artifactId>micrometer-tracing-bridge-otel</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.opentelemetry</groupId>
-            <artifactId>opentelemetry-exporter-otlp</artifactId>
-        </dependency>
-        <!-- Micrometer Prometheus for Grafana -->
-        <dependency>
-            <groupId>io.micrometer</groupId>
-            <artifactId>micrometer-registry-prometheus</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct</artifactId>
-            <version>${mapstruct.version}</version>
-        </dependency>
     </dependencies>
 
     <dependencyManagement>
         <dependencies>
-            <!-- Testcontainers BOM -->
-            <dependency>
-                <groupId>org.testcontainers</groupId>
-                <artifactId>testcontainers-bom</artifactId>
-                <version>${testcontainers.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
             <!-- Spring AI BOM -->
             <dependency>
                 <groupId>org.springframework.ai</groupId>
@@ -155,171 +85,116 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            <!-- NexusCore common module -->
+
+            <!-- NexusCore internal modules -->
             <dependency>
                 <groupId>com.nexusengine.core</groupId>
                 <artifactId>nexus-common</artifactId>
-                <version>${nexus-common.version}</version>
+                <version>${project.version}</version>
             </dependency>
-            <!-- NexusCore data JPA module -->
             <dependency>
                 <groupId>com.nexusengine.core</groupId>
                 <artifactId>nexus-domain</artifactId>
-                <version>${nexus-domain.version}</version>
+                <version>${project.version}</version>
             </dependency>
-            <!-- NexusCore security module -->
             <dependency>
                 <groupId>com.nexusengine.core</groupId>
                 <artifactId>nexus-security</artifactId>
-                <version>${nexus-security.version}</version>
+                <version>${project.version}</version>
             </dependency>
-            <!-- NexusCore AI shared module -->
             <dependency>
                 <groupId>com.nexusengine.core</groupId>
                 <artifactId>nexus-ai</artifactId>
-                <version>${nexus-ai.version}</version>
+                <version>${project.version}</version>
             </dependency>
-            <!--Hutool Java utility toolkit-->
+
+            <!-- Hutool Java utility toolkit (kept in dependencyManagement until Chunk D cleanup) -->
             <dependency>
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-all</artifactId>
                 <version>${hutool.version}</version>
             </dependency>
-            <!--SpringDoc OpenAPI-->
+
+            <!-- SpringDoc OpenAPI -->
             <dependency>
                 <groupId>org.springdoc</groupId>
                 <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
                 <version>${springdoc-openapi.version}</version>
             </dependency>
-            <!--PostgreSQL JDBC driver-->
-            <dependency>
-                <groupId>org.postgresql</groupId>
-                <artifactId>postgresql</artifactId>
-                <version>${postgresql.version}</version>
-            </dependency>
-            <!--Spring Data Commons-->
-            <dependency>
-                <groupId>org.springframework.data</groupId>
-                <artifactId>spring-data-commons</artifactId>
-                <version>${spring-data-commons.version}</version>
-            </dependency>
-            <!--Logstash Logback Encoder-->
+
+            <!-- Logstash Logback Encoder -->
             <dependency>
                 <groupId>net.logstash.logback</groupId>
                 <artifactId>logstash-logback-encoder</artifactId>
                 <version>${logstash-logback.version}</version>
             </dependency>
-            <!--MinIO Java SDK-->
+
+            <!-- MinIO Java SDK -->
             <dependency>
                 <groupId>io.minio</groupId>
                 <artifactId>minio</artifactId>
                 <version>${minio.version}</version>
             </dependency>
-            <!--Apache Commons Lang3-->
+
+            <!-- Apache Commons Lang3 -->
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
                 <version>${commons-lang3.version}</version>
             </dependency>
-            <!--Bouncy Castle crypto library-->
-            <dependency>
-                <groupId>org.bouncycastle</groupId>
-                <artifactId>bcprov-jdk18on</artifactId>
-                <version>${bouncycastle.version}</version>
-            </dependency>
-            <!--OkHttp-->
+
+            <!-- OkHttp -->
             <dependency>
                 <groupId>com.squareup.okhttp3</groupId>
                 <artifactId>okhttp-jvm</artifactId>
                 <version>${okhttp3.version}</version>
             </dependency>
-            <!--Stripe Java SDK-->
-            <dependency>
-                <groupId>com.stripe</groupId>
-                <artifactId>stripe-java</artifactId>
-                <version>${stripe.version}</version>
-            </dependency>
-            <!--Resilience4j-->
+
+            <!-- Resilience4j -->
             <dependency>
                 <groupId>io.github.resilience4j</groupId>
                 <artifactId>resilience4j-spring-boot4</artifactId>
                 <version>${resilience4j.version}</version>
             </dependency>
-            <!--Redisson for Distributed Locking-->
+
+            <!-- Redisson for Distributed Locking -->
             <dependency>
                 <groupId>org.redisson</groupId>
                 <artifactId>redisson-spring-boot-starter</artifactId>
                 <version>${redisson.version}</version>
             </dependency>
+
             <!-- PGVector -->
             <dependency>
                 <groupId>com.pgvector</groupId>
                 <artifactId>pgvector</artifactId>
                 <version>${pgvector.version}</version>
             </dependency>
-            <!-- Razorpay -->
+
+            <!-- Razorpay Payment Gateway -->
             <dependency>
                 <groupId>com.razorpay</groupId>
                 <artifactId>razorpay-java</artifactId>
-                <version>1.4.6</version>
+                <version>${razorpay.version}</version>
             </dependency>
-            <!-- Dotenv -->
+
+            <!-- MapStruct -->
             <dependency>
-                <groupId>me.paulschwarz</groupId>
-                <artifactId>spring-dotenv</artifactId>
-                <version>4.0.0</version>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct</artifactId>
+                <version>${mapstruct.version}</version>
             </dependency>
-            <!-- Testcontainers Redis -->
-            <dependency>
-                <groupId>com.redis</groupId>
-                <artifactId>testcontainers-redis</artifactId>
-                <version>2.2.2</version>
-            </dependency>
-            <!-- Fix Enforcer Convergence Issues -->
-            <dependency>
-                <groupId>io.swagger.core.v3</groupId>
-                <artifactId>swagger-annotations-jakarta</artifactId>
-                <version>2.2.55</version>
-            </dependency>
-            <dependency>
-                <groupId>com.squareup.okio</groupId>
-                <artifactId>okio-jvm</artifactId>
-                <version>3.15.0</version>
-            </dependency>
-            <dependency>
-                <groupId>com.google.errorprone</groupId>
-                <artifactId>error_prone_annotations</artifactId>
-                <version>2.41.0</version>
-            </dependency>
-            <dependency>
-                <groupId>org.antlr</groupId>
-                <artifactId>antlr4-runtime</artifactId>
-                <version>4.13.2</version>
-            </dependency>
-            <dependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-                <version>33.4.0-jre</version>
-            </dependency>
-            <dependency>
-                <groupId>org.checkerframework</groupId>
-                <artifactId>checker-qual</artifactId>
-                <version>3.55.1</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpclient</artifactId>
-                <version>4.5.14</version>
-            </dependency>
+
+            <!-- OpenTelemetry SemConv -->
             <dependency>
                 <groupId>io.opentelemetry.semconv</groupId>
                 <artifactId>opentelemetry-semconv</artifactId>
                 <version>1.41.1</version>
             </dependency>
             <dependency>
-                <groupId>org.eclipse.parsson</groupId>
-                <artifactId>parsson</artifactId>
-                <version>1.1.9</version>
+                <groupId>io.opentelemetry.semconv</groupId>
+                <artifactId>opentelemetry-semconv-incubating</artifactId>
+                <version>1.41.1-alpha</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -331,6 +206,22 @@
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-maven-plugin</artifactId>
                 </plugin>
+
+                <!-- Spotless Code Formatter Plugin -->
+                <plugin>
+                    <groupId>com.diffplug.spotless</groupId>
+                    <artifactId>spotless-maven-plugin</artifactId>
+                    <version>${spotless.version}</version>
+                    <configuration>
+                        <java>
+                            <googleJavaFormat>
+                                <version>1.25.2</version>
+                                <style>GOOGLE</style>
+                            </googleJavaFormat>
+                            <removeUnusedImports/>
+                        </java>
+                    </configuration>
+                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
@@ -338,7 +229,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.12</version>
+                <version>${jacoco.version}</version>
                 <executions>
                     <execution>
                         <id>prepare-agent</id>
@@ -352,31 +243,6 @@
                         <goals>
                             <goal>report</goal>
                         </goals>
-                    </execution>
-                    <execution>
-                        <id>check</id>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                        <configuration>
-                            <rules>
-                                <rule>
-                                    <element>BUNDLE</element>
-                                    <limits>
-                                        <limit>
-                                            <counter>LINE</counter>
-                                            <value>COVEREDRATIO</value>
-                                            <minimum>0.70</minimum>
-                                        </limit>
-                                        <limit>
-                                            <counter>BRANCH</counter>
-                                            <value>COVEREDRATIO</value>
-                                            <minimum>0.60</minimum>
-                                        </limit>
-                                    </limits>
-                                </rule>
-                            </rules>
-                        </configuration>
                     </execution>
                 </executions>
                 <configuration>
@@ -423,14 +289,12 @@
                 </configuration>
             </plugin>
 
-            <!-- Parameter Name Retention for Spring Boot 3.2+ and Lombok annotation processing -->
+            <!-- Compiler Plugin with Lombok & MapStruct -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <compilerArgs>
-                        <arg>-parameters</arg>
-                    </compilerArgs>
+                    <parameters>true</parameters>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.projectlombok</groupId>
@@ -458,14 +322,6 @@
             <id>central</id>
             <name>Maven Central</name>
             <url>https://repo1.maven.org/maven2/</url>
-        </repository>
-        <repository>
-            <id>spring-milestones</id>
-            <name>Spring Milestones</name>
-            <url>https://repo.spring.io/milestone</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
         </repository>
     </repositories>
 

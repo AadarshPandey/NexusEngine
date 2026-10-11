@@ -2,8 +2,8 @@ data "aws_region" "current" {}
 data "aws_caller_identity" "current" {}
 
 resource "aws_security_group" "search_sg" {
-  name        = "${var.env}-search-sg"
-  vpc_id      = var.vpc_id
+  name   = "${var.env}-search-sg"
+  vpc_id = var.vpc_id
   ingress {
     from_port   = 443
     to_port     = 443
@@ -25,7 +25,7 @@ resource "aws_opensearch_domain" "main" {
     subnet_ids         = [var.subnet_ids[0]]
     security_group_ids = [aws_security_group.search_sg.id]
   }
-  
+
   advanced_security_options {
     enabled                        = true
     internal_user_database_enabled = true
@@ -39,15 +39,15 @@ resource "aws_opensearch_domain" "main" {
     ebs_enabled = true
     volume_size = 10
   }
-  
+
   access_policies = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
-        Action = "es:*"
+        Action    = "es:*"
         Principal = "*"
-        Effect = "Allow"
-        Resource = "arn:aws:es:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:domain/${var.env}-opensearch/*"
+        Effect    = "Allow"
+        Resource  = "arn:aws:es:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:domain/${var.env}-opensearch/*"
       }
     ]
   })

@@ -1,11 +1,41 @@
-node_modules/
+# Build outputs
 target/
-.idea/
-.vscode/
-*.log
-.env
+**/target/
+dist/
+**/dist/
+.vite/
+**/.vite/
+*.tsbuildinfo
 *.class
-notes.md
-todo.md
-Systemdesign.md
-TODO.md
+
+# Dependencies
+node_modules/
+**/node_modules/
+
+# IDE & Editor files
+.idea/
+**/.idea/
+.vscode/
+**/.vscode/
+.obsidian/
+**/.obsidian/
+*.swp
+*.swo
+
+# Environment & Secrets (keep only .env.example)
+.env
+**/.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+logs/
+**/logs/
+
+# Trash & Scratch
+trash/
+
+# Local binary DB data
+resource_setup/postgres-data/
+resource_setup/s3-data/

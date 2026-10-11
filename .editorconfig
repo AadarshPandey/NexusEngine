@@ -1,0 +1,28 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# Java source code
+[*.java]
+indent_style = space
+indent_size = 4
+max_line_length = 120
+
+# Web, Frontend & Configs
+[*.{js,jsx,mjs,cjs,ts,tsx,mts,cts,vue,css,scss,sass,less,json,yaml,yml,sql,xml}]
+indent_style = space
+indent_size = 2
+max_line_length = 100
+
+# Markdown
+[*.md]
+trim_trailing_whitespace = false
+max_line_length = 120
+
+# Makefiles
+[Makefile]
+indent_style = tab
