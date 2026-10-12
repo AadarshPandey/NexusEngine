@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # ─── Stage 1: Build JARs ──────────────────────────────────────────────────────
-FROM maven:3.9.9-eclipse-temurin-25 AS builder
+FROM maven:3-eclipse-temurin-25 AS builder
 WORKDIR /workspace
 
 # Copy POM files for dependency caching

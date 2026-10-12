@@ -1,4 +1,4 @@
-FROM node:20-alpine AS build
+FROM node:22-alpine AS build
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci
@@ -16,7 +16,7 @@ RUN echo 'server { \
         try_files $uri $uri/ /index.html; \
     } \
     location /api/search/ { \
-        proxy_pass http://nexus-search:8081/; \
+        proxy_pass http://nexus-application:8080/; \
         proxy_set_header Host $host; \
         proxy_set_header X-Real-IP $remote_addr; \
     } \
