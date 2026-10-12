@@ -26,30 +26,10 @@ services:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
-      localstack:
-        condition: service_started
-    networks:
-      - nexus-network
-
-  nexus-search:
-    build:
-      context: ./NexusCore
-      dockerfile: Dockerfile
-      target: nexus-search
-    image: nexuscore/nexus-search:latest
-    container_name: nexus-search
-    restart: unless-stopped
-    ports:
-      - "8081:8081"
-    environment:
-      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE:-docker}
-    depends_on:
-      postgres:
-        condition: service_healthy
       elasticsearch:
         condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
+      localstack:
+        condition: service_started
     networks:
       - nexus-network
 
@@ -202,7 +182,6 @@ services:
       - ./grafana/dashboards:/var/lib/grafana/dashboards
       - grafana-data:/var/lib/grafana
       - nexus-app-logs:/var/log/nexus-app
-      - nexus-search-logs:/var/log/nexus-search
     depends_on:
       - prometheus
     networks:
@@ -219,7 +198,6 @@ volumes:
   prometheus-data:
   grafana-data:
   nexus-app-logs:
-  nexus-search-logs:
 
 # ─── Network ─────────────────────────────────────────
 

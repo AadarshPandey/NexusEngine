@@ -9,7 +9,7 @@ public class IntegerToBooleanConverter implements AttributeConverter<Integer, Bo
     @Override
     public Boolean convertToDatabaseColumn(Integer attribute) {
         if (attribute == null) {
-            return null;
+            return false;
         }
         return attribute == 1;
     }
@@ -17,7 +17,7 @@ public class IntegerToBooleanConverter implements AttributeConverter<Integer, Bo
     @Override
     public Integer convertToEntityAttribute(Boolean dbData) {
         if (dbData == null) {
-            return null;
+            return 0;
         }
         return dbData ? 1 : 0;
     }

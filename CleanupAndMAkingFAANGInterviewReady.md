@@ -18,7 +18,7 @@ The audit is done in chunks. If the session dies, resume from the first unchecke
 - [x] Chunk E — Database schema & data (postgres_data.sql, schemas, naming)
 - [x] Chunk F — Frontend: NexusFrontendWeb
 - [x] Chunk G — Frontend: NexusAdminPanel
-- [ ] Chunk H — Testing, CI/CD, observability, docs
+- [x] Chunk H — Testing, CI/CD, observability, docs
 - [ ] Final — Consolidated execution plan for Gemini
 
 ---
@@ -414,6 +414,22 @@ Also:
 **H4. Documentation & Developer Ergonomics**
 - Maintain root `README.md`, ADRs (`docs/adr/`), and version manifests (`docs/versions.md`).
 - Strictly preserve all existing markdown documentation across the entire repository without any deletions.
+
+**Execution Status (Chunk H Completed):**
+- [x] Polished and verified all core concurrency integration tests with Testcontainers:
+  - `OrderConcurrencyIntegrationTest`: Multi-threaded contention preventing overselling under concurrent orders. Fixed setup foreign key constraint violations.
+  - `CouponConcurrencyIntegrationTest`: Atomic coupon quota decrements preventing race conditions and double-claims.
+  - `FlashSaleConcurrencyIntegrationTest`: Pre-warmed Redis atomic stock deduction with RabbitMQ asynchronous order processing.
+  - `OutboxEventIntegrationTest`: Transactional outbox lifecycle and asynchronous event delivery.
+  - `FlywayMigrationTest`: Validated schema baseline migration (`V1` through `V3`) from blank PostgreSQL database to validated state.
+- [x] Verified 100% clean test compilation across all 9 modules (`mvn test-compile`) and 100% spotless check (`mvn spotless:check`).
+- [x] Verified full backend verification suite passing end-to-end (`mvn clean verify`).
+- [x] Verified storefront unit test coverage via Vitest (5/5 suites, 8/8 tests pass) and production build (`tsc -b && vite build`).
+- [x] Verified admin panel TypeScript compilation (`tsc -b`) and production bundle build (`vite build`).
+- [x] Aligned CI/CD pipeline (`.github/workflows/ci.yml`): Java 25 (Temurin), Maven cache, Spotless format check gate, `mvn -B clean verify`, Dependabot schedule (`.github/dependabot.yml`), and parallel frontend jobs.
+- [x] Modernized observability stack: Prometheus internal container scraping (`nexus-application:8080/actuator/prometheus`), Spring Boot Actuator liveness and readiness health probes (`/actuator/health/liveness`), and Grafana OSS 11.5.2 automated dashboard and datasource provisioning.
+- [x] Documented architectural decisions in [ADR 0004](file:///home/aadarsh/Documents/NexusEngine/docs/adr/0004-testing-cicd-and-observability-architecture.md), authored canonical version manifest in [docs/versions.md](file:///home/aadarsh/Documents/NexusEngine/docs/versions.md), updated root [README.md](file:///home/aadarsh/Documents/NexusEngine/README.md), and expanded [Makefile](file:///home/aadarsh/Documents/NexusEngine/Makefile) targets (`make test`, `make format-check`).
+- [x] Strictly preserved all existing markdown documentation without deletions.
 
 ---
 

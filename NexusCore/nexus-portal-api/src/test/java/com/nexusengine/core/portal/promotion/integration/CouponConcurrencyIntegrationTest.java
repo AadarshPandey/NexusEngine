@@ -53,7 +53,8 @@ public class CouponConcurrencyIntegrationTest {
     void concurrentCouponClaim_OnlyOneSucceeds() throws InterruptedException {
         // Setup Member
         Member member = TestFixtures.member();
-        member.setUsername("concurrencyTestUser");
+        member.setId(null);
+        member.setUsername("concurrencyTestUser_" + System.currentTimeMillis());
         member = memberRepository.save(member);
 
         // Setup Coupon

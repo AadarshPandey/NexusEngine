@@ -2,8 +2,12 @@ package com.nexusengine.core.portal;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.persistence.autoconfigure.EntityScan;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "com.nexusengine.core")
+@EnableJpaRepositories(basePackages = "com.nexusengine.core.domain")
+@EntityScan(basePackages = "com.nexusengine.core.domain")
 public class TestApplication {
     public static void main(String[] args) {
         SpringApplication.run(TestApplication.class, args);

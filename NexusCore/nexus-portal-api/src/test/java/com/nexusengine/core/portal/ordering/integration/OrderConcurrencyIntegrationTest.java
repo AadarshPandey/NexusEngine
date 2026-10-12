@@ -66,13 +66,12 @@ public class OrderConcurrencyIntegrationTest {
     @BeforeEach
     void setUp() {
         cartItemRepository.deleteAll();
-        skuStockRepository.deleteAll();
-        productRepository.deleteAll();
-        memberRepository.deleteAll();
-        addressRepository.deleteAll();
 
-        OrderPolicy orderSetting = new OrderPolicy();
-        orderSetting.setId(1L);
+        OrderPolicy orderSetting = orderSettingRepository.findById(1L).orElseGet(() -> {
+            OrderPolicy policy = new OrderPolicy();
+            policy.setId(1L);
+            return policy;
+        });
         orderSetting.setPaymentTimeoutMin(60);
         orderSettingRepository.save(orderSetting);
     }
@@ -80,6 +79,9 @@ public class OrderConcurrencyIntegrationTest {
     @Test
     void testConcurrentOrderGeneration_PreventsOverselling() throws InterruptedException {
         Product product = new Product();
+        product.setProductCategoryId(1L);
+        product.setName("Concurrency Test Product");
+        product.setProductSn("TEST-CONC-" + System.currentTimeMillis());
         product = productRepository.save(product);
 
         ProductSku sku = new ProductSku();
@@ -91,13 +93,14 @@ public class OrderConcurrencyIntegrationTest {
         sku = skuStockRepository.save(sku);
 
         // 2. Setup Customer A (wants 7)
-        Member memberA = new Member();
-        memberA.setUsername("userA");
-        memberA.setStatus(1);
+        Member memberA = TestFixtures.member();
+        memberA.setId(null);
+        memberA.setUsername("userA_" + System.currentTimeMillis());
         memberA = memberRepository.save(memberA);
 
         MemberAddress addressA = new MemberAddress();
         addressA.setMemberId(memberA.getId());
+        addressA.setDefaultStatus(0);
         addressA = addressRepository.save(addressA);
 
         CartItem cartItemA = new CartItem();
@@ -109,13 +112,14 @@ public class OrderConcurrencyIntegrationTest {
         cartItemA = cartItemRepository.save(cartItemA);
 
         // 3. Setup Customer B (wants 5)
-        Member memberB = new Member();
-        memberB.setUsername("userB");
-        memberB.setStatus(1);
+        Member memberB = TestFixtures.member();
+        memberB.setId(null);
+        memberB.setUsername("userB_" + System.currentTimeMillis());
         memberB = memberRepository.save(memberB);
 
         MemberAddress addressB = new MemberAddress();
         addressB.setMemberId(memberB.getId());
+        addressB.setDefaultStatus(0);
         addressB = addressRepository.save(addressB);
 
         CartItem cartItemB = new CartItem();
@@ -144,10 +148,11 @@ public class OrderConcurrencyIntegrationTest {
             readyLatch.countDown();
             try {
                 startLatch.await();
-                OrderParam param = new OrderParam(finalAddressA.getId(), null, 1, 0, cartIdsA);
+                OrderParam param = new OrderParam(finalAddressA.getId(), null, 0, 0, cartIdsA);
                 portalOrderService.generateOrder(param);
                 successCount.incrementAndGet();
-            } catch (Exception e) {
+            } catch (Throwable e) {
+                System.err.println("THREAD A FAILED: " + e.getClass().getName() + " -> " + e.getMessage());
                 failCount.incrementAndGet();
             } finally {
                 TestFixtures.clearAuthentication();
@@ -164,10 +169,11 @@ public class OrderConcurrencyIntegrationTest {
             readyLatch.countDown();
             try {
                 startLatch.await();
-                OrderParam param = new OrderParam(finalAddressB.getId(), null, 1, 0, cartIdsB);
+                OrderParam param = new OrderParam(finalAddressB.getId(), null, 0, 0, cartIdsB);
                 portalOrderService.generateOrder(param);
                 successCount.incrementAndGet();
-            } catch (Exception e) {
+            } catch (Throwable e) {
+                System.err.println("THREAD B FAILED: " + e.getClass().getName() + " -> " + e.getMessage());
                 failCount.incrementAndGet();
             } finally {
                 TestFixtures.clearAuthentication();

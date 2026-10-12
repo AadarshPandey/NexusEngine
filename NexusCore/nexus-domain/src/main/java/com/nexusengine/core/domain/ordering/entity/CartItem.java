@@ -66,13 +66,26 @@ private BigDecimal price;
 
         @Column(name = "created_at")
     @Schema(title = "Create date")
-
-private OffsetDateTime createDate;
+    private OffsetDateTime createDate = OffsetDateTime.now();
 
         @Column(name = "updated_at")
     @Schema(title = "Modify date")
+    private OffsetDateTime modifyDate = OffsetDateTime.now();
 
-private OffsetDateTime modifyDate;
+    @PrePersist
+    protected void onCreate() {
+        if (createDate == null) {
+            createDate = OffsetDateTime.now();
+        }
+        if (modifyDate == null) {
+            modifyDate = OffsetDateTime.now();
+        }
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        modifyDate = OffsetDateTime.now();
+    }
 
         @Transient
     @Schema(title = "Delete status")

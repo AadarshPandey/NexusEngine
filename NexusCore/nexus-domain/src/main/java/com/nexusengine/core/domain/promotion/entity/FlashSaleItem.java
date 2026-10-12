@@ -54,7 +54,14 @@ private BigDecimal flashPromotionPrice;
 
 private Integer flashPromotionCount;
 
-        @Column(name = "per_member_limit")
+        @Column(name = "per_member_limit", nullable = false)
     @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.SMALLINT)
-private Integer flashPromotionLimit;
+    private Integer flashPromotionLimit = 1;
+
+    @PrePersist
+    protected void onCreate() {
+        if (flashPromotionLimit == null) {
+            flashPromotionLimit = 1;
+        }
+    }
 }

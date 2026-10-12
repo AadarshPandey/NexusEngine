@@ -69,6 +69,7 @@ public class FlashSaleOrderReceiver {
             // (b) Create CustomerOrder + OrderLine
             CustomerOrder order = new CustomerOrder();
             order.setMemberId(message.memberId());
+            order.setOrderSn("FLASH-" + System.currentTimeMillis() + "-" + java.util.UUID.randomUUID().toString().substring(0, 8));
             order.setCreateTime(java.time.OffsetDateTime.now());
             order.setStatus(0);
             order.setDeleteStatus(0);

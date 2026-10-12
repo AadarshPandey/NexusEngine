@@ -727,6 +727,11 @@ public class OrderServiceImpl implements OrderService {
             }
 
             // 1. Record the transaction immediately with saveAndFlush; unique DB constraint prevents concurrent duplicates
+            if (paymentTransactionRepository.findByTransactionId(transactionId).isPresent()) {
+                log.info("Idempotent Webhook: Transaction {} already processed. Skipping duplicate.", transactionId);
+                return;
+            }
+
             PaymentTransaction tx = new PaymentTransaction();
             tx.setTransactionId(transactionId);
             tx.setOrderId(orderId != null ? orderId : -1L);
@@ -738,7 +743,7 @@ public class OrderServiceImpl implements OrderService {
             try {
                 paymentTransactionRepository.saveAndFlush(tx);
             } catch (org.springframework.dao.DataIntegrityViolationException e) {
-                log.info("Idempotent Webhook: Transaction {} already processed. Skipping duplicate.", transactionId);
+                log.info("Idempotent Webhook: Transaction {} already processed concurrently. Skipping duplicate.", transactionId);
                 return;
             }
 

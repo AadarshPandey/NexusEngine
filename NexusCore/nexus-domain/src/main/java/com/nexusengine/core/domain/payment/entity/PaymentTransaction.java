@@ -48,10 +48,16 @@ private BigDecimal amount;
 private String status;
 
         @Column(name = "provider_payload", columnDefinition = "jsonb")
-
-private String webhookPayload;
+        @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.JSON)
+        private String webhookPayload;
 
         @Column(name = "created_at")
+        private OffsetDateTime createTime;
 
-private OffsetDateTime createTime;
+    @PrePersist
+    protected void onCreate() {
+        if (createTime == null) {
+            createTime = OffsetDateTime.now();
+        }
+    }
 }

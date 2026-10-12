@@ -15,10 +15,10 @@ public class RazorpayPaymentGatewayServiceImpl implements PaymentGatewayService 
 
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(RazorpayPaymentGatewayServiceImpl.class);
 
-    @Value("${razorpay.keyId}")
+    @Value("${razorpay.keyId:rzp_test_placeholder}")
     private String razorpayKeyId;
 
-    @Value("${razorpay.keySecret}")
+    @Value("${razorpay.keySecret:placeholder_secret}")
     private String razorpayKeySecret;
 
     @Value("${razorpay.webhookSecret:placeholder_webhook_secret}")

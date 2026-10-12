@@ -206,4 +206,49 @@ private OffsetDateTime modifyTime;
     public Integer getPaymentMethod() {
         return payType;
     }
+
+    @PrePersist
+    protected void onCreate() {
+        if (createTime == null) {
+            createTime = OffsetDateTime.now();
+        }
+        if (totalAmount == null) {
+            totalAmount = BigDecimal.ZERO;
+        }
+        if (payAmount == null) {
+            payAmount = BigDecimal.ZERO;
+        }
+        if (freightAmount == null) {
+            freightAmount = BigDecimal.ZERO;
+        }
+        if (promotionAmount == null) {
+            promotionAmount = BigDecimal.ZERO;
+        }
+        if (couponAmount == null) {
+            couponAmount = BigDecimal.ZERO;
+        }
+        if (discountAmount == null) {
+            discountAmount = BigDecimal.ZERO;
+        }
+        if (payType == null) {
+            payType = 0;
+        }
+        if (status == null) {
+            status = 0;
+        }
+        if (orderType == null) {
+            orderType = 0;
+        }
+        if (confirmStatus == null) {
+            confirmStatus = 0;
+        }
+        if (orderSn == null) {
+            orderSn = "ORD-" + System.currentTimeMillis() + "-" + java.util.UUID.randomUUID().toString().substring(0, 8);
+        }
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        modifyTime = OffsetDateTime.now();
+    }
 }

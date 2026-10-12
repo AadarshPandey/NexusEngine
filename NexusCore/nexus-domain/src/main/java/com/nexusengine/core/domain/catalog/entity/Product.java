@@ -132,4 +132,29 @@ private String description;
     public BigDecimal getPrice() {
         return listPrice != null ? listPrice : BigDecimal.ZERO;
     }
+
+    @PrePersist
+    protected void onCreate() {
+        if (publishStatus == null) {
+            publishStatus = 1;
+        }
+        if (newStatus == null) {
+            newStatus = 0;
+        }
+        if (recommendStatus == null) {
+            recommendStatus = 0;
+        }
+        if (verifyStatus == null) {
+            verifyStatus = 1;
+        }
+        if (sale == null) {
+            sale = 0;
+        }
+        if (promotionType == null) {
+            promotionType = 0;
+        }
+        if (productSn == null) {
+            productSn = "PROD-" + System.currentTimeMillis();
+        }
+    }
 }

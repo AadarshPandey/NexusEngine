@@ -28,24 +28,32 @@ public class OrderLifecycleIntegrationTest {
     private final CustomerOrderRepository orderRepository;
     private final PaymentTransactionRepository paymentTransactionRepository;
     private final ProductSkuRepository skuStockRepository;
+    private final com.nexusengine.core.domain.customer.repository.MemberRepository memberRepository;
 
     @Autowired
-    OrderLifecycleIntegrationTest(OrderService portalOrderService, CustomerOrderRepository orderRepository, PaymentTransactionRepository paymentTransactionRepository, ProductSkuRepository skuStockRepository) {
+    OrderLifecycleIntegrationTest(OrderService portalOrderService,
+                                  CustomerOrderRepository orderRepository,
+                                  PaymentTransactionRepository paymentTransactionRepository,
+                                  ProductSkuRepository skuStockRepository,
+                                  com.nexusengine.core.domain.customer.repository.MemberRepository memberRepository) {
         this.portalOrderService = portalOrderService;
         this.orderRepository = orderRepository;
         this.paymentTransactionRepository = paymentTransactionRepository;
         this.skuStockRepository = skuStockRepository;
+        this.memberRepository = memberRepository;
     }
-
-
-
-
-
 
     @Test
     void paymentWebhook_ValidPayload_CreatesTransactionAndUpdatesOrder() {
+        com.nexusengine.core.domain.customer.entity.Member member = com.nexusengine.core.portal.TestFixtures.member();
+        member.setId(null);
+        member.setUsername("webhookUser_" + System.currentTimeMillis());
+        member = memberRepository.save(member);
+
         // Create an unpaid order
         CustomerOrder order = new CustomerOrder();
+        order.setMemberId(member.getId());
+        order.setOrderSn("ORD-" + java.util.UUID.randomUUID());
         order.setStatus(0); // Unpaid
         order = orderRepository.save(order);
 
@@ -66,8 +74,15 @@ public class OrderLifecycleIntegrationTest {
 
     @Test
     void paymentWebhook_DuplicateWebhook_IsIdempotent() {
+        com.nexusengine.core.domain.customer.entity.Member member = com.nexusengine.core.portal.TestFixtures.member();
+        member.setId(null);
+        member.setUsername("duplicateUser_" + System.currentTimeMillis());
+        member = memberRepository.save(member);
+
         // Create an unpaid order
         CustomerOrder order = new CustomerOrder();
+        order.setMemberId(member.getId());
+        order.setOrderSn("ORD-" + java.util.UUID.randomUUID());
         order.setStatus(0);
         order = orderRepository.save(order);
 

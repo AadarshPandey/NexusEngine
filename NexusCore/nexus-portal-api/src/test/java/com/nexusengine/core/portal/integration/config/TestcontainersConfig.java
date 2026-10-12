@@ -1,11 +1,13 @@
 package com.nexusengine.core.portal.integration.config;
 
+import org.mockito.Mockito;
+import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.context.annotation.Bean;
+import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.containers.RabbitMQContainer;
-import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.utility.DockerImageName;
 
 @TestConfiguration(proxyBeanMethods = false)
@@ -24,15 +26,20 @@ public class TestcontainersConfig {
     @Bean
     @ServiceConnection
     RabbitMQContainer rabbitMQContainer() {
-        return new RabbitMQContainer(DockerImageName.parse("rabbitmq:3.13-management"))
+        return new RabbitMQContainer(DockerImageName.parse("rabbitmq:4-management"))
                 .withReuse(true);
     }
 
     @Bean
     @ServiceConnection(name = "redis")
     GenericContainer<?> redisContainer() {
-        return new GenericContainer<>(DockerImageName.parse("redis:7-alpine"))
+        return new GenericContainer<>(DockerImageName.parse("redis:8-alpine"))
                 .withExposedPorts(6379)
                 .withReuse(true);
+    }
+
+    @Bean
+    VectorStore vectorStore() {
+        return Mockito.mock(VectorStore.class);
     }
 }

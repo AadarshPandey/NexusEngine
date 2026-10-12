@@ -90,7 +90,7 @@ flowchart TD
         Redis[(Redis Cache)]
         MQ((RabbitMQ))
         ES[(Elasticsearch)]
-        MinIO[(MinIO S3)]
+        LocalStack[(LocalStack S3)]
     end
 
     CP --> PortalAPI
@@ -110,7 +110,7 @@ flowchart TD
     MQ --> PortalAPI
     
     SearchAPI --> ES
-    AdminAPI --> MinIO
+    AdminAPI --> LocalStack
 ```
 
 ### Backend Stack
@@ -119,7 +119,7 @@ flowchart TD
 - **Database**: PostgreSQL with pgvector for AI semantic search capabilities
 - **Cache & Message Broker**: Redis (Lua-scripted Rate Limiting), RabbitMQ (Async Dead-Letter Queues)
 - **Search Engine**: Elasticsearch
-- **Object Storage**: MinIO (S3-compatible)
+- **Object Storage**: LocalStack (AWS S3-compatible)
 - **AI Integration**: Spring AI (OpenAI)
 - **Resilience**: Resilience4j (Circuit Breaker, Rate Limiter)
 
@@ -242,13 +242,14 @@ Services will be available at:
 - **Backend API Swagger UI**: http://localhost:8080/swagger-ui.html
 - **Search API Swagger UI**: http://localhost:8081/swagger-ui.html
 - **Grafana (Monitoring)**: http://localhost:3000 (admin/admin)
-- **MinIO Console**: http://localhost:9001 (minioadmin/minioadmin)
+- **LocalStack S3 (API)**: http://localhost:4566 (Bucket: nexus-media)
+- **S3 Web Console (GUI)**: http://localhost:9001
 
 ### Local Development
 
 **1. Start Infrastructure**
 ```bash
-docker-compose up -d postgres redis mongodb rabbitmq elasticsearch minio
+docker-compose up -d postgres redis rabbitmq elasticsearch localstack
 ```
 
 **2. Start Backend APIs**

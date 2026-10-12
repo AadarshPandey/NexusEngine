@@ -80,4 +80,26 @@ private BigDecimal maxDiscountAmount;
 
     @jakarta.persistence.Version
     private Integer version;
+
+    @PrePersist
+    protected void onCreate() {
+        if (receiveCount == null) {
+            receiveCount = 0;
+        }
+        if (version == null) {
+            version = 0;
+        }
+        if (perLimit == null) {
+            perLimit = 1;
+        }
+        if (useType == null) {
+            useType = 0;
+        }
+        if (amount == null) {
+            amount = BigDecimal.ZERO;
+        }
+        if (minOrderAmount == null) {
+            minOrderAmount = BigDecimal.ZERO;
+        }
+    }
 }

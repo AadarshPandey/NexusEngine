@@ -13,11 +13,3 @@ scrape_configs:
         labels:
           application: 'nexus-application'
           namespace: 'default'
-
-  - job_name: 'nexus-search'
-    metrics_path: '/actuator/prometheus'
-    static_configs:
-      - targets: ['nexus-search:8081']
-        labels:
-          application: 'nexus-search'
-          namespace: 'default'

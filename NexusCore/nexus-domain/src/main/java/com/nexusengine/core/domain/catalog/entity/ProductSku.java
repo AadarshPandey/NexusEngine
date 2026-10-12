@@ -74,4 +74,26 @@ private String skuCode;
         int reserved = reservedQty != null ? reservedQty : 0;
         return Math.max(0, onHand - reserved);
     }
+
+    @PrePersist
+    protected void onCreate() {
+        if (skuCode == null) {
+            skuCode = "SKU-" + System.currentTimeMillis();
+        }
+        if (listPrice == null) {
+            listPrice = BigDecimal.ZERO;
+        }
+        if (onHandQty == null) {
+            onHandQty = 0;
+        }
+        if (reservedQty == null) {
+            reservedQty = 0;
+        }
+        if (lowStockThreshold == null) {
+            lowStockThreshold = 5;
+        }
+        if (unitsSold == null) {
+            unitsSold = 0;
+        }
+    }
 }

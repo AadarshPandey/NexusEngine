@@ -41,32 +41,28 @@ private String contactPhone;
 
 private String email;
 
-            @Schema(title = "Status")
-    @Column(name = "account_status")
+    @Schema(title = "Status")
+    @Column(name = "account_status", nullable = false)
     @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.SMALLINT)
-private Integer status;
+    private Integer status = 1;
 
-        @Column(name = "created_at")
+    @Column(name = "created_at", nullable = false)
     @Schema(title = "Create time")
+    private OffsetDateTime createdAt;
 
-private OffsetDateTime createdAt;
-
-            @Schema(title = "Icon")
+    @Schema(title = "Icon")
     @Column(name = "avatar_url")
-private String iconUrl;
+    private String iconUrl;
 
-        @Schema(title = "Gender")
+    @Schema(title = "Gender")
+    @Column(name = "gender", nullable = false)
     @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.SMALLINT)
-private Integer gender;
+    private Integer gender = 0;
 
-
-
-
-
-        @Column(name = "signup_channel")
+    @Column(name = "signup_channel", nullable = false)
     @Schema(title = "Source type")
     @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.SMALLINT)
-    private Integer signupChannel;
+    private Integer signupChannel = 0;
 
     public String getAvatarUrl() {
         return iconUrl;
@@ -78,5 +74,21 @@ private Integer gender;
 
     public Integer getAccountStatus() {
         return status;
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        if (createdAt == null) {
+            createdAt = OffsetDateTime.now();
+        }
+        if (gender == null) {
+            gender = 0;
+        }
+        if (signupChannel == null) {
+            signupChannel = 0;
+        }
+        if (status == null) {
+            status = 1;
+        }
     }
 }

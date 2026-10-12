@@ -20,7 +20,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 class FlywayMigrationTest {
 
     @Container
-    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("pgvector/pgvector:pg16")
+    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("pgvector/pgvector:pg17")
             .withDatabaseName("nexuscore_test")
             .withUsername("test")
             .withPassword("test");

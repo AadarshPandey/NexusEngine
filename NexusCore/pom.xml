@@ -35,7 +35,7 @@
 
         <!-- Library versions -->
         <hutool.version>5.8.40</hutool.version>
-        <springdoc-openapi.version>2.9.1</springdoc-openapi.version>
+        <springdoc-openapi.version>3.1.1</springdoc-openapi.version>
         <logstash-logback.version>8.0</logstash-logback.version>
         <minio.version>8.6.0</minio.version>
         <okhttp3.version>5.1.0</okhttp3.version>

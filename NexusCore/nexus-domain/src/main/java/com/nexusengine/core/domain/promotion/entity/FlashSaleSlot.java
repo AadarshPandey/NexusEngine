@@ -36,6 +36,15 @@ private LocalTime endTime;
 private Integer status;
 
         @Column(name = "created_at")
+        private OffsetDateTime createTime = OffsetDateTime.now();
 
-private OffsetDateTime createTime;
+    @PrePersist
+    protected void onCreate() {
+        if (createTime == null) {
+            createTime = OffsetDateTime.now();
+        }
+        if (status == null) {
+            status = 1;
+        }
+    }
 }

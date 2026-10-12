@@ -37,19 +37,3 @@ HEALTHCHECK --interval=15s --timeout=5s --retries=5 --start-period=30s \
   CMD wget --no-verbose --tries=1 --spider http://localhost:8080/actuator/health/liveness || exit 1
 
 ENTRYPOINT ["java", "-XX:MaxRAMPercentage=75.0", "-jar", "/app/app.jar"]
-
-# ─── Stage 3: Runtime for nexus-search ────────────────────────────────────────
-FROM eclipse-temurin:25-jre-alpine AS nexus-search
-WORKDIR /app
-
-RUN addgroup -g 10001 appgroup && \
-    adduser -u 10001 -G appgroup -s /bin/sh -D appuser && \
-    chown -R appuser:appgroup /app
-
-USER 10001
-
-COPY --from=builder --chown=appuser:appgroup /workspace/nexus-search/target/nexus-search-1.0-SNAPSHOT.jar /app/app.jar
-
-EXPOSE 8081
-
-ENTRYPOINT ["java", "-XX:MaxRAMPercentage=75.0", "-jar", "/app/app.jar"]

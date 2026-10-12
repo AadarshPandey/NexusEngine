@@ -103,4 +103,23 @@ private BigDecimal realAmount;
     @Schema(title = "Product attr")
 
 private String productAttr;
+
+    @PrePersist
+    protected void onCreate() {
+        if (productPrice == null) {
+            productPrice = BigDecimal.ZERO;
+        }
+        if (productQuantity == null) {
+            productQuantity = 1;
+        }
+        if (promotionAmount == null) {
+            promotionAmount = BigDecimal.ZERO;
+        }
+        if (couponAmount == null) {
+            couponAmount = BigDecimal.ZERO;
+        }
+        if (realAmount == null) {
+            realAmount = BigDecimal.ZERO;
+        }
+    }
 }

@@ -1,36 +1,49 @@
 spring:
+  main:
+    allow-bean-definition-overriding: true
+  amqp:
+    deserialization:
+      trust:
+        all: true
+  autoconfigure:
+    exclude:
+      - org.springframework.ai.vectorstore.pgvector.autoconfigure.PgVectorStoreAutoConfiguration
+      - io.awspring.cloud.autoconfigure.s3.S3AutoConfiguration
   jpa:
     hibernate:
-      ddl-auto: create-drop
-    show-sql: true
+      ddl-auto: validate
+    show-sql: false
   flyway:
-    default-schema: migration
-    schemas: migration,catalog,orders,users,marketing,ai,system,messaging
-    enabled: false
+    enabled: true
+    schemas: catalog,ordering,customer,iam,promotion,engagement,payment,ai,messaging
   ai:
     google:
       genai:
         api-key: test-key
-    openai:
-      api-key: test-key
 
 jwt:
   secret: test-jwt-secret-key-that-is-at-least-32-characters-long-for-hs512
   expiration: 3600
   tokenHead: 'Bearer '
+  tokenHeader: Authorization
 
 redis:
   key:
-    authCode: 'ums:authCode'
-    orderId: 'oms:orderId'
-    member: 'ums:member'
-    admin: 'ums:admin'
-    resourceList: 'ums:resourceList'
+    authCode: customer:authCode
+    member: customer:member
+    orderId: ordering:orderId
+    admin: iam:admin
+    resourceList: iam:resourceList
   expire:
     authCode: 90
     common: 86400
-  database: nexuscore
+  database: 0
 
 management:
   tracing:
     enabled: false
+
+razorpay:
+  keyId: rzp_test_placeholder
+  keySecret: placeholder_secret
+  webhookSecret: placeholder_webhook_secret

@@ -40,7 +40,7 @@ private String phoneNumber;
         @Column(name = "is_default")
     @Schema(title = "Default status")
     @jakarta.persistence.Convert(converter = com.nexusengine.core.domain.shared.converter.IntegerToBooleanConverter.class)
-private Integer defaultStatus;
+private Integer defaultStatus = 0;
 
         @Column(name = "postal_code")
     @Schema(title = "Post code")
@@ -85,5 +85,12 @@ private String region;
 
     public String getDistrict() {
         return region;
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        if (defaultStatus == null) {
+            defaultStatus = 0;
+        }
     }
 }

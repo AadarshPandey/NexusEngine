@@ -22,6 +22,9 @@ public final class TestFixtures {
         member.setPassword("encodedPassword");
         member.setContactPhone("1234567890");
         member.setStatus(1);
+        member.setGender(0);
+        member.setSignupChannel(0);
+        member.setCreatedAt(OffsetDateTime.now());
         return member;
     }
 
