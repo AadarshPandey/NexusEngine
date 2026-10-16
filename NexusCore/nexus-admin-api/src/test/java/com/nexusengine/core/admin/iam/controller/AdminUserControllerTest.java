@@ -63,16 +63,13 @@ class AdminUserControllerTest {
         mockMvc.perform(post("/admin/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(param)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(200))
-                .andExpect(jsonPath("$.data.username").value("testuser"));
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.username").value("testuser"));
     }
 
     @Test
     void login() throws Exception {
         AdminLoginParam param = new AdminLoginParam("testuser", "password");
-
-
 
         when(adminService.login("testuser", "password")).thenReturn("dummy-token");
 
@@ -80,9 +77,8 @@ class AdminUserControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(param)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(200))
-                .andExpect(jsonPath("$.data.token").value("dummy-token"))
-                .andExpect(jsonPath("$.data.tokenHead").value("Bearer "));
+                .andExpect(jsonPath("$.token").value("dummy-token"))
+                .andExpect(jsonPath("$.tokenHead").value("Bearer "));
     }
 
     @Test
@@ -102,8 +98,7 @@ class AdminUserControllerTest {
 
         mockMvc.perform(get("/admin/info").principal(principal))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(200))
-                .andExpect(jsonPath("$.data.username").value("admin"))
-                .andExpect(jsonPath("$.data.roles[0]").value("ROLE_ADMIN"));
+                .andExpect(jsonPath("$.username").value("admin"))
+                .andExpect(jsonPath("$.roles[0]").value("ROLE_ADMIN"));
     }
 }

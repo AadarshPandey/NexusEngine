@@ -1,172 +1,153 @@
 package com.nexusengine.core.admin.catalog.controller;
 
-import lombok.RequiredArgsConstructor;
-
-import com.nexusengine.core.domain.catalog.entity.ProductPriceChange;
-
 import com.nexusengine.core.admin.catalog.dto.ProductParam;
 import com.nexusengine.core.admin.catalog.dto.ProductQueryParam;
 import com.nexusengine.core.admin.catalog.dto.ProductResult;
+import com.nexusengine.core.admin.catalog.dto.ProductSummaryResponse;
+import com.nexusengine.core.admin.catalog.mapper.ProductMapper;
 import com.nexusengine.core.admin.catalog.service.ProductService;
-import com.nexusengine.core.domain.catalog.entity.ProductApprovalEvent;
-
-import org.springframework.web.bind.annotation.RestController;
-import com.nexusengine.core.common.api.CommonPage;
-import com.nexusengine.core.common.api.CommonResult;
+import com.nexusengine.core.common.exception.Asserts;
 import com.nexusengine.core.domain.catalog.entity.Product;
+import com.nexusengine.core.domain.catalog.entity.ProductApprovalEvent;
+import com.nexusengine.core.domain.catalog.entity.ProductPriceChange;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.web.bind.annotation.*;
-
+import jakarta.validation.Valid;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
-
-/**
- * Represents the ProductController component.
- * Provides core functionality and operations for ProductController.
- */
 @RestController("adminProductController")
-@Tag(name = "ProductController", description = "Pms product controller APIs")
+@Tag(name = "Catalog - Products", description = "Admin product management APIs")
 @RequestMapping("/product")
 @RequiredArgsConstructor
 public class ProductController {
-    private static final org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(ProductController.class);
     private final ProductService productService;
+    private final ProductMapper productMapper;
 
-    @Operation(summary = "Create Operation")
+    @Operation(summary = "Create product")
     @PostMapping("/create")
-
-    public CommonResult create(@RequestBody ProductParam productParam) {
-        try {
-            int count = productService.create(productParam);
-            if (count > 0) {
-                return CommonResult.success(count);
-            } else {
-                return CommonResult.failed();
-            }
-        } catch (IllegalArgumentException e) {
-            LOGGER.error("Invalid product data:", e);
-            return CommonResult.failed("Invalid product data: " + e.getMessage());
-        } catch (org.springframework.dao.DataAccessException e) {
-            LOGGER.error("Database error during product creation:", e);
-            return CommonResult.failed("Database error during product creation");
+    @ResponseStatus(HttpStatus.CREATED)
+    public Integer create(@Valid @RequestBody ProductParam productParam) {
+        int count = productService.create(productParam);
+        if (count <= 0) {
+            Asserts.fail("Failed to create product");
         }
+        return count;
     }
 
-    @Operation(summary = "Get update info Operation")
+    @Operation(summary = "Get product update info")
     @GetMapping("/updateInfo/{id}")
-
-    public CommonResult<ProductResult> getUpdateInfo(@PathVariable("id") Long id) {
-        ProductResult productResult = productService.getUpdateInfo(id);
-        return CommonResult.success(productResult);
+    public ProductResult getUpdateInfo(@PathVariable("id") Long id) {
+        return productService.getUpdateInfo(id);
     }
 
-    @Operation(summary = "Update Operation")
+    @Operation(summary = "Update product")
     @PostMapping("/update/{id}")
-
-    public CommonResult update(@PathVariable("id") Long id, @RequestBody ProductParam productParam) {
+    public Integer update(
+            @PathVariable("id") Long id, @Valid @RequestBody ProductParam productParam) {
         int count = productService.update(id, productParam);
-        if (count > 0) {
-            return CommonResult.success(count);
-        } else {
-            return CommonResult.failed();
+        if (count <= 0) {
+            Asserts.fail("Failed to update product");
         }
+        return count;
     }
 
-    @Operation(summary = "Get list Operation")
+    @Operation(summary = "List products")
     @GetMapping("/list")
-
-    public CommonResult<CommonPage<Product>> getList(ProductQueryParam productQueryParam,
-                                                        @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
-                                                        @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
-        org.springframework.data.domain.Page<Product> productList = productService.list(productQueryParam, pageSize, pageNum);
-        return CommonResult.success(CommonPage.restPage(productList));
+    public Page<ProductSummaryResponse> getList(
+            ProductQueryParam productQueryParam,
+            @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
+            @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
+        Page<Product> productList = productService.list(productQueryParam, pageSize, pageNum);
+        return productList.map(productMapper::toSummary);
     }
 
-    @Operation(summary = "Get list Operation")
+    @Operation(summary = "Simple list products")
     @GetMapping("/simpleList")
-
-    public CommonResult<List<Product>> getList(String keyword) {
-        List<Product> productList = productService.list(keyword);
-        return CommonResult.success(productList);
+    public List<ProductSummaryResponse> getList(
+            @RequestParam(required = false) String keyword) {
+        return productMapper.toSummaryList(productService.list(keyword));
     }
 
-    @Operation(summary = "Update verify status Operation")
+    @Operation(summary = "Update approval status")
     @PostMapping("/update/verifyStatus")
-
-        public CommonResult updateVerifyStatus(@RequestParam("ids") List<Long> ids,
-                                           @RequestParam("verifyStatus") Integer verifyStatus,
-                                           @RequestParam("detail") String detail) {
+    public Integer updateVerifyStatus(
+            @RequestParam("ids") List<Long> ids,
+            @RequestParam("verifyStatus") Integer verifyStatus,
+            @RequestParam("detail") String detail) {
         int count = productService.updateVerifyStatus(ids, verifyStatus, detail);
-        if (count > 0) {
-            return CommonResult.success(count);
-        } else {
-            return CommonResult.failed();
+        if (count <= 0) {
+            Asserts.fail("Failed to update approval status");
         }
+        return count;
     }
 
-    @Operation(summary = "Update publish status Operation")
+    @Operation(summary = "Update publish status")
     @PostMapping("/update/publishStatus")
-
-    public CommonResult updatePublishStatus(@RequestParam("ids") List<Long> ids,
-                                            @RequestParam("publishStatus") Integer publishStatus) {
+    public Integer updatePublishStatus(
+            @RequestParam("ids") List<Long> ids,
+            @RequestParam("publishStatus") Integer publishStatus) {
         int count = productService.updatePublishStatus(ids, publishStatus);
-        if (count > 0) {
-            return CommonResult.success(count);
-        } else {
-            return CommonResult.failed();
+        if (count <= 0) {
+            Asserts.fail("Failed to update publish status");
         }
+        return count;
     }
 
-    @Operation(summary = "Update recommend status Operation")
+    @Operation(summary = "Update featured status")
     @PostMapping("/update/recommendStatus")
-
-    public CommonResult updateRecommendStatus(@RequestParam("ids") List<Long> ids,
-                                              @RequestParam("recommendStatus") Integer recommendStatus) {
+    public Integer updateRecommendStatus(
+            @RequestParam("ids") List<Long> ids,
+            @RequestParam("recommendStatus") Integer recommendStatus) {
         int count = productService.updateRecommendStatus(ids, recommendStatus);
-        if (count > 0) {
-            return CommonResult.success(count);
-        } else {
-            return CommonResult.failed();
+        if (count <= 0) {
+            Asserts.fail("Failed to update featured status");
         }
+        return count;
     }
 
-    @Operation(summary = "Update new status Operation")
+    @Operation(summary = "Update new arrival status")
     @PostMapping("/update/newStatus")
-
-    public CommonResult updateNewStatus(@RequestParam("ids") List<Long> ids,
-                                        @RequestParam("newStatus") Integer newStatus) {
+    public Integer updateNewStatus(
+            @RequestParam("ids") List<Long> ids, @RequestParam("newStatus") Integer newStatus) {
         int count = productService.updateNewStatus(ids, newStatus);
-        if (count > 0) {
-            return CommonResult.success(count);
-        } else {
-            return CommonResult.failed();
+        if (count <= 0) {
+            Asserts.fail("Failed to update new arrival status");
         }
+        return count;
     }
 
-    @Operation(summary = "Update delete status Operation")
+    @Operation(summary = "Update delete status")
     @PostMapping("/update/deleteStatus")
-
-    public CommonResult updateDeleteStatus(@RequestParam("ids") List<Long> ids,
-                                           @RequestParam("deleteStatus") Integer deleteStatus) {
+    public Integer updateDeleteStatus(
+            @RequestParam("ids") List<Long> ids,
+            @RequestParam("deleteStatus") Integer deleteStatus) {
         int count = productService.updateDeleteStatus(ids, deleteStatus);
-        if (count > 0) {
-            return CommonResult.success(count);
-        } else {
-            return CommonResult.failed();
+        if (count <= 0) {
+            Asserts.fail("Failed to update delete status");
         }
+        return count;
     }
 
-    @Operation(summary = "Get operate logs")
+    @Operation(summary = "Get price audit logs")
     @GetMapping("/auditLog/{id}")
-    public CommonResult<List<ProductPriceChange>> getAuditLog(@PathVariable("id") Long id) {
-        return CommonResult.success(productService.getAuditLog(id));
+    public List<ProductPriceChange> getAuditLog(@PathVariable("id") Long id) {
+        return productService.getAuditLog(id);
     }
 
-    @Operation(summary = "Get verify records")
+    @Operation(summary = "Get approval history")
     @GetMapping("/approvalHistory/{id}")
-    public CommonResult<List<ProductApprovalEvent>> getApprovalHistory(@PathVariable("id") Long id) {
-        return CommonResult.success(productService.getApprovalHistory(id));
+    public List<ProductApprovalEvent> getApprovalHistory(@PathVariable("id") Long id) {
+        return productService.getApprovalHistory(id);
     }
-
 }

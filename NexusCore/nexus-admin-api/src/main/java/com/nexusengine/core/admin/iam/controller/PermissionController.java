@@ -1,99 +1,93 @@
 package com.nexusengine.core.admin.iam.controller;
 
-import lombok.RequiredArgsConstructor;
-
-import org.springframework.web.bind.annotation.RestController;
-
 import com.nexusengine.core.admin.iam.service.PermissionService;
-import com.nexusengine.core.common.api.CommonPage;
-import com.nexusengine.core.common.api.CommonResult;
+import com.nexusengine.core.common.exception.Asserts;
+import com.nexusengine.core.common.exception.ResourceNotFoundException;
 import com.nexusengine.core.domain.iam.entity.Permission;
 import com.nexusengine.core.security.component.DynamicSecurityMetadataSource;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.web.bind.annotation.*;
-
+import jakarta.validation.Valid;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
-
-/**
- * Represents the PermissionController component.
- * Provides core functionality and operations for PermissionController.
- */
 @RestController
-@Tag(name = "PermissionController", description = "Ums resource controller APIs")
+@Tag(name = "IAM - Permissions", description = "Admin permission management APIs")
 @RequestMapping("/resource")
 @RequiredArgsConstructor
 public class PermissionController {
-
     private final PermissionService resourceService;
     private final DynamicSecurityMetadataSource dynamicSecurityMetadataSource;
 
-    @Operation(summary = "Create Operation")
+    @Operation(summary = "Create permission")
     @PostMapping("/create")
-
-    public CommonResult create(@RequestBody Permission permission) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public Integer create(@Valid @RequestBody Permission permission) {
         int count = resourceService.create(permission);
         dynamicSecurityMetadataSource.clearDataSource();
-        if (count > 0) {
-            return CommonResult.success(count);
-        } else {
-            return CommonResult.failed();
+        if (count <= 0) {
+            Asserts.fail("Failed to create permission");
         }
+        return count;
     }
 
-    @Operation(summary = "Update Operation")
+    @Operation(summary = "Update permission")
     @PostMapping("/update/{id}")
-
-    public CommonResult update(@PathVariable("id") Long id,
-                               @RequestBody Permission permission) {
+    public Integer update(
+            @PathVariable("id") Long id, @Valid @RequestBody Permission permission) {
         int count = resourceService.update(id, permission);
         dynamicSecurityMetadataSource.clearDataSource();
-        if (count > 0) {
-            return CommonResult.success(count);
-        } else {
-            return CommonResult.failed();
+        if (count <= 0) {
+            Asserts.fail("Failed to update permission");
         }
+        return count;
     }
 
-    @Operation(summary = "Get item Operation")
+    @Operation(summary = "Get permission by ID")
     @GetMapping("/{id}")
-
-    public CommonResult<Permission> getItem(@PathVariable("id") Long id) {
+    public Permission getItem(@PathVariable("id") Long id) {
         Permission permission = resourceService.getItem(id);
-        return CommonResult.success(permission);
+        if (permission == null) {
+            throw new ResourceNotFoundException("Permission", id);
+        }
+        return permission;
     }
 
-    @Operation(summary = "Delete Operation")
+    @Operation(summary = "Delete permission")
     @PostMapping("/delete/{id}")
-
-    public CommonResult delete(@PathVariable("id") Long id) {
+    public Integer delete(@PathVariable("id") Long id) {
         int count = resourceService.delete(id);
         dynamicSecurityMetadataSource.clearDataSource();
-        if (count > 0) {
-            return CommonResult.success(count);
-        } else {
-            return CommonResult.failed();
+        if (count <= 0) {
+            Asserts.fail("Failed to delete permission");
         }
+        return count;
     }
 
-    @Operation(summary = "List Operation")
+    @Operation(summary = "List permissions with pagination")
     @GetMapping("/list")
-
-    public CommonResult<CommonPage<Permission>> list(@RequestParam(required = false) Long categoryId,
-                                                      @RequestParam(required = false) String nameKeyword,
-                                                      @RequestParam(required = false) String urlKeyword,
-                                                      @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
-                                                      @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
-        org.springframework.data.domain.Page<Permission> resourceList = resourceService.list(categoryId,nameKeyword, urlKeyword, pageSize, pageNum);
-        return CommonResult.success(CommonPage.restPage(resourceList));
+    public Page<Permission> list(
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) String nameKeyword,
+            @RequestParam(required = false) String urlKeyword,
+            @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
+            @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
+        return resourceService.list(categoryId, nameKeyword, urlKeyword, pageSize, pageNum);
     }
 
-    @Operation(summary = "List all Operation")
+    @Operation(summary = "List all permissions")
     @GetMapping("/listAll")
-
-    public CommonResult<List<Permission>> listAll() {
-        List<Permission> resourceList = resourceService.listAll();
-        return CommonResult.success(resourceList);
+    public List<Permission> listAll() {
+        return resourceService.listAll();
     }
 }

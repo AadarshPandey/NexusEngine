@@ -1,9 +1,6 @@
 package com.nexusengine.core.search.controller;
 
-
-import org.springframework.web.bind.annotation.RestController;
-import com.nexusengine.core.common.api.CommonPage;
-import com.nexusengine.core.common.api.CommonResult;
+import com.nexusengine.core.common.exception.Asserts;
 import com.nexusengine.core.search.domain.ProductDocument;
 import com.nexusengine.core.search.domain.ProductRelatedInfo;
 import com.nexusengine.core.search.service.ProductSearchService;
@@ -12,96 +9,103 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Elasticsearch Product Management Controller
  */
 @RestController
-@Tag(name = "ProductSearchController",description = "Es product controller APIs")
+@Tag(name = "Search - Products", description = "Elasticsearch product search APIs")
 @RequestMapping("/esProduct")
-@lombok.RequiredArgsConstructor
+@RequiredArgsConstructor
 public class ProductSearchController {
     private final ProductSearchService esProductService;
 
-    @Operation(summary = "Import all list Operation")
+    @Operation(summary = "Import all products into Elasticsearch")
     @PostMapping("/importAll")
-
-    public CommonResult<Integer> importAllList() {
-        int count = esProductService.importAll();
-        return CommonResult.success(count);
+    public Integer importAllList() {
+        return esProductService.importAll();
     }
 
-    @Operation(summary = "Delete Operation")
+    @Operation(summary = "Delete product from Elasticsearch")
     @GetMapping("/delete/{id}")
-
-    public CommonResult<Object> delete(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id) {
         esProductService.delete(id);
-        return CommonResult.success(null);
     }
 
-    @Operation(summary = "Delete Operation")
+    @Operation(summary = "Delete products in batch from Elasticsearch")
     @PostMapping("/delete/batch")
-
-    public CommonResult<Object> delete(@RequestParam("ids") List<Long> ids) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@RequestParam("ids") List<Long> ids) {
         esProductService.delete(ids);
-        return CommonResult.success(null);
     }
 
-    @Operation(summary = "Create Operation")
+    @Operation(summary = "Index product by ID in Elasticsearch")
     @PostMapping("/create/{id}")
-
-    public CommonResult<ProductDocument> create(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public ProductDocument create(@PathVariable Long id) {
         ProductDocument esProduct = esProductService.create(id);
-        if (esProduct != null) {
-            return CommonResult.success(esProduct);
-        } else {
-            return CommonResult.failed();
+        if (esProduct == null) {
+            Asserts.fail("Failed to index product in Elasticsearch");
         }
+        return esProduct;
     }
 
-    @Operation(summary = "Search Operation")
+    @Operation(summary = "Simple product search")
     @GetMapping("/search/simple")
-
-    public CommonResult<CommonPage<ProductDocument>> search(@RequestParam(required = false) String keyword,
-                                                      @RequestParam(required = false, defaultValue = "0") Integer pageNum,
-                                                      @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
-        Page<ProductDocument> esProductPage = esProductService.search(keyword, pageNum, pageSize);
-        return CommonResult.success(CommonPage.restPage(esProductPage));
+    public Page<ProductDocument> search(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false, defaultValue = "0") Integer pageNum,
+            @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
+        return esProductService.search(keyword, pageNum, pageSize);
     }
 
-    @Operation(summary = "Search Operation")
-    @Parameter(name = "sort", description = "Sort field: 0->Relevance; 1->Newest; 2->Sales; 3->Price low to high; 4->Price high to low", in = ParameterIn.QUERY, schema = @Schema(type = "integer",defaultValue = "0",allowableValues = {"0","1","2","3","4"}))
+    @Operation(summary = "Comprehensive product search")
+    @Parameter(
+            name = "sort",
+            description =
+                    "Sort field: 0->Relevance; 1->Newest; 2->Sales; 3->Price low to high; 4->Price high to low",
+            in = ParameterIn.QUERY,
+            schema =
+                    @Schema(
+                            type = "integer",
+                            defaultValue = "0",
+                            allowableValues = {"0", "1", "2", "3", "4"}))
     @GetMapping("/search")
-
-    public CommonResult<CommonPage<ProductDocument>> search(@RequestParam(required = false) String keyword,
-                                                      @RequestParam(required = false) Long brandId,
-                                                      @RequestParam(required = false) Long productCategoryId,
-                                                      @RequestParam(required = false, defaultValue = "0") Integer pageNum,
-                                                      @RequestParam(required = false, defaultValue = "5") Integer pageSize,
-                                                      @RequestParam(required = false, defaultValue = "0") Integer sort) {
-        Page<ProductDocument> esProductPage = esProductService.search(keyword, brandId, productCategoryId, pageNum, pageSize, sort);
-        return CommonResult.success(CommonPage.restPage(esProductPage));
+    public Page<ProductDocument> search(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) Long brandId,
+            @RequestParam(required = false) Long productCategoryId,
+            @RequestParam(required = false, defaultValue = "0") Integer pageNum,
+            @RequestParam(required = false, defaultValue = "5") Integer pageSize,
+            @RequestParam(required = false, defaultValue = "0") Integer sort) {
+        return esProductService.search(
+                keyword, brandId, productCategoryId, pageNum, pageSize, sort);
     }
 
-    @Operation(summary = "Recommend Operation")
+    @Operation(summary = "Recommend products by ID")
     @GetMapping("/recommend/{id}")
-
-    public CommonResult<CommonPage<ProductDocument>> recommend(@PathVariable Long id,
-                                                         @RequestParam(required = false, defaultValue = "0") Integer pageNum,
-                                                         @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
-        Page<ProductDocument> esProductPage = esProductService.recommend(id, pageNum, pageSize);
-        return CommonResult.success(CommonPage.restPage(esProductPage));
+    public Page<ProductDocument> recommend(
+            @PathVariable Long id,
+            @RequestParam(required = false, defaultValue = "0") Integer pageNum,
+            @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
+        return esProductService.recommend(id, pageNum, pageSize);
     }
 
-    @Operation(summary = "Search related info Operation")
+    @Operation(summary = "Search related product facets")
     @GetMapping("/search/relate")
-
-    public CommonResult<ProductRelatedInfo> searchRelatedInfo(@RequestParam(required = false) String keyword) {
-        ProductRelatedInfo productRelatedInfo = esProductService.searchRelatedInfo(keyword);
-        return CommonResult.success(productRelatedInfo);
+    public ProductRelatedInfo searchRelatedInfo(@RequestParam(required = false) String keyword) {
+        return esProductService.searchRelatedInfo(keyword);
     }
 }

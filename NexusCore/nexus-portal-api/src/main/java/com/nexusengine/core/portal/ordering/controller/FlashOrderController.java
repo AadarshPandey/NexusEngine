@@ -1,20 +1,19 @@
 package com.nexusengine.core.portal.ordering.controller;
 
-import lombok.RequiredArgsConstructor;
-
-import org.springframework.web.bind.annotation.RestController;
-
-import com.nexusengine.core.common.api.CommonResult;
+import com.nexusengine.core.portal.ordering.dto.FlashOrderResponse;
+import com.nexusengine.core.portal.ordering.service.FlashSaleOrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.web.bind.annotation.RequestMapping;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import com.nexusengine.core.portal.ordering.service.FlashSaleOrderService;
-
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@Tag(name = "FlashOrderController", description = "Flash sale order controller APIs")
+@Tag(name = "Storefront - Flash Orders", description = "Storefront flash sale order APIs")
 @RequestMapping("/portal/flash-order")
 @RequiredArgsConstructor
 public class FlashOrderController {
@@ -23,11 +22,13 @@ public class FlashOrderController {
 
     @Operation(summary = "Generate Flash Sale Order (High Concurrency)")
     @PostMapping("/generate")
-
-    public CommonResult generateFlashOrder(@RequestParam("productId") Long productId,
-                                           @RequestParam("flashPromotionId") Long flashPromotionId,
-                                           @RequestParam("flashPromotionSessionId") Long flashPromotionSessionId,
-                                           @RequestParam(defaultValue = "1") Integer quantity) {
-        return flashSaleOrderService.generateFlashOrder(productId, flashPromotionId, flashPromotionSessionId, quantity);
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public FlashOrderResponse generateFlashOrder(
+            @RequestParam("productId") Long productId,
+            @RequestParam("flashPromotionId") Long flashPromotionId,
+            @RequestParam("flashPromotionSessionId") Long flashPromotionSessionId,
+            @RequestParam(defaultValue = "1") Integer quantity) {
+        return flashSaleOrderService.generateFlashOrder(
+                productId, flashPromotionId, flashPromotionSessionId, quantity);
     }
 }

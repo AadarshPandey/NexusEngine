@@ -1,89 +1,83 @@
 package com.nexusengine.core.admin.catalog.controller;
 
-import lombok.RequiredArgsConstructor;
-
-import org.springframework.web.bind.annotation.RestController;
-
-import com.nexusengine.core.admin.catalog.service.ProductTypeService;
 import com.nexusengine.core.admin.catalog.dto.ProductTypeWithAttributes;
-import com.nexusengine.core.common.api.CommonPage;
-import com.nexusengine.core.common.api.CommonResult;
+import com.nexusengine.core.admin.catalog.service.ProductTypeService;
+import com.nexusengine.core.common.exception.Asserts;
+import com.nexusengine.core.common.exception.ResourceNotFoundException;
 import com.nexusengine.core.domain.catalog.entity.ProductType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
-
-/**
- * Represents the ProductTypeController component.
- * Provides core functionality and operations for ProductTypeController.
- */
 @RestController
-@Tag(name = "ProductTypeController", description = "Pms product attribute category controller APIs")
+@Tag(name = "Catalog - Product Types", description = "Admin product type management APIs")
 @RequestMapping("/productAttribute/category")
 @RequiredArgsConstructor
 public class ProductTypeController {
     private final ProductTypeService productAttributeCategoryService;
 
-    @Operation(summary = "Create Operation")
+    @Operation(summary = "Create product type")
     @PostMapping("/create")
-
-    public CommonResult create(@RequestParam("name") String name) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public Integer create(@RequestParam("name") String name) {
         int count = productAttributeCategoryService.create(name);
-        if (count > 0) {
-            return CommonResult.success(count);
-        } else {
-            return CommonResult.failed();
+        if (count <= 0) {
+            Asserts.fail("Failed to create product type");
         }
+        return count;
     }
 
-    @Operation(summary = "Update Operation")
+    @Operation(summary = "Update product type")
     @PostMapping("/update/{id}")
-
-    public CommonResult update(@PathVariable("id") Long id, @RequestParam("name") String name) {
+    public Integer update(@PathVariable("id") Long id, @RequestParam("name") String name) {
         int count = productAttributeCategoryService.update(id, name);
-        if (count > 0) {
-            return CommonResult.success(count);
-        } else {
-            return CommonResult.failed();
+        if (count <= 0) {
+            Asserts.fail("Failed to update product type");
         }
+        return count;
     }
 
-    @Operation(summary = "Delete Operation")
+    @Operation(summary = "Delete product type")
     @GetMapping("/delete/{id}")
-
-    public CommonResult delete(@PathVariable("id") Long id) {
+    public Integer delete(@PathVariable("id") Long id) {
         int count = productAttributeCategoryService.delete(id);
-        if (count > 0) {
-            return CommonResult.success(count);
-        } else {
-            return CommonResult.failed();
+        if (count <= 0) {
+            Asserts.fail("Failed to delete product type");
         }
+        return count;
     }
 
-    @Operation(summary = "Get item Operation")
+    @Operation(summary = "Get product type by ID")
     @GetMapping("/{id}")
-
-    public CommonResult<ProductType> getItem(@PathVariable("id") Long id) {
+    public ProductType getItem(@PathVariable("id") Long id) {
         ProductType productAttributeCategory = productAttributeCategoryService.getItem(id);
-        return CommonResult.success(productAttributeCategory);
+        if (productAttributeCategory == null) {
+            throw new ResourceNotFoundException("ProductType", id);
+        }
+        return productAttributeCategory;
     }
 
-    @Operation(summary = "Get list Operation")
+    @Operation(summary = "List product types")
     @GetMapping("/list")
-
-    public CommonResult<CommonPage<ProductType>> getList(@RequestParam(defaultValue = "5") Integer pageSize, @RequestParam(defaultValue = "1") Integer pageNum) {
-        org.springframework.data.domain.Page<ProductType> productAttributeCategoryList = productAttributeCategoryService.getList(pageSize, pageNum);
-        return CommonResult.success(CommonPage.restPage(productAttributeCategoryList));
+    public Page<ProductType> getList(
+            @RequestParam(defaultValue = "5") Integer pageSize,
+            @RequestParam(defaultValue = "1") Integer pageNum) {
+        return productAttributeCategoryService.getList(pageSize, pageNum);
     }
 
-    @Operation(summary = "Get list with attr Operation")
+    @Operation(summary = "List product types with attributes")
     @GetMapping("/list/withAttr")
-
-    public CommonResult<List<ProductTypeWithAttributes>> getListWithAttr() {
-        List<ProductTypeWithAttributes> productAttributeCategoryResultList = productAttributeCategoryService.getListWithAttr();
-        return CommonResult.success(productAttributeCategoryResultList);
+    public List<ProductTypeWithAttributes> getListWithAttr() {
+        return productAttributeCategoryService.getListWithAttr();
     }
 }

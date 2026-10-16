@@ -2,8 +2,6 @@ package com.nexusengine.core.portal.engagement.service;
 
 import lombok.RequiredArgsConstructor;
 
-import com.nexusengine.core.common.api.CommonPage;
-
 import com.nexusengine.core.domain.engagement.entity.ProductReview;
 import com.nexusengine.core.domain.engagement.entity.ReviewMedia;
 import com.nexusengine.core.domain.engagement.repository.ReviewMediaRepository;
@@ -22,6 +20,7 @@ import software.amazon.awssdk.services.s3.model.CopyObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import java.util.*;
 import com.nexusengine.core.portal.customer.service.MemberService;
+import com.nexusengine.core.portal.engagement.dto.MediaUploadResponse;
 import com.nexusengine.core.portal.engagement.dto.ReviewParam;
 
 
@@ -39,15 +38,15 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Value("${spring.cloud.aws.s3.bucket-name:nexus-media}")
     private String bucketName;
-    @Value("${spring.cloud.aws.s3.endpoint:http://localhost:9000}")
+    @Value("${spring.cloud.aws.s3.endpoint:http://localhost:4566}")
     private String s3Endpoint;
 
     @Override
-    public CommonPage<ProductReview> list(Long productId, Integer pageNum, Integer pageSize) {
+    public Page<ProductReview> list(Long productId, Integer pageNum, Integer pageSize) {
         Page<ProductReview> page = reviewRepository.findByProductIdAndParentIdIsNullAndStatus(
                 productId, 1, PageRequest.of(pageNum - 1, pageSize, Sort.by(Sort.Direction.DESC, "id")));
         enrichReviewStates(page.getContent());
-        return CommonPage.restPage(page);
+        return page;
     }
 
     @Override
@@ -144,12 +143,15 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public Map<String, String> uploadMedia(MultipartFile file) {
+    public MediaUploadResponse uploadMedia(MultipartFile file) {
         try {
             var member = memberService.getCurrentMember();
             Long userId = member != null ? member.getId() : 0L;
             String originalFilename = file.getOriginalFilename();
-            String ext = originalFilename != null && originalFilename.contains(".") ? originalFilename.substring(originalFilename.lastIndexOf(".")) : ".png";
+            String ext =
+                    originalFilename != null && originalFilename.contains(".")
+                            ? originalFilename.substring(originalFilename.lastIndexOf("."))
+                            : ".png";
             String uuid = UUID.randomUUID().toString();
             String objectName = "public/users/comments/temp_" + userId + "/" + uuid + ext;
 
@@ -161,9 +163,7 @@ public class ReviewServiceImpl implements ReviewService {
                             .build(),
                     RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
 
-            Map<String, String> result = new HashMap<>();
-            result.put("url", s3Endpoint + "/" + bucketName + "/" + objectName);
-            return result;
+            return new MediaUploadResponse(s3Endpoint + "/" + bucketName + "/" + objectName);
         } catch (Exception e) {
             throw new RuntimeException("Upload failed", e);
         }

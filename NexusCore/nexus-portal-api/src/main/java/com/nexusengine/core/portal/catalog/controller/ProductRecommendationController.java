@@ -1,42 +1,39 @@
 package com.nexusengine.core.portal.catalog.controller;
 
-import lombok.RequiredArgsConstructor;
-
-import org.springframework.web.bind.annotation.RestController;
-
-import com.nexusengine.core.common.api.CommonResult;
-import com.nexusengine.core.domain.catalog.entity.Product;
+import com.nexusengine.core.portal.catalog.dto.ProductSummaryResponse;
+import com.nexusengine.core.portal.catalog.mapper.PortalProductMapper;
+import com.nexusengine.core.portal.catalog.service.SemanticSearchService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
-import com.nexusengine.core.portal.catalog.service.SemanticSearchService;
-
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@Tag(name = "ProductRecommendationController", description = "AI Product Recommendation APIs")
+@Tag(name = "Storefront - Recommendations", description = "AI product recommendation APIs")
 @RequestMapping("/portal/recommendation")
 @RequiredArgsConstructor
 public class ProductRecommendationController {
 
     private final SemanticSearchService semanticSearchService;
+    private final PortalProductMapper portalProductMapper;
 
-    @Operation(summary = "Generate product embeddings (Admin/Cron trigger)")
+    @Operation(summary = "Generate product embeddings")
     @PostMapping("/generateEmbeddings")
-
-    public CommonResult<Integer> generateEmbeddings() {
-        int count = semanticSearchService.generateAllProductEmbeddings();
-        return CommonResult.success(count, "Successfully generated embeddings for " + count + " products.");
+    public Integer generateEmbeddings() {
+        return semanticSearchService.generateAllProductEmbeddings();
     }
 
     @Operation(summary = "Get AI recommendations based on context")
     @GetMapping("/products")
-
-    public CommonResult<List<Product>> semanticSearch(
+    public List<ProductSummaryResponse> semanticSearch(
             @RequestParam(required = false) Long memberId,
             @RequestParam("searchContext") String searchContext) {
-        List<Product> productList = semanticSearchService.semanticSearch(memberId, searchContext);
-        return CommonResult.success(productList);
+        return portalProductMapper.toSummaryList(
+                semanticSearchService.semanticSearch(memberId, searchContext));
     }
 }

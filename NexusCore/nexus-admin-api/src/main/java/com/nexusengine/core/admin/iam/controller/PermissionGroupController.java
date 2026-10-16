@@ -1,72 +1,64 @@
 package com.nexusengine.core.admin.iam.controller;
 
-import lombok.RequiredArgsConstructor;
-
-import org.springframework.web.bind.annotation.RestController;
-
 import com.nexusengine.core.admin.iam.service.PermissionGroupService;
-import com.nexusengine.core.common.api.CommonResult;
+import com.nexusengine.core.common.exception.Asserts;
 import com.nexusengine.core.domain.iam.entity.PermissionGroup;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.web.bind.annotation.*;
-
+import jakarta.validation.Valid;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
-
-/**
- * Represents the PermissionGroupController component.
- * Provides core functionality and operations for PermissionGroupController.
- */
 @RestController
-@Tag(name = "PermissionGroupController", description = "Ums resource category controller APIs")
+@Tag(name = "IAM - Permission Groups", description = "Admin permission group management APIs")
 @RequestMapping("/resourceCategory")
 @RequiredArgsConstructor
 public class PermissionGroupController {
     private final PermissionGroupService resourceCategoryService;
 
-    @Operation(summary = "List all Operation")
+    @Operation(summary = "List all permission groups")
     @GetMapping("/listAll")
-
-    public CommonResult<List<PermissionGroup>> listAll() {
-        List<PermissionGroup> resourceList = resourceCategoryService.listAll();
-        return CommonResult.success(resourceList);
+    public List<PermissionGroup> listAll() {
+        return resourceCategoryService.listAll();
     }
 
-    @Operation(summary = "Create Operation")
+    @Operation(summary = "Create permission group")
     @PostMapping("/create")
-
-    public CommonResult create(@RequestBody PermissionGroup permissionGroup) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public Integer create(@Valid @RequestBody PermissionGroup permissionGroup) {
         int count = resourceCategoryService.create(permissionGroup);
-        if (count > 0) {
-            return CommonResult.success(count);
-        } else {
-            return CommonResult.failed();
+        if (count <= 0) {
+            Asserts.fail("Failed to create permission group");
         }
+        return count;
     }
 
-    @Operation(summary = "Update Operation")
+    @Operation(summary = "Update permission group")
     @PostMapping("/update/{id}")
-
-    public CommonResult update(@PathVariable("id") Long id,
-                               @RequestBody PermissionGroup permissionGroup) {
+    public Integer update(
+            @PathVariable("id") Long id, @Valid @RequestBody PermissionGroup permissionGroup) {
         int count = resourceCategoryService.update(id, permissionGroup);
-        if (count > 0) {
-            return CommonResult.success(count);
-        } else {
-            return CommonResult.failed();
+        if (count <= 0) {
+            Asserts.fail("Failed to update permission group");
         }
+        return count;
     }
 
-    @Operation(summary = "Delete Operation")
+    @Operation(summary = "Delete permission group")
     @PostMapping("/delete/{id}")
-
-    public CommonResult delete(@PathVariable("id") Long id) {
+    public Integer delete(@PathVariable("id") Long id) {
         int count = resourceCategoryService.delete(id);
-        if (count > 0) {
-            return CommonResult.success(count);
-        } else {
-            return CommonResult.failed();
+        if (count <= 0) {
+            Asserts.fail("Failed to delete permission group");
         }
+        return count;
     }
 }

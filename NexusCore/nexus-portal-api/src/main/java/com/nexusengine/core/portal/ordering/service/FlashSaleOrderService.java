@@ -1,14 +1,13 @@
 package com.nexusengine.core.portal.ordering.service;
 
-import com.nexusengine.core.common.api.CommonResult;
-
-
+import com.nexusengine.core.portal.ordering.dto.FlashOrderResponse;
 
 public interface FlashSaleOrderService {
 
     /**
-     * Handle flash sale order generation
-     * Uses Bucket4j for rate limiting and Redis Lua script for atomic stock deduction
+     * Handle flash sale order generation.
+     * Uses Redis Lua script for atomic stock deduction and per-user rate limiting.
      */
-    CommonResult generateFlashOrder(Long productId, Long flashPromotionId, Long flashPromotionSessionId, Integer quantity);
+    FlashOrderResponse generateFlashOrder(
+            Long productId, Long flashPromotionId, Long flashPromotionSessionId, Integer quantity);
 }

@@ -29,7 +29,6 @@ import com.nexusengine.core.domain.ordering.entity.OrderPolicy;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.nexusengine.core.common.api.CommonPage;
 import com.nexusengine.core.common.exception.Asserts;
 import com.nexusengine.core.common.service.RedisService;
 
@@ -38,6 +37,7 @@ import com.nexusengine.core.common.service.RedisService;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,6 +49,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import com.nexusengine.core.portal.ordering.dto.CartPromotionItem;
 import com.nexusengine.core.portal.ordering.dto.ConfirmOrderResult;
+import com.nexusengine.core.portal.ordering.dto.OrderConfirmationResponse;
 import com.nexusengine.core.portal.promotion.strategy.CouponDiscountStrategy;
 import com.nexusengine.core.portal.promotion.dto.CouponHistoryDetail;
 import com.nexusengine.core.portal.promotion.strategy.CouponStrategyFactory;
@@ -111,7 +112,7 @@ public class OrderServiceImpl implements OrderService {
     private final org.springframework.transaction.PlatformTransactionManager transactionManager;
 
     @Override
-    public Map<String, Object> generateOrder(OrderParam orderParam) {
+    public OrderConfirmationResponse generateOrder(OrderParam orderParam) {
         List<OrderLine> orderItemList = new ArrayList<>();
         if (orderParam.memberReceiveAddressId() == null) {
             Asserts.fail("Please select a shipping address");
@@ -263,10 +264,7 @@ public class OrderServiceImpl implements OrderService {
         productRepository.flush();
         skuStockRepository.flush();
 
-        Map<String, Object> result = new HashMap<>();
-        result.put("order", order);
-        result.put("orderItemList", orderItemList);
-        return result;
+        return new OrderConfirmationResponse(order, orderItemList);
     }
 
     @Override
@@ -425,26 +423,20 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public CommonPage<OrderDetail> list(Integer status, Integer pageNum, Integer pageSize) {
+    public Page<OrderDetail> list(Integer status, Integer pageNum, Integer pageSize) {
         Member member = memberService.getCurrentMember();
+        PageRequest pageRequest = PageRequest.of(pageNum - 1, pageSize);
         Page<CustomerOrder> orderPage;
         if (status == null || status == -1) {
             orderPage = orderRepository.findByMemberIdAndDeletedAtIsNullOrderByCreateTimeDesc(
-                    member.getId(), PageRequest.of(pageNum - 1, pageSize));
+                    member.getId(), pageRequest);
         } else {
             orderPage = orderRepository.findByMemberIdAndStatusAndDeletedAtIsNullOrderByCreateTimeDesc(
-                    member.getId(), status, PageRequest.of(pageNum - 1, pageSize));
+                    member.getId(), status, pageRequest);
         }
-        CommonPage<CustomerOrder> commonOrderPage = CommonPage.restPage(orderPage);
-        CommonPage<OrderDetail> resultPage = new CommonPage<>();
-        resultPage.setPageNum(commonOrderPage.getPageNum());
-        resultPage.setPageSize(commonOrderPage.getPageSize());
-        resultPage.setTotal(commonOrderPage.getTotal());
-        resultPage.setTotalPage(commonOrderPage.getTotalPage());
         List<CustomerOrder> orderList = orderPage.getContent();
         if (orderList.isEmpty()) {
-            resultPage.setList(new ArrayList<>());
-            return resultPage;
+            return new PageImpl<>(Collections.emptyList(), pageRequest, orderPage.getTotalElements());
         }
         List<Long> orderIds = orderList.stream().map(CustomerOrder::getId).collect(Collectors.toList());
         List<OrderLine> allOrderItems = orderItemRepository.findByOrderIdIn(orderIds);
@@ -458,8 +450,7 @@ public class OrderServiceImpl implements OrderService {
             OrderDetail orderDetail = new OrderDetail(customerOrder, itemMap.getOrDefault(customerOrder.getId(), Collections.emptyList()), applyMap.getOrDefault(customerOrder.getId(), Collections.emptyList()));
             orderDetailList.add(orderDetail);
         }
-        resultPage.setList(orderDetailList);
-        return resultPage;
+        return new PageImpl<>(orderDetailList, pageRequest, orderPage.getTotalElements());
     }
 
     @Override

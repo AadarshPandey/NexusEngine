@@ -1,129 +1,116 @@
 package com.nexusengine.core.admin.iam.controller;
 
-import lombok.RequiredArgsConstructor;
-
+import com.nexusengine.core.admin.iam.service.RoleService;
+import com.nexusengine.core.common.exception.Asserts;
 import com.nexusengine.core.domain.iam.entity.ConsoleMenu;
-import com.nexusengine.core.domain.iam.entity.Role;
 import com.nexusengine.core.domain.iam.entity.Permission;
-
-import org.springframework.web.bind.annotation.RestController;
-import com.nexusengine.core.common.api.CommonPage;
-import com.nexusengine.core.common.api.CommonResult;
-
-
+import com.nexusengine.core.domain.iam.entity.Role;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.web.bind.annotation.*;
-
+import jakarta.validation.Valid;
 import java.util.List;
-import com.nexusengine.core.admin.iam.service.RoleService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
-
-/**
- * Represents the RoleController component.
- * Provides core functionality and operations for RoleController.
- */
 @RestController
-@Tag(name = "RoleController", description = "Ums role controller APIs")
+@Tag(name = "IAM - Roles", description = "Admin role management APIs")
 @RequestMapping("/role")
 @RequiredArgsConstructor
 public class RoleController {
     private final RoleService roleService;
 
-    @Operation(summary = "Create Operation")
+    @Operation(summary = "Create role")
     @PostMapping("/create")
-
-    public CommonResult create(@RequestBody Role role) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public Integer create(@Valid @RequestBody Role role) {
         int count = roleService.create(role);
-        if (count > 0) {
-            return CommonResult.success(count);
+        if (count <= 0) {
+            Asserts.fail("Failed to create role");
         }
-        return CommonResult.failed();
+        return count;
     }
 
-    @Operation(summary = "Update Operation")
+    @Operation(summary = "Update role")
     @PostMapping("/update/{id}")
-
-    public CommonResult update(@PathVariable("id") Long id, @RequestBody Role role) {
+    public Integer update(@PathVariable("id") Long id, @Valid @RequestBody Role role) {
         int count = roleService.update(id, role);
-        if (count > 0) {
-            return CommonResult.success(count);
+        if (count <= 0) {
+            Asserts.fail("Failed to update role");
         }
-        return CommonResult.failed();
+        return count;
     }
 
-    @Operation(summary = "Delete Operation")
+    @Operation(summary = "Delete roles")
     @PostMapping("/delete")
-
-    public CommonResult delete(@RequestParam("ids") List<Long> ids) {
+    public Integer delete(@RequestParam("ids") List<Long> ids) {
         int count = roleService.delete(ids);
-        if (count > 0) {
-            return CommonResult.success(count);
+        if (count <= 0) {
+            Asserts.fail("Failed to delete roles");
         }
-        return CommonResult.failed();
+        return count;
     }
 
-    @Operation(summary = "List all Operation")
+    @Operation(summary = "List all roles")
     @GetMapping("/listAll")
-
-    public CommonResult<List<Role>> listAll() {
-        List<Role> roleList = roleService.list();
-        return CommonResult.success(roleList);
+    public List<Role> listAll() {
+        return roleService.list();
     }
 
-    @Operation(summary = "List Operation")
+    @Operation(summary = "List roles with pagination")
     @GetMapping("/list")
-
-    public CommonResult<CommonPage<Role>> list(@RequestParam(value = "keyword", required = false) String keyword,
-                                                  @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
-                                                  @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
-        org.springframework.data.domain.Page<Role> roleList = roleService.list(keyword, pageSize, pageNum);
-        return CommonResult.success(CommonPage.restPage(roleList));
+    public Page<Role> list(
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
+            @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
+        return roleService.list(keyword, pageSize, pageNum);
     }
 
-    @Operation(summary = "Update status Operation")
+    @Operation(summary = "Update role status")
     @PostMapping("/updateStatus/{id}")
-
-    public CommonResult updateStatus(@PathVariable("id") Long id, @RequestParam(value = "status") Integer status) {
+    public Integer updateStatus(
+            @PathVariable("id") Long id, @RequestParam(value = "status") Integer status) {
         Role role = new Role();
         role.setStatus(status != null && status == 1);
         int count = roleService.update(id, role);
-        if (count > 0) {
-            return CommonResult.success(count);
+        if (count <= 0) {
+            Asserts.fail("Failed to update role status");
         }
-        return CommonResult.failed();
+        return count;
     }
 
-    @Operation(summary = "List menu Operation")
+    @Operation(summary = "List menus for role")
     @GetMapping("/listMenu/{roleId}")
-
-    public CommonResult<List<ConsoleMenu>> listMenu(@PathVariable("roleId") Long roleId) {
-        List<ConsoleMenu> roleList = roleService.listMenu(roleId);
-        return CommonResult.success(roleList);
+    public List<ConsoleMenu> listMenu(@PathVariable("roleId") Long roleId) {
+        return roleService.listMenu(roleId);
     }
 
-    @Operation(summary = "List resource Operation")
+    @Operation(summary = "List permissions for role")
     @GetMapping("/listResource/{roleId}")
-
-    public CommonResult<List<Permission>> listResource(@PathVariable("roleId") Long roleId) {
-        List<Permission> roleList = roleService.listResource(roleId);
-        return CommonResult.success(roleList);
+    public List<Permission> listResource(@PathVariable("roleId") Long roleId) {
+        return roleService.listResource(roleId);
     }
 
-    @Operation(summary = "Alloc menu Operation")
+    @Operation(summary = "Assign menus to role")
     @PostMapping("/allocMenu")
-
-    public CommonResult allocMenu(@RequestParam("roleId") Long roleId, @RequestParam("menuIds") List<Long> menuIds) {
-        int count = roleService.allocMenu(roleId, menuIds);
-        return CommonResult.success(count);
+    public Integer allocMenu(
+            @RequestParam("roleId") Long roleId, @RequestParam("menuIds") List<Long> menuIds) {
+        return roleService.allocMenu(roleId, menuIds);
     }
 
-    @Operation(summary = "Alloc resource Operation")
+    @Operation(summary = "Assign permissions to role")
     @PostMapping("/allocResource")
-
-    public CommonResult allocResource(@RequestParam("roleId") Long roleId, @RequestParam("resourceIds") List<Long> resourceIds) {
-        int count = roleService.allocResource(roleId, resourceIds);
-        return CommonResult.success(count);
+    public Integer allocResource(
+            @RequestParam("roleId") Long roleId,
+            @RequestParam("resourceIds") List<Long> resourceIds) {
+        return roleService.allocResource(roleId, resourceIds);
     }
-
 }

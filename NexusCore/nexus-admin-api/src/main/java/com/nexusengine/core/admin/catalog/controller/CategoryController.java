@@ -1,119 +1,116 @@
 package com.nexusengine.core.admin.catalog.controller;
 
-import lombok.RequiredArgsConstructor;
-
-import org.springframework.web.bind.annotation.RestController;
-
 import com.nexusengine.core.admin.catalog.dto.CategoryParam;
-import com.nexusengine.core.admin.catalog.service.CategoryService;
+import com.nexusengine.core.admin.catalog.dto.CategoryResponse;
 import com.nexusengine.core.admin.catalog.dto.CategoryWithChildrenItem;
-import com.nexusengine.core.common.api.CommonPage;
-import com.nexusengine.core.common.api.CommonResult;
+import com.nexusengine.core.admin.catalog.mapper.CategoryMapper;
+import com.nexusengine.core.admin.catalog.service.CategoryService;
+import com.nexusengine.core.common.exception.Asserts;
+import com.nexusengine.core.common.exception.ResourceNotFoundException;
 import com.nexusengine.core.domain.catalog.entity.Category;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-
+import jakarta.validation.Valid;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
-
-/**
- * Represents the CategoryController component.
- * Provides core functionality and operations for CategoryController.
- */
 @RestController
-@Tag(name = "CategoryController", description = "Pms product category controller APIs")
+@Tag(name = "Catalog - Categories", description = "Admin product category management APIs")
 @RequestMapping("/productCategory")
 @RequiredArgsConstructor
 public class CategoryController {
     private final CategoryService productCategoryService;
+    private final CategoryMapper categoryMapper;
 
-    @Operation(summary = "Create Operation")
+    @Operation(summary = "Create category")
     @PostMapping("/create")
-
-    public CommonResult create(@Validated @RequestBody CategoryParam productCategoryParam) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public Integer create(@Valid @RequestBody CategoryParam productCategoryParam) {
         int count = productCategoryService.create(productCategoryParam);
-        if (count > 0) {
-            return CommonResult.success(count);
-        } else {
-            return CommonResult.failed();
+        if (count <= 0) {
+            Asserts.fail("Failed to create category");
         }
+        return count;
     }
 
-    @Operation(summary = "Update Operation")
+    @Operation(summary = "Update category")
     @PostMapping("/update/{id}")
-
-    public CommonResult update(@PathVariable("id") Long id,
-                         @Validated
-                         @RequestBody CategoryParam productCategoryParam) {
+    public Integer update(
+            @PathVariable("id") Long id, @Valid @RequestBody CategoryParam productCategoryParam) {
         int count = productCategoryService.update(id, productCategoryParam);
-        if (count > 0) {
-            return CommonResult.success(count);
-        } else {
-            return CommonResult.failed();
+        if (count <= 0) {
+            Asserts.fail("Failed to update category");
         }
+        return count;
     }
 
-    @Operation(summary = "Get list Operation")
+    @Operation(summary = "List categories by parent")
     @GetMapping("/list/{parentId}")
-
-    public CommonResult<CommonPage<Category>> getList(@PathVariable("parentId") Long parentId,
-                                                                @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
-                                                                @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
-        org.springframework.data.domain.Page<Category> productCategoryList = productCategoryService.getList(parentId, pageSize, pageNum);
-        return CommonResult.success(CommonPage.restPage(productCategoryList));
+    public Page<CategoryResponse> getList(
+            @PathVariable("parentId") Long parentId,
+            @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
+            @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
+        Page<Category> productCategoryList =
+                productCategoryService.getList(parentId, pageSize, pageNum);
+        return productCategoryList.map(categoryMapper::toResponse);
     }
 
-    @Operation(summary = "Get item Operation")
+    @Operation(summary = "Get category by ID")
     @GetMapping("/{id}")
-
-    public CommonResult<Category> getItem(@PathVariable("id") Long id) {
+    public CategoryResponse getItem(@PathVariable("id") Long id) {
         Category productCategory = productCategoryService.getItem(id);
-        return CommonResult.success(productCategory);
+        if (productCategory == null) {
+            throw new ResourceNotFoundException("Category", id);
+        }
+        return categoryMapper.toResponse(productCategory);
     }
 
-    @Operation(summary = "Delete Operation")
+    @Operation(summary = "Delete category")
     @PostMapping("/delete/{id}")
-
-    public CommonResult delete(@PathVariable("id") Long id) {
+    public Integer delete(@PathVariable("id") Long id) {
         int count = productCategoryService.delete(id);
-        if (count > 0) {
-            return CommonResult.success(count);
-        } else {
-            return CommonResult.failed();
+        if (count <= 0) {
+            Asserts.fail("Failed to delete category");
         }
+        return count;
     }
 
-    @Operation(summary = "Update nav status Operation")
+    @Operation(summary = "Update navigation status")
     @PostMapping("/update/isInNavigation")
-
-    public CommonResult updateNavStatus(@RequestParam("ids") List<Long> ids, @RequestParam("isInNavigation") Integer navStatus) {
+    public Integer updateNavStatus(
+            @RequestParam("ids") List<Long> ids,
+            @RequestParam("isInNavigation") Integer navStatus) {
         int count = productCategoryService.updateNavStatus(ids, navStatus);
-        if (count > 0) {
-            return CommonResult.success(count);
-        } else {
-            return CommonResult.failed();
+        if (count <= 0) {
+            Asserts.fail("Failed to update navigation status");
         }
+        return count;
     }
 
-    @Operation(summary = "Update show status Operation")
+    @Operation(summary = "Update visibility status")
     @PostMapping("/update/isVisible")
-
-    public CommonResult updateShowStatus(@RequestParam("ids") List<Long> ids, @RequestParam("isVisible") Integer showStatus) {
+    public Integer updateShowStatus(
+            @RequestParam("ids") List<Long> ids, @RequestParam("isVisible") Integer showStatus) {
         int count = productCategoryService.updateShowStatus(ids, showStatus);
-        if (count > 0) {
-            return CommonResult.success(count);
-        } else {
-            return CommonResult.failed();
+        if (count <= 0) {
+            Asserts.fail("Failed to update visibility status");
         }
+        return count;
     }
 
-    @Operation(summary = "List with children Operation")
+    @Operation(summary = "List categories with children")
     @GetMapping("/list/withChildren")
-
-    public CommonResult<List<CategoryWithChildrenItem>> listWithChildren() {
-        List<CategoryWithChildrenItem> list = productCategoryService.listWithChildren();
-        return CommonResult.success(list);
+    public List<CategoryWithChildrenItem> listWithChildren() {
+        return productCategoryService.listWithChildren();
     }
 }

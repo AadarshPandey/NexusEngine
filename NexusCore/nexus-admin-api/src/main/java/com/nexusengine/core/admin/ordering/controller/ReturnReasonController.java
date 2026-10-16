@@ -1,90 +1,89 @@
 package com.nexusengine.core.admin.ordering.controller;
 
-import lombok.RequiredArgsConstructor;
-
-import org.springframework.web.bind.annotation.RestController;
-
 import com.nexusengine.core.admin.ordering.service.ReturnReasonService;
-import com.nexusengine.core.common.api.CommonPage;
-import com.nexusengine.core.common.api.CommonResult;
+import com.nexusengine.core.common.exception.Asserts;
+import com.nexusengine.core.common.exception.ResourceNotFoundException;
 import com.nexusengine.core.domain.ordering.entity.ReturnReason;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.web.bind.annotation.*;
-
+import jakarta.validation.Valid;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
-
-/**
- * Represents the ReturnReasonController component.
- * Provides core functionality and operations for ReturnReasonController.
- */
 @RestController
-@Tag(name = "ReturnReasonController", description = "Oms order return reason controller APIs")
+@Tag(name = "Ordering - Return Reasons", description = "Admin order return reason management APIs")
 @RequestMapping("/returnReason")
 @RequiredArgsConstructor
 public class ReturnReasonController {
     private final ReturnReasonService orderReturnReasonService;
 
-    @Operation(summary = "Create Operation")
+    @Operation(summary = "Create return reason")
     @PostMapping("/create")
-
-    public CommonResult create(@RequestBody ReturnReason returnReason) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public Integer create(@Valid @RequestBody ReturnReason returnReason) {
         int count = orderReturnReasonService.create(returnReason);
-        if (count > 0) {
-            return CommonResult.success(count);
+        if (count <= 0) {
+            Asserts.fail("Failed to create return reason");
         }
-        return CommonResult.failed();
+        return count;
     }
 
-    @Operation(summary = "Update Operation")
+    @Operation(summary = "Update return reason")
     @PostMapping("/update/{id}")
-
-    public CommonResult update(@PathVariable("id") Long id, @RequestBody ReturnReason returnReason) {
+    public Integer update(
+            @PathVariable("id") Long id, @Valid @RequestBody ReturnReason returnReason) {
         int count = orderReturnReasonService.update(id, returnReason);
-        if (count > 0) {
-            return CommonResult.success(count);
+        if (count <= 0) {
+            Asserts.fail("Failed to update return reason");
         }
-        return CommonResult.failed();
+        return count;
     }
 
-    @Operation(summary = "Delete Operation")
+    @Operation(summary = "Delete return reasons")
     @PostMapping("/delete")
-
-    public CommonResult delete(@RequestParam("ids") List<Long> ids) {
+    public Integer delete(@RequestParam("ids") List<Long> ids) {
         int count = orderReturnReasonService.delete(ids);
-        if (count > 0) {
-            return CommonResult.success(count);
+        if (count <= 0) {
+            Asserts.fail("Failed to delete return reasons");
         }
-        return CommonResult.failed();
+        return count;
     }
 
-    @Operation(summary = "List Operation")
+    @Operation(summary = "List return reasons")
     @GetMapping("/list")
-
-    public CommonResult<CommonPage<ReturnReason>> list(@RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
-                                                               @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
-        List<ReturnReason> reasonList = orderReturnReasonService.list(pageSize, pageNum);
-        return CommonResult.success(CommonPage.restPage(reasonList));
+    public List<ReturnReason> list(
+            @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
+            @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
+        return orderReturnReasonService.list(pageSize, pageNum);
     }
 
-    @Operation(summary = "Get item Operation")
+    @Operation(summary = "Get return reason by ID")
     @GetMapping("/{id}")
-
-    public CommonResult<ReturnReason> getItem(@PathVariable("id") Long id) {
+    public ReturnReason getItem(@PathVariable("id") Long id) {
         ReturnReason reason = orderReturnReasonService.getItem(id);
-        return CommonResult.success(reason);
+        if (reason == null) {
+            throw new ResourceNotFoundException("ReturnReason", id);
+        }
+        return reason;
     }
 
-    @Operation(summary = "Update status Operation")
+    @Operation(summary = "Update return reason status")
     @PostMapping("/update/status")
-
-    public CommonResult updateStatus(@RequestParam(value = "status") Integer status,
-                                     @RequestParam("ids") List<Long> ids) {
+    public Integer updateStatus(
+            @RequestParam(value = "status") Integer status, @RequestParam("ids") List<Long> ids) {
         int count = orderReturnReasonService.updateStatus(ids, status);
-        if (count > 0) {
-            return CommonResult.success(count);
+        if (count <= 0) {
+            Asserts.fail("Failed to update return reason status");
         }
-        return CommonResult.failed();
+        return count;
     }
 }

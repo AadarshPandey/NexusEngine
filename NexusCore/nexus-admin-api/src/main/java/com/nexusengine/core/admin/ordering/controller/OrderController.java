@@ -1,133 +1,132 @@
 package com.nexusengine.core.admin.ordering.controller;
 
-import lombok.RequiredArgsConstructor;
-
-import org.springframework.web.bind.annotation.RestController;
-
 import com.nexusengine.core.admin.ordering.dto.OrderDeliveryParam;
 import com.nexusengine.core.admin.ordering.dto.OrderDetail;
 import com.nexusengine.core.admin.ordering.dto.OrderMoneyInfoParam;
 import com.nexusengine.core.admin.ordering.dto.OrderQueryParam;
 import com.nexusengine.core.admin.ordering.dto.OrderReceiverInfoParam;
+import com.nexusengine.core.admin.ordering.dto.OrderSummaryResponse;
+import com.nexusengine.core.admin.ordering.mapper.OrderMapper;
 import com.nexusengine.core.admin.ordering.service.OrderService;
-import com.nexusengine.core.common.api.CommonPage;
-import com.nexusengine.core.common.api.CommonResult;
-
-
+import com.nexusengine.core.common.exception.Asserts;
+import com.nexusengine.core.common.exception.ResourceNotFoundException;
 import com.nexusengine.core.domain.ordering.entity.CustomerOrder;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.web.bind.annotation.*;
-
+import jakarta.validation.Valid;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-/**
- * Represents the OrderController component.
- * Provides core functionality and operations for OrderController.
- */
 @RestController("adminOrderController")
-@Tag(name = "OrderController", description = "Oms order controller APIs")
+@Tag(name = "Ordering - Orders", description = "Admin order management APIs")
 @RequestMapping("/order")
 @RequiredArgsConstructor
 public class OrderController {
     private final OrderService orderService;
+    private final OrderMapper orderMapper;
 
-    @Operation(summary = "List Operation")
+    @Operation(summary = "List orders")
     @GetMapping("/list")
-
-    public CommonResult<CommonPage<CustomerOrder>> list(OrderQueryParam queryParam,
-                                                   @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
-                                                   @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
+    public List<OrderSummaryResponse> list(
+            OrderQueryParam queryParam,
+            @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
+            @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
         List<CustomerOrder> orderList = orderService.list(queryParam, pageSize, pageNum);
-        return CommonResult.success(CommonPage.restPage(orderList));
+        return orderMapper.toSummaryList(orderList);
     }
 
-    @Operation(summary = "Delivery Operation")
+    @Operation(summary = "Ship orders")
     @PostMapping("/update/delivery")
-
-    public CommonResult delivery(@RequestBody List<OrderDeliveryParam> deliveryParamList) {
+    public Integer delivery(@Valid @RequestBody List<OrderDeliveryParam> deliveryParamList) {
         int count = orderService.delivery(deliveryParamList);
-        if (count > 0) {
-            return CommonResult.success(count);
+        if (count <= 0) {
+            Asserts.fail("Failed to update order delivery");
         }
-        return CommonResult.failed();
+        return count;
     }
 
-    @Operation(summary = "Close Operation")
+    @Operation(summary = "Cancel/close orders")
     @PostMapping("/update/close")
-
-    public CommonResult close(@RequestParam("ids") List<Long> ids, @RequestParam("note") String note) {
+    public Integer close(
+            @RequestParam("ids") List<Long> ids, @RequestParam("note") String note) {
         int count = orderService.close(ids, note);
-        if (count > 0) {
-            return CommonResult.success(count);
+        if (count <= 0) {
+            Asserts.fail("Failed to close orders");
         }
-        return CommonResult.failed();
+        return count;
     }
 
-    @Operation(summary = "Delete Operation")
+    @Operation(summary = "Delete orders")
     @PostMapping("/delete")
-
-    public CommonResult delete(@RequestParam("ids") List<Long> ids) {
+    public Integer delete(@RequestParam("ids") List<Long> ids) {
         int count = orderService.delete(ids);
-        if (count > 0) {
-            return CommonResult.success(count);
+        if (count <= 0) {
+            Asserts.fail("Failed to delete orders");
         }
-        return CommonResult.failed();
+        return count;
     }
 
-    @Operation(summary = "Detail Operation")
+    @Operation(summary = "Get order detail")
     @GetMapping("/{id}")
-
-    public CommonResult<OrderDetail> detail(@PathVariable("id") Long id) {
+    public OrderDetail detail(@PathVariable("id") Long id) {
         OrderDetail orderDetailResult = orderService.detail(id);
-        return CommonResult.success(orderDetailResult);
+        if (orderDetailResult == null) {
+            throw new ResourceNotFoundException("Order", id);
+        }
+        return orderDetailResult;
     }
 
-    @Operation(summary = "Update receiver info Operation")
+    @Operation(summary = "Update recipient info")
     @PostMapping("/update/receiverInfo")
-
-    public CommonResult updateReceiverInfo(@RequestBody OrderReceiverInfoParam receiverInfoParam) {
+    public Integer updateReceiverInfo(
+            @Valid @RequestBody OrderReceiverInfoParam receiverInfoParam) {
         int count = orderService.updateReceiverInfo(receiverInfoParam);
-        if (count > 0) {
-            return CommonResult.success(count);
+        if (count <= 0) {
+            Asserts.fail("Failed to update recipient info");
         }
-        return CommonResult.failed();
+        return count;
     }
 
-    @Operation(summary = "Update receiver info Operation")
+    @Operation(summary = "Update order financial info")
     @PostMapping("/update/moneyInfo")
-
-    public CommonResult updateReceiverInfo(@RequestBody OrderMoneyInfoParam moneyInfoParam) {
+    public Integer updateReceiverInfo(@Valid @RequestBody OrderMoneyInfoParam moneyInfoParam) {
         int count = orderService.updateMoneyInfo(moneyInfoParam);
-        if (count > 0) {
-            return CommonResult.success(count);
+        if (count <= 0) {
+            Asserts.fail("Failed to update order money info");
         }
-        return CommonResult.failed();
+        return count;
     }
 
-    @Operation(summary = "Update note Operation")
+    @Operation(summary = "Update order note")
     @PostMapping("/update/note")
-
-    public CommonResult updateNote(@RequestParam("id") Long id,
-                                   @RequestParam("note") String note,
-                                   @RequestParam("status") Integer status) {
+    public Integer updateNote(
+            @RequestParam("id") Long id,
+            @RequestParam("note") String note,
+            @RequestParam("status") Integer status) {
         int count = orderService.updateNote(id, note, status);
-        if (count > 0) {
-            return CommonResult.success(count);
+        if (count <= 0) {
+            Asserts.fail("Failed to update order note");
         }
-        return CommonResult.failed();
+        return count;
     }
 
-    @Operation(summary = "Update Order Status Operation")
+    @Operation(summary = "Update order status")
     @PostMapping("/update/status")
-
-    public CommonResult updateStatus(@RequestParam("ids") List<Long> ids,
-                                     @RequestParam("status") Integer status,
-                                     @RequestParam(value = "note", required = false) String note) {
+    public Integer updateStatus(
+            @RequestParam("ids") List<Long> ids,
+            @RequestParam("status") Integer status,
+            @RequestParam(value = "note", required = false) String note) {
         int count = orderService.updateStatus(ids, status, note);
-        if (count > 0) {
-            return CommonResult.success(count);
+        if (count <= 0) {
+            Asserts.fail("Failed to update order status");
         }
-        return CommonResult.failed();
+        return count;
     }
 }

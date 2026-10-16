@@ -1,19 +1,16 @@
 package com.nexusengine.core.portal.payment.service;
 
-
+import com.nexusengine.core.portal.ordering.dto.PaymentInitiationResponse;
 import com.razorpay.RazorpayClient;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
-
-
 @Service
 public class RazorpayPaymentGatewayServiceImpl implements PaymentGatewayService {
 
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(RazorpayPaymentGatewayServiceImpl.class);
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(RazorpayPaymentGatewayServiceImpl.class);
 
     @Value("${razorpay.keyId:rzp_test_placeholder}")
     private String razorpayKeyId;
@@ -25,9 +22,11 @@ public class RazorpayPaymentGatewayServiceImpl implements PaymentGatewayService 
     private String razorpayWebhookSecret;
 
     @Override
-    @io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker(name = "razorpay", fallbackMethod = "createOrderFallback")
+    @io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker(
+            name = "razorpay",
+            fallbackMethod = "createOrderFallback")
     @io.github.resilience4j.retry.annotation.Retry(name = "razorpay")
-    public Map<String, String> createOrder(int amount, String receipt) {
+    public PaymentInitiationResponse createOrder(int amount, String receipt) {
         try {
             RazorpayClient razorpay = new RazorpayClient(razorpayKeyId, razorpayKeySecret);
             JSONObject orderRequest = new JSONObject();
@@ -37,18 +36,20 @@ public class RazorpayPaymentGatewayServiceImpl implements PaymentGatewayService 
 
             com.razorpay.Order razorpayOrder = razorpay.orders.create(orderRequest);
 
-            Map<String, String> result = new HashMap<>();
-            result.put("razorpayOrderId", razorpayOrder.get("id"));
-            result.put("keyId", razorpayKeyId);
-            result.put("amount", String.valueOf(amount));
-            return result;
+            return new PaymentInitiationResponse(
+                    razorpayOrder.get("id"), razorpayKeyId, String.valueOf(amount));
         } catch (com.razorpay.RazorpayException e) {
             throw new RuntimeException("Failed to create Razorpay order: " + e.getMessage(), e);
         }
     }
 
-    public Map<String, String> createOrderFallback(int amount, String receipt, Throwable t) {
-        log.error("Razorpay circuit breaker fallback triggered for order (amount={}, receipt={})", amount, receipt, t);
+    public PaymentInitiationResponse createOrderFallback(
+            int amount, String receipt, Throwable t) {
+        log.error(
+                "Razorpay circuit breaker fallback triggered for order (amount={}, receipt={})",
+                amount,
+                receipt,
+                t);
         throw new RuntimeException("Payment service temporarily unavailable");
     }
 
@@ -83,7 +84,8 @@ public class RazorpayPaymentGatewayServiceImpl implements PaymentGatewayService 
             return false;
         }
         try {
-            return com.razorpay.Utils.verifyWebhookSignature(payload, signature, razorpayWebhookSecret);
+            return com.razorpay.Utils.verifyWebhookSignature(
+                    payload, signature, razorpayWebhookSecret);
         } catch (com.razorpay.RazorpayException e) {
             log.warn("Razorpay webhook signature verification error: {}", e.getMessage());
             return false;

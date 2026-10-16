@@ -1,130 +1,124 @@
 package com.nexusengine.core.portal.customer.controller;
 
-import lombok.RequiredArgsConstructor;
-
-import org.springframework.web.bind.annotation.RestController;
-
-import com.nexusengine.core.common.api.CommonResult;
+import com.nexusengine.core.common.api.ResultCode;
+import com.nexusengine.core.common.exception.Asserts;
 import com.nexusengine.core.domain.customer.entity.Member;
+import com.nexusengine.core.portal.customer.dto.TokenResponse;
+import com.nexusengine.core.portal.customer.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import java.security.Principal;
-import java.util.HashMap;
-import java.util.Map;
-import com.nexusengine.core.portal.customer.service.MemberService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
-
-/**
- * Customer-facing authentication and member management controller.
- * Handles registration, login, OTP verification, and token refresh for storefront users.
- */
 @RestController
-@Tag(name = "MemberController", description = "Ums member controller APIs")
+@Tag(name = "Storefront - Auth & Member", description = "Storefront member authentication and profile APIs")
 @RequestMapping("/portal/sso")
 @RequiredArgsConstructor
 public class MemberController {
     @Value("${jwt.tokenHeader}")
     private String tokenHeader;
+
     @Value("${jwt.tokenHead}")
     private String tokenHead;
+
     private final MemberService memberService;
 
-    @Operation(summary = "Register Operation")
+    @Operation(summary = "Register member")
     @PostMapping("/register")
-
-    public CommonResult register(@RequestParam("username") String username,
-                                 @RequestParam(value = "password", required = false) String password,
-                                 @RequestParam(value = "passwordHash", required = false) String passwordHash,
-                                 @RequestParam("email") String email,
-                                 @RequestParam("authCode") String authCode) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public void register(
+            @RequestParam("username") String username,
+            @RequestParam(value = "password", required = false) String password,
+            @RequestParam(value = "passwordHash", required = false) String passwordHash,
+            @RequestParam("email") String email,
+            @RequestParam("authCode") String authCode) {
         String finalPassword = password != null ? password : passwordHash;
         memberService.register(username, finalPassword, email, authCode);
-        return CommonResult.success(null,"Success");
     }
 
-    @Operation(summary = "Login Operation")
+    @Operation(summary = "Login member")
     @PostMapping("/login")
-    public CommonResult login(@RequestParam("username") String username,
-                              @RequestParam(value = "password", required = false) String password,
-                              @RequestParam(value = "passwordHash", required = false) String passwordHash) {
+    public TokenResponse login(
+            @RequestParam("username") String username,
+            @RequestParam(value = "password", required = false) String password,
+            @RequestParam(value = "passwordHash", required = false) String passwordHash) {
         String finalPassword = password != null ? password : passwordHash;
         String token = memberService.login(username, finalPassword);
         if (token == null) {
-            return CommonResult.validateFailed("Invalid username or password");
+            Asserts.fail("Invalid username or password");
         }
-        Map<String, String> tokenMap = new HashMap<>();
-        tokenMap.put("token", token);
-        tokenMap.put("tokenHead", tokenHead);
-        return CommonResult.success(tokenMap);
+        return new TokenResponse(token, tokenHead);
     }
 
-    @Operation(summary = "Upload Avatar")
+    @Operation(summary = "Upload avatar")
     @PostMapping("/uploadAvatar")
-    public CommonResult uploadAvatar(@org.springframework.web.bind.annotation.RequestParam("file") org.springframework.web.multipart.MultipartFile file) {
-        return CommonResult.success(memberService.uploadAvatar(file));
+    public String uploadAvatar(@RequestParam("file") MultipartFile file) {
+        return memberService.uploadAvatar(file);
     }
 
-    @Operation(summary = "Update Profile Operation")
+    @Operation(summary = "Update member profile")
     @PostMapping("/updateProfile")
-    public CommonResult updateProfile(@org.springframework.web.bind.annotation.RequestBody Member member) {
+    public Member updateProfile(@Valid @RequestBody Member member) {
         Member current = memberService.getCurrentMember();
-        if (member.getDisplayName() != null) current.setDisplayName(member.getDisplayName());
-        if (member.getContactPhone() != null) current.setContactPhone(member.getContactPhone());
-        if (member.getIconUrl() != null) current.setIconUrl(member.getIconUrl());
+        if (member.getDisplayName() != null) {
+            current.setDisplayName(member.getDisplayName());
+        }
+        if (member.getContactPhone() != null) {
+            current.setContactPhone(member.getContactPhone());
+        }
+        if (member.getIconUrl() != null) {
+            current.setIconUrl(member.getIconUrl());
+        }
         memberService.updateMember(current);
-        return CommonResult.success(current);
+        return current;
     }
 
-    @Operation(summary = "Info Operation")
+    @Operation(summary = "Get current member info")
     @GetMapping("/info")
-    public CommonResult info(Principal principal) {
-        if(principal==null){
-            return CommonResult.unauthorized(null);
+    public Member info(Principal principal) {
+        if (principal == null) {
+            Asserts.fail(ResultCode.UNAUTHORIZED);
         }
-        Member member = memberService.getCurrentMember();
-        return CommonResult.success(member);
+        return memberService.getCurrentMember();
     }
 
     @Operation(summary = "Request OTP verification code via email")
     @PostMapping("/getAuthCode")
-
-    public CommonResult getAuthCode(@RequestParam("email") String email) {
+    public void getAuthCode(@RequestParam("email") String email) {
         memberService.generateAuthCode(email);
-        return CommonResult.success(null, "Auth code sent successfully");
     }
 
-    @Operation(summary = "Update password Operation")
+    @Operation(summary = "Update member password")
     @PostMapping("/updatePassword")
-
-    public CommonResult updatePassword(@RequestParam("email") String email,
-                                 @RequestParam(value = "password", required = false) String password,
-                                 @RequestParam(value = "passwordHash", required = false) String passwordHash,
-                                 @RequestParam("authCode") String authCode) {
+    public void updatePassword(
+            @RequestParam("email") String email,
+            @RequestParam(value = "password", required = false) String password,
+            @RequestParam(value = "passwordHash", required = false) String passwordHash,
+            @RequestParam("authCode") String authCode) {
         String finalPassword = password != null ? password : passwordHash;
         memberService.updatePassword(email, finalPassword, authCode);
-        return CommonResult.success(null,"Success");
     }
 
-
-    @Operation(summary = "Refresh token Operation")
+    @Operation(summary = "Refresh JWT token")
     @GetMapping("/refreshToken")
-
-    public CommonResult refreshToken(HttpServletRequest request) {
+    public TokenResponse refreshToken(HttpServletRequest request) {
         String token = request.getHeader(tokenHeader);
         String refreshToken = memberService.refreshToken(token);
         if (refreshToken == null) {
-            return CommonResult.failed("Token refresh failed");
+            Asserts.fail("Token refresh failed");
         }
-        Map<String, String> tokenMap = new HashMap<>();
-        tokenMap.put("token", refreshToken);
-        tokenMap.put("tokenHead", tokenHead);
-        return CommonResult.success(tokenMap);
+        return new TokenResponse(refreshToken, tokenHead);
     }
 }

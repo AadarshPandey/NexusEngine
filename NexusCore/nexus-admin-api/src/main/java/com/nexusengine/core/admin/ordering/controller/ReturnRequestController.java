@@ -1,72 +1,69 @@
 package com.nexusengine.core.admin.ordering.controller;
 
-import lombok.RequiredArgsConstructor;
-
-import org.springframework.web.bind.annotation.RestController;
-
 import com.nexusengine.core.admin.ordering.dto.OrderStatusUpdateParam;
 import com.nexusengine.core.admin.ordering.dto.ReturnRequestQueryParam;
 import com.nexusengine.core.admin.ordering.dto.ReturnRequestResult;
 import com.nexusengine.core.admin.ordering.service.ReturnRequestService;
-import com.nexusengine.core.common.api.CommonPage;
-import com.nexusengine.core.common.api.CommonResult;
+import com.nexusengine.core.common.exception.Asserts;
+import com.nexusengine.core.common.exception.ResourceNotFoundException;
 import com.nexusengine.core.domain.ordering.entity.ReturnRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.web.bind.annotation.*;
-
+import jakarta.validation.Valid;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-
-/**
- * Represents the ReturnRequestController component.
- * Provides core functionality and operations for ReturnRequestController.
- */
 @RestController("adminReturnRequestController")
-@Tag(name = "ReturnRequestController", description = "Oms order return apply controller APIs")
+@Tag(name = "Ordering - Return Requests", description = "Admin order return request management APIs")
 @RequestMapping("/returnApply")
 @RequiredArgsConstructor
 public class ReturnRequestController {
     private final ReturnRequestService returnApplyService;
 
-    @Operation(summary = "List Operation")
+    @Operation(summary = "List return requests")
     @GetMapping("/list")
-
-    public CommonResult<CommonPage<ReturnRequest>> list(ReturnRequestQueryParam queryParam,
-                                                              @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
-                                                              @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
-        List<ReturnRequest> returnApplyList = returnApplyService.list(queryParam, pageSize, pageNum);
-        return CommonResult.success(CommonPage.restPage(returnApplyList));
+    public List<ReturnRequest> list(
+            ReturnRequestQueryParam queryParam,
+            @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
+            @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
+        return returnApplyService.list(queryParam, pageSize, pageNum);
     }
 
-    @Operation(summary = "Delete Operation")
+    @Operation(summary = "Delete return requests")
     @PostMapping("/delete")
-
-    public CommonResult delete(@RequestParam("ids") List<Long> ids) {
+    public Integer delete(@RequestParam("ids") List<Long> ids) {
         int count = returnApplyService.delete(ids);
-        if (count > 0) {
-            return CommonResult.success(count);
+        if (count <= 0) {
+            Asserts.fail("Failed to delete return requests");
         }
-        return CommonResult.failed();
+        return count;
     }
 
-    @Operation(summary = "Get item Operation")
+    @Operation(summary = "Get return request detail")
     @GetMapping("/{id}")
-
-    public CommonResult getItem(@PathVariable("id") Long id) {
+    public ReturnRequestResult getItem(@PathVariable("id") Long id) {
         ReturnRequestResult result = returnApplyService.getItem(id);
-        return CommonResult.success(result);
-    }
-
-    @Operation(summary = "Update status Operation")
-    @PostMapping("/update/status/{id}")
-
-    public CommonResult updateStatus(@PathVariable("id") Long id, @RequestBody OrderStatusUpdateParam statusParam) {
-        int count = returnApplyService.updateStatus(id, statusParam);
-        if (count > 0) {
-            return CommonResult.success(count);
+        if (result == null) {
+            throw new ResourceNotFoundException("ReturnRequest", id);
         }
-        return CommonResult.failed();
+        return result;
     }
 
+    @Operation(summary = "Update return request status")
+    @PostMapping("/update/status/{id}")
+    public Integer updateStatus(
+            @PathVariable("id") Long id, @Valid @RequestBody OrderStatusUpdateParam statusParam) {
+        int count = returnApplyService.updateStatus(id, statusParam);
+        if (count <= 0) {
+            Asserts.fail("Failed to update return request status");
+        }
+        return count;
+    }
 }

@@ -1,73 +1,62 @@
 package com.nexusengine.core.portal.home.controller;
 
-import lombok.RequiredArgsConstructor;
-
-import org.springframework.web.bind.annotation.RestController;
-
-import com.nexusengine.core.common.api.CommonResult;
-import com.nexusengine.core.domain.catalog.entity.Product;
 import com.nexusengine.core.domain.catalog.entity.Category;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import com.nexusengine.core.portal.catalog.dto.ProductSummaryResponse;
+import com.nexusengine.core.portal.catalog.mapper.PortalProductMapper;
 import com.nexusengine.core.portal.home.dto.HomeContentResult;
 import com.nexusengine.core.portal.home.service.HomeService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-
-/**
- * Represents the HomeController component.
- * Provides core functionality and operations for HomeController.
- */
 @RestController
-@Tag(name = "HomeController", description = "Home controller APIs")
+@Tag(name = "Storefront - Home", description = "Storefront home page APIs")
 @RequestMapping("/portal/home")
 @RequiredArgsConstructor
 public class HomeController {
     private final HomeService homeService;
+    private final PortalProductMapper portalProductMapper;
 
-    @Operation(summary = "Content Operation")
+    @Operation(summary = "Get home page content")
     @GetMapping("/body")
-
-    public CommonResult<HomeContentResult> content() {
-        HomeContentResult contentResult = homeService.content();
-        return CommonResult.success(contentResult);
+    public HomeContentResult content() {
+        return homeService.content();
     }
 
-    @Operation(summary = "Recommend product list Operation")
+    @Operation(summary = "List recommended products")
     @GetMapping("/recommendProductList")
-
-    public CommonResult<List<Product>> recommendProductList(@RequestParam(value = "pageSize", defaultValue = "4") Integer pageSize,
-                                                               @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
-        List<Product> productList = homeService.recommendProductList(pageSize, pageNum);
-        return CommonResult.success(productList);
+    public List<ProductSummaryResponse> recommendProductList(
+            @RequestParam(value = "pageSize", defaultValue = "4") Integer pageSize,
+            @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
+        return portalProductMapper.toSummaryList(
+                homeService.recommendProductList(pageSize, pageNum));
     }
 
-    @Operation(summary = "Get product cate list Operation")
+    @Operation(summary = "List product categories by parent")
     @GetMapping("/productCateList/{parentId}")
-
-    public CommonResult<List<Category>> getProductCateList(@PathVariable("parentId") Long parentId) {
-        List<Category> productCategoryList = homeService.getProductCateList(parentId);
-        return CommonResult.success(productCategoryList);
+    public List<Category> getProductCateList(@PathVariable("parentId") Long parentId) {
+        return homeService.getProductCateList(parentId);
     }
 
-
-    @Operation(summary = "Hot product list Operation")
+    @Operation(summary = "List hot products")
     @GetMapping("/hotProductList")
-
-    public CommonResult<List<Product>> hotProductList(@RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
-                                                         @RequestParam(value = "pageSize", defaultValue = "6") Integer pageSize) {
-        List<Product> productList = homeService.hotProductList(pageNum,pageSize);
-        return CommonResult.success(productList);
+    public List<ProductSummaryResponse> hotProductList(
+            @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
+            @RequestParam(value = "pageSize", defaultValue = "6") Integer pageSize) {
+        return portalProductMapper.toSummaryList(homeService.hotProductList(pageNum, pageSize));
     }
 
-    @Operation(summary = "New product list Operation")
+    @Operation(summary = "List new arrival products")
     @GetMapping("/newProductList")
-
-    public CommonResult<List<Product>> newProductList(@RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
-                                                         @RequestParam(value = "pageSize", defaultValue = "6") Integer pageSize) {
-        List<Product> productList = homeService.newProductList(pageNum,pageSize);
-        return CommonResult.success(productList);
+    public List<ProductSummaryResponse> newProductList(
+            @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
+            @RequestParam(value = "pageSize", defaultValue = "6") Integer pageSize) {
+        return portalProductMapper.toSummaryList(homeService.newProductList(pageNum, pageSize));
     }
 }

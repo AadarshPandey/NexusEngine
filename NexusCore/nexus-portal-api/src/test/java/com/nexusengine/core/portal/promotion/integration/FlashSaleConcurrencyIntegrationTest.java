@@ -128,7 +128,7 @@ public class FlashSaleConcurrencyIntegrationTest {
                     startLatch.await();
                     // Each user tries to buy 1 item
                     var result = flashSaleOrderService.generateFlashOrder(1L, fsId, sId, 1);
-                    if (result.getCode() == 200) {
+                    if (result != null) {
                         successCount.incrementAndGet();
                     } else {
                         failCount.incrementAndGet();

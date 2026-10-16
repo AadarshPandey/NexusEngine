@@ -1,24 +1,16 @@
 package com.nexusengine.core.portal.catalog.service;
 
-import lombok.RequiredArgsConstructor;
-
-import com.nexusengine.core.common.api.CommonPage;
-
 import com.nexusengine.core.domain.catalog.entity.Brand;
 import com.nexusengine.core.domain.catalog.entity.Product;
 import com.nexusengine.core.domain.catalog.repository.BrandRepository;
 import com.nexusengine.core.domain.catalog.repository.ProductRepository;
+import com.nexusengine.core.portal.catalog.dao.HomeDao;
+import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import com.nexusengine.core.portal.catalog.dao.HomeDao;
-
-
-/**
- * Portal brand management Service implementation
- */
 @Service("portalBrandServiceImpl")
 @RequiredArgsConstructor
 public class BrandServiceImpl implements BrandService {
@@ -38,9 +30,8 @@ public class BrandServiceImpl implements BrandService {
     }
 
     @Override
-    public CommonPage<Product> productList(Long brandId, Integer pageNum, Integer pageSize) {
-        Page<Product> page = productRepository.findByBrandIdAndDeletedAtIsNullAndIsPublished(
+    public Page<Product> productList(Long brandId, Integer pageNum, Integer pageSize) {
+        return productRepository.findByBrandIdAndDeletedAtIsNullAndIsPublished(
                 brandId, true, PageRequest.of(pageNum - 1, pageSize));
-        return CommonPage.restPage(page);
     }
 }

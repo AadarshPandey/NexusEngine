@@ -45,8 +45,7 @@ class S3ControllerTest {
 
         mockMvc.perform(get("/s3/presign"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(200))
-                .andExpect(jsonPath("$.data.presignedUrl").value("https://s3.example.com/upload"));
+                .andExpect(jsonPath("$.presignedUrl").value("https://s3.example.com/upload"));
     }
 
     @Test
@@ -57,8 +56,7 @@ class S3ControllerTest {
 
         mockMvc.perform(post("/s3/callback"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(200))
-                .andExpect(jsonPath("$.data.filename").value("test.jpg"))
-                .andExpect(jsonPath("$.data.url").value("https://s3.example.com/test.jpg"));
+                .andExpect(jsonPath("$.filename").value("test.jpg"))
+                .andExpect(jsonPath("$.url").value("https://s3.example.com/test.jpg"));
     }
 }

@@ -1,14 +1,10 @@
 package com.nexusengine.core.admin.catalog.controller;
 
-import lombok.RequiredArgsConstructor;
-
-import org.springframework.web.bind.annotation.RestController;
-
 import com.nexusengine.core.admin.catalog.dto.AttributeInfo;
 import com.nexusengine.core.admin.catalog.dto.AttributeParam;
 import com.nexusengine.core.admin.catalog.service.AttributeService;
-import com.nexusengine.core.common.api.CommonPage;
-import com.nexusengine.core.common.api.CommonResult;
+import com.nexusengine.core.common.exception.Asserts;
+import com.nexusengine.core.common.exception.ResourceNotFoundException;
 import com.nexusengine.core.domain.catalog.entity.AttributeDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -16,83 +12,92 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.web.bind.annotation.*;
-
+import jakarta.validation.Valid;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
-
-/**
- * Represents the AttributeController component.
- * Provides core functionality and operations for AttributeController.
- */
 @RestController
-@Tag(name = "AttributeController", description = "Pms product attribute controller APIs")
+@Tag(name = "Catalog - Attributes", description = "Admin product attribute management APIs")
 @RequestMapping("/productAttribute")
 @RequiredArgsConstructor
 public class AttributeController {
     private final AttributeService productAttributeService;
 
-    @Operation(summary = "Get list Operation")
-    @Parameters({@Parameter(name = "type", description = "0 for attribute, 1 for parameter", required = true,in = ParameterIn.QUERY, schema = @Schema(type = "integer"))})
+    @Operation(summary = "List attributes by type")
+    @Parameters({
+        @Parameter(
+                name = "type",
+                description = "0 for attribute, 1 for parameter",
+                required = true,
+                in = ParameterIn.QUERY,
+                schema = @Schema(type = "integer"))
+    })
     @GetMapping("/list/{cid}")
-
-    public CommonResult<CommonPage<AttributeDefinition>> getList(@PathVariable("cid") Long cid,
-                                                                 @RequestParam(value = "type") Integer type,
-                                                                 @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
-                                                                 @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
-        org.springframework.data.domain.Page<AttributeDefinition> productAttributeList = productAttributeService.getList(cid, type, pageSize, pageNum);
-        return CommonResult.success(CommonPage.restPage(productAttributeList));
+    public Page<AttributeDefinition> getList(
+            @PathVariable("cid") Long cid,
+            @RequestParam(value = "type") Integer type,
+            @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
+            @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
+        return productAttributeService.getList(cid, type, pageSize, pageNum);
     }
 
-    @Operation(summary = "Create Operation")
+    @Operation(summary = "Create attribute")
     @PostMapping("/create")
-
-    public CommonResult create(@RequestBody AttributeParam productAttributeParam) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public Integer create(@Valid @RequestBody AttributeParam productAttributeParam) {
         int count = productAttributeService.create(productAttributeParam);
-        if (count > 0) {
-            return CommonResult.success(count);
-        } else {
-            return CommonResult.failed();
+        if (count <= 0) {
+            Asserts.fail("Failed to create attribute");
         }
+        return count;
     }
 
-    @Operation(summary = "Update Operation")
+    @Operation(summary = "Update attribute")
     @PostMapping("/update/{id}")
-
-    public CommonResult update(@PathVariable("id") Long id, @RequestBody AttributeParam productAttributeParam) {
+    public Integer update(
+            @PathVariable("id") Long id,
+            @Valid @RequestBody AttributeParam productAttributeParam) {
         int count = productAttributeService.update(id, productAttributeParam);
-        if (count > 0) {
-            return CommonResult.success(count);
-        } else {
-            return CommonResult.failed();
+        if (count <= 0) {
+            Asserts.fail("Failed to update attribute");
         }
+        return count;
     }
 
-    @Operation(summary = "Get item Operation")
+    @Operation(summary = "Get attribute by ID")
     @GetMapping("/{id}")
-
-    public CommonResult<AttributeDefinition> getItem(@PathVariable("id") Long id) {
+    public AttributeDefinition getItem(@PathVariable("id") Long id) {
         AttributeDefinition productAttribute = productAttributeService.getItem(id);
-        return CommonResult.success(productAttribute);
-    }
-
-    @Operation(summary = "Delete Operation")
-    @PostMapping("/delete")
-
-    public CommonResult delete(@RequestParam("ids") List<Long> ids) {
-        int count = productAttributeService.delete(ids);
-        if (count > 0) {
-            return CommonResult.success(count);
-        } else {
-            return CommonResult.failed();
+        if (productAttribute == null) {
+            throw new ResourceNotFoundException("AttributeDefinition", id);
         }
+        return productAttribute;
     }
 
-    @Operation(summary = "Get attr info Operation")
-    @GetMapping("/attrInfo/{productCategoryId}")
+    @Operation(summary = "Delete attributes")
+    @PostMapping("/delete")
+    public Integer delete(@RequestParam("ids") List<Long> ids) {
+        int count = productAttributeService.delete(ids);
+        if (count <= 0) {
+            Asserts.fail("Failed to delete attributes");
+        }
+        return count;
+    }
 
-    public CommonResult<List<AttributeInfo>> getAttrInfo(@PathVariable("productCategoryId") Long productCategoryId) {
-        List<AttributeInfo> productAttrInfoList = productAttributeService.getProductAttrInfo(productCategoryId);
-        return CommonResult.success(productAttrInfoList);
+    @Operation(summary = "Get attribute info by category ID")
+    @GetMapping("/attrInfo/{productCategoryId}")
+    public List<AttributeInfo> getAttrInfo(
+            @PathVariable("productCategoryId") Long productCategoryId) {
+        return productAttributeService.getProductAttrInfo(productCategoryId);
     }
 }

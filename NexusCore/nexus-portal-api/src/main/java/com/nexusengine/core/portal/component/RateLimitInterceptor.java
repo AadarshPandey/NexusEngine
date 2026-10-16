@@ -1,9 +1,8 @@
 package com.nexusengine.core.portal.component;
 
-import com.nexusengine.core.common.api.CommonResult;
-
-import com.nexusengine.core.domain.customer.entity.Member;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nexusengine.core.domain.customer.entity.Member;
+import com.nexusengine.core.portal.customer.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.redisson.api.RRateLimiter;
@@ -13,10 +12,9 @@ import org.redisson.api.RedissonClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
-import com.nexusengine.core.portal.customer.service.MemberService;
-
 
 @Component
 public class RateLimitInterceptor implements HandlerInterceptor {
@@ -26,41 +24,43 @@ public class RateLimitInterceptor implements HandlerInterceptor {
     private final MemberService memberService;
     private final ObjectMapper objectMapper;
 
-    public RateLimitInterceptor(RedissonClient redissonClient,
-                                MemberService memberService,
-                                ObjectMapper objectMapper) {
+    public RateLimitInterceptor(
+            RedissonClient redissonClient,
+            MemberService memberService,
+            ObjectMapper objectMapper) {
         this.redissonClient = redissonClient;
         this.memberService = memberService;
         this.objectMapper = objectMapper;
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(
+            HttpServletRequest request, HttpServletResponse response, Object handler)
+            throws Exception {
         String path = request.getRequestURI();
 
         if (path.contains("/portal/product/list") || path.contains("/sso/login")) {
             String clientIp = getClientIP(request);
             RRateLimiter rateLimiter = redissonClient.getRateLimiter("rate_limit:ip:" + clientIp);
-            // 100 requests per minute
             rateLimiter.trySetRate(RateType.OVERALL, 100, 1, RateIntervalUnit.MINUTES);
 
             if (!rateLimiter.tryAcquire(1)) {
                 handleRateLimitResponse(response, 60);
                 return false;
             }
-        } else if (path.contains("/portal/order/createRazorpayOrder") || path.contains("/portal/order/verifyRazorpayPayment")) {
+        } else if (path.contains("/portal/order/createRazorpayOrder")
+                || path.contains("/portal/order/verifyRazorpayPayment")) {
             Member currentMember = null;
             try {
                 currentMember = memberService.getCurrentMember();
             } catch (Exception e) {
-                // User not authenticated — skip user-level rate limiting, proceed with request
                 log.debug("Could not resolve current member for rate limiting: {}", e.getMessage());
             }
 
             if (currentMember != null) {
                 String username = currentMember.getUsername();
-                RRateLimiter rateLimiter = redissonClient.getRateLimiter("rate_limit:user:" + username);
-                // 10 requests per minute
+                RRateLimiter rateLimiter =
+                        redissonClient.getRateLimiter("rate_limit:user:" + username);
                 rateLimiter.trySetRate(RateType.OVERALL, 10, 1, RateIntervalUnit.MINUTES);
 
                 if (!rateLimiter.tryAcquire(1)) {
@@ -73,20 +73,20 @@ public class RateLimitInterceptor implements HandlerInterceptor {
         return true;
     }
 
-    private void handleRateLimitResponse(HttpServletResponse response, long retryAfterSeconds) throws Exception {
+    private void handleRateLimitResponse(HttpServletResponse response, long retryAfterSeconds)
+            throws Exception {
         response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
         response.setHeader("Retry-After", String.valueOf(retryAfterSeconds));
-        response.setContentType("application/json;charset=UTF-8");
+        response.setContentType("application/problem+json;charset=UTF-8");
 
-        CommonResult<Object> result = CommonResult.failed("Too Many Requests. Please try again later.");
-        response.getWriter().write(objectMapper.writeValueAsString(result));
+        ProblemDetail pd =
+                ProblemDetail.forStatusAndDetail(
+                        HttpStatus.TOO_MANY_REQUESTS,
+                        "Too Many Requests. Please try again later.");
+        pd.setTitle("Rate Limit Exceeded");
+        response.getWriter().write(objectMapper.writeValueAsString(pd));
     }
 
-    /**
-     * Returns the client IP for rate limiting.
-     * Uses remoteAddr which is set by the reverse proxy (Nginx/ALB) and cannot be spoofed.
-     * X-Forwarded-For is NOT used because it can be trivially forged by clients.
-     */
     private String getClientIP(HttpServletRequest request) {
         return request.getRemoteAddr();
     }

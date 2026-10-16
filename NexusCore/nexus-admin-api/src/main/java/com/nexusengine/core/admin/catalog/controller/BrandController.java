@@ -1,120 +1,112 @@
 package com.nexusengine.core.admin.catalog.controller;
 
-import lombok.RequiredArgsConstructor;
-
-import org.springframework.web.bind.annotation.RestController;
-
 import com.nexusengine.core.admin.catalog.dto.BrandParam;
+import com.nexusengine.core.admin.catalog.dto.BrandResponse;
+import com.nexusengine.core.admin.catalog.mapper.BrandMapper;
 import com.nexusengine.core.admin.catalog.service.BrandService;
-import com.nexusengine.core.common.api.CommonPage;
-import com.nexusengine.core.common.api.CommonResult;
+import com.nexusengine.core.common.exception.Asserts;
+import com.nexusengine.core.common.exception.ResourceNotFoundException;
 import com.nexusengine.core.domain.catalog.entity.Brand;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-
+import jakarta.validation.Valid;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
-
-/**
- * Represents the BrandController component.
- * Provides core functionality and operations for BrandController.
- */
 @RestController("adminBrandController")
-@Tag(name = "BrandController", description = "Pms brand controller APIs")
+@Tag(name = "Catalog - Brands", description = "Admin brand management APIs")
 @RequestMapping("/brand")
 @RequiredArgsConstructor
 public class BrandController {
     private final BrandService brandService;
+    private final BrandMapper brandMapper;
 
-    @Operation(summary =  "Get list Operation")
+    @Operation(summary = "List all brands")
     @GetMapping("/listAll")
-
-    public CommonResult<CommonPage<Brand>> getList() {
-        return CommonResult.success(CommonPage.restPage(brandService.listAllBrand()));
+    public Page<BrandResponse> getList() {
+        return brandService.listAllBrand().map(brandMapper::toResponse);
     }
 
-    @Operation(summary =  "Create Operation")
+    @Operation(summary = "Create brand")
     @PostMapping("/create")
-
-    public CommonResult create(@Validated @RequestBody BrandParam brand) {
-        CommonResult commonResult;
+    @ResponseStatus(HttpStatus.CREATED)
+    public Integer create(@Valid @RequestBody BrandParam brand) {
         int count = brandService.createBrand(brand);
-        if (count == 1) {
-            commonResult = CommonResult.success(count);
-        } else {
-            commonResult = CommonResult.failed();
+        if (count != 1) {
+            Asserts.fail("Failed to create brand");
         }
-        return commonResult;
+        return count;
     }
 
-    @Operation(summary =  "Update Operation")
+    @Operation(summary = "Update brand")
     @PostMapping("/update/{id}")
-
-    public CommonResult update(@PathVariable("id") Long id,
-                               @Validated @RequestBody BrandParam brandParam) {
-        CommonResult commonResult;
+    public Integer update(
+            @PathVariable("id") Long id, @Valid @RequestBody BrandParam brandParam) {
         int count = brandService.updateBrand(id, brandParam);
-        if (count == 1) {
-            commonResult = CommonResult.success(count);
-        } else {
-            commonResult = CommonResult.failed();
+        if (count != 1) {
+            Asserts.fail("Failed to update brand");
         }
-        return commonResult;
+        return count;
     }
 
-    @Operation(summary =  "Delete Operation")
+    @Operation(summary = "Delete brand")
     @GetMapping("/delete/{id}")
-
-    public CommonResult delete(@PathVariable("id") Long id) {
+    public void delete(@PathVariable("id") Long id) {
         int count = brandService.deleteBrand(id);
-        if (count == 1) {
-            return CommonResult.success(null);
-        } else {
-            return CommonResult.failed();
+        if (count != 1) {
+            Asserts.fail("Failed to delete brand");
         }
     }
 
-    @Operation(summary =  "Get list Operation")
+    @Operation(summary = "List brands with pagination")
     @GetMapping("/list")
-
-    public CommonResult<CommonPage<Brand>> getList(@RequestParam(value = "keyword", required = false) String keyword,
-                                                      @RequestParam(value = "isVisible",required = false) Integer isVisible,
-                                                      @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
-                                                      @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize) {
-        org.springframework.data.domain.Page<Brand> brandList = brandService.listBrand(keyword,isVisible,pageNum, pageSize);
-        return CommonResult.success(CommonPage.restPage(brandList));
+    public Page<BrandResponse> getList(
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(value = "isVisible", required = false) Integer isVisible,
+            @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
+            @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize) {
+        Page<Brand> brandList = brandService.listBrand(keyword, isVisible, pageNum, pageSize);
+        return brandList.map(brandMapper::toResponse);
     }
 
-    @Operation(summary =  "Get item Operation")
+    @Operation(summary = "Get brand by ID")
     @GetMapping("/{id}")
-
-    public CommonResult<Brand> getItem(@PathVariable("id") Long id) {
-        return CommonResult.success(brandService.getBrand(id));
+    public BrandResponse getItem(@PathVariable("id") Long id) {
+        Brand brand = brandService.getBrand(id);
+        if (brand == null) {
+            throw new ResourceNotFoundException("Brand", id);
+        }
+        return brandMapper.toResponse(brand);
     }
 
-    @Operation(summary =  "Delete batch Operation")
+    @Operation(summary = "Delete brands in batch")
     @PostMapping("/delete/batch")
-
-    public CommonResult deleteBatch(@RequestParam("ids") List<Long> ids) {
+    public Integer deleteBatch(@RequestParam("ids") List<Long> ids) {
         int count = brandService.deleteBrand(ids);
-        if (count > 0) {
-            return CommonResult.success(count);
-        } else {
-            return CommonResult.failed();
+        if (count <= 0) {
+            Asserts.fail("Failed to delete brands");
         }
+        return count;
     }
 
+    @Operation(summary = "Update brand visibility")
     @PostMapping("/update/isVisible")
-
-    public CommonResult updateIsVisible(@RequestParam("ids") List<Long> ids,
-                                   @RequestParam("isVisible") Integer isVisible) {
+    public Integer updateIsVisible(
+            @RequestParam("ids") List<Long> ids, @RequestParam("isVisible") Integer isVisible) {
         int count = brandService.updateIsVisible(ids, isVisible);
-        if (count > 0) {
-            return CommonResult.success(count);
-        } else {
-            return CommonResult.failed();
+        if (count <= 0) {
+            Asserts.fail("Failed to update brand visibility");
         }
+        return count;
     }
 }

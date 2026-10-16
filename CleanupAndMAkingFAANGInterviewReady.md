@@ -821,7 +821,7 @@ Also:
 
 > Goal: Entities never leave the service layer. Controllers return typed DTOs (Java records). Proper HTTP status codes. Kill `CommonResult<T>`.
 
-- [ ] **3.1 — Create request/response DTOs as Java `record`s.** For every controller endpoint, create:
+- [x] **3.1 — Create request/response DTOs as Java `record`s.** For every controller endpoint, create:
   - **Request records** with Bean Validation annotations:
     ```java
     public record CreateProductRequest(
@@ -850,7 +850,7 @@ Also:
     ```
   - Place DTOs inside each context package: `admin/catalog/dto/`, `portal/catalog/dto/` etc.
 
-- [ ] **3.2 — Introduce MapStruct mappers** (already a dependency) for entity ↔ DTO conversion:
+- [x] **3.2 — Introduce MapStruct mappers** (already a dependency) for entity ↔ DTO conversion:
   ```java
   @Mapper(componentModel = "spring")
   public interface ProductMapper {
@@ -864,7 +864,7 @@ Also:
     - A `@Mapping(source = "brand.name", target = "brandName")` if the relation is within the context, OR
     - A separate service call / query projection if across contexts
 
-- [ ] **3.3 — Kill `CommonResult<T>`.** Replace the mall-era response wrapper:
+- [x] **3.3 — Kill `CommonResult<T>`.** Replace the mall-era response wrapper:
   | Before | After |
   |---|---|
   | `CommonResult<Product>` (HTTP 200 always) | Return DTO directly; Spring returns HTTP 200 implicitly |
@@ -937,14 +937,14 @@ Also:
   }
   ```
 
-- [ ] **3.6 — Add `@Valid` on ALL `@RequestBody` parameters.** Every create/update endpoint must validate its input:
+- [x] **3.6 — Add `@Valid` on ALL `@RequestBody` parameters.** Every create/update endpoint must validate its input:
   ```java
   @PostMapping("/api/admin/products")
   @ResponseStatus(HttpStatus.CREATED)
   public ProductDetailResponse createProduct(@Valid @RequestBody CreateProductRequest request) { ... }
   ```
 
-- [ ] **3.7 — Remove `try/catch` from controllers.** Business logic exceptions should bubble to `@RestControllerAdvice`. Controllers should be thin:
+- [x] **3.7 — Remove `try/catch` from controllers.** Business logic exceptions should bubble to `@RestControllerAdvice`. Controllers should be thin:
   ```java
   @PutMapping("/api/admin/products/{id}")
   public ProductDetailResponse updateProduct(@PathVariable Long id, @Valid @RequestBody UpdateProductRequest req) {
@@ -953,7 +953,7 @@ Also:
   // No try/catch — ResourceNotFoundException → 404 via GlobalExceptionHandler
   ```
 
-- [ ] **3.8 — Remove `Map<String, Object>` return types.** Replace ALL 16 occurrences with typed records (e.g. `OrderConfirmationResponse`, `PaymentInitiationResponse`).
+- [x] **3.8 — Remove `Map<String, Object>` return types.** Replace ALL 16 occurrences with typed records (e.g. `OrderConfirmationResponse`, `PaymentInitiationResponse`).
 
 - [ ] **3.9 — Update OpenAPI/Swagger tags.** Replace mall-era tags:
   ```java
@@ -2009,14 +2009,14 @@ nexus-domain/src/main/resources/db/migration/
 **Gate: Zero `IntegerToBooleanConverter` / `IntegerToDeletedAtConverter` references. Zero fully-qualified annotation strings. `mvn clean compile -DskipTests` passes.**
 
 #### Card 2: Kill CommonResult + Create DTOs (3 hrs)
-- [ ] **2.1** Create Java `record` DTOs for every controller endpoint (request + response). Place in `admin/<context>/dto/` and `portal/<context>/dto/`.
-- [ ] **2.2** Create MapStruct mappers per context: `ProductMapper`, `BrandMapper`, `OrderMapper`, etc.
-- [ ] **2.3** Replace ALL `CommonResult<Entity>` returns with direct DTO returns + proper HTTP status codes.
-- [ ] **2.4** Replace `CommonResult.failed()` with exceptions → `GlobalExceptionHandler` returns RFC 9457 `ProblemDetail`.
-- [ ] **2.5** Add `@Valid` on ALL `@RequestBody` parameters.
-- [ ] **2.6** Replace all `Map<String, Object>` returns with typed records.
-- [ ] **2.7** Run `grep -rn 'CommonResult' NexusCore/nexus-admin-api/src/main/java/ NexusCore/nexus-portal-api/src/main/java/` — must be 0.
-- [ ] Commit: `refactor: DTO records, kill CommonResult, RFC 9457 errors`
+- [x] **2.1** Create Java `record` DTOs for every controller endpoint (request + response). Place in `admin/<context>/dto/` and `portal/<context>/dto/`.
+- [x] **2.2** Create MapStruct mappers per context: `ProductMapper`, `BrandMapper`, `OrderMapper`, etc.
+- [x] **2.3** Replace ALL `CommonResult<Entity>` returns with direct DTO returns + proper HTTP status codes.
+- [x] **2.4** Replace `CommonResult.failed()` with exceptions → `GlobalExceptionHandler` returns RFC 9457 `ProblemDetail`.
+- [x] **2.5** Add `@Valid` on ALL `@RequestBody` parameters.
+- [x] **2.6** Replace all `Map<String, Object>` returns with typed records.
+- [x] **2.7** Run `grep -rn 'CommonResult' NexusCore/nexus-admin-api/src/main/java/ NexusCore/nexus-portal-api/src/main/java/` — must be 0.
+- [x] Commit: `refactor: DTO records, kill CommonResult, RFC 9457 errors`
 
 **Gate: Zero `CommonResult` in controller/service code. `mvn clean compile -DskipTests` passes.**
 

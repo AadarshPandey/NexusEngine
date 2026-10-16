@@ -19,9 +19,10 @@ import java.net.URI;
 public class S3Config {
     @Value("${spring.cloud.aws.s3.endpoint:}")
     private String endpoint;
-    @Value("${spring.cloud.aws.credentials.access-key:minioadmin}")
+    @Value("${spring.cloud.aws.credentials.access-key:test}")
     private String accessKey;
-    @Value("${spring.cloud.aws.credentials.secret-key:minioadmin}")
+
+    @Value("${spring.cloud.aws.credentials.secret-key:test}")
     private String secretKey;
     @Value("${spring.cloud.aws.region.static:us-east-1}")
     private String region;

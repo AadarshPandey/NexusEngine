@@ -31,23 +31,48 @@ public class GlobalExceptionHandler {
         return pd;
     }
 
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ProblemDetail handleNotFound(ResourceNotFoundException ex) {
+        ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+        pd.setTitle("Resource Not Found");
+        pd.setProperty("resource", ex.getResourceType());
+        if (ex.getIdentifier() != null) {
+            pd.setProperty("identifier", ex.getIdentifier());
+        }
+        return pd;
+    }
+
     @ExceptionHandler({MethodArgumentNotValidException.class, BindException.class})
     public ProblemDetail handleValidationException(Exception e) {
         BindingResult bindingResult = null;
-        if (e instanceof MethodArgumentNotValidException) {
-            bindingResult = ((MethodArgumentNotValidException) e).getBindingResult();
-        } else if (e instanceof BindException) {
-            bindingResult = ((BindException) e).getBindingResult();
+        if (e instanceof MethodArgumentNotValidException manve) {
+            bindingResult = manve.getBindingResult();
+        } else if (e instanceof BindException be) {
+            bindingResult = be.getBindingResult();
         }
 
         String message = "Validation failed";
         if (bindingResult != null && bindingResult.hasErrors()) {
-            message = bindingResult.getFieldErrors().stream()
-                    .map(f -> f.getField() + " " + f.getDefaultMessage())
-                    .collect(Collectors.joining(", "));
+            message =
+                    bindingResult.getFieldErrors().stream()
+                            .map(f -> f.getField() + " " + f.getDefaultMessage())
+                            .collect(Collectors.joining(", "));
         }
         ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, message);
         pd.setTitle("Validation Error");
+        if (bindingResult != null && bindingResult.hasErrors()) {
+            java.util.Map<String, String> fieldErrors =
+                    bindingResult.getFieldErrors().stream()
+                            .collect(
+                                    Collectors.toMap(
+                                            org.springframework.validation.FieldError::getField,
+                                            f ->
+                                                    f.getDefaultMessage() != null
+                                                            ? f.getDefaultMessage()
+                                                            : "invalid",
+                                            (a, b) -> a));
+            pd.setProperty("fieldErrors", fieldErrors);
+        }
         return pd;
     }
 
