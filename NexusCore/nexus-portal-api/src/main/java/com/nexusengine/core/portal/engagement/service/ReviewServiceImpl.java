@@ -33,7 +33,7 @@ public class ReviewServiceImpl implements ReviewService {
     private final ProductRepository productRepository;
     private final BrandRepository brandRepository;
     private final com.nexusengine.core.domain.ordering.repository.CustomerOrderRepository customerOrderRepository;
-    private final com.nexusengine.core.common.service.RedisService redisService;
+    private final org.springframework.data.redis.core.StringRedisTemplate stringRedisTemplate;
     private final S3Client s3Client;
 
     @Value("${spring.cloud.aws.s3.bucket-name:nexus-media}")
@@ -65,8 +65,9 @@ public class ReviewServiceImpl implements ReviewService {
             return;
         }
         for (ProductReview r : reviews) {
-            r.setUserLiked(redisService.sIsMember("review:like:" + r.getId(), userId));
-            r.setUserDisliked(redisService.sIsMember("review:dislike:" + r.getId(), userId));
+            String uidStr = String.valueOf(userId);
+            r.setUserLiked(Boolean.TRUE.equals(stringRedisTemplate.opsForSet().isMember("review:like:" + r.getId(), uidStr)));
+            r.setUserDisliked(Boolean.TRUE.equals(stringRedisTemplate.opsForSet().isMember("review:dislike:" + r.getId(), uidStr)));
         }
     }
 
@@ -183,18 +184,19 @@ public class ReviewServiceImpl implements ReviewService {
         ProductReview review = reviewRepository.findById(id).orElse(null);
         if (review == null) return 0;
 
-        if (redisService.sIsMember(likeKey, userId)) {
+        String uidStr = String.valueOf(userId);
+        if (Boolean.TRUE.equals(stringRedisTemplate.opsForSet().isMember(likeKey, uidStr))) {
             // Undo like
-            redisService.sRemove(likeKey, (Object) userId);
+            stringRedisTemplate.opsForSet().remove(likeKey, uidStr);
             review.setLikeCount(Math.max(0, (review.getLikeCount() == null ? 0 : review.getLikeCount()) - 1));
         } else {
             // Do like
-            redisService.sAdd(likeKey, (Object) userId);
+            stringRedisTemplate.opsForSet().add(likeKey, uidStr);
             review.setLikeCount((review.getLikeCount() == null ? 0 : review.getLikeCount()) + 1);
 
             // If already disliked, undo dislike
-            if (redisService.sIsMember(dislikeKey, userId)) {
-                redisService.sRemove(dislikeKey, (Object) userId);
+            if (Boolean.TRUE.equals(stringRedisTemplate.opsForSet().isMember(dislikeKey, uidStr))) {
+                stringRedisTemplate.opsForSet().remove(dislikeKey, uidStr);
                 review.setDislikeCount(Math.max(0, (review.getDislikeCount() == null ? 0 : review.getDislikeCount()) - 1));
             }
         }
@@ -218,18 +220,19 @@ public class ReviewServiceImpl implements ReviewService {
         ProductReview review = reviewRepository.findById(id).orElse(null);
         if (review == null) return 0;
 
-        if (redisService.sIsMember(dislikeKey, userId)) {
+        String uidStr = String.valueOf(userId);
+        if (Boolean.TRUE.equals(stringRedisTemplate.opsForSet().isMember(dislikeKey, uidStr))) {
             // Undo dislike
-            redisService.sRemove(dislikeKey, (Object) userId);
+            stringRedisTemplate.opsForSet().remove(dislikeKey, uidStr);
             review.setDislikeCount(Math.max(0, (review.getDislikeCount() == null ? 0 : review.getDislikeCount()) - 1));
         } else {
             // Do dislike
-            redisService.sAdd(dislikeKey, (Object) userId);
+            stringRedisTemplate.opsForSet().add(dislikeKey, uidStr);
             review.setDislikeCount((review.getDislikeCount() == null ? 0 : review.getDislikeCount()) + 1);
 
             // If already liked, undo like
-            if (redisService.sIsMember(likeKey, userId)) {
-                redisService.sRemove(likeKey, (Object) userId);
+            if (Boolean.TRUE.equals(stringRedisTemplate.opsForSet().isMember(likeKey, uidStr))) {
+                stringRedisTemplate.opsForSet().remove(likeKey, uidStr);
                 review.setLikeCount(Math.max(0, (review.getLikeCount() == null ? 0 : review.getLikeCount()) - 1));
             }
         }

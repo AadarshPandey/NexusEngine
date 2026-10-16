@@ -42,6 +42,16 @@ public class GlobalExceptionHandler {
         return pd;
     }
 
+    @ExceptionHandler(InsufficientStockException.class)
+    public ProblemDetail handleInsufficientStock(InsufficientStockException ex) {
+        ProblemDetail pd = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+        pd.setTitle("Insufficient Stock");
+        if (ex.getSkuId() != null) {
+            pd.setProperty("skuId", ex.getSkuId());
+        }
+        return pd;
+    }
+
     @ExceptionHandler({MethodArgumentNotValidException.class, BindException.class})
     public ProblemDetail handleValidationException(Exception e) {
         BindingResult bindingResult = null;

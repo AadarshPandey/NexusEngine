@@ -1,74 +1,74 @@
 package com.nexusengine.core.portal.customer.service;
 
-import lombok.RequiredArgsConstructor;
-
-import com.nexusengine.core.common.service.RedisService;
-
-import com.nexusengine.core.domain.customer.repository.MemberRepository;
 import com.nexusengine.core.domain.customer.entity.Member;
-import com.nexusengine.core.security.annotation.CacheException;
+import com.nexusengine.core.domain.customer.repository.MemberRepository;
+import java.time.Duration;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-
 /**
- * Represents the MemberCacheServiceImpl component.
- * Provides core functionality and operations for MemberCacheServiceImpl.
+ * Service managing Redis caching for member profiles and OTP auth codes.
  */
 @Service
 @RequiredArgsConstructor
 public class MemberCacheServiceImpl implements MemberCacheService {
-    private final RedisService redisService;
+    private final RedisTemplate<String, Object> redisTemplate;
     private final MemberRepository memberRepository;
-    @Value("${redis.database}")
-    private String REDIS_DATABASE;
-    @Value("${redis.expire.common}")
-    private Long REDIS_EXPIRE;
-    @Value("${redis.expire.authCode}")
-    private Long REDIS_EXPIRE_AUTH_CODE;
-    @Value("${redis.key.member}")
-    private String REDIS_KEY_MEMBER;
-    @Value("${redis.key.authCode}")
-    private String REDIS_KEY_AUTH_CODE;
+
+    @Value("${redis.database:nexus}")
+    private String redisDatabase;
+
+    @Value("${redis.expire.common:86400}")
+    private Long redisExpire;
+
+    @Value("${redis.expire.authCode:300}")
+    private Long redisExpireAuthCode;
+
+    @Value("${redis.key.member:customer:member:}")
+    private String redisKeyMember;
+
+    @Value("${redis.key.authCode:customer:authCode:}")
+    private String redisKeyAuthCode;
 
     @Override
     public void delMember(Long memberId) {
         Member member = memberRepository.findById(memberId).orElse(null);
         if (member != null) {
-            String key = REDIS_DATABASE + ":" + REDIS_KEY_MEMBER + ":" + member.getUsername();
-            redisService.del(key);
+            String key = redisDatabase + ":" + redisKeyMember + ":" + member.getUsername();
+            redisTemplate.delete(key);
         }
     }
 
     @Override
     public Member getMember(String username) {
-        String key = REDIS_DATABASE + ":" + REDIS_KEY_MEMBER + ":" + username;
-        return (Member) redisService.get(key);
+        String key = redisDatabase + ":" + redisKeyMember + ":" + username;
+        return (Member) redisTemplate.opsForValue().get(key);
     }
 
     @Override
     public void setMember(Member member) {
-        String key = REDIS_DATABASE + ":" + REDIS_KEY_MEMBER + ":" + member.getUsername();
-        redisService.set(key, member, REDIS_EXPIRE);
+        String key = redisDatabase + ":" + redisKeyMember + ":" + member.getUsername();
+        redisTemplate.opsForValue().set(key, member, Duration.ofSeconds(redisExpire));
     }
 
-    @CacheException
     @Override
     public void setAuthCode(String telephone, String authCode) {
-        String key = REDIS_DATABASE + ":" + REDIS_KEY_AUTH_CODE + ":" + telephone;
-        redisService.set(key,authCode,REDIS_EXPIRE_AUTH_CODE);
+        String key = redisDatabase + ":" + redisKeyAuthCode + ":" + telephone;
+        redisTemplate.opsForValue().set(key, authCode, Duration.ofSeconds(redisExpireAuthCode));
     }
 
-    @CacheException
     @Override
     public String getAuthCode(String telephone) {
-        String key = REDIS_DATABASE + ":" + REDIS_KEY_AUTH_CODE + ":" + telephone;
-        return (String) redisService.get(key);
+        String key = redisDatabase + ":" + redisKeyAuthCode + ":" + telephone;
+        Object val = redisTemplate.opsForValue().get(key);
+        return val != null ? val.toString() : null;
     }
 
     @Override
     public void delAuthCode(String telephone) {
-        String key = REDIS_DATABASE + ":" + REDIS_KEY_AUTH_CODE + ":" + telephone;
-        redisService.del(key);
+        String key = redisDatabase + ":" + redisKeyAuthCode + ":" + telephone;
+        redisTemplate.delete(key);
     }
 }

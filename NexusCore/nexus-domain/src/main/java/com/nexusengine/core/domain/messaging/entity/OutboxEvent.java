@@ -36,8 +36,16 @@ private String status; // PENDING, SENT, FAILED
 
 
 
-@Column(name = "attempt_count", columnDefinition = "INTEGER DEFAULT 0")
+    @Column(name = "attempt_count", columnDefinition = "INTEGER DEFAULT 0")
     private Integer retryCount = 0;
+
+    public Integer getAttemptCount() {
+        return retryCount;
+    }
+
+    public void setAttemptCount(Integer attemptCount) {
+        this.retryCount = attemptCount;
+    }
 
     private OffsetDateTime createdAt;
 }

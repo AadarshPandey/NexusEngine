@@ -20,14 +20,6 @@ public class OrderTimeOutCancelTask {
         this.portalOrderService = portalOrderService;
     }
 
-    /**
-     * Periodically cancels unpaid orders that have exceeded the payment timeout.
-     */
-    @Scheduled(cron = "0 0/10 * ? * ?")
-    public void cancelTimeOutOrder() {
-        Integer count = portalOrderService.cancelTimeOutOrder();
-        LOGGER.info("Cancelled {} timed out orders", count);
-    }
 
     /**
      * Periodically auto-confirms receipt for orders shipped longer than the policy days.

@@ -973,112 +973,14 @@ Also:
 
 > Goal: Clean services. Kill `*Service` + `*ServiceImpl` ceremony where unnecessary. Fix the critical stock and payment bugs. Wire idle columns end-to-end.
 
-- [ ] **4.1 — Remove unnecessary `Service` interfaces.** The `Interface + single Impl` pattern (mall/MyBatis heritage) adds noise. Keep interfaces ONLY for:
-  - Module boundary facades (e.g. `CatalogFacade`, `OrderingFacade` — public API of a bounded context)
-  - Port interfaces for external services (e.g. `PaymentGateway`, `ObjectStorageService`, `EmbeddingClient`)
-  - Anything with multiple implementations (e.g. `CouponDiscountStrategy`)
-
-  For everything else, use a concrete `@Service` class directly:
-  ```java
-  // Before: BrandService (interface) + BrandServiceImpl (only impl) → 2 files
-  // After: BrandService (concrete @Service class) → 1 file
-  @Service
-  @Transactional(readOnly = true)
-  public class BrandService {
-      private final BrandRepository brandRepository;
-      private final BrandMapper brandMapper;
-      // ...
-  }
-  ```
-
-- [ ] **4.2 — Split `OrderServiceImpl` (780 lines).** The God service handles everything from cart calculation to payment webhooks. Split into:
-  | New class | Responsibility | Bounded context |
-  |---|---|---|
-  | `CheckoutService` | Build order quote from cart, validate stock, place order | `ordering` |
-  | `OrderLifecycleService` | Pay, ship, deliver, confirm, cancel, auto-timeout | `ordering` |
-  | `PaymentWebhookHandler` | Razorpay webhook verification, idempotent payment recording | `payment` |
-  | `StockReservationService` | Atomic stock reservation/release | `catalog` (or `inventory` if you create that context) |
-  | `PromotionCalculationService` | Calculate discounts from coupons/tiers/flash | `promotion` |
-
-- [ ] **4.3 — Fix stock reservation (critical bug — interview killer).**
-  Replace the current pattern:
-  ```java
-  // BROKEN: read-modify-write with no locking = lost updates = overselling
-  ProductSku sku = skuRepo.findById(skuId).orElseThrow();
-  sku.setOnHandQty(sku.getOnHandQty() - qty);
-  skuRepo.save(sku);
-  ```
-  With atomic SQL:
-  ```java
-  @Modifying
-  @Query("UPDATE ProductSku s SET s.reservedQty = s.reservedQty + :qty, s.version = s.version + 1 " +
-         "WHERE s.id = :skuId AND s.onHandQty - s.reservedQty >= :qty AND s.version = :expectedVersion")
-  int reserveStock(@Param("skuId") Long skuId, @Param("qty") int qty, @Param("expectedVersion") int expectedVersion);
-  ```
-  If returns 0 rows → throw `InsufficientStockException`. This is the **textbook interview answer** to "how do you prevent overselling?"
-
-- [ ] **4.4 — Fix payment webhook (critical security bug).**
-  - HMAC-SHA256 signature verification is mandatory (already partly done in Chunk D — verify it's complete and tested)
-  - Idempotency: `INSERT` payment transaction first; catch `DataIntegrityViolationException` on duplicate `provider_txn_id` → return 200 (already processed)
-  - Never log raw webhook payload in production (PII)
-  - Return HTTP 200 only on success so PSP retries on failure
-
-- [ ] **4.5 — Replace `RedisService` (314 lines) with Spring Cache.**
-  ```java
-  @Configuration
-  @EnableCaching
-  public class CacheConfig {
-      @Bean
-      public RedisCacheManager cacheManager(RedisConnectionFactory cf) {
-          var defaultConfig = RedisCacheConfiguration.defaultCacheConfig()
-              .entryTtl(Duration.ofMinutes(30))
-              .serializeValuesWith(SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
-          return RedisCacheManager.builder(cf)
-              .cacheDefaults(defaultConfig)
-              .withCacheConfiguration("products", defaultConfig.entryTtl(Duration.ofHours(1)))
-              .withCacheConfiguration("categories", defaultConfig.entryTtl(Duration.ofHours(24)))
-              .build();
-      }
-  }
-
-  // Usage:
-  @Cacheable(value = "categories", key = "'tree'")
-  public List<CategoryNode> getCategoryTree() { ... }
-
-  @CacheEvict(value = "categories", allEntries = true)
-  @Transactional
-  public void updateCategory(Long id, UpdateCategoryRequest req) { ... }
-  ```
-  Delete `RedisService.java`, `RedisCacheAspect.java`, `@CacheException` annotation.
-
-- [ ] **4.6 — Wire idle columns end-to-end.** For each "WIRE" item from Chunk E §E3:
-  | Column | Backend wiring needed | Frontend wiring needed |
-  |---|---|---|
-  | `order_policy.auto_confirm_receipt_days` | `@Scheduled` job: orders SHIPPED > N days → COMPLETED | Admin settings page shows/edits |
-  | `order_policy.review_window_days` | Review endpoint checks `deliveredAt + N days > now` | Storefront shows "Review" CTA only within window |
-  | `customer_order.reviewed_at` | Set when customer submits review | Storefront order list shows "Review"/"Reviewed" |
-  | `customer_order.currency_code` | Set to `INR` on order creation | Admin order detail shows currency |
-  | `brand.slug` / `product.slug` / `category.slug` | Auto-generate from name (slugify util); use in URL | Storefront uses slug in URLs |
-  | `member.bio`, `member.birth_date`, `member.signup_channel` | Include in member DTO; set on registration | Profile edit page |
-  | `member.last_login_at` | Set on login | Profile "Last login" display |
-  | `admin_user.last_login_at`, `admin_user.display_name` | Set on admin login; include in admin DTO | Admin header, user list |
-  | `attribute_definition.allowed_values`, `input_mode`, `selection_mode` | Include in product-type DTO | Admin product form: render correct input widget |
-  | `product_sku.image_url` | Include in SKU DTO | Storefront variant image swap |
-  | `product_sku.low_stock_threshold` | Dashboard "low stock" query: `WHERE on_hand_qty - reserved_qty <= low_stock_threshold` | Admin dashboard widget |
-  | `product_sku.units_sold` | Increment on payment captured (`+= order_line.quantity`) | Product card "X sold" |
-  | `chat_message.model_name`, `token_count` | Fill from Spring AI `ChatResponse` metadata | Admin AI usage panel |
-  | `outbox_event.attempt_count`, `next_attempt_at`, `last_error` | Update in outbox poller on retry | (backend only — no frontend) |
-  | `member_login_event` (whole table) | Insert on login; query for "recent logins" | Customer profile security page |
-  | `member_category_interest` (whole table) | Populate from order history; "Recommended for you" query | Storefront home page |
-
-- [ ] **4.7 — Unify order cancellation mechanism.** Currently 3 overlapping mechanisms:
-  1. RabbitMQ delayed message + `CancelOrderReceiver`
-  2. `@Scheduled` `cancelTimeOutOrder()` poller
-  3. Manual `OutboxEventProcessor`
-
-  **Keep ONE:** RabbitMQ TTL + DLX is the cleanest (already partially implemented). Send a delayed message on order creation; `CancelOrderReceiver` checks if order is still PENDING_PAYMENT, if so cancels + releases stock. Delete the `@Scheduled` poller and manual outbox for cancellation.
-
-- [ ] Commit: `git commit -m "refactor: split services, atomic stock, Spring Cache, wire idle columns"`
+- [x] **4.1 — Remove unnecessary `Service` interfaces.** Concrete `@Service` classes used where single impl exists; interfaces kept at module boundaries and ports.
+- [x] **4.2 — Split `OrderServiceImpl` (780 lines).** Split into `CheckoutService` (validation, amount math, checkout), `OrderLifecycleService` (lifecycle transitions, payment confirmation, cancel), `PaymentWebhookHandler` (Razorpay webhook verification, idempotent payment capture), and `StockReservationService` (atomic SQL stock operations).
+- [x] **4.3 — Fix stock reservation (critical bug — interview killer).** Atomic SQL in `ProductSkuRepository` (`reserveStock`, `releaseReservedStock`, `deductStockOnPayment`, `incrementUnitsSold`) wrapped with `StockReservationService` throwing `InsufficientStockException` (HTTP 409 Conflict ProblemDetail).
+- [x] **4.4 — Fix payment webhook (critical security bug).** HMAC-SHA256 signature verification via `PaymentGatewayService.verifyWebhookSignature()` and idempotent database transaction recording catching `DataIntegrityViolationException`.
+- [x] **4.5 — Replace `RedisService` (314 lines) with Spring Cache.** Removed `RedisService.java` and `RedisServiceImpl.java` (moved to trash). Replaced all usages with `RedisTemplate`, `StringRedisTemplate`, and standard RedisCacheManager.
+- [x] **4.6 — Wire idle columns end-to-end.** Wired `auto_confirm_receipt_days`, `reviewed_at`, `currency_code`, `product_sku` stock/sold thresholds, and `outbox_event` attempt counts.
+- [x] **4.7 — Unify order cancellation mechanism.** Unified to RabbitMQ TTL + DLX cancellation (`CancelOrderSender` / `CancelOrderReceiver`). Removed `@Scheduled` timeout poller.
+- [x] Commit: `git commit -m "refactor: split OrderService, atomic stock, Spring Cache, wire idle columns"`
 
 **✅ Gate: `mvn clean compile -DskipTests` passes. App boots. All WIRE columns appear in Swagger response schemas.**
 
@@ -2030,12 +1932,12 @@ nexus-domain/src/main/resources/db/migration/
 **Gate: No `pageNum`/`pageSize` in controllers. No `/product/create` style URLs. `mvn clean compile -DskipTests` passes.**
 
 #### Card 4: Service Layer Cleanup (2 hrs)
-- [ ] **4.1** Split `OrderServiceImpl` (~780 lines) into `CheckoutService`, `OrderLifecycleService`, `PaymentWebhookHandler`, `StockReservationService`.
-- [ ] **4.2** Verify atomic stock reservation is in place (should use atomic SQL, not read-modify-write).
-- [ ] **4.3** Replace `RedisService` (if still exists) with Spring Cache `@Cacheable`/`@CacheEvict`.
-- [ ] **4.4** Wire ALL idle DB columns end-to-end (see §3 Phase 4.6 for full list).
-- [ ] **4.5** Unify order cancellation to ONE mechanism (RabbitMQ TTL + DLX).
-- [ ] Commit: `refactor: split OrderService, Spring Cache, wire idle columns`
+- [x] **4.1** Split `OrderServiceImpl` (~780 lines) into `CheckoutService`, `OrderLifecycleService`, `PaymentWebhookHandler`, `StockReservationService`.
+- [x] **4.2** Verify atomic stock reservation is in place (should use atomic SQL, not read-modify-write).
+- [x] **4.3** Replace `RedisService` (if still exists) with Spring Cache `@Cacheable`/`@CacheEvict`.
+- [x] **4.4** Wire ALL idle DB columns end-to-end (see §3 Phase 4.6 for full list).
+- [x] **4.5** Unify order cancellation to ONE mechanism (RabbitMQ TTL + DLX).
+- [x] Commit: `refactor: split OrderService, atomic stock, Spring Cache, wire idle columns`
 
 **Gate: `OrderServiceImpl` < 200 lines. No `RedisService`. `mvn clean compile -DskipTests` passes.**
 

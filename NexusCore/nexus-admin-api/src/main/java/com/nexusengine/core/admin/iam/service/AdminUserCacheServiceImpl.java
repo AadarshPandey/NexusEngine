@@ -1,60 +1,61 @@
 package com.nexusengine.core.admin.iam.service;
 
-import lombok.RequiredArgsConstructor;
-
-import com.nexusengine.core.common.service.RedisService;
-import com.nexusengine.core.domain.iam.repository.AdminUserRoleRepository;
 import com.nexusengine.core.domain.iam.entity.AdminUser;
 import com.nexusengine.core.domain.iam.entity.AdminUserRole;
 import com.nexusengine.core.domain.iam.entity.Permission;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
+import com.nexusengine.core.domain.iam.repository.AdminUserRoleRepository;
+import java.time.Duration;
 import java.util.List;
 import java.util.stream.Collectors;
-
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Service;
 
 /**
- * Represents the AdminUserCacheServiceImpl component.
- * Provides core functionality and operations for AdminUserCacheServiceImpl.
+ * Service managing Redis caching for admin user details and permissions.
  */
 @Service
 @RequiredArgsConstructor
 public class AdminUserCacheServiceImpl implements AdminUserCacheService {
     private final AdminUserService adminService;
-    private final RedisService redisService;
+    private final RedisTemplate<String, Object> redisTemplate;
     private final AdminUserRoleRepository adminRoleRelationRepository;
-    @Value("${redis.database}")
-    private String REDIS_DATABASE;
-    @Value("${redis.expire.common}")
-    private Long REDIS_EXPIRE;
-    @Value("${redis.key.admin}")
-    private String REDIS_KEY_ADMIN;
-    @Value("${redis.key.resourceList}")
-    private String REDIS_KEY_RESOURCE_LIST;
+
+    @Value("${redis.database:nexus}")
+    private String redisDatabase;
+
+    @Value("${redis.expire.common:86400}")
+    private Long redisExpire;
+
+    @Value("${redis.key.admin:iam:admin:}")
+    private String redisKeyAdmin;
+
+    @Value("${redis.key.resourceList:iam:resourceList:}")
+    private String redisKeyResourceList;
 
     @Override
     public void delAdmin(Long adminId) {
         AdminUser admin = adminService.getItem(adminId);
         if (admin != null) {
-            String key = REDIS_DATABASE + ":" + REDIS_KEY_ADMIN + ":" + admin.getUsername();
-            redisService.del(key);
+            String key = redisDatabase + ":" + redisKeyAdmin + ":" + admin.getUsername();
+            redisTemplate.delete(key);
         }
     }
 
     @Override
     public void delResourceList(Long adminId) {
-        String key = REDIS_DATABASE + ":" + REDIS_KEY_RESOURCE_LIST + ":" + adminId;
-        redisService.del(key);
+        String key = redisDatabase + ":" + redisKeyResourceList + ":" + adminId;
+        redisTemplate.delete(key);
     }
 
     @Override
     public void delResourceListByRole(Long roleId) {
         List<AdminUserRole> relationList = adminRoleRelationRepository.findByRoleId(roleId);
         if (relationList != null && !relationList.isEmpty()) {
-            String keyPrefix = REDIS_DATABASE + ":" + REDIS_KEY_RESOURCE_LIST + ":";
+            String keyPrefix = redisDatabase + ":" + redisKeyResourceList + ":";
             List<String> keys = relationList.stream().map(relation -> keyPrefix + relation.getAdminId()).collect(Collectors.toList());
-            redisService.del(keys);
+            redisTemplate.delete(keys);
         }
     }
 
@@ -62,9 +63,9 @@ public class AdminUserCacheServiceImpl implements AdminUserCacheService {
     public void delResourceListByRoleIds(List<Long> roleIds) {
         List<AdminUserRole> relationList = adminRoleRelationRepository.findByRoleIdIn(roleIds);
         if (relationList != null && !relationList.isEmpty()) {
-            String keyPrefix = REDIS_DATABASE + ":" + REDIS_KEY_RESOURCE_LIST + ":";
+            String keyPrefix = redisDatabase + ":" + redisKeyResourceList + ":";
             List<String> keys = relationList.stream().map(relation -> keyPrefix + relation.getAdminId()).collect(Collectors.toList());
-            redisService.del(keys);
+            redisTemplate.delete(keys);
         }
     }
 
@@ -72,33 +73,34 @@ public class AdminUserCacheServiceImpl implements AdminUserCacheService {
     public void delResourceListByResource(Long resourceId) {
         List<Long> adminIdList = adminRoleRelationRepository.getAdminIdList(resourceId);
         if (adminIdList != null && !adminIdList.isEmpty()) {
-            String keyPrefix = REDIS_DATABASE + ":" + REDIS_KEY_RESOURCE_LIST + ":";
+            String keyPrefix = redisDatabase + ":" + redisKeyResourceList + ":";
             List<String> keys = adminIdList.stream().map(adminId -> keyPrefix + adminId).collect(Collectors.toList());
-            redisService.del(keys);
+            redisTemplate.delete(keys);
         }
     }
 
     @Override
     public AdminUser getAdmin(String username) {
-        String key = REDIS_DATABASE + ":" + REDIS_KEY_ADMIN + ":" + username;
-        return (AdminUser) redisService.get(key);
+        String key = redisDatabase + ":" + redisKeyAdmin + ":" + username;
+        return (AdminUser) redisTemplate.opsForValue().get(key);
     }
 
     @Override
     public void setAdmin(AdminUser admin) {
-        String key = REDIS_DATABASE + ":" + REDIS_KEY_ADMIN + ":" + admin.getUsername();
-        redisService.set(key, admin, REDIS_EXPIRE);
+        String key = redisDatabase + ":" + redisKeyAdmin + ":" + admin.getUsername();
+        redisTemplate.opsForValue().set(key, admin, Duration.ofSeconds(redisExpire));
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<Permission> getResourceList(Long adminId) {
-        String key = REDIS_DATABASE + ":" + REDIS_KEY_RESOURCE_LIST + ":" + adminId;
-        return (List<Permission>) redisService.get(key);
+        String key = redisDatabase + ":" + redisKeyResourceList + ":" + adminId;
+        return (List<Permission>) redisTemplate.opsForValue().get(key);
     }
 
     @Override
     public void setResourceList(Long adminId, List<Permission> resourceList) {
-        String key = REDIS_DATABASE + ":" + REDIS_KEY_RESOURCE_LIST + ":" + adminId;
-        redisService.set(key, resourceList, REDIS_EXPIRE);
+        String key = redisDatabase + ":" + redisKeyResourceList + ":" + adminId;
+        redisTemplate.opsForValue().set(key, resourceList, Duration.ofSeconds(redisExpire));
     }
 }

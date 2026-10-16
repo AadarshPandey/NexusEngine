@@ -26,9 +26,6 @@ public class FlashSaleOrderReceiver {
     private CustomerOrderRepository orderRepository;
 
     @org.springframework.beans.factory.annotation.Autowired
-    private com.nexusengine.core.common.service.RedisService redisService;
-
-    @org.springframework.beans.factory.annotation.Autowired
     private org.springframework.data.redis.core.StringRedisTemplate stringRedisTemplate;
 
     @org.springframework.beans.factory.annotation.Autowired
@@ -115,7 +112,7 @@ public class FlashSaleOrderReceiver {
             try {
                 // Fix 7: Safe compensation
                 String stockKey = "flash:stock:" + message.flashPromotionId() + ":" + message.flashPromotionSessionId() + ":" + message.productId();
-                redisService.incr(stockKey, message.quantity());
+                stringRedisTemplate.opsForValue().increment(stockKey, message.quantity());
 
                 String userSetKey = "flash:users:" + message.flashPromotionId() + ":" + message.flashPromotionSessionId() + ":" + message.productId();
                 stringRedisTemplate.opsForSet().remove(userSetKey, String.valueOf(message.memberId()));
