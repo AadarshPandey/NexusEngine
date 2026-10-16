@@ -82,7 +82,7 @@ public class ConsoleMenuServiceImpl implements ConsoleMenuService {
     public int updateHidden(Long id, Integer hidden) {
         ConsoleMenu consoleMenu = menuRepository.findById(id).orElse(new ConsoleMenu());
         consoleMenu.setId(id);
-        consoleMenu.setHidden(hidden);
+        consoleMenu.setHidden(hidden != null && hidden == 1);
         menuRepository.save(consoleMenu);
         return 1;
     }

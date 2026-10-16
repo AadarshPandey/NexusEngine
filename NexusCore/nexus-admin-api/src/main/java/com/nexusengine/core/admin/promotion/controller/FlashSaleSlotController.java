@@ -46,7 +46,7 @@ public class FlashSaleSlotController {
     public CommonResult updateStatus(@PathVariable("id") Long id, @RequestParam("status") Integer status) {
         FlashSaleSlot session = sessionRepository.findById(id).orElse(null);
         if (session != null) {
-            session.setStatus(status);
+            session.setStatus(status != null && status == 1);
             sessionRepository.save(session);
             return CommonResult.success(null);
         }

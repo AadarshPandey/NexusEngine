@@ -171,16 +171,16 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findAll((root, query, cb) -> {
             var predicates = new java.util.ArrayList<jakarta.persistence.criteria.Predicate>();
             if (queryParam.publishStatus() != null) {
-                predicates.add(cb.equal(root.get("publishStatus"), queryParam.publishStatus()));
+                predicates.add(cb.equal(root.get("isPublished"), queryParam.publishStatus() == 1));
             }
             if (queryParam.verifyStatus() != null) {
-                predicates.add(cb.equal(root.get("verifyStatus"), queryParam.verifyStatus()));
+                predicates.add(cb.equal(root.get("approvalStatus"), queryParam.verifyStatus()));
             }
             if (StringUtils.hasText(queryParam.keyword())) {
                 predicates.add(cb.like(cb.lower(root.get("name")), "%" + queryParam.keyword().toLowerCase() + "%"));
             }
             if (StringUtils.hasText(queryParam.productSn())) {
-                predicates.add(cb.equal(root.get("productSn"), queryParam.productSn()));
+                predicates.add(cb.equal(root.get("productCode"), queryParam.productSn()));
             }
             if (queryParam.brandId() != null) {
                 predicates.add(cb.equal(root.get("brandId"), queryParam.brandId()));
@@ -198,11 +198,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-        public int updateVerifyStatus(List<Long> ids, Integer verifyStatus, String detail) {
+    public int updateVerifyStatus(List<Long> ids, Integer verifyStatus, String detail) {
         checkVendorAuthorization(ids);
         List<Product> products = productRepository.findAllById(ids);
         for (Product product : products) {
-            product.setVerifyStatus(verifyStatus);
+            product.setApprovalStatus(verifyStatus);
             productRepository.save(product);
         }
         List<ProductApprovalEvent> records = new ArrayList<>();
@@ -229,7 +229,10 @@ public class ProductServiceImpl implements ProductService {
     public int updatePublishStatus(List<Long> ids, Integer publishStatus) {
         checkVendorAuthorization(ids);
         List<Product> products = productRepository.findAllById(ids);
-        for (Product p : products) { p.setPublishStatus(publishStatus); productRepository.save(p); }
+        for (Product p : products) {
+            p.setIsPublished(publishStatus != null && publishStatus == 1);
+            productRepository.save(p);
+        }
         return products.size();
     }
 
@@ -237,7 +240,10 @@ public class ProductServiceImpl implements ProductService {
     public int updateRecommendStatus(List<Long> ids, Integer recommendStatus) {
         checkVendorAuthorization(ids);
         List<Product> products = productRepository.findAllById(ids);
-        for (Product p : products) { p.setRecommendStatus(recommendStatus); productRepository.save(p); }
+        for (Product p : products) {
+            p.setIsFeatured(recommendStatus != null && recommendStatus == 1);
+            productRepository.save(p);
+        }
         return products.size();
     }
 
@@ -245,7 +251,10 @@ public class ProductServiceImpl implements ProductService {
     public int updateNewStatus(List<Long> ids, Integer newStatus) {
         checkVendorAuthorization(ids);
         List<Product> products = productRepository.findAllById(ids);
-        for (Product p : products) { p.setNewStatus(newStatus); productRepository.save(p); }
+        for (Product p : products) {
+            p.setIsNewArrival(newStatus != null && newStatus == 1);
+            productRepository.save(p);
+        }
         return products.size();
     }
 
@@ -253,7 +262,10 @@ public class ProductServiceImpl implements ProductService {
     public int updateDeleteStatus(List<Long> ids, Integer deleteStatus) {
         checkVendorAuthorization(ids);
         List<Product> products = productRepository.findAllById(ids);
-        for (Product p : products) { p.setDeleteStatus(deleteStatus); productRepository.save(p); }
+        for (Product p : products) {
+            p.setDeletedAt(deleteStatus != null && deleteStatus == 1 ? java.time.Instant.now() : null);
+            productRepository.save(p);
+        }
         return products.size();
     }
 

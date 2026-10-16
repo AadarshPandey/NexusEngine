@@ -51,14 +51,14 @@ public class MemberAddressServiceImpl implements MemberAddressService {
         address.setId(id);
         address.setMemberId(currentMember.getId());
         if (address.getDefaultStatus() == null) {
-            address.setDefaultStatus(0);
+            address.setDefaultStatus(false);
         }
-        if (address.getDefaultStatus() == 1) {
+        if (Boolean.TRUE.equals(address.getDefaultStatus())) {
             // Clear other default addresses
             List<MemberAddress> existingList = addressRepository.findByMemberId(currentMember.getId());
             for (MemberAddress existing : existingList) {
-                if (existing.getDefaultStatus() != null && existing.getDefaultStatus() == 1) {
-                    existing.setDefaultStatus(0);
+                if (Boolean.TRUE.equals(existing.getDefaultStatus())) {
+                    existing.setDefaultStatus(false);
                     addressRepository.save(existing);
                 }
             }

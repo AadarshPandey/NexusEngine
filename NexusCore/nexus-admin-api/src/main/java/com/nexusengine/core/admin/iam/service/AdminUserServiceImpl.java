@@ -80,7 +80,7 @@ public class AdminUserServiceImpl implements AdminUserService {
         AdminUser adminUser = new AdminUser();
         BeanUtils.copyProperties(adminUserParam, adminUser);
         adminUser.setCreateTime(java.time.OffsetDateTime.now());
-        adminUser.setStatus(1);
+        adminUser.setStatus(true);
         AdminUser existing = adminRepository.findByUsername(adminUser.getUsername());
         if (existing != null) {
             return null;

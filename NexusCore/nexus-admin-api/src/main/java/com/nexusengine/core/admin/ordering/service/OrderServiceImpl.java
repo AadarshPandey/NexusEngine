@@ -90,7 +90,7 @@ public class OrderServiceImpl implements OrderService {
     public int delete(List<Long> ids) {
         List<CustomerOrder> orders = orderRepository.findAllById(ids);
         for (CustomerOrder order : orders) {
-            order.setDeleteStatus(1);
+            order.setDeletedAt(java.time.Instant.now());
             orderRepository.save(order);
         }
         return orders.size();

@@ -1,8 +1,9 @@
 package com.nexusengine.core.domain.catalog.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
-import java.io.Serializable;
 import java.time.OffsetDateTime;
 import java.math.BigDecimal;
 import lombok.Getter;
@@ -12,10 +13,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "product_price_change", schema = "catalog")
-public class ProductPriceChange implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
+public class ProductPriceChange {
         @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
@@ -24,9 +22,9 @@ private Long id;
         @Column(name = "product_id")
 
 private Long productId;
-        @com.fasterxml.jackson.annotation.JsonIgnore
-    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
-    @jakarta.persistence.JoinColumn(name = "product_id", insertable = false, updatable = false)
+        @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", insertable = false, updatable = false)
 
 private Product product;
 

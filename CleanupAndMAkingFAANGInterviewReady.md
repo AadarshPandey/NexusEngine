@@ -701,7 +701,7 @@ Also:
 
 > Goal: Java field names = DB column names = JSON names. No `@JsonProperty` aliases. No `IntegerToBooleanConverter`. One name per concept.
 
-- [ ] **2.1 — Rename Java fields to match DB columns.** For EVERY entity in `nexus-domain`, ensure:
+- [x] **2.1 — Rename Java fields to match DB columns.** For EVERY entity in `nexus-domain`, ensure:
   ```
   DB column name (snake_case) → Java field name (camelCase equivalent)
   ```
@@ -747,25 +747,25 @@ Also:
 
   *Continue this pattern for ALL ~50 entities. The full mapping is in `schema_redesign.md` §5.*
 
-- [ ] **2.2 — Replace `Integer` booleans with real `boolean`.**
+- [x] **2.2 — Replace `Integer` booleans with real `boolean`.**
   - Delete `IntegerToBooleanConverter.java` and all `@Convert(converter = IntegerToBooleanConverter.class)` usages (~36 sites).
   - Change field type from `Integer` to `boolean` (primitive).
   - The DB column is already `boolean` (Phase 1). Hibernate maps `boolean ↔ boolean` natively.
   - Update ALL call sites: `entity.getPublishStatus() == 1` → `entity.isPublished()`.
 
-- [ ] **2.3 — Replace `Integer deleteStatus` / `IntegerToDeletedAtConverter` with proper soft delete.**
+- [x] **2.3 — Replace `Integer deleteStatus` / `IntegerToDeletedAtConverter` with proper soft delete.**
   - Change `Integer deleteStatus` → `Instant deletedAt` on entities that need soft delete (`Product`, `Brand`, `Category`).
   - Add `@SQLRestriction("deleted_at IS NULL")` on those entities (Hibernate 6.4+/7) or use `@Where`.
   - Delete `IntegerToDeletedAtConverter.java`.
   - Update service methods: `entity.setDeleteStatus(1)` → `entity.setDeletedAt(Instant.now())`.
 
-- [ ] **2.4 — Standardize timestamps to `Instant`.**
+- [x] **2.4 — Standardize timestamps to `Instant`.**
   - Replace all `LocalDateTime` and `OffsetDateTime` fields with `Instant`.
   - DB columns are `timestamptz` (Phase 1). Hibernate maps `Instant ↔ timestamptz` natively.
   - Add JPA auditing: `@CreatedDate Instant createdAt`, `@LastModifiedDate Instant updatedAt` on all entities that have them.
   - Enable `@EnableJpaAuditing` on config (or it may already be there).
 
-- [ ] **2.5 — Introduce status enums.** Replace magic-number `Integer status` fields:
+- [x] **2.5 — Introduce status enums.** Replace magic-number `Integer status` fields:
   ```java
   // Example — do this for ALL status fields
   public enum OrderStatus {
@@ -785,15 +785,15 @@ Also:
   ```
   Create enums for: `OrderStatus`, `ApprovalStatus`, `PaymentMethod`, `ReturnStatus`, `CouponType`, `CouponClaimStatus`, `ModerationStatus`, `AccountStatus`, `SignupChannel`, `PaymentTransactionType`, `OutboxEventStatus`.
 
-- [ ] **2.6 — Remove Jackson/Swagger annotations from entities.** Entities must NOT be serialized directly. (Phase 3 introduces DTOs.) For now, remove: `@JsonProperty`, `@JsonFormat`, `@JsonIgnore`, `@Schema`, `@ApiModelProperty`, `@JsonSerialize`, `@JsonDeserialize` from ALL entity classes. The field name is the JSON key.
+- [x] **2.6 — Remove Jackson/Swagger annotations from entities.** Entities must NOT be serialized directly. (Phase 3 introduces DTOs.) For now, remove: `@JsonProperty`, `@JsonFormat`, `@JsonIgnore`, `@Schema`, `@ApiModelProperty`, `@JsonSerialize`, `@JsonDeserialize` from ALL entity classes. The field name is the JSON key.
 
-- [ ] **2.7 — Fix relationship mappings:**
+- [x] **2.7 — Fix relationship mappings:**
   - Remove duplicate FK fields: if you have BOTH `Long brandId` AND `@ManyToOne Brand brand` — keep ONE. Within a bounded context, use the relationship (`@ManyToOne`). Across contexts, use ID only (`Long memberId`).
   - Change `@OneToMany(fetch = EAGER)` to `LAZY` everywhere. Add `@EntityGraph` or fetch joins where needed.
   - Remove `@Formula` sub-selects (`brandName`, `listPrice`, `productCategoryName`) — these become DTO fields.
   - Remove `implements Serializable` and `serialVersionUID` from all entities (not needed for JPA since Hibernate 6+).
 
-- [ ] **2.8 — Wire idle DB columns.** For every column that exists in the DB but has no entity field mapping (see Chunk E §E3 WIRE list), add the field to the entity:
+- [x] **2.8 — Wire idle DB columns.** For every column that exists in the DB but has no entity field mapping (see Chunk E §E3 WIRE list), add the field to the entity:
   - `Brand.slug`, `Brand.createdAt`, `Brand.updatedAt`
   - `Product.slug`, `Product.version`
   - `Category.slug`
@@ -807,11 +807,11 @@ Also:
   - `ReturnRequest.memberId`, `ReturnRequest.reasonId`
   - `PaymentTransaction.provider`, `PaymentTransaction.idempotencyKey`, `PaymentTransaction.currencyCode`, `PaymentTransaction.updatedAt`
 
-- [ ] **2.9 — Update ALL service/controller code** that references renamed fields. Use IDE/grep to find every usage of the old field names and update them. This is the biggest find-replace of the project.
+- [x] **2.9 — Update ALL service/controller code** that references renamed fields. Use IDE/grep to find every usage of the old field names and update them. This is the biggest find-replace of the project.
 
-- [ ] **2.10 — Run `mvn clean compile -DskipTests`** — fix all compilation errors from the renames.
+- [x] **2.10 — Run `mvn clean compile -DskipTests`** — fix all compilation errors from the renames.
 
-- [ ] Commit: `git commit -m "refactor: real entity field renames, kill aliases, booleans, enums, wire idle columns"`
+- [x] Commit: `git commit -m "refactor: real entity field renames, kill aliases, booleans, enums, wire idle columns"`
 
 **✅ Gate: `mvn clean compile -DskipTests` passes. `mvn test -pl nexus-domain` (entity validation tests) pass. App boots against live DB with `ddl-auto: validate`.**
 
@@ -1990,21 +1990,21 @@ nexus-domain/src/main/resources/db/migration/
 **Gate: `mvn clean compile -DskipTests` passes. Zero `hutool`/`minio`/`okhttp` imports remain.**
 
 #### Card 1: Entity Field Renames + Kill Converters (3 hrs)
-- [ ] **1.1** For EVERY entity (all 50 in `nexus-domain/src/main/java/.../entity/`), rename Java fields to match the camelCase equivalent of the DB column name. Full mapping is in `schema_redesign.md` §5. Key examples:
+- [x] **1.1** For EVERY entity (all 50 in `nexus-domain/src/main/java/.../entity/`), rename Java fields to match the camelCase equivalent of the DB column name. Full mapping is in `schema_redesign.md` §5. Key examples:
   - `Product`: `productSn` → `productCode`, `pic` → `primaryImageUrl`, `publishStatus` → `isPublished`, `newStatus` → `isNewArrival`, `recommendStatus` → `isFeatured`, `verifyStatus` → `approvalStatus`, `sale` → `unitsSold`, `deleteStatus` → `deletedAt`
   - `ProductSku`: `stock` → `onHandQty`, `lockStock` → `reservedQty`, `price` → `listPrice`, `promotionPrice` → `salePrice`
   - `CustomerOrder`: `orderSn` → `orderNumber`, `totalAmount` → `subtotalAmount`, `payAmount` → `grandTotalAmount`, `receiverName` → `recipientName`, etc.
   - `Member`: `nickname` → `displayName`, `phone` → `phoneE164`, `icon` → `avatarUrl`
   - `Brand`: `logo` → `logoUrl`, `showStatus` → `isVisible`
   - (Continue for ALL 50 entities — see §3 Phase 2.1 for full list)
-- [ ] **1.2** Delete `IntegerToBooleanConverter.java`. Change all 16 boolean fields from `Integer` to `boolean`. Remove all `@Convert(converter = IntegerToBooleanConverter.class)`.
-- [ ] **1.3** Delete `IntegerToDeletedAtConverter.java`. Change `deleteStatus Integer` → `deletedAt Instant`. Add `@SQLRestriction("deleted_at IS NULL")` on `Product`, `CustomerOrder`.
-- [ ] **1.4** Change all `LocalDateTime` timestamp fields to `Instant`.
-- [ ] **1.5** Remove `implements Serializable` + `serialVersionUID` from all entities.
-- [ ] **1.6** Remove ALL remaining fully-qualified annotations (e.g. `@jakarta.persistence.Convert(converter = com.nexusengine...)`). Use proper imports instead.
-- [ ] **1.7** Update ALL service + controller code referencing old field names. Use IDE rename/grep.
-- [ ] **1.8** Run `mvn clean compile -DskipTests` — fix all compilation errors.
-- [ ] Commit: `refactor: real entity field renames, kill Integer converters, Instant timestamps`
+- [x] **1.2** Delete `IntegerToBooleanConverter.java`. Change all 16 boolean fields from `Integer` to `boolean`. Remove all `@Convert(converter = IntegerToBooleanConverter.class)`.
+- [x] **1.3** Delete `IntegerToDeletedAtConverter.java`. Change `deleteStatus Integer` → `deletedAt Instant`. Add `@SQLRestriction("deleted_at IS NULL")` on `Product`, `CustomerOrder`.
+- [x] **1.4** Change all `LocalDateTime` timestamp fields to `Instant`.
+- [x] **1.5** Remove `implements Serializable` + `serialVersionUID` from all entities.
+- [x] **1.6** Remove ALL remaining fully-qualified annotations (e.g. `@jakarta.persistence.Convert(converter = com.nexusengine...)`). Use proper imports instead.
+- [x] **1.7** Update ALL service + controller code referencing old field names. Use IDE rename/grep.
+- [x] **1.8** Run `mvn clean compile -DskipTests` — fix all compilation errors.
+- [x] Commit: `refactor: real entity field renames, kill Integer converters, Instant timestamps`
 
 **Gate: Zero `IntegerToBooleanConverter` / `IntegerToDeletedAtConverter` references. Zero fully-qualified annotation strings. `mvn clean compile -DskipTests` passes.**
 

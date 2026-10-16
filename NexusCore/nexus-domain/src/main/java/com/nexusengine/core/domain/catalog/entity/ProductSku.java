@@ -1,8 +1,11 @@
 package com.nexusengine.core.domain.catalog.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
-import java.io.Serializable;
 import java.math.BigDecimal;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,10 +14,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "product_sku", schema = "catalog")
-public class ProductSku implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
+public class ProductSku {
         @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
@@ -23,9 +23,9 @@ private Long id;
         @Column(name = "product_id")
 
 private Long productId;
-        @com.fasterxml.jackson.annotation.JsonIgnore
-    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
-    @jakarta.persistence.JoinColumn(name = "product_id", insertable = false, updatable = false)
+        @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", insertable = false, updatable = false)
 
 private Product product;
 
@@ -63,10 +63,10 @@ private String skuCode;
 
     @Schema(title = "Sp data")
     @Column(name = "sku_attributes", columnDefinition = "jsonb")
-    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.JSON)
+    @JdbcTypeCode(SqlTypes.JSON)
     private String skuAttributes;
 
-    @jakarta.persistence.Version
+    @Version
     private Integer version;
 
     public Integer getAvailableQty() {

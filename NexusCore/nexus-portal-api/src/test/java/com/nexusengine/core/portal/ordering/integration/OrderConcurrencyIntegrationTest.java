@@ -81,7 +81,7 @@ public class OrderConcurrencyIntegrationTest {
         Product product = new Product();
         product.setProductCategoryId(1L);
         product.setName("Concurrency Test Product");
-        product.setProductSn("TEST-CONC-" + System.currentTimeMillis());
+        product.setProductCode("TEST-CONC-" + System.currentTimeMillis());
         product = productRepository.save(product);
 
         ProductSku sku = new ProductSku();
@@ -100,7 +100,7 @@ public class OrderConcurrencyIntegrationTest {
 
         MemberAddress addressA = new MemberAddress();
         addressA.setMemberId(memberA.getId());
-        addressA.setDefaultStatus(0);
+        addressA.setDefaultStatus(false);
         addressA = addressRepository.save(addressA);
 
         CartItem cartItemA = new CartItem();
@@ -119,7 +119,7 @@ public class OrderConcurrencyIntegrationTest {
 
         MemberAddress addressB = new MemberAddress();
         addressB.setMemberId(memberB.getId());
-        addressB.setDefaultStatus(0);
+        addressB.setDefaultStatus(false);
         addressB = addressRepository.save(addressB);
 
         CartItem cartItemB = new CartItem();

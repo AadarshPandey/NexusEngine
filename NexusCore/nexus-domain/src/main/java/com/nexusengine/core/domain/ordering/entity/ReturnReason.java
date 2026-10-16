@@ -1,9 +1,12 @@
 package com.nexusengine.core.domain.ordering.entity;
 
-
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.*;
-import java.io.Serializable;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import java.time.OffsetDateTime;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,28 +15,24 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "return_reason", schema = "ordering")
-public class ReturnReason implements Serializable {
+public class ReturnReason {
 
-    private static final long serialVersionUID = 1L;
-
-        @Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-private Long id;
-
-            @Schema(title = "Name")
+    @Schema(title = "Name")
     @Column(name = "label")
-private String name;
+    private String name;
 
-            @Column(name = "display_order")
-private Integer displayOrder;
+    @Column(name = "display_order")
+    private Integer displayOrder;
 
-            @Schema(title = "Status")
+    @Schema(title = "Status")
     @Column(name = "is_active")
-    @jakarta.persistence.Convert(converter = com.nexusengine.core.domain.shared.converter.IntegerToBooleanConverter.class)
-private Integer status;
+    private Boolean status;
 
-        @Column(name = "created_at")
+    @Column(name = "created_at")
     @Schema(title = "Create time")
-private OffsetDateTime createdAt;
+    private OffsetDateTime createdAt;
 }

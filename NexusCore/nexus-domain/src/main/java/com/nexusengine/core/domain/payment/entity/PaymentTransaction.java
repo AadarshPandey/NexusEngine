@@ -1,11 +1,14 @@
 package com.nexusengine.core.domain.payment.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 import com.nexusengine.core.domain.ordering.entity.CustomerOrder;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import java.io.Serializable;
 import java.time.OffsetDateTime;
 import java.math.BigDecimal;
 
@@ -13,10 +16,7 @@ import java.math.BigDecimal;
 @Setter
 @Entity
 @Table(name = "payment_transaction", schema = "payment")
-public class PaymentTransaction implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
+public class PaymentTransaction {
         @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
@@ -25,9 +25,9 @@ private Long id;
         @Column(name = "order_id", nullable = false)
 
 private Long orderId;
-        @com.fasterxml.jackson.annotation.JsonIgnore
-    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
-    @jakarta.persistence.JoinColumn(name = "order_id", insertable = false, updatable = false)
+        @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id", insertable = false, updatable = false)
 
 private CustomerOrder order;
 
@@ -48,7 +48,7 @@ private BigDecimal amount;
 private String status;
 
         @Column(name = "provider_payload", columnDefinition = "jsonb")
-        @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.JSON)
+        @JdbcTypeCode(SqlTypes.JSON)
         private String webhookPayload;
 
         @Column(name = "created_at")

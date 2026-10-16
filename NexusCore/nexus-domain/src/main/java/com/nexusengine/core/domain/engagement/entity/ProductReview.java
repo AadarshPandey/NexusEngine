@@ -1,11 +1,14 @@
 package com.nexusengine.core.domain.engagement.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 import com.nexusengine.core.domain.catalog.entity.Product;
 import com.nexusengine.core.domain.customer.entity.Member;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
-import java.io.Serializable;
 import java.time.OffsetDateTime;
 import java.util.List;
 import lombok.Getter;
@@ -15,10 +18,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "product_review", schema = "engagement")
-public class ProductReview implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
+public class ProductReview {
         @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
@@ -27,18 +27,18 @@ private Long id;
         @Column(name = "product_id")
 
 private Long productId;
-        @com.fasterxml.jackson.annotation.JsonIgnore
-    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
-    @jakarta.persistence.JoinColumn(name = "product_id", insertable = false, updatable = false)
+        @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", insertable = false, updatable = false)
 
 private Product product;
 
         @Column(name = "member_id")
 
 private Long memberId;
-        @com.fasterxml.jackson.annotation.JsonIgnore
-    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
-    @jakarta.persistence.JoinColumn(name = "member_id", insertable = false, updatable = false)
+        @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", insertable = false, updatable = false)
 
 private Member member;
 
@@ -48,7 +48,7 @@ private Member member;
 private Long parentId;
 
         @Schema(title = "Rating from 1-5")
-    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.SMALLINT)
+    @JdbcTypeCode(SqlTypes.SMALLINT)
 private Integer rating;
 
             @Schema(title = "Review text content")
@@ -65,7 +65,7 @@ private Integer dislikeCount;
 
             @Schema(title = "Status: 0->Pending, 1->Approved, 2->Rejected")
     @Column(name = "moderation_status")
-    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.SMALLINT)
+    @JdbcTypeCode(SqlTypes.SMALLINT)
 private Integer status;
 
         @Column(name = "created_at")

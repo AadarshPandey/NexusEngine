@@ -1,11 +1,12 @@
 package com.nexusengine.core.domain.ordering.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import com.nexusengine.core.domain.catalog.entity.Product;
 import com.nexusengine.core.domain.catalog.entity.Category;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
-import java.io.Serializable;
 import java.math.BigDecimal;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,10 +15,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "order_line", schema = "ordering")
-public class OrderLine implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
+public class OrderLine {
         @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
@@ -27,18 +25,18 @@ private Long id;
     @Schema(title = "Order id")
 
 private Long orderId;
-        @com.fasterxml.jackson.annotation.JsonIgnore
-    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
-    @jakarta.persistence.JoinColumn(name = "order_id", insertable = false, updatable = false)
+        @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id", insertable = false, updatable = false)
 
 private CustomerOrder order;
 
         @Column(name = "product_id")
 
 private Long productId;
-        @com.fasterxml.jackson.annotation.JsonIgnore
-    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
-    @jakarta.persistence.JoinColumn(name = "product_id", insertable = false, updatable = false)
+        @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", insertable = false, updatable = false)
 
 private Product product;
 
@@ -73,9 +71,9 @@ private Long productSkuId;
     @Schema(title = "Product category id")
 
 private Long productCategoryId;
-        @com.fasterxml.jackson.annotation.JsonIgnore
-    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
-    @jakarta.persistence.JoinColumn(name = "category_id", insertable = false, updatable = false)
+        @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", insertable = false, updatable = false)
 
 private Category productCategory;
 

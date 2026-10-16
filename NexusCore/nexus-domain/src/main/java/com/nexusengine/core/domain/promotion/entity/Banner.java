@@ -1,75 +1,70 @@
 package com.nexusengine.core.domain.promotion.entity;
 
+import org.hibernate.type.SqlTypes;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.*;
-import java.io.Serializable;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import java.time.OffsetDateTime;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "banner", schema = "promotion")
-public class Banner implements Serializable {
+public class Banner {
 
-    private static final long serialVersionUID = 1L;
-
-        @Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-private Long id;
+    @Column(name = "title")
+    private String name;
 
-            @Column(name = "title")
-private String name;
-
-            @Schema(title = "Type")
+    @Schema(title = "Type")
     @Column(name = "placement")
-    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.SMALLINT)
-private Integer type;
+    @JdbcTypeCode(SqlTypes.SMALLINT)
+    private Integer type;
 
-    @com.fasterxml.jackson.annotation.JsonProperty("primaryImageUrl")
-            @Column(name = "image_url")
-private String primaryImageUrl;
+    @Column(name = "image_url")
+    private String primaryImageUrl;
 
-        @Column(name = "starts_at")
+    @Column(name = "starts_at")
+    private OffsetDateTime startsAt;
 
-@com.fasterxml.jackson.annotation.JsonProperty("startsAt")
-    private OffsetDateTime startTime;
+    @Column(name = "ends_at")
+    private OffsetDateTime endsAt;
 
-        @Column(name = "ends_at")
-
-@com.fasterxml.jackson.annotation.JsonProperty("endsAt")
-    private OffsetDateTime endTime;
-
-            @Schema(title = "Status")
+    @Schema(title = "Status")
     @Column(name = "is_active")
-    @jakarta.persistence.Convert(converter = com.nexusengine.core.domain.shared.converter.IntegerToBooleanConverter.class)
-private Integer status;
+    private Boolean status;
 
-        @Column(name = "click_count")
+    @Column(name = "click_count")
     @Schema(title = "Click count")
+    private Integer clickCount;
 
-private Integer clickCount;
-
-        @Column(name = "order_count")
+    @Column(name = "order_count")
     @Schema(title = "Order count")
+    private Integer orderCount;
 
-private Integer orderCount;
-
-            @Schema(title = "Url")
+    @Schema(title = "Url")
     @Column(name = "target_url")
-private String url;
+    private String url;
 
-            @Schema(title = "Note")
+    @Schema(title = "Note")
     @Column(name = "internal_note")
-private String note;
+    private String note;
 
-            @Schema(title = "Sort")
+    @Schema(title = "Display order")
     @Column(name = "display_order")
-    @com.fasterxml.jackson.annotation.JsonProperty("displayOrder")
-    private Integer sort;
+    private Integer displayOrder;
 
     public String getTitle() {
         return name;

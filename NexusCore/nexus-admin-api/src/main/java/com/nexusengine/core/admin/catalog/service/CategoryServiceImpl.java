@@ -11,7 +11,6 @@ import com.nexusengine.core.domain.catalog.repository.CategoryRepository;
 import com.nexusengine.core.domain.catalog.repository.ProductRepository;
 
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +29,7 @@ public class CategoryServiceImpl implements CategoryService {
     public int create(CategoryParam categoryParam) {
         Category productCategory = new Category();
         productCategory.setProductCount(0);
-        BeanUtils.copyProperties(categoryParam, productCategory);
+        copyCategoryParam(categoryParam, productCategory);
         setCategoryLevel(productCategory);
         productCategoryRepository.save(productCategory);
         List<Long> productAttributeIdList = categoryParam.productAttributeIdList();
@@ -38,6 +37,18 @@ public class CategoryServiceImpl implements CategoryService {
             insertRelationList(productCategory.getId(), productAttributeIdList);
         }
         return 1;
+    }
+
+    private void copyCategoryParam(CategoryParam param, Category category) {
+        category.setParentId(param.parentId());
+        category.setName(param.name());
+        if (param.navStatus() != null) {
+            category.setIsInNavigation(param.navStatus() == 1);
+        }
+        if (param.showStatus() != null) {
+            category.setIsVisible(param.showStatus() == 1);
+        }
+        category.setIconUrl(param.icon());
     }
 
     private void insertRelationList(Long productCategoryId, List<Long> productAttributeIdList) {
@@ -55,7 +66,7 @@ public class CategoryServiceImpl implements CategoryService {
     public int update(Long id, CategoryParam categoryParam) {
         Category productCategory = new Category();
         productCategory.setId(id);
-        BeanUtils.copyProperties(categoryParam, productCategory);
+        copyCategoryParam(categoryParam, productCategory);
         setCategoryLevel(productCategory);
         productCategoryAttributeRelationRepository.deleteByProductCategoryId(id);
         if (categoryParam.productAttributeIdList() != null && !categoryParam.productAttributeIdList().isEmpty()) {
@@ -87,7 +98,7 @@ public class CategoryServiceImpl implements CategoryService {
     public int updateNavStatus(List<Long> ids, Integer navStatus) {
         List<Category> categories = productCategoryRepository.findAllById(ids);
         for (Category category : categories) {
-            category.setNavStatus(navStatus);
+            category.setIsInNavigation(navStatus != null && navStatus == 1);
             productCategoryRepository.save(category);
         }
         return categories.size();
@@ -97,7 +108,7 @@ public class CategoryServiceImpl implements CategoryService {
     public int updateShowStatus(List<Long> ids, Integer showStatus) {
         List<Category> categories = productCategoryRepository.findAllById(ids);
         for (Category category : categories) {
-            category.setShowStatus(showStatus);
+            category.setIsVisible(showStatus != null && showStatus == 1);
             productCategoryRepository.save(category);
         }
         return categories.size();
@@ -126,14 +137,14 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     private void setCategoryLevel(Category productCategory) {
-        if (productCategory.getParentId() == 0) {
-            productCategory.setLevel(0);
+        if (productCategory.getParentId() == null || productCategory.getParentId() == 0) {
+            productCategory.setDepth(0);
         } else {
             Category parentCategory = productCategoryRepository.findById(productCategory.getParentId()).orElse(null);
-            if (parentCategory != null) {
-                productCategory.setLevel(parentCategory.getLevel() + 1);
+            if (parentCategory != null && parentCategory.getDepth() != null) {
+                productCategory.setDepth(parentCategory.getDepth() + 1);
             } else {
-                productCategory.setLevel(0);
+                productCategory.setDepth(0);
             }
         }
     }

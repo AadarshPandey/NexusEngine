@@ -44,7 +44,7 @@ public class ReturnRequestController {
     @org.springframework.web.bind.annotation.GetMapping("/reasons")
     public CommonResult<java.util.List<ReturnReason>> listReasons() {
         java.util.List<ReturnReason> activeReasons = returnReasonRepository.findAll()
-            .stream().filter(r -> r.getStatus() != null && r.getStatus() == 1)
+            .stream().filter(r -> Boolean.TRUE.equals(r.getStatus()))
             .collect(java.util.stream.Collectors.toList());
         return CommonResult.success(activeReasons);
     }

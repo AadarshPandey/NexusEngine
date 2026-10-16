@@ -76,7 +76,7 @@ public class FlashSaleConcurrencyIntegrationTest {
         flashSale.setTitle("Concurrency Flash Sale");
         flashSale.setStartDate(java.time.LocalDate.now());
         flashSale.setEndDate(java.time.LocalDate.now().plusDays(1));
-        flashSale.setStatus(1);
+        flashSale.setStatus(true);
         flashSale.setCreateTime(java.time.OffsetDateTime.now());
         flashSale = flashSaleRepository.save(flashSale);
 
@@ -84,7 +84,7 @@ public class FlashSaleConcurrencyIntegrationTest {
         slot.setName("Morning Flash Slot");
         slot.setStartTime(java.time.LocalTime.of(9, 0));
         slot.setEndTime(java.time.LocalTime.of(12, 0));
-        slot.setStatus(1);
+        slot.setStatus(true);
         slot.setCreateTime(java.time.OffsetDateTime.now());
         slot = flashSaleSlotRepository.save(slot);
 

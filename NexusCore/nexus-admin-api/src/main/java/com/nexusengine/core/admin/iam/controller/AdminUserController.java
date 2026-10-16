@@ -176,7 +176,7 @@ public class AdminUserController {
 
     public CommonResult updateStatus(@PathVariable("id") Long id,@RequestParam(value = "status") Integer status) {
         AdminUser adminUser = new AdminUser();
-        adminUser.setStatus(status);
+        adminUser.setStatus(status != null && status == 1);
         int count = adminService.update(id,adminUser);
         if (count > 0) {
             return CommonResult.success(count);

@@ -36,7 +36,7 @@ public class BannerServiceImpl implements BannerService {
     public int updateStatus(Long id, Integer status) {
         Banner record = advertiseRepository.findById(id).orElse(new Banner());
         record.setId(id);
-        record.setStatus(status);
+        record.setStatus(status != null && status == 1);
         advertiseRepository.save(record);
         return 1;
     }
@@ -55,6 +55,6 @@ public class BannerServiceImpl implements BannerService {
 
     @Override
     public List<Banner> list(String name, Integer type, String endTime, Integer pageSize, Integer pageNum) {
-        return advertiseRepository.findAll(PageRequest.of(pageNum > 0 ? pageNum - 1 : 0, pageSize, Sort.by(Sort.Direction.DESC, "sort"))).getContent();
+        return advertiseRepository.findAll(PageRequest.of(pageNum > 0 ? pageNum - 1 : 0, pageSize, Sort.by(Sort.Direction.DESC, "displayOrder"))).getContent();
     }
 }

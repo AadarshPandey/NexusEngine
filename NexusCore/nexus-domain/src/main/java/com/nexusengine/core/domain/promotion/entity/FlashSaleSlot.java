@@ -1,42 +1,41 @@
 package com.nexusengine.core.domain.promotion.entity;
 
-
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.io.Serializable;
-import java.time.OffsetDateTime;
-import java.time.LocalTime;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "flash_sale_slot", schema = "promotion")
-public class FlashSaleSlot implements Serializable {
-        @Id
+public class FlashSaleSlot {
+
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-private Long id;
+    @Column(name = "label", nullable = false)
+    private String name;
 
-        @Column(name = "label", nullable = false)
+    @Column(name = "starts_at_local", nullable = false)
+    private LocalTime startTime;
 
-private String name;
+    @Column(name = "ends_at_local", nullable = false)
+    private LocalTime endTime;
 
-        @Column(name = "starts_at_local", nullable = false)
+    @Column(name = "is_active")
+    private Boolean status;
 
-private LocalTime startTime;
-
-        @Column(name = "ends_at_local", nullable = false)
-
-private LocalTime endTime;
-
-        @Column(name = "is_active")
-    @jakarta.persistence.Convert(converter = com.nexusengine.core.domain.shared.converter.IntegerToBooleanConverter.class)
-private Integer status;
-
-        @Column(name = "created_at")
-        private OffsetDateTime createTime = OffsetDateTime.now();
+    @Column(name = "created_at")
+    private OffsetDateTime createTime = OffsetDateTime.now();
 
     @PrePersist
     protected void onCreate() {
@@ -44,7 +43,7 @@ private Integer status;
             createTime = OffsetDateTime.now();
         }
         if (status == null) {
-            status = 1;
+            status = true;
         }
     }
 }

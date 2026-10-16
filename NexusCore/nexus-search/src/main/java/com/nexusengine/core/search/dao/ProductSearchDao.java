@@ -54,7 +54,7 @@ public class ProductSearchDao {
         for (Product product : products) {
             ProductDocument esProduct = new ProductDocument();
             esProduct.setId(product.getId());
-            esProduct.setProductSn(product.getProductSn());
+            esProduct.setProductSn(product.getProductCode());
             esProduct.setBrandId(product.getBrandId());
             esProduct.setBrandName(product.getBrandName());
             esProduct.setProductCategoryId(product.getProductCategoryId());
@@ -88,9 +88,9 @@ public class ProductSearchDao {
                 .mapToInt(s -> s.getOnHandQty() != null ? s.getOnHandQty() : 0)
                 .sum();
             esProduct.setPrice(price);
-            esProduct.setSale(product.getSale());
-            esProduct.setNewStatus(product.getNewStatus());
-            esProduct.setRecommendStatus(product.getRecommendStatus());
+            esProduct.setSale(product.getUnitsSold());
+            esProduct.setNewStatus(Boolean.TRUE.equals(product.getIsNewArrival()) ? 1 : 0);
+            esProduct.setRecommendStatus(Boolean.TRUE.equals(product.getIsFeatured()) ? 1 : 0);
             esProduct.setStock(stock);
             esProduct.setPromotionType(product.getPromotionType());
             // Load attribute values

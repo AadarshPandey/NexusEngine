@@ -1,59 +1,58 @@
 package com.nexusengine.core.domain.iam.entity;
 
+import org.hibernate.type.SqlTypes;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.*;
-import java.io.Serializable;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import java.time.OffsetDateTime;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "console_menu", schema = "iam")
-public class ConsoleMenu implements Serializable {
+public class ConsoleMenu {
 
-    private static final long serialVersionUID = 1L;
-
-        @Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-private Long id;
-
-        @Column(name = "parent_id")
+    @Column(name = "parent_id")
     @Schema(title = "Parent id")
+    private Long parentId;
 
-private Long parentId;
-
-        @Column(name = "created_at")
+    @Column(name = "created_at")
     @Schema(title = "Create time")
+    private OffsetDateTime createTime;
 
-private OffsetDateTime createTime;
+    @Schema(title = "Title")
+    private String title;
 
-        @Schema(title = "Title")
-
-private String title;
-
-            @Schema(title = "Level")
+    @Schema(title = "Level")
     @Column(name = "depth")
-    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.SMALLINT)
-private Integer level;
+    @JdbcTypeCode(SqlTypes.SMALLINT)
+    private Integer level;
 
-            @Schema(title = "Sort")
+    @Schema(title = "Sort")
     @Column(name = "display_order")
-private Integer sort;
+    private Integer sort;
 
-            @Schema(title = "Name")
+    @Schema(title = "Name")
     @Column(name = "route_name")
-private String name;
+    private String name;
 
-        @Schema(title = "Icon")
+    @Schema(title = "Icon")
+    private String icon;
 
-private String icon;
-
-            @Schema(title = "Hidden")
+    @Schema(title = "Hidden")
     @Column(name = "is_hidden")
-    @jakarta.persistence.Convert(converter = com.nexusengine.core.domain.shared.converter.IntegerToBooleanConverter.class)
-private Integer hidden;
+    private Boolean hidden;
 }

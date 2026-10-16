@@ -1,174 +1,165 @@
 package com.nexusengine.core.domain.ordering.entity;
 
-import com.nexusengine.core.domain.promotion.entity.Coupon;
-import com.nexusengine.core.domain.customer.entity.Member;
+import jakarta.persistence.FetchType;
+import org.hibernate.type.SqlTypes;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.nexusengine.core.domain.customer.entity.Member;
+import com.nexusengine.core.domain.promotion.entity.Coupon;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.*;
-import java.io.Serializable;
-import java.time.OffsetDateTime;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.type.SqlTypes;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "customer_order", schema = "ordering")
-public class CustomerOrder implements Serializable {
+@SQLRestriction("deleted_at IS NULL")
+public class CustomerOrder {
 
-    private static final long serialVersionUID = 1L;
-
-        @Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Schema(title = "Id")
+    private Long id;
 
-private Long id;
+    @Column(name = "member_id")
+    private Long memberId;
 
-        @Column(name = "member_id")
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", insertable = false, updatable = false)
+    private Member member;
 
-private Long memberId;
-        @com.fasterxml.jackson.annotation.JsonIgnore
-    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
-    @jakarta.persistence.JoinColumn(name = "member_id", insertable = false, updatable = false)
+    @Column(name = "coupon_id")
+    private Long couponId;
 
-private Member member;
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "coupon_id", insertable = false, updatable = false)
+    private Coupon coupon;
 
-        @Column(name = "coupon_id")
-
-private Long couponId;
-        @com.fasterxml.jackson.annotation.JsonIgnore
-    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
-    @jakarta.persistence.JoinColumn(name = "coupon_id", insertable = false, updatable = false)
-
-private Coupon coupon;
-
-        @Column(name = "order_number")
+    @Column(name = "order_number")
     @Schema(title = "Order sn")
+    private String orderSn;
 
-private String orderSn;
-
-        @Column(name = "created_at")
+    @Column(name = "created_at")
     @Schema(title = "Create time")
+    private OffsetDateTime createTime;
 
-private OffsetDateTime createTime;
-
-        @Column(name = "subtotal_amount")
+    @Column(name = "subtotal_amount")
     @Schema(title = "Total amount")
+    private BigDecimal totalAmount;
 
-private BigDecimal totalAmount;
-
-        @Column(name = "grand_total_amount")
+    @Column(name = "grand_total_amount")
     @Schema(title = "Pay amount")
+    private BigDecimal payAmount;
 
-private BigDecimal payAmount;
-
-        @Column(name = "shipping_amount")
+    @Column(name = "shipping_amount")
     @Schema(title = "Freight amount")
+    private BigDecimal freightAmount;
 
-private BigDecimal freightAmount;
-
-        @Column(name = "promotion_discount_amount")
+    @Column(name = "promotion_discount_amount")
     @Schema(title = "Promotion amount")
+    private BigDecimal promotionAmount;
 
-private BigDecimal promotionAmount;
-
-        @Column(name = "coupon_discount_amount")
+    @Column(name = "coupon_discount_amount")
     @Schema(title = "Coupon amount")
+    private BigDecimal couponAmount;
 
-private BigDecimal couponAmount;
-
-        @Column(name = "manual_adjustment_amount")
+    @Column(name = "manual_adjustment_amount")
     @Schema(title = "Discount amount")
+    private BigDecimal discountAmount;
 
-private BigDecimal discountAmount;
-
-        @Column(name = "payment_method")
+    @Column(name = "payment_method")
     @Schema(title = "Pay type")
-    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.SMALLINT)
-private Integer payType;
+    @JdbcTypeCode(SqlTypes.SMALLINT)
+    private Integer payType;
 
-        @Schema(title = "Status")
-    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.SMALLINT)
-private Integer status;
+    @Schema(title = "Status")
+    @JdbcTypeCode(SqlTypes.SMALLINT)
+    private Integer status;
 
-        @Column(name = "order_type")
+    @Column(name = "order_type")
     @Schema(title = "Order type")
-    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.SMALLINT)
-private Integer orderType;
+    @JdbcTypeCode(SqlTypes.SMALLINT)
+    private Integer orderType;
 
-        @Column(name = "carrier_name")
+    @Column(name = "carrier_name")
     @Schema(title = "Delivery company")
+    private String deliveryCompany;
 
-private String deliveryCompany;
-
-        @Column(name = "tracking_number")
+    @Column(name = "tracking_number")
     @Schema(title = "Delivery sn")
+    private String deliverySn;
 
-private String deliverySn;
-
-        @Column(name = "recipient_name")
+    @Column(name = "recipient_name")
     @Schema(title = "Receiver name")
+    private String receiverName;
 
-private String receiverName;
-
-        @Column(name = "recipient_phone")
+    @Column(name = "recipient_phone")
     @Schema(title = "Receiver phone")
+    private String receiverPhone;
 
-private String receiverPhone;
-
-        @Column(name = "shipping_postal_code")
+    @Column(name = "shipping_postal_code")
     @Schema(title = "Receiver post code")
+    private String receiverPostCode;
 
-private String receiverPostCode;
-
-        @Column(name = "shipping_address_line")
+    @Column(name = "shipping_address_line")
     @Schema(title = "Receiver detail address")
+    private String receiverDetailAddress;
 
-private String receiverDetailAddress;
-
-            @Schema(title = "Note")
+    @Schema(title = "Note")
     @Column(name = "customer_note")
-private String note;
+    private String note;
 
-        @Column(name = "is_receipt_confirmed")
+    @Column(name = "is_receipt_confirmed")
     @Schema(title = "Confirm status")
-    @jakarta.persistence.Convert(converter = com.nexusengine.core.domain.shared.converter.IntegerToBooleanConverter.class)
-private Integer confirmStatus;
+    private Boolean confirmStatus;
 
-        @Convert(converter = com.nexusengine.core.domain.shared.converter.IntegerToDeletedAtConverter.class)
     @Column(name = "deleted_at")
-    @Schema(title = "Delete status")
+    @Schema(title = "Deleted at")
+    private Instant deletedAt;
 
-private Integer deleteStatus;
-
-        @Column(name = "paid_at")
+    @Column(name = "paid_at")
     @Schema(title = "Payment time")
+    private OffsetDateTime paymentTime;
 
-private OffsetDateTime paymentTime;
-
-        @Column(name = "shipped_at")
+    @Column(name = "shipped_at")
     @Schema(title = "Delivery time")
+    private OffsetDateTime deliveryTime;
 
-private OffsetDateTime deliveryTime;
-
-        @Column(name = "delivered_at")
+    @Column(name = "delivered_at")
     @Schema(title = "Receive time")
+    private OffsetDateTime receiveTime;
 
-private OffsetDateTime receiveTime;
-
-        @Column(name = "reviewed_at")
+    @Column(name = "reviewed_at")
     @Schema(title = "Comment time")
+    private OffsetDateTime commentTime;
 
-private OffsetDateTime commentTime;
-
-        @Column(name = "updated_at")
+    @Column(name = "updated_at")
     @Schema(title = "Modify time")
+    private OffsetDateTime modifyTime;
 
-private OffsetDateTime modifyTime;
-
-
-    @jakarta.persistence.Version
+    @Version
     private Integer version;
 
     public String getOrderNumber() {
@@ -240,10 +231,10 @@ private OffsetDateTime modifyTime;
             orderType = 0;
         }
         if (confirmStatus == null) {
-            confirmStatus = 0;
+            confirmStatus = false;
         }
         if (orderSn == null) {
-            orderSn = "ORD-" + System.currentTimeMillis() + "-" + java.util.UUID.randomUUID().toString().substring(0, 8);
+            orderSn = "ORD-" + System.currentTimeMillis() + "-" + UUID.randomUUID().toString().substring(0, 8);
         }
     }
 

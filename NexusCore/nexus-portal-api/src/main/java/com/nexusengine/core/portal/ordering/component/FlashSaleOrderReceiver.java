@@ -72,7 +72,6 @@ public class FlashSaleOrderReceiver {
             order.setOrderSn("FLASH-" + System.currentTimeMillis() + "-" + java.util.UUID.randomUUID().toString().substring(0, 8));
             order.setCreateTime(java.time.OffsetDateTime.now());
             order.setStatus(0);
-            order.setDeleteStatus(0);
             order.setOrderType(1); // 1 = flash sale
             orderRepository.save(order);
 

@@ -37,7 +37,7 @@ public class HomeDao {
     }
 
     public List<Product> getHotProductList(int offset, int limit) {
-        return productRepository.findAll(PageRequest.of(offset / Math.max(limit, 1), limit, Sort.by(Sort.Direction.DESC, "sale"))).getContent();
+        return productRepository.findAll(PageRequest.of(offset / Math.max(limit, 1), limit, Sort.by(Sort.Direction.DESC, "unitsSold"))).getContent();
     }
 
     public List<FlashPromotionProduct> getFlashProductList(Long flashPromotionId, Long sessionId) {

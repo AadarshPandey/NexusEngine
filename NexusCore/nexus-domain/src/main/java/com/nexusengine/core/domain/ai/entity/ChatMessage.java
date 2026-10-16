@@ -1,19 +1,19 @@
 package com.nexusengine.core.domain.ai.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import com.nexusengine.core.domain.customer.entity.Member;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.io.Serializable;
 import java.time.OffsetDateTime;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "chat_message", schema = "ai")
-public class ChatMessage implements Serializable {
+public class ChatMessage {
         @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
@@ -22,9 +22,9 @@ private Long id;
         @Column(name = "member_id")
 
 private Long memberId;
-        @com.fasterxml.jackson.annotation.JsonIgnore
-    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
-    @jakarta.persistence.JoinColumn(name = "member_id", insertable = false, updatable = false)
+        @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", insertable = false, updatable = false)
 
 private Member member;
 

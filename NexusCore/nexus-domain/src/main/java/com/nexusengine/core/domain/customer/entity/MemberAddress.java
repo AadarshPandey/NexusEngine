@@ -1,9 +1,19 @@
 package com.nexusengine.core.domain.customer.entity;
 
+import jakarta.persistence.FetchType;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.*;
-import java.io.Serializable;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,55 +21,47 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "member_address", schema = "customer")
-public class MemberAddress implements Serializable {
+public class MemberAddress {
 
-    private static final long serialVersionUID = 1L;
-
-        @Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-private Long id;
+    @Column(name = "member_id")
+    private Long memberId;
 
-        @Column(name = "member_id")
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", insertable = false, updatable = false)
+    private Member member;
 
-private Long memberId;
-        @com.fasterxml.jackson.annotation.JsonIgnore
-    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
-    @jakarta.persistence.JoinColumn(name = "member_id", insertable = false, updatable = false)
-
-private Member member;
-
-            @Schema(title = "Name")
+    @Schema(title = "Name")
     @Column(name = "recipient_name")
-private String name;
+    private String name;
 
-        @Column(name = "recipient_phone")
+    @Column(name = "recipient_phone")
+    private String phoneNumber;
 
-private String phoneNumber;
-
-        @Column(name = "is_default")
+    @Column(name = "is_default")
     @Schema(title = "Default status")
-    @jakarta.persistence.Convert(converter = com.nexusengine.core.domain.shared.converter.IntegerToBooleanConverter.class)
-private Integer defaultStatus = 0;
+    private Boolean defaultStatus = false;
 
-        @Column(name = "postal_code")
+    @Column(name = "postal_code")
     @Schema(title = "Post code")
+    private String postCode;
 
-private String postCode;
-
-            @Schema(title = "State")
+    @Schema(title = "State")
     @Column(name = "state")
-private String state;
+    private String state;
 
-        @Schema(title = "City")
+    @Schema(title = "City")
+    private String city;
 
-private String city;
-
-            @Schema(title = "Region")
+    @Schema(title = "Region")
     @Column(name = "district")
-private String region;
+    private String region;
 
-        @Column(name = "address_line")
+    @Column(name = "address_line")
     @Schema(title = "Detail address")
     private String detailAddress;
 
@@ -72,7 +74,7 @@ private String region;
     }
 
     public Boolean getIsDefault() {
-        return defaultStatus != null && defaultStatus == 1;
+        return Boolean.TRUE.equals(defaultStatus);
     }
 
     public String getAddressLine() {
@@ -90,7 +92,7 @@ private String region;
     @PrePersist
     protected void onCreate() {
         if (defaultStatus == null) {
-            defaultStatus = 0;
+            defaultStatus = false;
         }
     }
 }

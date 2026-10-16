@@ -29,6 +29,7 @@ public class BrandServiceImpl implements BrandService {
     public int createBrand(BrandParam brandParam) {
         Brand brand = new Brand();
         BeanUtils.copyProperties(brandParam, brand);
+        brand.setIsVisible(brandParam.isVisible() != null && brandParam.isVisible() == 1);
         brandRepository.save(brand);
         return 1;
     }
@@ -37,6 +38,7 @@ public class BrandServiceImpl implements BrandService {
     public int updateBrand(Long id, BrandParam brandParam) {
         Brand brand = new Brand();
         BeanUtils.copyProperties(brandParam, brand);
+        brand.setIsVisible(brandParam.isVisible() != null && brandParam.isVisible() == 1);
         brand.setId(id);
         brandRepository.save(brand);
         return 1;
@@ -63,7 +65,7 @@ public class BrandServiceImpl implements BrandService {
                 predicates.add(cb.like(cb.lower(root.get("name")), "%" + keyword.toLowerCase() + "%"));
             }
             if (isVisible != null) {
-                predicates.add(cb.equal(root.get("isVisible"), isVisible));
+                predicates.add(cb.equal(root.get("isVisible"), isVisible == 1));
             }
             return cb.and(predicates.toArray(new jakarta.persistence.criteria.Predicate[0]));
         }, pageable);
@@ -78,7 +80,7 @@ public class BrandServiceImpl implements BrandService {
     public int updateIsVisible(List<Long> ids, Integer isVisible) {
         List<Brand> brands = brandRepository.findAllById(ids);
         for (Brand brand : brands) {
-            brand.setIsVisible(isVisible);
+            brand.setIsVisible(isVisible != null && isVisible == 1);
             brandRepository.save(brand);
         }
         return brands.size();

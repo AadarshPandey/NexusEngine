@@ -1,9 +1,13 @@
 package com.nexusengine.core.domain.iam.entity;
 
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.*;
-import java.io.Serializable;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import java.time.OffsetDateTime;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,50 +16,41 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "admin_user", schema = "iam")
-public class AdminUser implements Serializable {
+public class AdminUser {
 
-    private static final long serialVersionUID = 1L;
-
-        @Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
-private Long id;
+    private Long id;
 
     private String username;
 
-            @com.fasterxml.jackson.annotation.JsonIgnore
+    @JsonIgnore
     @Column(name = "password_hash")
-private String password;
+    private String password;
 
-            @Schema(title = "Icon")
+    @Schema(title = "Icon")
     @Column(name = "avatar_url")
-private String icon;
+    private String icon;
 
-        @Schema(title = "Email")
+    @Schema(title = "Email")
+    private String email;
 
-private String email;
-
-        @Column(name = "nick_name")
+    @Column(name = "nick_name")
     @Schema(title = "Nick name")
+    private String nickName;
 
-private String nickName;
+    @Schema(title = "Note")
+    private String note;
 
-        @Schema(title = "Note")
-
-private String note;
-
-        @Column(name = "created_at")
+    @Column(name = "created_at")
     @Schema(title = "Create time")
+    private OffsetDateTime createTime;
 
-private OffsetDateTime createTime;
-
-        @Column(name = "last_login_at")
+    @Column(name = "last_login_at")
     @Schema(title = "Login time")
+    private OffsetDateTime loginTime;
 
-private OffsetDateTime loginTime;
-
-            @Schema(title = "Status")
+    @Schema(title = "Status")
     @Column(name = "is_enabled")
-    @jakarta.persistence.Convert(converter = com.nexusengine.core.domain.shared.converter.IntegerToBooleanConverter.class)
-private Integer status;
+    private Boolean status;
 }

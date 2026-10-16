@@ -2,7 +2,6 @@ package com.nexusengine.core.domain.iam.entity;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
-import java.io.Serializable;
 import java.time.OffsetDateTime;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,10 +10,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "permission_group", schema = "iam")
-public class PermissionGroup implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
+public class PermissionGroup {
         @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 

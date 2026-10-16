@@ -81,7 +81,6 @@ public final class TestFixtures {
         order.setTotalAmount(new BigDecimal("500.00"));
         order.setPayAmount(new BigDecimal("500.00"));
         order.setStatus(0);
-        order.setDeleteStatus(0);
         order.setCreateTime(OffsetDateTime.now());
         return order;
     }

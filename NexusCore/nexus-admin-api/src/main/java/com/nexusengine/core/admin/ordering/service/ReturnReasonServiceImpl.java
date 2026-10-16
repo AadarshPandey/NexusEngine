@@ -46,7 +46,7 @@ public class ReturnReasonServiceImpl implements ReturnReasonService {
         if (!status.equals(0) && !status.equals(1)) return 0;
         List<ReturnReason> reasons = returnReasonRepository.findAllById(ids);
         for (ReturnReason reason : reasons) {
-            reason.setStatus(status);
+            reason.setStatus(status == 1);
             returnReasonRepository.save(reason);
         }
         return reasons.size();

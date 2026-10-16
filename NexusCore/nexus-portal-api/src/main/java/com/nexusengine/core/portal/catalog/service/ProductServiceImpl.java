@@ -75,16 +75,16 @@ public class ProductServiceImpl implements ProductService {
         Sort sortOrder;
         switch (sort) {
             case 1: sortOrder = Sort.by(Sort.Direction.DESC, "id"); break;
-            case 2: sortOrder = Sort.by(Sort.Direction.DESC, "sale"); break;
-            case 3: sortOrder = Sort.by(Sort.Direction.ASC, "price"); break;
-            case 4: sortOrder = Sort.by(Sort.Direction.DESC, "price"); break;
+            case 2: sortOrder = Sort.by(Sort.Direction.DESC, "unitsSold"); break;
+            case 3: sortOrder = Sort.by(Sort.Direction.ASC, "listPrice"); break;
+            case 4: sortOrder = Sort.by(Sort.Direction.DESC, "listPrice"); break;
             default: sortOrder = Sort.by(Sort.Direction.DESC, "id"); break;
         }
 
         Specification<Product> spec = (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
-            predicates.add(cb.isNull(root.get("deleteStatus")));
-            predicates.add(cb.equal(root.get("publishStatus"), 1));
+            predicates.add(cb.isNull(root.get("deletedAt")));
+            predicates.add(cb.equal(root.get("isPublished"), true));
 
             if (StringUtils.hasText(keyword)) {
                 String kw = "%" + keyword.toLowerCase() + "%";
@@ -158,7 +158,7 @@ public class ProductServiceImpl implements ProductService {
         List<Coupon> couponList = productDao.getAvailableCouponList(product.getId(), product.getProductCategoryId());
 
         java.time.LocalDate today = java.time.LocalDate.now();
-        List<FlashSale> promotions = flashPromotionRepository.findByStatusAndStartDateLessThanEqualAndEndDateGreaterThanEqual(1, today, today);
+        List<FlashSale> promotions = flashPromotionRepository.findByStatusAndStartDateLessThanEqualAndEndDateGreaterThanEqual(true, today, today);
         Boolean flashSaleActive = !promotions.isEmpty();
 
         return new ProductDetail(product, brand, productAttributeList, valueList, skuStockList, productVolumeDiscountList, productSpendDiscountList, couponList, flashSaleActive);

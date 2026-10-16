@@ -1,8 +1,11 @@
 package com.nexusengine.core.domain.ordering.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
-import java.io.Serializable;
 import java.time.OffsetDateTime;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,10 +14,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "order_status_history", schema = "ordering")
-public class OrderStatusHistory implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
+public class OrderStatusHistory {
         @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
@@ -24,9 +24,9 @@ private Long id;
     @Schema(title = "Order id")
 
 private Long orderId;
-        @com.fasterxml.jackson.annotation.JsonIgnore
-    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
-    @jakarta.persistence.JoinColumn(name = "order_id", insertable = false, updatable = false)
+        @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id", insertable = false, updatable = false)
 
 private CustomerOrder order;
 
@@ -42,7 +42,7 @@ private OffsetDateTime createTime;
 
         @Column(name = "to_status")
     @Schema(title = "Order status")
-    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.SMALLINT)
+    @JdbcTypeCode(SqlTypes.SMALLINT)
 private Integer orderStatus;
 
         @Schema(title = "Note")

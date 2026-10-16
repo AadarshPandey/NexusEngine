@@ -78,12 +78,12 @@ public class HomeServiceImpl implements HomeService {
 
             // Find active promotion event today
             java.time.LocalDate today = java.time.LocalDate.now();
-            List<FlashSale> promotions = flashPromotionRepository.findByStatusAndStartDateLessThanEqualAndEndDateGreaterThanEqual(1, today, today);
+            List<FlashSale> promotions = flashPromotionRepository.findByStatusAndStartDateLessThanEqualAndEndDateGreaterThanEqual(true, today, today);
             if (!promotions.isEmpty()) {
                 FlashSale promotion = promotions.get(0);
 
                 // Find active session right now
-                java.util.Optional<FlashSaleSlot> currentSessionOpt = flashPromotionSessionRepository.findFirstByStatusAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(1, currentTime, currentTime);
+                java.util.Optional<FlashSaleSlot> currentSessionOpt = flashPromotionSessionRepository.findFirstByStatusAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(true, currentTime, currentTime);
 
                 if (currentSessionOpt.isPresent()) {
                     FlashSaleSlot currentSession = currentSessionOpt.get();
@@ -166,6 +166,6 @@ public class HomeServiceImpl implements HomeService {
     }
 
     private List<Banner> getHomeAdvertiseList() {
-        return advertiseRepository.findByStatusOrderBySortDesc(1);
+        return advertiseRepository.findByStatusOrderByDisplayOrderDesc(true);
     }
 }

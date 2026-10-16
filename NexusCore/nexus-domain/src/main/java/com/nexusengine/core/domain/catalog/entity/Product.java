@@ -1,132 +1,126 @@
 package com.nexusengine.core.domain.catalog.entity;
 
+import jakarta.persistence.FetchType;
+import org.hibernate.type.SqlTypes;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.*;
-import java.io.Serializable;
-import java.util.List;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import java.math.BigDecimal;
+import java.time.Instant;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Formula;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.type.SqlTypes;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "product", schema = "catalog")
-public class Product implements Serializable {
+@SQLRestriction("deleted_at IS NULL")
+public class Product {
 
-    private static final long serialVersionUID = 1L;
-
-        @Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-private Long id;
-        @Column(name = "brand_id")
+    @Column(name = "brand_id")
+    private Long brandId;
 
-private Long brandId;
-        @com.fasterxml.jackson.annotation.JsonIgnore
-    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
-    @jakarta.persistence.JoinColumn(name = "brand_id", insertable = false, updatable = false)
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "brand_id", insertable = false, updatable = false)
+    private Brand brand;
 
-private Brand brand;
+    @Column(name = "category_id")
+    private Long productCategoryId;
 
-        @Column(name = "category_id")
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", insertable = false, updatable = false)
+    private Category productCategory;
 
-private Long productCategoryId;
-        @com.fasterxml.jackson.annotation.JsonIgnore
-    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
-    @jakarta.persistence.JoinColumn(name = "category_id", insertable = false, updatable = false)
+    @Column(name = "product_type_id")
+    private Long productAttributeCategoryId;
 
-private Category productCategory;
-
-        @Column(name = "product_type_id")
-
-private Long productAttributeCategoryId;
-        @com.fasterxml.jackson.annotation.JsonIgnore
-    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
-    @jakarta.persistence.JoinColumn(name = "product_type_id", insertable = false, updatable = false)
-
-private ProductType productAttributeCategory;
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_type_id", insertable = false, updatable = false)
+    private ProductType productAttributeCategory;
 
     private String name;
 
-    @com.fasterxml.jackson.annotation.JsonProperty("primaryImageUrl")
-            @Column(name = "primary_image_url")
-private String primaryImageUrl;
+    @Column(name = "primary_image_url")
+    private String primaryImageUrl;
 
-        @Column(name = "product_code")
-    @Schema(title = "Product sn")
+    @Column(name = "product_code")
+    @Schema(title = "Product code")
+    private String productCode;
 
-@com.fasterxml.jackson.annotation.JsonProperty("productCode")
-    private String productSn;
-
-        @Convert(converter = com.nexusengine.core.domain.shared.converter.IntegerToDeletedAtConverter.class)
     @Column(name = "deleted_at")
-    @Schema(title = "Delete status")
+    @Schema(title = "Deleted at")
+    private Instant deletedAt;
 
-private Integer deleteStatus;
-
-        @Column(name = "is_published")
+    @Column(name = "is_published")
     @Schema(title = "Publish status")
-    @jakarta.persistence.Convert(converter = com.nexusengine.core.domain.shared.converter.IntegerToBooleanConverter.class)
-@com.fasterxml.jackson.annotation.JsonProperty("isPublished")
-    private Integer publishStatus;
+    private Boolean isPublished;
 
-        @Column(name = "is_new_arrival")
-    @Schema(title = "New status")
-    @jakarta.persistence.Convert(converter = com.nexusengine.core.domain.shared.converter.IntegerToBooleanConverter.class)
-@com.fasterxml.jackson.annotation.JsonProperty("isNewArrival")
-    private Integer newStatus;
+    @Column(name = "is_new_arrival")
+    @Schema(title = "New arrival status")
+    private Boolean isNewArrival;
 
-        @Column(name = "is_featured")
-    @Schema(title = "Recommend status")
-    @jakarta.persistence.Convert(converter = com.nexusengine.core.domain.shared.converter.IntegerToBooleanConverter.class)
-@com.fasterxml.jackson.annotation.JsonProperty("isFeatured")
-    private Integer recommendStatus;
+    @Column(name = "is_featured")
+    @Schema(title = "Featured status")
+    private Boolean isFeatured;
 
-        @Column(name = "approval_status")
-    @Schema(title = "Verify status")
-    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.SMALLINT)
-@com.fasterxml.jackson.annotation.JsonProperty("approvalStatus")
-    private Integer verifyStatus;
+    @Column(name = "approval_status")
+    @Schema(title = "Approval status")
+    @JdbcTypeCode(SqlTypes.SMALLINT)
+    private Integer approvalStatus;
 
-            @Schema(title = "Sale")
+    @Schema(title = "Units sold")
     @Column(name = "units_sold")
-@com.fasterxml.jackson.annotation.JsonProperty("unitsSold")
-    private Integer sale;
+    private Integer unitsSold;
 
-            @Column(name = "search_keywords")
-private String keywords;
-        @OneToMany(fetch = jakarta.persistence.FetchType.EAGER)
+    @Column(name = "search_keywords")
+    private String keywords;
+
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
-    @com.fasterxml.jackson.annotation.JsonManagedReference
+    @JsonManagedReference
+    private List<ProductMedia> galleryList;
 
-private List<ProductMedia> galleryList;
-
-
-
-        @Column(name = "promotion_type")
+    @Column(name = "promotion_type")
     @Schema(title = "Promotion type")
-    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.SMALLINT)
-private Integer promotionType;
+    @JdbcTypeCode(SqlTypes.SMALLINT)
+    private Integer promotionType;
 
     @Schema(title = "List Price")
-    @org.hibernate.annotations.Formula("(SELECT COALESCE(min(s.list_price), 0) FROM catalog.product_sku s WHERE s.product_id = id)")
-    @com.fasterxml.jackson.annotation.JsonProperty("listPrice")
+    @Formula("(SELECT COALESCE(min(s.list_price), 0) FROM catalog.product_sku s WHERE s.product_id = id)")
     private BigDecimal listPrice;
 
-
-            @org.hibernate.annotations.Formula("(SELECT b.name FROM catalog.brand b WHERE b.id = brand_id)")
+    @Formula("(SELECT b.name FROM catalog.brand b WHERE b.id = brand_id)")
     private String brandName;
 
-        @Schema(title = "Description")
+    @Schema(title = "Description")
+    private String description;
 
-private String description;
-
-
-    @jakarta.persistence.Version
+    @Version
     private Integer version;
 
     public BigDecimal getPrice() {
@@ -135,26 +129,26 @@ private String description;
 
     @PrePersist
     protected void onCreate() {
-        if (publishStatus == null) {
-            publishStatus = 1;
+        if (isPublished == null) {
+            isPublished = true;
         }
-        if (newStatus == null) {
-            newStatus = 0;
+        if (isNewArrival == null) {
+            isNewArrival = false;
         }
-        if (recommendStatus == null) {
-            recommendStatus = 0;
+        if (isFeatured == null) {
+            isFeatured = false;
         }
-        if (verifyStatus == null) {
-            verifyStatus = 1;
+        if (approvalStatus == null) {
+            approvalStatus = 1;
         }
-        if (sale == null) {
-            sale = 0;
+        if (unitsSold == null) {
+            unitsSold = 0;
         }
         if (promotionType == null) {
             promotionType = 0;
         }
-        if (productSn == null) {
-            productSn = "PROD-" + System.currentTimeMillis();
+        if (productCode == null) {
+            productCode = "PROD-" + System.currentTimeMillis();
         }
     }
 }

@@ -42,10 +42,9 @@ public class OrderDao {
     }
 
     public List<OrderDetail> getTimeOutOrders(Integer minutes) {
-        java.time.LocalDateTime deadline = java.time.LocalDateTime.now().minusMinutes(minutes);
+        java.time.OffsetDateTime deadline = java.time.OffsetDateTime.now().minusMinutes(minutes);
 
-
-        List<CustomerOrder> orders = orderRepository.findByStatusAndDeleteStatusIsNullAndCreateTimeBefore(0, deadline);
+        List<CustomerOrder> orders = orderRepository.findByStatusAndDeletedAtIsNullAndCreateTimeBefore(0, deadline);
         List<OrderDetail> result = new ArrayList<>();
         for (CustomerOrder order : orders) {
 
@@ -75,7 +74,7 @@ public class OrderDao {
             }
             Product product = productRepository.findById(item.getProductId()).orElse(null);
             if (product != null) {
-                product.setSale((product.getSale() == null ? 0 : product.getSale()) + item.getProductQuantity());
+                product.setUnitsSold((product.getUnitsSold() == null ? 0 : product.getUnitsSold()) + item.getProductQuantity());
                 productRepository.save(product);
                 count++;
             }
@@ -93,11 +92,11 @@ public class OrderDao {
 
     public int autoConfirmShippedOrders(int days) {
         java.time.OffsetDateTime deadline = java.time.OffsetDateTime.now().minusDays(days);
-        List<CustomerOrder> orders = orderRepository.findByStatusAndDeleteStatusIsNullAndDeliveryTimeBefore(2, deadline);
+        List<CustomerOrder> orders = orderRepository.findByStatusAndDeletedAtIsNullAndDeliveryTimeBefore(2, deadline);
         int count = 0;
         for (CustomerOrder order : orders) {
             order.setStatus(3);
-            order.setConfirmStatus(1);
+            order.setConfirmStatus(true);
             order.setReceiveTime(java.time.OffsetDateTime.now());
             orderRepository.save(order);
             count++;

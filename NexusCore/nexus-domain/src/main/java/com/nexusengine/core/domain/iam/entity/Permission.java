@@ -1,9 +1,10 @@
 package com.nexusengine.core.domain.iam.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
-import java.io.Serializable;
 import java.time.OffsetDateTime;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,10 +13,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "permission", schema = "iam")
-public class Permission implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
+public class Permission {
         @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
@@ -42,8 +40,8 @@ private String description;
     @Schema(title = "Category id")
 
 private Long categoryId;
-        @com.fasterxml.jackson.annotation.JsonIgnore
-    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
-    @jakarta.persistence.JoinColumn(name = "permission_group_id", insertable = false, updatable = false)
+        @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "permission_group_id", insertable = false, updatable = false)
     private PermissionGroup permissionGroup;
 }

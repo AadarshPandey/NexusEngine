@@ -1,42 +1,41 @@
 package com.nexusengine.core.domain.promotion.entity;
 
-
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.io.Serializable;
-import java.time.OffsetDateTime;
-import java.time.LocalDate;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "flash_sale", schema = "promotion")
-public class FlashSale implements Serializable {
-        @Id
+public class FlashSale {
+
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-private Long id;
+    @Column(name = "title", nullable = false)
+    private String title;
 
-        @Column(name = "title", nullable = false)
+    @Column(name = "starts_on", nullable = false)
+    private LocalDate startDate;
 
-private String title;
+    @Column(name = "ends_on", nullable = false)
+    private LocalDate endDate;
 
-        @Column(name = "starts_on", nullable = false)
+    @Column(name = "is_active")
+    private Boolean status;
 
-private LocalDate startDate;
-
-        @Column(name = "ends_on", nullable = false)
-
-private LocalDate endDate;
-
-        @Column(name = "is_active")
-    @jakarta.persistence.Convert(converter = com.nexusengine.core.domain.shared.converter.IntegerToBooleanConverter.class)
-private Integer status;
-
-        @Column(name = "created_at")
-        private OffsetDateTime createTime = OffsetDateTime.now();
+    @Column(name = "created_at")
+    private OffsetDateTime createTime = OffsetDateTime.now();
 
     @PrePersist
     protected void onCreate() {
@@ -44,7 +43,7 @@ private Integer status;
             createTime = OffsetDateTime.now();
         }
         if (status == null) {
-            status = 1;
+            status = true;
         }
     }
 }

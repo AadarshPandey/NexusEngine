@@ -223,8 +223,7 @@ public class OrderServiceImpl implements OrderService {
         order.setReceiverPostCode(address.getPostCode());
 
         order.setReceiverDetailAddress(address.getDetailAddress());
-        order.setConfirmStatus(0);
-        order.setDeleteStatus(0);
+        order.setConfirmStatus(false);
 
         order.setOrderSn(generateOrderSn(order));
         OrderPolicy orderSetting = orderSettingRepository.findById(1L).orElse(null);
@@ -361,7 +360,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @org.springframework.transaction.annotation.Transactional
     public void cancelOrder(Long orderId) {
-        List<CustomerOrder> cancelOrderList = orderRepository.findByIdAndStatusAndDeleteStatusIsNull(orderId, 0);
+        List<CustomerOrder> cancelOrderList = orderRepository.findByIdAndStatusAndDeletedAtIsNull(orderId, 0);
         if (CollectionUtils.isEmpty(cancelOrderList)) return;
         CustomerOrder cancelOrder = cancelOrderList.get(0);
 
@@ -420,7 +419,7 @@ public class OrderServiceImpl implements OrderService {
             Asserts.fail("Order has not been shipped");
         }
         order.setStatus(3);
-        order.setConfirmStatus(1);
+        order.setConfirmStatus(true);
         order.setReceiveTime(java.time.OffsetDateTime.now());
         orderRepository.save(order);
     }
@@ -430,10 +429,10 @@ public class OrderServiceImpl implements OrderService {
         Member member = memberService.getCurrentMember();
         Page<CustomerOrder> orderPage;
         if (status == null || status == -1) {
-            orderPage = orderRepository.findByMemberIdAndDeleteStatusIsNullOrderByCreateTimeDesc(
+            orderPage = orderRepository.findByMemberIdAndDeletedAtIsNullOrderByCreateTimeDesc(
                     member.getId(), PageRequest.of(pageNum - 1, pageSize));
         } else {
-            orderPage = orderRepository.findByMemberIdAndStatusAndDeleteStatusIsNullOrderByCreateTimeDesc(
+            orderPage = orderRepository.findByMemberIdAndStatusAndDeletedAtIsNullOrderByCreateTimeDesc(
                     member.getId(), status, PageRequest.of(pageNum - 1, pageSize));
         }
         CommonPage<CustomerOrder> commonOrderPage = CommonPage.restPage(orderPage);
@@ -476,7 +475,7 @@ public class OrderServiceImpl implements OrderService {
             Asserts.fail("Cannot delete other's order");
         }
         if (order.getStatus() == 3 || order.getStatus() == 4) {
-            order.setDeleteStatus(1);
+            order.setDeletedAt(java.time.Instant.now());
             orderRepository.save(order);
         } else {
             Asserts.fail("Can only delete completed or cancelled orders");
@@ -486,7 +485,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void paySuccessByOrderSn(String orderSn, Integer payType) {
         CustomerOrder order = orderRepository.findByOrderSn(orderSn);
-        if (order != null && order.getStatus() == 0 && order.getDeleteStatus() == 0) {
+        if (order != null && order.getStatus() == 0 && order.getDeletedAt() == null) {
             paySuccess(order.getId(), payType);
         }
     }

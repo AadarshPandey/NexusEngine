@@ -1,7 +1,8 @@
 package com.nexusengine.core.domain.catalog.entity;
 
+import org.hibernate.annotations.Formula;
+
 import jakarta.persistence.*;
-import java.io.Serializable;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,10 +10,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "product_type", schema = "catalog")
-public class ProductType implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
+public class ProductType {
         @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
@@ -20,9 +18,9 @@ private Long id;
 
     private String name;
 
-            @org.hibernate.annotations.Formula("(SELECT COUNT(*) FROM catalog.attribute_definition a WHERE a.product_type_id = id AND a.kind = 0)")
+            @Formula("(SELECT COUNT(*) FROM catalog.attribute_definition a WHERE a.product_type_id = id AND a.kind = 0)")
     private Integer attributeCount;
 
-            @org.hibernate.annotations.Formula("(SELECT COUNT(*) FROM catalog.attribute_definition a WHERE a.product_type_id = id AND a.kind = 1)")
+            @Formula("(SELECT COUNT(*) FROM catalog.attribute_definition a WHERE a.product_type_id = id AND a.kind = 1)")
     private Integer paramCount;
 }

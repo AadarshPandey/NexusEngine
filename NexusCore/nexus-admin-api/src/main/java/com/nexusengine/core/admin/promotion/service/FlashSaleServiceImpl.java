@@ -46,7 +46,7 @@ public class FlashSaleServiceImpl implements FlashSaleService {
         Optional<FlashSale> optional = flashPromotionRepository.findById(id);
         if (optional.isPresent()) {
             FlashSale flashPromotion = optional.get();
-            flashPromotion.setStatus(status);
+            flashPromotion.setStatus(status != null && status == 1);
             flashPromotionRepository.save(flashPromotion);
             return 1;
         }

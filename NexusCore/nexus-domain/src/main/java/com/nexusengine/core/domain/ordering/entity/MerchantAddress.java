@@ -1,9 +1,12 @@
 package com.nexusengine.core.domain.ordering.entity;
 
-
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.*;
-import java.io.Serializable;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,48 +14,39 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "merchant_address", schema = "ordering")
-public class MerchantAddress implements Serializable {
+public class MerchantAddress {
 
-    private static final long serialVersionUID = 1L;
-
-        @Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-private Long id;
-
-        @Column(name = "label")
+    @Column(name = "label")
     @Schema(title = "Address name")
+    private String addressName;
 
-private String addressName;
-
-        @Column(name = "is_default_ship_from")
+    @Column(name = "is_default_ship_from")
     @Schema(title = "Send status")
-    @jakarta.persistence.Convert(converter = com.nexusengine.core.domain.shared.converter.IntegerToBooleanConverter.class)
-private Integer sendStatus;
+    private Boolean sendStatus;
 
-        @Column(name = "is_default_return_to")
+    @Column(name = "is_default_return_to")
     @Schema(title = "Receive status")
-    @jakarta.persistence.Convert(converter = com.nexusengine.core.domain.shared.converter.IntegerToBooleanConverter.class)
-private Integer receiveStatus;
+    private Boolean receiveStatus;
 
-            @Schema(title = "Name")
+    @Schema(title = "Name")
     @Column(name = "contact_name")
-private String name;
+    private String name;
 
-            @Schema(title = "Phone")
+    @Schema(title = "Phone")
     @Column(name = "contact_phone")
-private String phone;
+    private String phone;
 
-        @Schema(title = "State")
+    @Schema(title = "State")
+    private String state;
 
-private String state;
+    @Schema(title = "City")
+    private String city;
 
-        @Schema(title = "City")
-
-private String city;
-
-        @Column(name = "address_line")
+    @Column(name = "address_line")
     @Schema(title = "Detail address")
-
-private String detailAddress;
+    private String detailAddress;
 }

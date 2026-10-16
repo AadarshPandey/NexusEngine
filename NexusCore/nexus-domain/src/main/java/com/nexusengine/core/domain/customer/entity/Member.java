@@ -1,8 +1,11 @@
 package com.nexusengine.core.domain.customer.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
-import java.io.Serializable;
 import java.time.OffsetDateTime;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,10 +14,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "member", schema = "customer")
-public class Member implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
+public class Member {
         @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
@@ -25,7 +25,7 @@ private Long id;
 private String username;
 
             @Schema(title = "Password")
-    @com.fasterxml.jackson.annotation.JsonIgnore
+    @JsonIgnore
     @Column(name = "password_hash")
 private String password;
 
@@ -43,7 +43,7 @@ private String email;
 
     @Schema(title = "Status")
     @Column(name = "account_status", nullable = false)
-    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.SMALLINT)
+    @JdbcTypeCode(SqlTypes.SMALLINT)
     private Integer status = 1;
 
     @Column(name = "created_at", nullable = false)
@@ -56,12 +56,12 @@ private String email;
 
     @Schema(title = "Gender")
     @Column(name = "gender", nullable = false)
-    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.SMALLINT)
+    @JdbcTypeCode(SqlTypes.SMALLINT)
     private Integer gender = 0;
 
     @Column(name = "signup_channel", nullable = false)
     @Schema(title = "Source type")
-    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.SMALLINT)
+    @JdbcTypeCode(SqlTypes.SMALLINT)
     private Integer signupChannel = 0;
 
     public String getAvatarUrl() {

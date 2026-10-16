@@ -1,8 +1,10 @@
 package com.nexusengine.core.domain.promotion.entity;
 
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
-import java.io.Serializable;
 import java.time.OffsetDateTime;
 import java.math.BigDecimal;
 import lombok.Getter;
@@ -12,10 +14,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "coupon", schema = "promotion")
-public class Coupon implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
+public class Coupon {
         @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
@@ -23,7 +22,7 @@ private Long id;
 
             @Schema(title = "Type")
     @Column(name = "discount_type")
-    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.SMALLINT)
+    @JdbcTypeCode(SqlTypes.SMALLINT)
 private Integer type;
 
     private String name;
@@ -39,7 +38,7 @@ private BigDecimal amount;
 
         @Column(name = "per_member_limit")
     @Schema(title = "Per limit")
-    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.SMALLINT)
+    @JdbcTypeCode(SqlTypes.SMALLINT)
 private Integer perLimit;
 
         @Column(name = "min_spend_amount")
@@ -57,7 +56,7 @@ private OffsetDateTime endTime;
 
         @Column(name = "applicability_scope")
     @Schema(title = "Use type")
-    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.SMALLINT)
+    @JdbcTypeCode(SqlTypes.SMALLINT)
 private Integer useType;
 
 
@@ -78,7 +77,7 @@ private String code;
 
 private BigDecimal maxDiscountAmount;
 
-    @jakarta.persistence.Version
+    @Version
     private Integer version;
 
     @PrePersist

@@ -39,8 +39,8 @@ public class BrandServiceImpl implements BrandService {
 
     @Override
     public CommonPage<Product> productList(Long brandId, Integer pageNum, Integer pageSize) {
-        Page<Product> page = productRepository.findByBrandIdAndDeleteStatusAndPublishStatus(
-                brandId, 0, 1, PageRequest.of(pageNum - 1, pageSize));
+        Page<Product> page = productRepository.findByBrandIdAndDeletedAtIsNullAndIsPublished(
+                brandId, true, PageRequest.of(pageNum - 1, pageSize));
         return CommonPage.restPage(page);
     }
 }

@@ -86,7 +86,7 @@ public class RoleController {
 
     public CommonResult updateStatus(@PathVariable("id") Long id, @RequestParam(value = "status") Integer status) {
         Role role = new Role();
-        role.setStatus(status);
+        role.setStatus(status != null && status == 1);
         int count = roleService.update(id, role);
         if (count > 0) {
             return CommonResult.success(count);

@@ -1,7 +1,8 @@
 package com.nexusengine.core.domain.iam.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
-import java.io.Serializable;
 import java.time.OffsetDateTime;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,10 +11,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "admin_login_event", schema = "iam")
-public class AdminLoginEvent implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
+public class AdminLoginEvent {
         @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
@@ -22,9 +20,9 @@ private Long id;
         @Column(name = "admin_user_id")
 
 private Long adminId;
-        @com.fasterxml.jackson.annotation.JsonIgnore
-    @jakarta.persistence.ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
-    @jakarta.persistence.JoinColumn(name = "admin_user_id", insertable = false, updatable = false)
+        @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "admin_user_id", insertable = false, updatable = false)
 
 private AdminUser admin;
 

@@ -12,7 +12,6 @@ import com.nexusengine.core.domain.catalog.repository.ProductTypeRepository;
 import com.nexusengine.core.domain.catalog.repository.AttributeDefinitionRepository;
 import com.nexusengine.core.domain.catalog.entity.AttributeDefinition;
 import com.nexusengine.core.domain.catalog.entity.ProductType;
-import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -36,7 +35,7 @@ public class AttributeServiceImpl implements AttributeService {
     @Override
     public int create(AttributeParam attributeParam) {
         AttributeDefinition attributeDefinition = new AttributeDefinition();
-        BeanUtils.copyProperties(attributeParam, attributeDefinition);
+        copyAttributeParam(attributeParam, attributeDefinition);
         productAttributeRepository.save(attributeDefinition);
         ProductType category = productAttributeCategoryRepository
                 .findById(attributeDefinition.getProductAttributeCategoryId()).orElse(null);
@@ -55,9 +54,18 @@ public class AttributeServiceImpl implements AttributeService {
     public int update(Long id, AttributeParam productAttributeParam) {
         AttributeDefinition attributeDefinition = new AttributeDefinition();
         attributeDefinition.setId(id);
-        BeanUtils.copyProperties(productAttributeParam, attributeDefinition);
+        copyAttributeParam(productAttributeParam, attributeDefinition);
         productAttributeRepository.save(attributeDefinition);
         return 1;
+    }
+
+    private void copyAttributeParam(AttributeParam param, AttributeDefinition entity) {
+        entity.setProductAttributeCategoryId(param.productAttributeCategoryId());
+        entity.setName(param.name());
+        entity.setSelectionMode(param.selectType());
+        entity.setInputMode(param.inputType());
+        entity.setAllowedValues(param.inputList());
+        entity.setType(param.type());
     }
 
     @Override
