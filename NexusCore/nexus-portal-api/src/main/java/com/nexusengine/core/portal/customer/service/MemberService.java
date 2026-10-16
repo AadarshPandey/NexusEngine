@@ -85,4 +85,6 @@ public interface MemberService {
      * @return a new JWT token
      */
     String refreshToken(String token);
+
+    String uploadAvatar(org.springframework.web.multipart.MultipartFile file);
 }

@@ -27,6 +27,10 @@ import org.springframework.util.CollectionUtils;
 import java.util.List;
 import java.security.SecureRandom;
 import com.nexusengine.core.portal.customer.dto.MemberDetails;
+import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 
 /**
@@ -42,10 +46,15 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final MemberCacheService memberCacheService;
     private final com.nexusengine.core.domain.customer.repository.MemberLoginEventRepository memberLoginEventRepository;
+    private final S3Client s3Client;
     @Value("${redis.key.authCode}")
     private String REDIS_KEY_PREFIX_AUTH_CODE;
     @Value("${redis.expire.authCode}")
     private Long AUTH_CODE_EXPIRE_SECONDS;
+    @Value("${spring.cloud.aws.s3.bucket-name:nexus-media}")
+    private String bucketName;
+    @Value("${spring.cloud.aws.s3.endpoint:http://localhost:9000}")
+    private String s3Endpoint;
 
     @Override
     public Member getByUsername(String username) {
@@ -199,6 +208,24 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public String refreshToken(String token) {
         return jwtTokenUtil.refreshHeadToken(token);
+    }
+
+    @Override
+    public String uploadAvatar(MultipartFile file) {
+        try {
+            String filename = "avatar_" + System.currentTimeMillis() + "_" + file.getOriginalFilename();
+            String objectKey = "public/users/" + filename;
+            s3Client.putObject(
+                    PutObjectRequest.builder()
+                            .bucket(bucketName)
+                            .key(objectKey)
+                            .contentType(file.getContentType())
+                            .build(),
+                    RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
+            return s3Endpoint + "/" + bucketName + "/" + objectKey;
+        } catch (Exception e) {
+            throw new IllegalStateException("Failed to upload avatar", e);
+        }
     }
 
     private boolean verifyAuthCode(String authCode, String email) {

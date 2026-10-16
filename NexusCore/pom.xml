@@ -34,11 +34,8 @@
         <skipTests>false</skipTests>
 
         <!-- Library versions -->
-        <hutool.version>5.8.40</hutool.version>
         <springdoc-openapi.version>3.1.1</springdoc-openapi.version>
         <logstash-logback.version>8.0</logstash-logback.version>
-        <minio.version>8.6.0</minio.version>
-        <okhttp3.version>5.1.0</okhttp3.version>
         <commons-lang3.version>3.20.0</commons-lang3.version>
         <spring-cloud-aws.version>3.3.1</spring-cloud-aws.version>
         <resilience4j.version>2.4.0</resilience4j.version>
@@ -48,8 +45,6 @@
         <redisson.version>4.7.0</redisson.version>
         <mapstruct.version>1.6.3</mapstruct.version>
         <razorpay.version>1.4.6</razorpay.version>
-        <testcontainers.version>1.20.4</testcontainers.version>
-        <hibernate-vector.version>7.4.5.Final</hibernate-vector.version>
         <jacoco.version>0.8.14</jacoco.version>
         <spotless.version>2.44.3</spotless.version>
     </properties>
@@ -90,6 +85,14 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <!-- Testcontainers BOM -->
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>testcontainers-bom</artifactId>
+                <version>1.20.4</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
 
             <!-- NexusCore internal modules -->
             <dependency>
@@ -113,13 +116,6 @@
                 <version>${project.version}</version>
             </dependency>
 
-            <!-- Hutool Java utility toolkit (kept in dependencyManagement until Chunk D cleanup) -->
-            <dependency>
-                <groupId>cn.hutool</groupId>
-                <artifactId>hutool-all</artifactId>
-                <version>${hutool.version}</version>
-            </dependency>
-
             <!-- SpringDoc OpenAPI -->
             <dependency>
                 <groupId>org.springdoc</groupId>
@@ -134,25 +130,11 @@
                 <version>${logstash-logback.version}</version>
             </dependency>
 
-            <!-- MinIO Java SDK -->
-            <dependency>
-                <groupId>io.minio</groupId>
-                <artifactId>minio</artifactId>
-                <version>${minio.version}</version>
-            </dependency>
-
             <!-- Apache Commons Lang3 -->
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
                 <version>${commons-lang3.version}</version>
-            </dependency>
-
-            <!-- OkHttp -->
-            <dependency>
-                <groupId>com.squareup.okhttp3</groupId>
-                <artifactId>okhttp-jvm</artifactId>
-                <version>${okhttp3.version}</version>
             </dependency>
 
             <!-- Resilience4j -->

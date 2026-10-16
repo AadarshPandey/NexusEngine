@@ -1,27 +1,34 @@
 package com.nexusengine.core.security.util;
 
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.jwt.JWTUtil;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.util.StringUtils;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.time.Instant;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * {"alg": "HS512","typ": "JWT"}
- * {"sub":"wang","created":1489079981393,"exp":1489684781}
- * HMACSHA512(base64UrlEncode(header) + "." +base64UrlEncode(payload),secret)
- * Refactored to use Hutool JWTUtil
+ * JWT utility using standard JDK HmacSHA512 and Jackson ObjectMapper.
  */
 public class JwtTokenUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtTokenUtil.class);
     private static final String CLAIM_KEY_USERNAME = "sub";
     private static final String CLAIM_KEY_CREATED = "created";
+    private static final String HMAC_ALGO = "HmacSHA512";
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private static final String HEADER_B64 = Base64.getUrlEncoder().withoutPadding()
+            .encodeToString("{\"alg\":\"HS512\",\"typ\":\"JWT\"}".getBytes(StandardCharsets.UTF_8));
+
     @Value("${jwt.secret}")
     private String secret;
     @Value("${jwt.expiration}")
@@ -29,49 +36,53 @@ public class JwtTokenUtil {
     @Value("${jwt.tokenHead}")
     private String tokenHead;
 
-        /**
-     * Executes the operation.
-     * @return the result of the operation
-     */
     private byte[] getSigningKey() {
         return secret.getBytes(StandardCharsets.UTF_8);
     }
 
-        /**
-     * Executes the operation.
-     * @param claims the claims
-     * @return the result of the operation
-     */
-    private String generateToken(Map<String, Object> claims) {
-        // Standard JWT exp claim must be in seconds since epoch, not milliseconds.
-        long expireTime = Instant.now().getEpochSecond() + expiration;
-        claims.put("exp", expireTime);
-        return JWTUtil.createToken(claims, getSigningKey());
+    private String sign(String content) throws Exception {
+        Mac mac = Mac.getInstance(HMAC_ALGO);
+        mac.init(new SecretKeySpec(getSigningKey(), HMAC_ALGO));
+        byte[] sig = mac.doFinal(content.getBytes(StandardCharsets.UTF_8));
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(sig);
     }
 
-        /**
-     * Executes the operation.
-     * @param token the token
-     * @return the result of the operation
-     */
+    private String generateToken(Map<String, Object> claims) {
+        try {
+            long expireTime = Instant.now().getEpochSecond() + expiration;
+            claims.put("exp", expireTime);
+            String payloadJson = OBJECT_MAPPER.writeValueAsString(claims);
+            String payloadB64 = Base64.getUrlEncoder().withoutPadding()
+                    .encodeToString(payloadJson.getBytes(StandardCharsets.UTF_8));
+            String signingInput = HEADER_B64 + "." + payloadB64;
+            return signingInput + "." + sign(signingInput);
+        } catch (Exception e) {
+            throw new IllegalStateException("Failed to generate JWT token", e);
+        }
+    }
+
     private Map<String, Object> getPayloadFromToken(String token) {
         try {
-            if (!JWTUtil.verify(token, getSigningKey())) {
+            String[] parts = token.split("\\.");
+            if (parts.length != 3) {
+                return null;
+            }
+            String signingInput = parts[0] + "." + parts[1];
+            String expectedSig = sign(signingInput);
+            if (!MessageDigest.isEqual(
+                    expectedSig.getBytes(StandardCharsets.UTF_8),
+                    parts[2].getBytes(StandardCharsets.UTF_8))) {
                 LOGGER.debug("JWT token signature verification failed");
                 return null;
             }
-            return JWTUtil.parseToken(token).getPayloads();
+            byte[] payloadBytes = Base64.getUrlDecoder().decode(parts[1]);
+            return OBJECT_MAPPER.readValue(payloadBytes, new TypeReference<Map<String, Object>>() {});
         } catch (Exception e) {
             LOGGER.debug("JWT token verification failed", e);
             return null;
         }
     }
 
-        /**
-     * Executes the operation.
-     * @param token the token
-     * @return the result of the operation
-     */
     public String getUserNameFromToken(String token) {
         String username;
         try {
@@ -83,9 +94,6 @@ public class JwtTokenUtil {
         return username;
     }
 
-    /**
-     *
-     */
     public boolean validateToken(String token, UserDetails userDetails) {
         String username = getUserNameFromToken(token);
         if (username != null && username.contains(":")) {
@@ -94,11 +102,6 @@ public class JwtTokenUtil {
         return username != null && username.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
 
-        /**
-     * Executes the operation.
-     * @param token the token
-     * @return the result of the operation
-     */
     private boolean isTokenExpired(String token) {
         try {
             Map<String, Object> payload = getPayloadFromToken(token);
@@ -116,30 +119,6 @@ public class JwtTokenUtil {
         }
     }
 
-        /**
-     * Executes the operation.
-     * @param token the token
-     * @return the result of the operation
-     */
-    private Instant getExpiredDateFromToken(String token) {
-        Map<String, Object> payload = getPayloadFromToken(token);
-        if (payload == null) {
-            return null;
-        }
-        Object exp = payload.get("exp");
-        if (exp instanceof Long) {
-            return Instant.ofEpochSecond((Long) exp);
-        } else if (exp instanceof Integer) {
-            return Instant.ofEpochSecond(((Integer) exp).longValue());
-        }
-        return null;
-    }
-
-        /**
-     * Executes the operation.
-     * @param userDetails the userDetails
-     * @return the result of the operation
-     */
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
         String prefix = userDetails.getClass().getSimpleName().contains("Admin") ? "admin:" : "member:";
@@ -148,15 +127,12 @@ public class JwtTokenUtil {
         return generateToken(claims);
     }
 
-    /**
-     *
-     */
     public String refreshHeadToken(String oldToken) {
-        if (StrUtil.isEmpty(oldToken)) {
+        if (!StringUtils.hasText(oldToken) || !oldToken.startsWith(tokenHead)) {
             return null;
         }
         String token = oldToken.substring(tokenHead.length());
-        if (StrUtil.isEmpty(token)) {
+        if (!StringUtils.hasText(token)) {
             return null;
         }
         Map<String, Object> payload = getPayloadFromToken(token);
@@ -174,9 +150,6 @@ public class JwtTokenUtil {
         }
     }
 
-    /**
-     *
-     */
     private boolean tokenRefreshJustBefore(String token, int time) {
         Map<String, Object> payload = getPayloadFromToken(token);
         if (payload == null) {

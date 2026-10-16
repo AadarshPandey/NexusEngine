@@ -13,7 +13,6 @@ This document records the authoritative Generally Available (GA) versions across
 | **Spring AI** | `2.0.1` | AI Integration | Official Google GenAI & PgVector vectorstore integration |
 | **Spring Cloud AWS** | `3.3.1` | Cloud / S3 | LocalStack S3 and AWS S3 storage client |
 | **SpringDoc OpenAPI** | `3.1.1` | API Documentation | Spring Boot 4 native OpenAPI 3.0 & Swagger UI |
-| **Hibernate Vector** | `7.4.5.Final` | ORM Extension | Native pgvector mapping support |
 | **PgVector** | `0.1.6` | Vector DB Driver | Vector similarity functions & embeddings |
 | **Flyway** | Managed by Boot | DB Migrations | Baseline migrations (V1, V2, V3) |
 | **Redisson** | `4.7.0` | Redis Driver | High-concurrency caching & atomic operations |
@@ -21,7 +20,7 @@ This document records the authoritative Generally Available (GA) versions across
 | **Bucket4j** | `8.10.0` | Rate Limiting | Token bucket rate limiting on sensitive endpoints |
 | **MapStruct** | `1.6.3` | Mapping | Compile-time DTO / entity mapping |
 | **Razorpay Java SDK** | `1.4.6` | Payments | Webhook verification and order payment transactions |
-| **Testcontainers** | `1.20.4` | Integration Testing | Disposable PostgreSQL, Redis, and RabbitMQ test containers |
+| **Testcontainers BOM** | `1.20.4` | Integration Testing | Disposable PostgreSQL, Redis, and RabbitMQ test containers |
 | **JaCoCo** | `0.8.14` | Code Coverage | Full Java 25 bytecode support |
 | **Spotless Maven Plugin** | `2.44.3` | Code Formatting | Enforced formatting gate (4-space indent, import cleanup) |
 
@@ -32,16 +31,15 @@ This document records the authoritative Generally Available (GA) versions across
 | Dependency | Version | Notes |
 |---|---|---|
 | **Node.js** | `^20.19.0 \|\| >=22.12.0` | Node LTS |
-| **React** | `^19.1.0` | React 19 Concurrent Root |
-| **React DOM** | `^19.1.0` | React 19 DOM Renderer |
+| **React** | `^19.2.8` | React 19 Concurrent Root |
+| **React DOM** | `^19.2.8` | React 19 DOM Renderer |
+| **MUI Material** | `^9.4.0` | Material UI component library |
 | **Redux Toolkit** | `^2.13.0` | State management & slice architecture |
-| **React Router** | `^7.1.3` | Modern client-side routing |
-| **Vite** | `^6.1.0` | Build tool & HMR dev server |
-| **TypeScript** | `~5.7.2` | Strict mode typing |
+| **React Router** | `^8.3.1` | Modern client-side routing |
+| **Vite** | `^8.3.2` | Build tool & HMR dev server |
+| **TypeScript** | `^7.0.2` | Strict mode typing |
 | **Vitest** | `^5.0.3` | Unit & integration testing runner |
-| **TailwindCSS** | `^3.4.17` | Utility-first styling |
-| **Lucide React** | `^1.16.0` | Modern SVG iconography |
-| **Axios** | `^1.13.2` | HTTP client with JWT interceptor |
+| **Axios** | `^1.20.0` | HTTP client with JWT interceptor |
 
 ---
 

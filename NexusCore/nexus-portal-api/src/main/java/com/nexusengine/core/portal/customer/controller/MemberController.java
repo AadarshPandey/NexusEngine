@@ -68,23 +68,7 @@ public class MemberController {
     @Operation(summary = "Upload Avatar")
     @PostMapping("/uploadAvatar")
     public CommonResult uploadAvatar(@org.springframework.web.bind.annotation.RequestParam("file") org.springframework.web.multipart.MultipartFile file) {
-        try {
-            io.minio.MinioClient minioClient = io.minio.MinioClient.builder()
-                    .endpoint("http://localhost:9000")
-                    .credentials("minioadmin", "minioadmin")
-                    .build();
-            String filename = "avatar_" + System.currentTimeMillis() + "_" + file.getOriginalFilename();
-            minioClient.putObject(io.minio.PutObjectArgs.builder()
-                    .bucket("nexus-media")
-                    .object("public/users/" + filename)
-                    .stream(file.getInputStream(), file.getSize(), -1)
-                    .contentType(file.getContentType())
-                    .build());
-            return CommonResult.success("http://localhost:9000/nexus-media/public/users/" + filename);
-        } catch (Exception e) {
-            org.slf4j.LoggerFactory.getLogger(MemberController.class).error("Failed to upload avatar", e);
-            return CommonResult.failed(e.getMessage());
-        }
+        return CommonResult.success(memberService.uploadAvatar(file));
     }
 
     @Operation(summary = "Update Profile Operation")

@@ -42,4 +42,9 @@ public class TestcontainersConfig {
     VectorStore vectorStore() {
         return Mockito.mock(VectorStore.class);
     }
+
+    @Bean
+    software.amazon.awssdk.services.s3.S3Client s3Client() {
+        return Mockito.mock(software.amazon.awssdk.services.s3.S3Client.class);
+    }
 }

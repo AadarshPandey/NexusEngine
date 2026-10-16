@@ -62,7 +62,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public Page<Role> list(String keyword, Integer pageSize, Integer pageNum) {
         org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(pageNum > 0 ? pageNum - 1 : 0, pageSize, org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.ASC, "id"));
-        if (cn.hutool.core.util.StrUtil.isNotEmpty(keyword)) {
+        if (org.springframework.util.StringUtils.hasText(keyword)) {
             return roleRepository.findAll((org.springframework.data.jpa.domain.Specification<Role>) (root, query, cb) -> {
                 String pattern = "%" + keyword + "%";
                 return cb.like(root.get("name"), pattern);

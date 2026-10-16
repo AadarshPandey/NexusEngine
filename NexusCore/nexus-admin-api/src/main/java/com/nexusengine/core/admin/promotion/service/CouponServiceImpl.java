@@ -77,7 +77,7 @@ public class CouponServiceImpl implements CouponService {
         org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(pageNum - 1, pageSize);
         org.springframework.data.jpa.domain.Specification<Coupon> spec = (root, query, cb) -> {
             java.util.List<jakarta.persistence.criteria.Predicate> predicates = new java.util.ArrayList<>();
-            if (cn.hutool.core.util.StrUtil.isNotEmpty(name)) {
+            if (org.springframework.util.StringUtils.hasText(name)) {
                 predicates.add(cb.like(root.get("name"), "%" + name + "%"));
             }
             if (type != null) {

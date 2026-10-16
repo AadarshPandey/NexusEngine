@@ -59,7 +59,7 @@ public class BrandServiceImpl implements BrandService {
         org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(pageNum > 0 ? pageNum - 1 : 0, pageSize, Sort.by(Sort.Direction.ASC, "id"));
         return brandRepository.findAll((root, query, cb) -> {
             var predicates = new java.util.ArrayList<jakarta.persistence.criteria.Predicate>();
-            if (cn.hutool.core.util.StrUtil.isNotEmpty(keyword)) {
+            if (org.springframework.util.StringUtils.hasText(keyword)) {
                 predicates.add(cb.like(cb.lower(root.get("name")), "%" + keyword.toLowerCase() + "%"));
             }
             if (isVisible != null) {
