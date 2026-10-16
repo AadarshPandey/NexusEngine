@@ -8,7 +8,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class AdminUserDetails implements UserDetails {
     private final AdminUser adminUser;
@@ -21,9 +20,15 @@ public class AdminUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return resourceList.stream()
-                .map(resource -> new SimpleGrantedAuthority(resource.getId() + ":" + resource.getName()))
-                .collect(Collectors.toList());
+        List<GrantedAuthority> authorities = new java.util.ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        if (resourceList != null) {
+            authorities.addAll(
+                    resourceList.stream()
+                            .map(resource -> new SimpleGrantedAuthority(resource.getName()))
+                            .toList());
+        }
+        return authorities;
     }
 
     @Override

@@ -24,28 +24,15 @@ public class UnifiedSecurityConfig {
     @Primary
     public UserDetailsService userDetailsService() {
         return username -> {
-            if (username.startsWith("admin:")) {
-                String realUsername = username.substring(6);
-                UserDetails admin = adminService.loadUserByUsername(realUsername);
+            try {
+                UserDetails admin = adminService.loadUserByUsername(username);
                 if (admin != null) return admin;
-            } else if (username.startsWith("member:")) {
-                String realUsername = username.substring(7);
-                UserDetails member = memberService.loadUserByUsername(realUsername);
+            } catch (UsernameNotFoundException ignored) {
+            }
+            try {
+                UserDetails member = memberService.loadUserByUsername(username);
                 if (member != null) return member;
-            } else {
-                // Fallback for old tokens
-                try {
-                    UserDetails admin = adminService.loadUserByUsername(username);
-                    if (admin != null) return admin;
-                } catch (UsernameNotFoundException e) {
-                    // Ignore, try member fallback
-                }
-                try {
-                    UserDetails member = memberService.loadUserByUsername(username);
-                    if (member != null) return member;
-                } catch (UsernameNotFoundException e) {
-                    // Ignore, will throw below
-                }
+            } catch (UsernameNotFoundException ignored) {
             }
             throw new UsernameNotFoundException("User not found: " + username);
         };

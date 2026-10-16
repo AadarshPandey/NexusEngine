@@ -7,7 +7,7 @@ import org.springframework.util.StringUtils;
 import com.nexusengine.core.common.exception.Asserts;
 import com.nexusengine.core.domain.customer.entity.Member;
 import com.nexusengine.core.domain.customer.repository.MemberRepository;
-import com.nexusengine.core.security.util.JwtTokenUtil;
+import com.nexusengine.core.security.service.JwtTokenService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,7 +42,7 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 public class MemberServiceImpl implements MemberService {
     private static final Logger LOGGER = LoggerFactory.getLogger(MemberServiceImpl.class);
     private final PasswordEncoder passwordEncoder;
-    private final JwtTokenUtil jwtTokenUtil;
+    private final JwtTokenService jwtTokenService;
     private final MemberRepository memberRepository;
     private final MemberCacheService memberCacheService;
     private final com.nexusengine.core.domain.customer.repository.MemberLoginEventRepository memberLoginEventRepository;
@@ -151,11 +151,21 @@ public class MemberServiceImpl implements MemberService {
     public Member getCurrentMember() {
         SecurityContext ctx = SecurityContextHolder.getContext();
         Authentication auth = ctx.getAuthentication();
-        if (auth == null || !auth.isAuthenticated() || !(auth.getPrincipal() instanceof MemberDetails)) {
+        if (auth == null || !auth.isAuthenticated()) {
             return null;
         }
-        MemberDetails memberDetails = (MemberDetails) auth.getPrincipal();
-        return memberDetails.member();
+        if (auth.getPrincipal() instanceof MemberDetails memberDetails) {
+            return memberDetails.member();
+        }
+        if (auth.getPrincipal() instanceof org.springframework.security.oauth2.jwt.Jwt jwt) {
+            String username = jwt.getSubject();
+            return getByUsername(username);
+        }
+        String name = auth.getName();
+        if (name != null && !name.isBlank()) {
+            return getByUsername(name);
+        }
+        return null;
     }
 
     @Override
@@ -177,7 +187,7 @@ public class MemberServiceImpl implements MemberService {
             }
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            token = jwtTokenUtil.generateToken(userDetails);
+            token = jwtTokenService.generateToken(userDetails);
 
             if (userDetails instanceof MemberDetails memberDetails && memberDetails.member() != null) {
                 recordLoginEvent(memberDetails.member().getId());
@@ -207,7 +217,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public String refreshToken(String token) {
-        return jwtTokenUtil.refreshHeadToken(token);
+        return jwtTokenService.refreshHeadToken(token);
     }
 
     @Override

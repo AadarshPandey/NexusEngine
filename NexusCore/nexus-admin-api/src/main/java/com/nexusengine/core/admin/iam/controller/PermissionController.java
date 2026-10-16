@@ -4,7 +4,6 @@ import com.nexusengine.core.admin.iam.service.PermissionService;
 import com.nexusengine.core.common.exception.Asserts;
 import com.nexusengine.core.common.exception.ResourceNotFoundException;
 import com.nexusengine.core.domain.iam.entity.Permission;
-import com.nexusengine.core.security.component.DynamicSecurityMetadataSource;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -31,14 +30,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class PermissionController {
     private final PermissionService resourceService;
-    private final DynamicSecurityMetadataSource dynamicSecurityMetadataSource;
 
     @Operation(summary = "Create permission")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Integer create(@Valid @RequestBody Permission permission) {
         int count = resourceService.create(permission);
-        dynamicSecurityMetadataSource.clearDataSource();
         if (count <= 0) {
             Asserts.fail("Failed to create permission");
         }
@@ -50,7 +47,6 @@ public class PermissionController {
     public Integer update(
             @PathVariable("id") Long id, @Valid @RequestBody Permission permission) {
         int count = resourceService.update(id, permission);
-        dynamicSecurityMetadataSource.clearDataSource();
         if (count <= 0) {
             Asserts.fail("Failed to update permission");
         }
@@ -71,7 +67,6 @@ public class PermissionController {
     @DeleteMapping("/{id}")
     public Integer delete(@PathVariable("id") Long id) {
         int count = resourceService.delete(id);
-        dynamicSecurityMetadataSource.clearDataSource();
         if (count <= 0) {
             Asserts.fail("Failed to delete permission");
         }

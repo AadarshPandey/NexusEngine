@@ -17,7 +17,7 @@ import com.nexusengine.core.domain.iam.repository.AdminUserRepository;
 import com.nexusengine.core.domain.iam.repository.AdminUserRoleRepository;
 
 
-import com.nexusengine.core.security.util.JwtTokenUtil;
+import com.nexusengine.core.security.service.JwtTokenService;
 import com.nexusengine.core.security.util.SpringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +51,7 @@ import com.nexusengine.core.admin.iam.dto.UpdatePasswordParam;
 @RequiredArgsConstructor
 public class AdminUserServiceImpl implements AdminUserService {
     private static final Logger LOGGER = LoggerFactory.getLogger(AdminUserServiceImpl.class);
-    private final JwtTokenUtil jwtTokenUtil;
+    private final JwtTokenService jwtTokenService;
     private final PasswordEncoder passwordEncoder;
     private final AdminUserRepository adminRepository;
     private final AdminUserRoleRepository adminRoleRelationRepository;
@@ -104,7 +104,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             }
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            token = jwtTokenUtil.generateToken(userDetails);
+            token = jwtTokenService.generateToken(userDetails);
             insertLoginLog(username);
         } catch (AuthenticationException e) {
             LOGGER.warn("Login exception: {}", e.getMessage());
@@ -128,7 +128,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Override
     public String refreshToken(String oldToken) {
-        return jwtTokenUtil.refreshHeadToken(oldToken);
+        return jwtTokenService.refreshHeadToken(oldToken);
     }
 
     @Override
