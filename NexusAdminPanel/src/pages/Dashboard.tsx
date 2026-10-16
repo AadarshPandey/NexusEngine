@@ -37,7 +37,7 @@ import {
   Legend,
 } from 'recharts';
 
-import { getDashboardInfoAPI, type DashboardInfo } from '@/apis/dashboard';
+import { getDashboardInfoAPI, type DashboardInfo } from '@/apis/analytics';
 
 // Stat card component
 interface StatCardProps {

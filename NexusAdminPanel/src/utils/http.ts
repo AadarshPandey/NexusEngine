@@ -1,12 +1,11 @@
 import axios from 'axios';
-import type { CommonResult } from '@/types/common';
 import { store } from '@/store';
 import { fedLogout } from '@/store/slices/userSlice';
 
 // Create axios instance
 const http = axios.create({
-  baseURL: import.meta.env.VITE_BASE_SERVER_URL || 'http://localhost:8080',
-  timeout: 10000,
+  baseURL: import.meta.env.VITE_BASE_SERVER_URL || '',
+  timeout: 15000,
 });
 
 // Request interceptor — attach JWT token
@@ -14,45 +13,41 @@ http.interceptors.request.use(
   (config) => {
     const token = store.getState().user.userInfo.token;
     if (token) {
-      config.headers.Authorization = token;
+      config.headers.Authorization = token.startsWith('Bearer ') ? token : `Bearer ${token}`;
     }
     return config;
   },
   (e) => Promise.reject(e),
 );
 
-// Response interceptor — handle errors
+// Response interceptor — handle errors and RFC 9457 ProblemDetail
 http.interceptors.response.use(
   (response) => {
-    const res: CommonResult<unknown> = response.data;
-    if (res.code !== 200) {
-      // 401: Not logged in
-      if (res.code === 401) {
-        const shouldRelogin = window.confirm(
-          'Your session has expired. Click OK to log in again.',
-        );
-        if (shouldRelogin) {
+    const res = response.data;
+    // Support legacy {code, message, data} envelope if present
+    if (res && typeof res === 'object' && 'code' in res && typeof res.code === 'number') {
+      if (res.code !== 200) {
+        if (res.code === 401) {
           store.dispatch(fedLogout());
-          location.reload();
         }
+        return Promise.reject(new Error(res.message || 'Request failed'));
       }
-      return Promise.reject(new Error(res.message || 'Request failed'));
+      return res.data !== undefined ? res.data : res;
     }
-    // Return the response data (unwrapped from the code/message/data wrapper)
-    return response.data;
+    return res;
   },
   (error) => {
     console.error('Request error:', error);
     if (error.response && error.response.status === 401) {
-      const shouldRelogin = window.confirm(
-        'Your session has expired. Click OK to log in again.',
-      );
-      if (shouldRelogin) {
-        store.dispatch(fedLogout());
-        location.reload();
-      }
+      store.dispatch(fedLogout());
     }
-    return Promise.reject(error);
+    const errMsg =
+      error.response?.data?.detail ||
+      error.response?.data?.title ||
+      error.response?.data?.message ||
+      error.message ||
+      'Request failed';
+    return Promise.reject(new Error(errMsg));
   },
 );
 

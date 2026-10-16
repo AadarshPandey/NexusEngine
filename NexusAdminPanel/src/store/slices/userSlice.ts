@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/toolkit';
-import { adminLoginAPI, getAdminInfoAPI, adminLogoutAPI } from '@/apis/admin';
-import type { LoginParam, UserInfo, AdminUser } from '@/types/admin';
+import { adminLoginAPI, getAdminInfoAPI, adminLogoutAPI } from '@/apis/iam';
+import type { LoginParam, UserInfo, AdminUser } from '@/types/iam';
 import type { ConsoleMenu, UmsMenu } from '@/types/iam';
 
 interface UserState {

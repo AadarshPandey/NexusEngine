@@ -1,6 +1,13 @@
-export * as catalog from './catalog';
-export * as ordering from './ordering';
-export * as iam from './iam';
-export * as promotion from './promotion';
-export * as analytics from './analytics';
-export * as infra from './infra';
+export * as catalog from './catalog'
+export * as ordering from './ordering'
+export * as iam from './iam'
+export * as promotion from './promotion'
+export * as analytics from './analytics'
+export * as infra from './infra'
+
+export * from './catalog'
+export * from './ordering'
+export * from './iam'
+export * from './promotion'
+export * from './analytics'
+export * from './infra'

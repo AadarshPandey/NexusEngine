@@ -7,14 +7,15 @@ import type { PageParam } from './common'
 
 export interface Coupon {
   id?: number
-  discountType: number // 0: FIXED_AMOUNT, 1: PERCENTAGE, 2: FREE_SHIPPING
+  discountType?: number // 0: FIXED_AMOUNT, 1: PERCENTAGE, 2: FREE_SHIPPING
   type?: number
   name: string
   code?: string
-  discountValue: number // was amount
+  discountValue?: number // was amount
   amount?: number
   maxDiscountAmount?: number
   minSpendAmount?: number // was minPoint / minOrderAmount
+  minPoint?: number
   minOrderAmount?: number
   remainingQuantity?: number // was count
   count?: number
@@ -31,6 +32,15 @@ export interface Coupon {
   isStackable?: boolean
   isPublic?: boolean
   status?: number
+  useCount?: number
+  publishCount?: number
+  memberLevel?: number
+  note?: string
+}
+
+export interface CouponParam extends Coupon {
+  productRelationList?: Array<{ productId: number; productSn?: string; productName?: string }>
+  productCategoryRelationList?: Array<{ productCategoryId: number; parentCategoryName?: string; productCategoryName?: string }>
 }
 
 export interface MemberCoupon {
@@ -46,6 +56,7 @@ export interface MemberCoupon {
   claimedAt?: string
   createTime?: string
   redeemedAt?: string
+  useTime?: string
   orderId?: number
   orderNumber?: string
   orderSn?: string
@@ -61,6 +72,7 @@ export interface FlashSale {
   isActive?: boolean | number
   status?: number
   createdAt?: string
+  createTime?: string
 }
 
 export interface FlashSaleSlot {
@@ -69,11 +81,14 @@ export interface FlashSaleSlot {
   name?: string
   startsAtLocal?: string // was startTime
   startTime?: string
+  startsAt?: string
   endsAtLocal?: string // was endTime
   endTime?: string
+  endsAt?: string
   isActive?: boolean | number
   status?: number
   createdAt?: string
+  createTime?: string
 }
 
 export interface FlashSaleItem {
@@ -83,6 +98,7 @@ export interface FlashSaleItem {
   slotId: number
   flashPromotionSessionId?: number
   productId: number
+  orderLineId?: number
   skuId?: number
   flashPrice: number
   flashPromotionPrice?: number
@@ -92,6 +108,7 @@ export interface FlashSaleItem {
   flashPromotionLimit?: number
   displayOrder?: number
   sort?: number
+  product?: any
 }
 
 export interface Banner {
@@ -101,6 +118,7 @@ export interface Banner {
   placement?: number
   type?: number
   imageUrl?: string
+  primaryImageUrl?: string
   pic?: string
   targetUrl?: string
   url?: string
@@ -118,10 +136,128 @@ export interface Banner {
   sort?: number
 }
 
+export type CouponQueryParams = PageParam & {
+  name?: string
+  type?: number
+}
+
+export type HomeAdvertiseQueryParam = PageParam & {
+  name?: string
+  title?: string
+  type?: number
+  endTime?: string
+  endsAt?: string
+}
+
+export type FlashProductQueryParam = PageParam & {
+  flashSaleId?: number
+  flashPromotionId?: number
+  slotId?: number
+  flashPromotionSessionId?: number
+}
+
+// Home recommendations types
+export interface RecommendProduct {
+  id?: number
+  productId?: number
+  productName?: string
+  displayOrder?: number
+  sort?: number
+  recommendStatus?: number
+  isFeatured?: boolean | number
+}
+
+export type RecommendProductQueryParam = PageParam & {
+  productName?: string
+  recommendStatus?: number
+  isFeatured?: boolean | number
+}
+
+export interface HomeBrandItem {
+  id?: number
+  brandId?: number
+  brandName?: string
+  displayOrder?: number
+  sort?: number
+  recommendStatus?: number
+  isFeatured?: boolean | number
+}
+
+export type HomeBrandQueryParam = PageParam & {
+  brandName?: string
+  recommendStatus?: number
+  isFeatured?: boolean | number
+}
+
+export interface HomeNewItem {
+  id?: number
+  productId?: number
+  productName?: string
+  displayOrder?: number
+  sort?: number
+  recommendStatus?: number
+  isFeatured?: boolean | number
+}
+
+export type NewProductQueryParam = PageParam & {
+  productName?: string
+  recommendStatus?: number
+  isFeatured?: boolean | number
+}
+
+export interface HomeSubjectItem {
+  id?: number
+  subjectId?: number
+  subjectName?: string
+  displayOrder?: number
+  sort?: number
+  recommendStatus?: number
+  isFeatured?: boolean | number
+}
+
+export type HomeSubjectQueryParam = PageParam & {
+  subjectName?: string
+  recommendStatus?: number
+  isFeatured?: boolean | number
+}
+
+export interface Subject {
+  id?: number
+  title?: string
+  categoryName?: string
+  pic?: string
+  productCount?: number
+  recommendStatus?: number
+  description?: string
+  showStatus?: number
+  content?: string
+}
+
+export interface PrefrenceArea {
+  id?: number
+  name?: string
+  subTitle?: string
+  pic?: string
+  sort?: number
+  showStatus?: number
+}
+
 // Backward-compatible aliases
 export type SmsCoupon = Coupon
+export type SmsCouponParam = CouponParam
+export type SmsCouponExt = CouponParam
 export type SmsCouponHistory = MemberCoupon
 export type SmsFlashPromotion = FlashSale
 export type SmsFlashPromotionSession = FlashSaleSlot
 export type SmsFlashPromotionProductRelation = FlashSaleItem
 export type HomeAdvertise = Banner
+export type SmsHomeAdvertise = Banner
+export type SmsHomeRecommendProduct = RecommendProduct
+export type SmsHomeBrand = HomeBrandItem
+export type SmsHomeNewProduct = HomeNewItem
+export type SmsHomeRecommendSubject = HomeSubjectItem
+export type CmsSubject = Subject
+export type CmsPrefrenceArea = PrefrenceArea
+export type CouponQueryParam = CouponQueryParams
+export type CouponHistoryQueryParam = PageParam & { couponId?: number; useStatus?: number; orderSn?: string }
+

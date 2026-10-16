@@ -1,20 +1,38 @@
 export type CommonResult<T> = {
-  code: number
-  message: string
+  code?: number
+  message?: string
   data: T
 }
 
+export interface PageResponse<T> {
+  content: T[]
+  totalElements: number
+  totalPages: number
+  size: number
+  number: number
+  first?: boolean
+  last?: boolean
+}
+
 export type CommonPage<T> = {
-  pageNum: number
-  pageSize: number
-  totalPage: number
-  total: number
-  list: T[]
+  pageNum?: number
+  pageSize?: number
+  totalPage?: number
+  total?: number
+  list?: T[]
+  // Support modern Spring Data PageResponse fields
+  content?: T[]
+  totalElements?: number
+  totalPages?: number
+  size?: number
+  number?: number
 }
 
 export type PageParam = {
-  pageNum: number
-  pageSize: number
+  pageNum?: number
+  pageSize?: number
+  page?: number
+  size?: number
   keyword?: string
 }
 
