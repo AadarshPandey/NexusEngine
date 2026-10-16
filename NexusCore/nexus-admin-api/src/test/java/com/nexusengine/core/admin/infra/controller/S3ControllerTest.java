@@ -43,7 +43,7 @@ class S3ControllerTest {
 
         when(s3Service.presign()).thenReturn(result);
 
-        mockMvc.perform(get("/s3/presign"))
+        mockMvc.perform(get("/api/admin/infra/storage/presign"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.presignedUrl").value("https://s3.example.com/upload"));
     }
@@ -54,7 +54,7 @@ class S3ControllerTest {
 
         when(s3Service.callback(any(HttpServletRequest.class))).thenReturn(result);
 
-        mockMvc.perform(post("/s3/callback"))
+        mockMvc.perform(post("/api/admin/infra/storage/callback"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.filename").value("test.jpg"))
                 .andExpect(jsonPath("$.url").value("https://s3.example.com/test.jpg"));

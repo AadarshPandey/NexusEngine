@@ -10,9 +10,11 @@ import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -20,13 +22,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Tag(name = "Storefront - Member Addresses", description = "Storefront member shipping address APIs")
-@RequestMapping("/portal/member/address")
+@RequestMapping("/api/store/customer/addresses")
 @RequiredArgsConstructor
 public class MemberAddressController {
     private final MemberAddressService memberReceiveAddressService;
 
     @Operation(summary = "Add shipping address")
-    @PostMapping("/add")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Integer add(@Valid @RequestBody MemberAddress address) {
         int count = memberReceiveAddressService.add(address);
@@ -37,7 +39,7 @@ public class MemberAddressController {
     }
 
     @Operation(summary = "Delete shipping address")
-    @PostMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public Integer delete(@PathVariable("id") Long id) {
         int count = memberReceiveAddressService.delete(id);
         if (count <= 0) {
@@ -47,7 +49,7 @@ public class MemberAddressController {
     }
 
     @Operation(summary = "Update shipping address")
-    @PostMapping("/update/{id}")
+    @PutMapping("/{id}")
     public Integer update(
             @PathVariable("id") Long id, @Valid @RequestBody MemberAddress address) {
         int count = memberReceiveAddressService.update(id, address);
@@ -58,7 +60,7 @@ public class MemberAddressController {
     }
 
     @Operation(summary = "List member shipping addresses")
-    @GetMapping("/list")
+    @GetMapping
     public List<MemberAddress> list() {
         return memberReceiveAddressService.list();
     }

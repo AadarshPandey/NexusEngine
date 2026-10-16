@@ -11,10 +11,15 @@ import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,13 +28,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Tag(name = "IAM - Console Menus", description = "Admin console menu management APIs")
-@RequestMapping("/menu")
+@RequestMapping("/api/admin/iam/menus")
 @RequiredArgsConstructor
 public class ConsoleMenuController {
     private final ConsoleMenuService menuService;
 
     @Operation(summary = "Create console menu")
-    @PostMapping("/create")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Integer create(@Valid @RequestBody ConsoleMenu consoleMenu) {
         int count = menuService.create(consoleMenu);
@@ -40,7 +45,7 @@ public class ConsoleMenuController {
     }
 
     @Operation(summary = "Update console menu")
-    @PostMapping("/update/{id}")
+    @PutMapping("/{id}")
     public Integer update(
             @PathVariable("id") Long id, @Valid @RequestBody ConsoleMenu consoleMenu) {
         int count = menuService.update(id, consoleMenu);
@@ -61,7 +66,7 @@ public class ConsoleMenuController {
     }
 
     @Operation(summary = "Delete console menu")
-    @PostMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public Integer delete(@PathVariable("id") Long id) {
         int count = menuService.delete(id);
         if (count <= 0) {
@@ -71,22 +76,22 @@ public class ConsoleMenuController {
     }
 
     @Operation(summary = "List console menus by parent")
-    @GetMapping("/list/{parentId}")
+    @GetMapping("/parent/{parentId}")
     public Page<ConsoleMenu> list(
             @PathVariable("parentId") Long parentId,
-            @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
-            @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
-        return menuService.list(parentId, pageSize, pageNum);
+            @PageableDefault(size = 5) Pageable pageable) {
+        return menuService.list(
+                parentId, pageable.getPageSize(), pageable.getPageNumber() + 1);
     }
 
     @Operation(summary = "Get console menu tree")
-    @GetMapping("/treeList")
+    @GetMapping("/tree")
     public List<MenuNode> treeList() {
         return menuService.treeList();
     }
 
     @Operation(summary = "Update console menu visibility")
-    @PostMapping("/updateHidden/{id}")
+    @PatchMapping("/{id}/visibility")
     public Integer updateHidden(
             @PathVariable("id") Long id, @RequestParam("hidden") Integer hidden) {
         int count = menuService.updateHidden(id, hidden);

@@ -23,10 +23,15 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,7 +40,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Tag(name = "IAM - Admin Users", description = "Admin user authentication and management APIs")
-@RequestMapping("/admin")
+@RequestMapping("/api/admin/iam/users")
 @RequiredArgsConstructor
 public class AdminUserController {
     @Value("${jwt.tokenHeader}")
@@ -69,7 +74,7 @@ public class AdminUserController {
     }
 
     @Operation(summary = "Refresh JWT token")
-    @GetMapping("/refreshToken")
+    @GetMapping("/refresh-token")
     public TokenResponse refreshToken(HttpServletRequest request) {
         String token = request.getHeader(tokenHeader);
         String refreshToken = adminService.refreshToken(token);
@@ -80,7 +85,7 @@ public class AdminUserController {
     }
 
     @Operation(summary = "Get current admin info")
-    @GetMapping("/info")
+    @GetMapping("/me")
     public AdminInfoResponse getAdminInfo(Principal principal) {
         if (principal == null) {
             Asserts.fail(ResultCode.UNAUTHORIZED);
@@ -108,12 +113,12 @@ public class AdminUserController {
     }
 
     @Operation(summary = "List admin users")
-    @GetMapping("/list")
+    @GetMapping
     public Page<AdminUser> list(
             @RequestParam(value = "keyword", required = false) String keyword,
-            @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
-            @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
-        return adminService.list(keyword, pageSize, pageNum);
+            @PageableDefault(size = 5) Pageable pageable) {
+        return adminService.list(
+                keyword, pageable.getPageSize(), pageable.getPageNumber() + 1);
     }
 
     @Operation(summary = "Get admin user by ID")
@@ -127,7 +132,7 @@ public class AdminUserController {
     }
 
     @Operation(summary = "Update admin user")
-    @PostMapping("/update/{id}")
+    @PutMapping("/{id}")
     public Integer update(@PathVariable("id") Long id, @Valid @RequestBody AdminUser admin) {
         int count = adminService.update(id, admin);
         if (count <= 0) {
@@ -137,7 +142,7 @@ public class AdminUserController {
     }
 
     @Operation(summary = "Update admin password")
-    @PostMapping("/updatePassword")
+    @PatchMapping("/password")
     public Integer updatePassword(@Valid @RequestBody UpdatePasswordParam updatePasswordParam) {
         int status = adminService.updatePassword(updatePasswordParam);
         if (status > 0) {
@@ -155,7 +160,7 @@ public class AdminUserController {
     }
 
     @Operation(summary = "Delete admin user")
-    @PostMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public Integer delete(@PathVariable("id") Long id) {
         int count = adminService.delete(id);
         if (count <= 0) {
@@ -165,7 +170,7 @@ public class AdminUserController {
     }
 
     @Operation(summary = "Update admin status")
-    @PostMapping("/updateStatus/{id}")
+    @PatchMapping("/{id}/status")
     public Integer updateStatus(
             @PathVariable("id") Long id, @RequestParam(value = "status") Integer status) {
         AdminUser adminUser = new AdminUser();
@@ -178,7 +183,7 @@ public class AdminUserController {
     }
 
     @Operation(summary = "Assign roles to admin user")
-    @PostMapping("/role/update")
+    @PutMapping("/roles")
     public Integer updateRole(
             @RequestParam("adminId") Long adminId, @RequestParam("roleIds") List<Long> roleIds) {
         int count = adminService.updateRole(adminId, roleIds);
@@ -189,7 +194,7 @@ public class AdminUserController {
     }
 
     @Operation(summary = "Get roles for admin user")
-    @GetMapping("/role/{adminId}")
+    @GetMapping("/{adminId}/roles")
     public List<Role> getRoleList(@PathVariable("adminId") Long adminId) {
         return adminService.getRoleList(adminId);
     }

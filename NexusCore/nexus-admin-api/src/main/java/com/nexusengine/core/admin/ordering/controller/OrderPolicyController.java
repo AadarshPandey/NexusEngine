@@ -10,14 +10,14 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Tag(name = "Ordering - Order Policy", description = "Admin order policy management APIs")
-@RequestMapping("/orderSetting")
+@RequestMapping("/api/admin/ordering/policies")
 @RequiredArgsConstructor
 public class OrderPolicyController {
     private final OrderPolicyService orderSettingService;
@@ -33,7 +33,7 @@ public class OrderPolicyController {
     }
 
     @Operation(summary = "Update order policy")
-    @PostMapping("/update/{id}")
+    @PutMapping("/{id}")
     public Integer update(
             @PathVariable("id") Long id, @Valid @RequestBody OrderPolicy orderSetting) {
         int count = orderSettingService.update(id, orderSetting);

@@ -11,10 +11,14 @@ import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,14 +27,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Tag(name = "IAM - Permissions", description = "Admin permission management APIs")
-@RequestMapping("/resource")
+@RequestMapping("/api/admin/iam/permissions")
 @RequiredArgsConstructor
 public class PermissionController {
     private final PermissionService resourceService;
     private final DynamicSecurityMetadataSource dynamicSecurityMetadataSource;
 
     @Operation(summary = "Create permission")
-    @PostMapping("/create")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Integer create(@Valid @RequestBody Permission permission) {
         int count = resourceService.create(permission);
@@ -42,7 +46,7 @@ public class PermissionController {
     }
 
     @Operation(summary = "Update permission")
-    @PostMapping("/update/{id}")
+    @PutMapping("/{id}")
     public Integer update(
             @PathVariable("id") Long id, @Valid @RequestBody Permission permission) {
         int count = resourceService.update(id, permission);
@@ -64,7 +68,7 @@ public class PermissionController {
     }
 
     @Operation(summary = "Delete permission")
-    @PostMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public Integer delete(@PathVariable("id") Long id) {
         int count = resourceService.delete(id);
         dynamicSecurityMetadataSource.clearDataSource();
@@ -75,18 +79,22 @@ public class PermissionController {
     }
 
     @Operation(summary = "List permissions with pagination")
-    @GetMapping("/list")
+    @GetMapping
     public Page<Permission> list(
             @RequestParam(required = false) Long categoryId,
             @RequestParam(required = false) String nameKeyword,
             @RequestParam(required = false) String urlKeyword,
-            @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
-            @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
-        return resourceService.list(categoryId, nameKeyword, urlKeyword, pageSize, pageNum);
+            @PageableDefault(size = 5) Pageable pageable) {
+        return resourceService.list(
+                categoryId,
+                nameKeyword,
+                urlKeyword,
+                pageable.getPageSize(),
+                pageable.getPageNumber() + 1);
     }
 
     @Operation(summary = "List all permissions")
-    @GetMapping("/listAll")
+    @GetMapping("/all")
     public List<Permission> listAll() {
         return resourceService.listAll();
     }

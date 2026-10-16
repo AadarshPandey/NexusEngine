@@ -10,10 +10,14 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,13 +26,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController("adminCouponController")
 @Tag(name = "Promotion - Coupons", description = "Admin coupon management APIs")
-@RequestMapping("/coupon")
+@RequestMapping("/api/admin/promotion/coupons")
 @RequiredArgsConstructor
 public class CouponController {
     private final CouponService couponService;
 
     @Operation(summary = "Create coupon")
-    @PostMapping("/create")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Integer add(@Valid @RequestBody CouponParam couponParam) {
         int count = couponService.create(couponParam);
@@ -39,7 +43,7 @@ public class CouponController {
     }
 
     @Operation(summary = "Delete coupon")
-    @PostMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public Integer delete(@PathVariable("id") Long id) {
         int count = couponService.delete(id);
         if (count <= 0) {
@@ -49,7 +53,7 @@ public class CouponController {
     }
 
     @Operation(summary = "Update coupon")
-    @PostMapping("/update/{id}")
+    @PutMapping("/{id}")
     public Integer update(
             @PathVariable("id") Long id, @Valid @RequestBody CouponParam couponParam) {
         int count = couponService.update(id, couponParam);
@@ -60,13 +64,13 @@ public class CouponController {
     }
 
     @Operation(summary = "List coupons with pagination")
-    @GetMapping("/list")
+    @GetMapping
     public Page<Coupon> list(
             @RequestParam(value = "name", required = false) String name,
             @RequestParam(value = "type", required = false) Integer type,
-            @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
-            @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
-        return couponService.list(name, type, pageSize, pageNum);
+            @PageableDefault(size = 5) Pageable pageable) {
+        return couponService.list(
+                name, type, pageable.getPageSize(), pageable.getPageNumber() + 1);
     }
 
     @Operation(summary = "Get coupon by ID")

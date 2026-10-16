@@ -14,14 +14,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Tag(name = "Storefront - Flash Orders", description = "Storefront flash sale order APIs")
-@RequestMapping("/portal/flash-order")
+@RequestMapping("/api/store/ordering/flash-orders")
 @RequiredArgsConstructor
 public class FlashOrderController {
 
     private final FlashSaleOrderService flashSaleOrderService;
 
     @Operation(summary = "Generate Flash Sale Order (High Concurrency)")
-    @PostMapping("/generate")
+    @PostMapping
     @ResponseStatus(HttpStatus.ACCEPTED)
     public FlashOrderResponse generateFlashOrder(
             @RequestParam("productId") Long productId,

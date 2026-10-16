@@ -11,14 +11,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Tag(name = "Analytics - Dashboard", description = "Admin dashboard statistics APIs")
-@RequestMapping("/dashboard")
+@RequestMapping("/api/admin/analytics/dashboard")
 @RequiredArgsConstructor
 public class DashboardController {
 
     private final DashboardService dashboardService;
 
     @Operation(summary = "Get real-time dashboard statistics")
-    @GetMapping("/info")
+    @GetMapping
     public DashboardInfo getDashboardInfo() {
         return dashboardService.getDashboardInfo();
     }

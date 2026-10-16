@@ -10,6 +10,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController("portalBrandController")
 @Tag(name = "Storefront - Brands", description = "Storefront brand catalog APIs")
-@RequestMapping("/portal/brand")
+@RequestMapping("/api/store/catalog/brands")
 @RequiredArgsConstructor
 public class BrandController {
 
@@ -26,15 +28,14 @@ public class BrandController {
     private final PortalProductMapper portalProductMapper;
 
     @Operation(summary = "List recommended brands")
-    @GetMapping("/recommendList")
-    public List<Brand> recommendList(
-            @RequestParam(value = "pageSize", defaultValue = "6") Integer pageSize,
-            @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
-        return portalBrandService.recommendList(pageNum, pageSize);
+    @GetMapping("/recommended")
+    public List<Brand> recommendList(@PageableDefault(size = 6) Pageable pageable) {
+        return portalBrandService.recommendList(
+                pageable.getPageNumber() + 1, pageable.getPageSize());
     }
 
     @Operation(summary = "Get brand detail")
-    @GetMapping("/detail/{brandId}")
+    @GetMapping("/{brandId}")
     public Brand detail(@PathVariable("brandId") Long brandId) {
         Brand brand = portalBrandService.detail(brandId);
         if (brand == null) {
@@ -44,13 +45,12 @@ public class BrandController {
     }
 
     @Operation(summary = "List products by brand")
-    @GetMapping("/productList")
+    @GetMapping("/products")
     public Page<ProductSummaryResponse> productList(
             @RequestParam("brandId") Long brandId,
-            @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
-            @RequestParam(value = "pageSize", defaultValue = "6") Integer pageSize) {
+            @PageableDefault(size = 6) Pageable pageable) {
         return portalBrandService
-                .productList(brandId, pageNum, pageSize)
+                .productList(brandId, pageable.getPageNumber() + 1, pageable.getPageSize())
                 .map(portalProductMapper::toSummary);
     }
 }

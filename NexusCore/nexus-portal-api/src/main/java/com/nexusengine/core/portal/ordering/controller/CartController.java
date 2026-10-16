@@ -12,9 +12,12 @@ import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,14 +26,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Tag(name = "Storefront - Cart", description = "Storefront shopping cart management APIs")
-@RequestMapping("/portal/cart")
+@RequestMapping("/api/store/ordering/cart")
 @RequiredArgsConstructor
 public class CartController {
     private final CartService cartItemService;
     private final MemberService memberService;
 
     @Operation(summary = "Add item to cart")
-    @PostMapping("/add")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Integer add(@Valid @RequestBody CartItem cartItem) {
         int count = cartItemService.add(cartItem);
@@ -41,20 +44,20 @@ public class CartController {
     }
 
     @Operation(summary = "List cart items")
-    @GetMapping("/list")
+    @GetMapping
     public List<CartItem> list() {
         return cartItemService.list(memberService.getCurrentMember().getId());
     }
 
     @Operation(summary = "List cart items with calculated promotions")
-    @GetMapping("/list/promotion")
+    @GetMapping("/promotion")
     public List<CartPromotionItem> listPromotion(
             @RequestParam(required = false) List<Long> cartIds) {
         return cartItemService.listPromotion(memberService.getCurrentMember().getId(), cartIds);
     }
 
     @Operation(summary = "Update cart item quantity")
-    @GetMapping("/update/quantity")
+    @PatchMapping("/quantity")
     public Integer updateQuantity(
             @RequestParam("id") Long id, @RequestParam("quantity") Integer quantity) {
         int count =
@@ -67,13 +70,13 @@ public class CartController {
     }
 
     @Operation(summary = "Get product SKU options for cart item")
-    @GetMapping("/getProduct/{productId}")
+    @GetMapping("/product/{productId}")
     public CartProduct getCartProduct(@PathVariable("productId") Long productId) {
         return cartItemService.getCartProduct(productId);
     }
 
     @Operation(summary = "Update cart item SKU attributes")
-    @PostMapping("/update/attr")
+    @PutMapping("/attributes")
     public Integer updateAttr(@Valid @RequestBody CartItem cartItem) {
         int count = cartItemService.updateAttr(cartItem);
         if (count <= 0) {
@@ -83,7 +86,7 @@ public class CartController {
     }
 
     @Operation(summary = "Delete cart items")
-    @PostMapping("/delete")
+    @DeleteMapping
     public Integer delete(@RequestParam("ids") List<Long> ids) {
         int count = cartItemService.delete(memberService.getCurrentMember().getId(), ids);
         if (count <= 0) {
@@ -93,7 +96,7 @@ public class CartController {
     }
 
     @Operation(summary = "Clear cart")
-    @PostMapping("/clear")
+    @DeleteMapping("/clear")
     public Integer clear() {
         int count = cartItemService.clear(memberService.getCurrentMember().getId());
         if (count <= 0) {

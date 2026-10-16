@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController("portalCouponController")
 @Tag(name = "Storefront - Coupons", description = "Storefront member coupon management APIs")
-@RequestMapping("/portal/member/coupon")
+@RequestMapping("/api/store/promotion/coupons")
 @RequiredArgsConstructor
 public class CouponController {
     private final MemberCouponService memberCouponService;
@@ -33,7 +33,7 @@ public class CouponController {
     private final MemberService memberService;
 
     @Operation(summary = "Claim coupon")
-    @PostMapping("/add/{couponId}")
+    @PostMapping("/{couponId}/claim")
     @ResponseStatus(HttpStatus.CREATED)
     public void add(@PathVariable("couponId") Long couponId) {
         memberCouponService.add(couponId);
@@ -45,7 +45,7 @@ public class CouponController {
             description = "Coupon use status",
             in = ParameterIn.QUERY,
             schema = @Schema(type = "integer", allowableValues = {"0", "1", "2"}))
-    @GetMapping("/listHistory")
+    @GetMapping("/history")
     public List<MemberCoupon> listHistory(
             @RequestParam(value = "useStatus", required = false) Integer useStatus) {
         return memberCouponService.listHistory(useStatus);
@@ -57,7 +57,7 @@ public class CouponController {
             description = "Coupon use status",
             in = ParameterIn.QUERY,
             schema = @Schema(type = "integer", allowableValues = {"0", "1", "2"}))
-    @GetMapping("/list")
+    @GetMapping
     public List<Coupon> list(
             @RequestParam(value = "useStatus", required = false) Integer useStatus) {
         return memberCouponService.list(useStatus);
@@ -69,7 +69,7 @@ public class CouponController {
             description = "0: unavailable, 1: available",
             in = ParameterIn.PATH,
             schema = @Schema(type = "integer", defaultValue = "1", allowableValues = {"0", "1"}))
-    @GetMapping("/list/cart/{type}")
+    @GetMapping("/cart/{type}")
     public List<CouponHistoryDetail> listCart(@PathVariable("type") Integer type) {
         List<CartPromotionItem> cartPromotionItemList =
                 cartItemService.listPromotion(memberService.getCurrentMember().getId(), null);
@@ -77,7 +77,7 @@ public class CouponController {
     }
 
     @Operation(summary = "List coupons by product")
-    @GetMapping("/listByProduct/{productId}")
+    @GetMapping("/product/{productId}")
     public List<Coupon> listByProduct(@PathVariable("productId") Long productId) {
         return memberCouponService.listByProduct(productId);
     }

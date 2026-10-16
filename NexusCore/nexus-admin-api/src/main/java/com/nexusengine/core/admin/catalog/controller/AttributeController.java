@@ -16,10 +16,14 @@ import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,12 +32,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Tag(name = "Catalog - Attributes", description = "Admin product attribute management APIs")
-@RequestMapping("/productAttribute")
+@RequestMapping("/api/admin/catalog/attributes")
 @RequiredArgsConstructor
 public class AttributeController {
     private final AttributeService productAttributeService;
 
-    @Operation(summary = "List attributes by type")
+    @Operation(summary = "List attributes by product type and category")
     @Parameters({
         @Parameter(
                 name = "type",
@@ -42,17 +46,17 @@ public class AttributeController {
                 in = ParameterIn.QUERY,
                 schema = @Schema(type = "integer"))
     })
-    @GetMapping("/list/{cid}")
+    @GetMapping("/product-type/{cid}")
     public Page<AttributeDefinition> getList(
             @PathVariable("cid") Long cid,
             @RequestParam(value = "type") Integer type,
-            @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
-            @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
-        return productAttributeService.getList(cid, type, pageSize, pageNum);
+            @PageableDefault(size = 5) Pageable pageable) {
+        return productAttributeService.getList(
+                cid, type, pageable.getPageSize(), pageable.getPageNumber() + 1);
     }
 
     @Operation(summary = "Create attribute")
-    @PostMapping("/create")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Integer create(@Valid @RequestBody AttributeParam productAttributeParam) {
         int count = productAttributeService.create(productAttributeParam);
@@ -63,7 +67,7 @@ public class AttributeController {
     }
 
     @Operation(summary = "Update attribute")
-    @PostMapping("/update/{id}")
+    @PutMapping("/{id}")
     public Integer update(
             @PathVariable("id") Long id,
             @Valid @RequestBody AttributeParam productAttributeParam) {
@@ -85,7 +89,7 @@ public class AttributeController {
     }
 
     @Operation(summary = "Delete attributes")
-    @PostMapping("/delete")
+    @DeleteMapping
     public Integer delete(@RequestParam("ids") List<Long> ids) {
         int count = productAttributeService.delete(ids);
         if (count <= 0) {
@@ -95,7 +99,7 @@ public class AttributeController {
     }
 
     @Operation(summary = "Get attribute info by category ID")
-    @GetMapping("/attrInfo/{productCategoryId}")
+    @GetMapping("/category-info/{productCategoryId}")
     public List<AttributeInfo> getAttrInfo(
             @PathVariable("productCategoryId") Long productCategoryId) {
         return productAttributeService.getProductAttrInfo(productCategoryId);

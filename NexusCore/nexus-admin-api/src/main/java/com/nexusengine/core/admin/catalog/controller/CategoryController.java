@@ -14,10 +14,15 @@ import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,14 +31,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Tag(name = "Catalog - Categories", description = "Admin product category management APIs")
-@RequestMapping("/productCategory")
+@RequestMapping("/api/admin/catalog/categories")
 @RequiredArgsConstructor
 public class CategoryController {
     private final CategoryService productCategoryService;
     private final CategoryMapper categoryMapper;
 
     @Operation(summary = "Create category")
-    @PostMapping("/create")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Integer create(@Valid @RequestBody CategoryParam productCategoryParam) {
         int count = productCategoryService.create(productCategoryParam);
@@ -44,7 +49,7 @@ public class CategoryController {
     }
 
     @Operation(summary = "Update category")
-    @PostMapping("/update/{id}")
+    @PutMapping("/{id}")
     public Integer update(
             @PathVariable("id") Long id, @Valid @RequestBody CategoryParam productCategoryParam) {
         int count = productCategoryService.update(id, productCategoryParam);
@@ -55,13 +60,13 @@ public class CategoryController {
     }
 
     @Operation(summary = "List categories by parent")
-    @GetMapping("/list/{parentId}")
+    @GetMapping("/parent/{parentId}")
     public Page<CategoryResponse> getList(
             @PathVariable("parentId") Long parentId,
-            @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
-            @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
+            @PageableDefault(size = 5) Pageable pageable) {
         Page<Category> productCategoryList =
-                productCategoryService.getList(parentId, pageSize, pageNum);
+                productCategoryService.getList(
+                        parentId, pageable.getPageSize(), pageable.getPageNumber() + 1);
         return productCategoryList.map(categoryMapper::toResponse);
     }
 
@@ -76,7 +81,7 @@ public class CategoryController {
     }
 
     @Operation(summary = "Delete category")
-    @PostMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public Integer delete(@PathVariable("id") Long id) {
         int count = productCategoryService.delete(id);
         if (count <= 0) {
@@ -86,7 +91,7 @@ public class CategoryController {
     }
 
     @Operation(summary = "Update navigation status")
-    @PostMapping("/update/isInNavigation")
+    @PatchMapping("/navigation-status")
     public Integer updateNavStatus(
             @RequestParam("ids") List<Long> ids,
             @RequestParam("isInNavigation") Integer navStatus) {
@@ -98,7 +103,7 @@ public class CategoryController {
     }
 
     @Operation(summary = "Update visibility status")
-    @PostMapping("/update/isVisible")
+    @PatchMapping("/visibility")
     public Integer updateShowStatus(
             @RequestParam("ids") List<Long> ids, @RequestParam("isVisible") Integer showStatus) {
         int count = productCategoryService.updateShowStatus(ids, showStatus);
@@ -109,7 +114,7 @@ public class CategoryController {
     }
 
     @Operation(summary = "List categories with children")
-    @GetMapping("/list/withChildren")
+    @GetMapping("/tree")
     public List<CategoryWithChildrenItem> listWithChildren() {
         return productCategoryService.listWithChildren();
     }

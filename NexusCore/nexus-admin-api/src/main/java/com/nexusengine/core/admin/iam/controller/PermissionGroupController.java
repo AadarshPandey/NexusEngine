@@ -9,9 +9,11 @@ import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -19,19 +21,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Tag(name = "IAM - Permission Groups", description = "Admin permission group management APIs")
-@RequestMapping("/resourceCategory")
+@RequestMapping("/api/admin/iam/permission-groups")
 @RequiredArgsConstructor
 public class PermissionGroupController {
     private final PermissionGroupService resourceCategoryService;
 
     @Operation(summary = "List all permission groups")
-    @GetMapping("/listAll")
+    @GetMapping
     public List<PermissionGroup> listAll() {
         return resourceCategoryService.listAll();
     }
 
     @Operation(summary = "Create permission group")
-    @PostMapping("/create")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Integer create(@Valid @RequestBody PermissionGroup permissionGroup) {
         int count = resourceCategoryService.create(permissionGroup);
@@ -42,7 +44,7 @@ public class PermissionGroupController {
     }
 
     @Operation(summary = "Update permission group")
-    @PostMapping("/update/{id}")
+    @PutMapping("/{id}")
     public Integer update(
             @PathVariable("id") Long id, @Valid @RequestBody PermissionGroup permissionGroup) {
         int count = resourceCategoryService.update(id, permissionGroup);
@@ -53,7 +55,7 @@ public class PermissionGroupController {
     }
 
     @Operation(summary = "Delete permission group")
-    @PostMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public Integer delete(@PathVariable("id") Long id) {
         int count = resourceCategoryService.delete(id);
         if (count <= 0) {

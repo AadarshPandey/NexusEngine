@@ -9,10 +9,15 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,13 +26,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Tag(name = "Promotion - Banners", description = "Admin promotional banner management APIs")
-@RequestMapping("/home/advertise")
+@RequestMapping("/api/admin/promotion/banners")
 @RequiredArgsConstructor
 public class BannerController {
     private final BannerService advertiseService;
 
     @Operation(summary = "Create banner")
-    @PostMapping("/create")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Integer create(@Valid @RequestBody Banner advertise) {
         int count = advertiseService.create(advertise);
@@ -38,7 +43,7 @@ public class BannerController {
     }
 
     @Operation(summary = "Delete banners")
-    @PostMapping("/delete")
+    @DeleteMapping
     public Integer delete(@RequestParam("ids") List<Long> ids) {
         int count = advertiseService.delete(ids);
         if (count <= 0) {
@@ -48,7 +53,7 @@ public class BannerController {
     }
 
     @Operation(summary = "Update banner status")
-    @PostMapping("/update/status/{id}")
+    @PatchMapping("/{id}/status")
     public Integer updateStatus(
             @PathVariable("id") Long id, @RequestParam("status") Integer status) {
         int count = advertiseService.updateStatus(id, status);
@@ -69,7 +74,7 @@ public class BannerController {
     }
 
     @Operation(summary = "Update banner")
-    @PostMapping("/update/{id}")
+    @PutMapping("/{id}")
     public Integer update(@PathVariable("id") Long id, @Valid @RequestBody Banner advertise) {
         int count = advertiseService.update(id, advertise);
         if (count <= 0) {
@@ -79,13 +84,13 @@ public class BannerController {
     }
 
     @Operation(summary = "List banners")
-    @GetMapping("/list")
+    @GetMapping
     public List<Banner> list(
             @RequestParam(value = "name", required = false) String name,
             @RequestParam(value = "type", required = false) Integer type,
             @RequestParam(value = "endTime", required = false) String endTime,
-            @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
-            @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
-        return advertiseService.list(name, type, endTime, pageSize, pageNum);
+            @PageableDefault(size = 5) Pageable pageable) {
+        return advertiseService.list(
+                name, type, endTime, pageable.getPageSize(), pageable.getPageNumber() + 1);
     }
 }

@@ -23,9 +23,13 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,7 +41,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController("portalOrderController")
 @Tag(name = "Storefront - Orders", description = "Storefront order and checkout management APIs")
-@RequestMapping("/portal/order")
+@RequestMapping("/api/store/ordering/orders")
 @Slf4j
 @RequiredArgsConstructor
 public class OrderController {
@@ -47,13 +51,13 @@ public class OrderController {
     private final CustomerOrderRepository customerOrderRepository;
 
     @Operation(summary = "Generate order confirmation preview")
-    @PostMapping("/generateConfirmOrder")
+    @PostMapping("/confirm")
     public ConfirmOrderResult generateConfirmOrder(@Valid @RequestBody List<Long> cartIds) {
         return portalOrderService.generateConfirmOrder(cartIds);
     }
 
     @Operation(summary = "Place order")
-    @PostMapping("/generateOrder")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public OrderConfirmationResponse generateOrder(@Valid @RequestBody OrderParam orderParam) {
         return portalOrderService.generateOrder(orderParam);
@@ -69,16 +73,16 @@ public class OrderController {
                             type = "integer",
                             defaultValue = "-1",
                             allowableValues = {"-1", "0", "1", "2", "3", "4"}))
-    @GetMapping("/list")
+    @GetMapping
     public Page<OrderDetail> list(
-            @RequestParam("status") Integer status,
-            @RequestParam(required = false, defaultValue = "1") Integer pageNum,
-            @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
-        return portalOrderService.list(status, pageNum, pageSize);
+            @RequestParam(value = "status", defaultValue = "-1") Integer status,
+            @PageableDefault(size = 5) Pageable pageable) {
+        return portalOrderService.list(
+                status, pageable.getPageNumber() + 1, pageable.getPageSize());
     }
 
     @Operation(summary = "Get order detail")
-    @GetMapping("/detail/{orderId}")
+    @GetMapping("/{orderId}")
     public OrderDetail detail(@PathVariable("orderId") Long orderId) {
         OrderDetail orderDetail = portalOrderService.detail(orderId);
         if (orderDetail == null) {
@@ -88,25 +92,25 @@ public class OrderController {
     }
 
     @Operation(summary = "Cancel member order")
-    @PostMapping("/cancelUserOrder")
+    @PatchMapping("/cancel")
     public void cancelUserOrder(@RequestParam("orderId") Long orderId) {
         portalOrderService.cancelOrder(orderId);
     }
 
     @Operation(summary = "Confirm order receipt")
-    @PostMapping("/confirmReceiveOrder")
+    @PatchMapping("/confirm-receipt")
     public void confirmReceiveOrder(@RequestParam("orderId") Long orderId) {
         portalOrderService.confirmReceiveOrder(orderId);
     }
 
     @Operation(summary = "Delete order")
-    @PostMapping("/deleteOrder")
+    @DeleteMapping
     public void deleteOrder(@RequestParam("orderId") Long orderId) {
         portalOrderService.deleteOrder(orderId);
     }
 
     @Operation(summary = "Create Razorpay payment order")
-    @PostMapping("/createRazorpayOrder")
+    @PostMapping("/payment/razorpay")
     public PaymentInitiationResponse createRazorpayOrder(
             @RequestParam("orderId") Long orderId) {
         OrderDetail orderDetail = portalOrderService.detail(orderId);
@@ -123,7 +127,7 @@ public class OrderController {
     }
 
     @Operation(summary = "Verify Razorpay payment")
-    @PostMapping("/verifyRazorpayPayment")
+    @PostMapping("/payment/razorpay/verify")
     public String verifyRazorpayPayment(
             @RequestParam("orderId") Long orderId,
             @RequestParam("razorpayPaymentId") String razorpayPaymentId,

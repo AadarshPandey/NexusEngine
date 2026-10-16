@@ -10,6 +10,8 @@ import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,7 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @Tag(name = "Storefront - Product Reviews", description = "Storefront product review management APIs")
-@RequestMapping("/portal/review")
+@RequestMapping("/api/store/engagement/reviews")
 @RequiredArgsConstructor
 public class ReviewController {
 
@@ -33,9 +35,9 @@ public class ReviewController {
     @GetMapping("/product/{productId}")
     public Page<ProductReview> list(
             @PathVariable("productId") Long productId,
-            @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
-            @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) {
-        return reviewService.list(productId, pageNum, pageSize);
+            @PageableDefault(size = 10) Pageable pageable) {
+        return reviewService.list(
+                productId, pageable.getPageNumber() + 1, pageable.getPageSize());
     }
 
     @Operation(summary = "Get replies to a review")
@@ -45,14 +47,14 @@ public class ReviewController {
     }
 
     @Operation(summary = "Create review or reply")
-    @PostMapping("/create")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ProductReview create(@Valid @RequestBody ReviewParam param) {
         return reviewService.create(param);
     }
 
     @Operation(summary = "Upload media for review")
-    @PostMapping("/upload")
+    @PostMapping("/media")
     public MediaUploadResponse upload(@RequestParam("file") MultipartFile file) {
         return reviewService.uploadMedia(file);
     }

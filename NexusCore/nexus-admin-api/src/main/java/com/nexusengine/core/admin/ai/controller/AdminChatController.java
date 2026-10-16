@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Tag(name = "AI - Admin Assistant", description = "AI admin assistant APIs")
-@RequestMapping("/chat")
+@RequestMapping("/api/admin/ai/chat")
 @RequiredArgsConstructor
 public class AdminChatController {
 

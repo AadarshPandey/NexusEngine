@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Tag(name = "Storefront - Recommendations", description = "AI product recommendation APIs")
-@RequestMapping("/portal/recommendation")
+@RequestMapping("/api/store/catalog/recommendations")
 @RequiredArgsConstructor
 public class ProductRecommendationController {
 
@@ -23,7 +23,7 @@ public class ProductRecommendationController {
     private final PortalProductMapper portalProductMapper;
 
     @Operation(summary = "Generate product embeddings")
-    @PostMapping("/generateEmbeddings")
+    @PostMapping("/embeddings")
     public Integer generateEmbeddings() {
         return semanticSearchService.generateAllProductEmbeddings();
     }

@@ -60,7 +60,7 @@ class AdminUserControllerTest {
 
         when(adminService.register(any())).thenReturn(admin);
 
-        mockMvc.perform(post("/admin/register")
+        mockMvc.perform(post("/api/admin/iam/users/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(param)))
                 .andExpect(status().isCreated())
@@ -73,7 +73,7 @@ class AdminUserControllerTest {
 
         when(adminService.login("testuser", "password")).thenReturn("dummy-token");
 
-        mockMvc.perform(post("/admin/login")
+        mockMvc.perform(post("/api/admin/iam/users/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(param)))
                 .andExpect(status().isOk())
@@ -96,7 +96,7 @@ class AdminUserControllerTest {
 
         Principal principal = () -> "admin";
 
-        mockMvc.perform(get("/admin/info").principal(principal))
+        mockMvc.perform(get("/api/admin/iam/users/me").principal(principal))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.username").value("admin"))
                 .andExpect(jsonPath("$.roles[0]").value("ROLE_ADMIN"));

@@ -12,7 +12,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,33 +29,33 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @Tag(name = "Search - Products", description = "Elasticsearch product search APIs")
-@RequestMapping("/esProduct")
+@RequestMapping("/api/store/search/products")
 @RequiredArgsConstructor
 public class ProductSearchController {
     private final ProductSearchService esProductService;
 
     @Operation(summary = "Import all products into Elasticsearch")
-    @PostMapping("/importAll")
+    @PostMapping("/import-all")
     public Integer importAllList() {
         return esProductService.importAll();
     }
 
     @Operation(summary = "Delete product from Elasticsearch")
-    @GetMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
         esProductService.delete(id);
     }
 
     @Operation(summary = "Delete products in batch from Elasticsearch")
-    @PostMapping("/delete/batch")
+    @DeleteMapping("/batch")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@RequestParam("ids") List<Long> ids) {
         esProductService.delete(ids);
     }
 
     @Operation(summary = "Index product by ID in Elasticsearch")
-    @PostMapping("/create/{id}")
+    @PostMapping("/{id}")
     @ResponseStatus(HttpStatus.CREATED)
     public ProductDocument create(@PathVariable Long id) {
         ProductDocument esProduct = esProductService.create(id);
@@ -63,12 +66,12 @@ public class ProductSearchController {
     }
 
     @Operation(summary = "Simple product search")
-    @GetMapping("/search/simple")
+    @GetMapping("/simple")
     public Page<ProductDocument> search(
             @RequestParam(required = false) String keyword,
-            @RequestParam(required = false, defaultValue = "0") Integer pageNum,
-            @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
-        return esProductService.search(keyword, pageNum, pageSize);
+            @PageableDefault(size = 5) Pageable pageable) {
+        return esProductService.search(
+                keyword, pageable.getPageNumber(), pageable.getPageSize());
     }
 
     @Operation(summary = "Comprehensive product search")
@@ -82,29 +85,32 @@ public class ProductSearchController {
                             type = "integer",
                             defaultValue = "0",
                             allowableValues = {"0", "1", "2", "3", "4"}))
-    @GetMapping("/search")
+    @GetMapping
     public Page<ProductDocument> search(
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) Long brandId,
             @RequestParam(required = false) Long productCategoryId,
-            @RequestParam(required = false, defaultValue = "0") Integer pageNum,
-            @RequestParam(required = false, defaultValue = "5") Integer pageSize,
-            @RequestParam(required = false, defaultValue = "0") Integer sort) {
+            @RequestParam(required = false, defaultValue = "0") Integer sort,
+            @PageableDefault(size = 5) Pageable pageable) {
         return esProductService.search(
-                keyword, brandId, productCategoryId, pageNum, pageSize, sort);
+                keyword,
+                brandId,
+                productCategoryId,
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                sort);
     }
 
     @Operation(summary = "Recommend products by ID")
-    @GetMapping("/recommend/{id}")
+    @GetMapping("/{id}/recommendations")
     public Page<ProductDocument> recommend(
-            @PathVariable Long id,
-            @RequestParam(required = false, defaultValue = "0") Integer pageNum,
-            @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
-        return esProductService.recommend(id, pageNum, pageSize);
+            @PathVariable Long id, @PageableDefault(size = 5) Pageable pageable) {
+        return esProductService.recommend(
+                id, pageable.getPageNumber(), pageable.getPageSize());
     }
 
     @Operation(summary = "Search related product facets")
-    @GetMapping("/search/relate")
+    @GetMapping("/facets")
     public ProductRelatedInfo searchRelatedInfo(@RequestParam(required = false) String keyword) {
         return esProductService.searchRelatedInfo(keyword);
     }

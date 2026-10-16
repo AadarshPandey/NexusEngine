@@ -16,10 +16,15 @@ import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,14 +33,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController("adminProductController")
 @Tag(name = "Catalog - Products", description = "Admin product management APIs")
-@RequestMapping("/product")
+@RequestMapping("/api/admin/catalog/products")
 @RequiredArgsConstructor
 public class ProductController {
     private final ProductService productService;
     private final ProductMapper productMapper;
 
     @Operation(summary = "Create product")
-    @PostMapping("/create")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Integer create(@Valid @RequestBody ProductParam productParam) {
         int count = productService.create(productParam);
@@ -45,14 +50,14 @@ public class ProductController {
         return count;
     }
 
-    @Operation(summary = "Get product update info")
-    @GetMapping("/updateInfo/{id}")
+    @Operation(summary = "Get product detail for editing")
+    @GetMapping("/{id}")
     public ProductResult getUpdateInfo(@PathVariable("id") Long id) {
         return productService.getUpdateInfo(id);
     }
 
     @Operation(summary = "Update product")
-    @PostMapping("/update/{id}")
+    @PutMapping("/{id}")
     public Integer update(
             @PathVariable("id") Long id, @Valid @RequestBody ProductParam productParam) {
         int count = productService.update(id, productParam);
@@ -63,24 +68,26 @@ public class ProductController {
     }
 
     @Operation(summary = "List products")
-    @GetMapping("/list")
+    @GetMapping
     public Page<ProductSummaryResponse> getList(
-            ProductQueryParam productQueryParam,
-            @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
-            @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
-        Page<Product> productList = productService.list(productQueryParam, pageSize, pageNum);
+            ProductQueryParam productQueryParam, @PageableDefault(size = 5) Pageable pageable) {
+        Page<Product> productList =
+                productService.list(
+                        productQueryParam,
+                        pageable.getPageSize(),
+                        pageable.getPageNumber() + 1);
         return productList.map(productMapper::toSummary);
     }
 
     @Operation(summary = "Simple list products")
-    @GetMapping("/simpleList")
+    @GetMapping("/simple")
     public List<ProductSummaryResponse> getList(
             @RequestParam(required = false) String keyword) {
         return productMapper.toSummaryList(productService.list(keyword));
     }
 
     @Operation(summary = "Update approval status")
-    @PostMapping("/update/verifyStatus")
+    @PatchMapping("/approval")
     public Integer updateVerifyStatus(
             @RequestParam("ids") List<Long> ids,
             @RequestParam("verifyStatus") Integer verifyStatus,
@@ -93,7 +100,7 @@ public class ProductController {
     }
 
     @Operation(summary = "Update publish status")
-    @PostMapping("/update/publishStatus")
+    @PatchMapping("/publish-status")
     public Integer updatePublishStatus(
             @RequestParam("ids") List<Long> ids,
             @RequestParam("publishStatus") Integer publishStatus) {
@@ -105,7 +112,7 @@ public class ProductController {
     }
 
     @Operation(summary = "Update featured status")
-    @PostMapping("/update/recommendStatus")
+    @PatchMapping("/featured-status")
     public Integer updateRecommendStatus(
             @RequestParam("ids") List<Long> ids,
             @RequestParam("recommendStatus") Integer recommendStatus) {
@@ -117,7 +124,7 @@ public class ProductController {
     }
 
     @Operation(summary = "Update new arrival status")
-    @PostMapping("/update/newStatus")
+    @PatchMapping("/new-arrival-status")
     public Integer updateNewStatus(
             @RequestParam("ids") List<Long> ids, @RequestParam("newStatus") Integer newStatus) {
         int count = productService.updateNewStatus(ids, newStatus);
@@ -128,10 +135,10 @@ public class ProductController {
     }
 
     @Operation(summary = "Update delete status")
-    @PostMapping("/update/deleteStatus")
+    @DeleteMapping
     public Integer updateDeleteStatus(
             @RequestParam("ids") List<Long> ids,
-            @RequestParam("deleteStatus") Integer deleteStatus) {
+            @RequestParam(value = "deleteStatus", defaultValue = "1") Integer deleteStatus) {
         int count = productService.updateDeleteStatus(ids, deleteStatus);
         if (count <= 0) {
             Asserts.fail("Failed to update delete status");
@@ -140,13 +147,13 @@ public class ProductController {
     }
 
     @Operation(summary = "Get price audit logs")
-    @GetMapping("/auditLog/{id}")
+    @GetMapping("/{id}/audit-logs")
     public List<ProductPriceChange> getAuditLog(@PathVariable("id") Long id) {
         return productService.getAuditLog(id);
     }
 
     @Operation(summary = "Get approval history")
-    @GetMapping("/approvalHistory/{id}")
+    @GetMapping("/{id}/approval-history")
     public List<ProductApprovalEvent> getApprovalHistory(@PathVariable("id") Long id) {
         return productService.getApprovalHistory(id);
     }

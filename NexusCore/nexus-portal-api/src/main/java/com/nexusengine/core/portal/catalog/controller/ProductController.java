@@ -14,6 +14,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController("portalProductController")
 @Tag(name = "Storefront - Products", description = "Storefront product catalog APIs")
-@RequestMapping("/portal/product")
+@RequestMapping("/api/store/catalog/products")
 @RequiredArgsConstructor
 public class ProductController {
 
@@ -44,23 +46,27 @@ public class ProductController {
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) Long brandId,
             @RequestParam(required = false) Long productCategoryId,
-            @RequestParam(required = false, defaultValue = "1") Integer pageNum,
-            @RequestParam(required = false, defaultValue = "5") Integer pageSize,
-            @RequestParam(required = false, defaultValue = "0") Integer sort) {
+            @RequestParam(required = false, defaultValue = "0") Integer sort,
+            @PageableDefault(size = 5) Pageable pageable) {
         List<Product> productList =
                 portalProductService.search(
-                        keyword, brandId, productCategoryId, pageNum, pageSize, sort);
+                        keyword,
+                        brandId,
+                        productCategoryId,
+                        pageable.getPageNumber() + 1,
+                        pageable.getPageSize(),
+                        sort);
         return portalProductMapper.toSummaryList(productList);
     }
 
     @Operation(summary = "Get category tree")
-    @GetMapping("/categoryTreeList")
+    @GetMapping("/categories/tree")
     public List<CategoryNode> categoryTreeList() {
         return portalProductService.categoryTreeList();
     }
 
     @Operation(summary = "Get product detail")
-    @GetMapping("/detail/{id}")
+    @GetMapping("/{id}")
     public ProductDetail detail(@PathVariable("id") Long id) {
         ProductDetail productDetail = portalProductService.detail(id);
         if (productDetail == null) {

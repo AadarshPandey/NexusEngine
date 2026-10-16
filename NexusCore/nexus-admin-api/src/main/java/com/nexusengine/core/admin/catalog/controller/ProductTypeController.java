@@ -10,10 +10,14 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -21,13 +25,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Tag(name = "Catalog - Product Types", description = "Admin product type management APIs")
-@RequestMapping("/productAttribute/category")
+@RequestMapping("/api/admin/catalog/product-types")
 @RequiredArgsConstructor
 public class ProductTypeController {
     private final ProductTypeService productAttributeCategoryService;
 
     @Operation(summary = "Create product type")
-    @PostMapping("/create")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Integer create(@RequestParam("name") String name) {
         int count = productAttributeCategoryService.create(name);
@@ -38,7 +42,7 @@ public class ProductTypeController {
     }
 
     @Operation(summary = "Update product type")
-    @PostMapping("/update/{id}")
+    @PutMapping("/{id}")
     public Integer update(@PathVariable("id") Long id, @RequestParam("name") String name) {
         int count = productAttributeCategoryService.update(id, name);
         if (count <= 0) {
@@ -48,7 +52,7 @@ public class ProductTypeController {
     }
 
     @Operation(summary = "Delete product type")
-    @GetMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public Integer delete(@PathVariable("id") Long id) {
         int count = productAttributeCategoryService.delete(id);
         if (count <= 0) {
@@ -68,15 +72,14 @@ public class ProductTypeController {
     }
 
     @Operation(summary = "List product types")
-    @GetMapping("/list")
-    public Page<ProductType> getList(
-            @RequestParam(defaultValue = "5") Integer pageSize,
-            @RequestParam(defaultValue = "1") Integer pageNum) {
-        return productAttributeCategoryService.getList(pageSize, pageNum);
+    @GetMapping
+    public Page<ProductType> getList(@PageableDefault(size = 5) Pageable pageable) {
+        return productAttributeCategoryService.getList(
+                pageable.getPageSize(), pageable.getPageNumber() + 1);
     }
 
     @Operation(summary = "List product types with attributes")
-    @GetMapping("/list/withAttr")
+    @GetMapping("/with-attributes")
     public List<ProductTypeWithAttributes> getListWithAttr() {
         return productAttributeCategoryService.getListWithAttr();
     }

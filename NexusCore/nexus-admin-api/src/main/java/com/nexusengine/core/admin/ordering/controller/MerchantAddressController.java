@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Tag(name = "Ordering - Merchant Addresses", description = "Admin merchant address management APIs")
-@RequestMapping("/companyAddress")
+@RequestMapping("/api/admin/ordering/merchant-addresses")
 @RequiredArgsConstructor
 public class MerchantAddressController {
     private final MerchantAddressService companyAddressService;
 
     @Operation(summary = "List merchant addresses")
-    @GetMapping("/list")
+    @GetMapping
     public List<MerchantAddress> list() {
         return companyAddressService.list();
     }

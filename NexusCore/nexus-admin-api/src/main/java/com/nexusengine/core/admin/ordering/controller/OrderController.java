@@ -16,7 +16,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,24 +30,24 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController("adminOrderController")
 @Tag(name = "Ordering - Orders", description = "Admin order management APIs")
-@RequestMapping("/order")
+@RequestMapping("/api/admin/ordering/orders")
 @RequiredArgsConstructor
 public class OrderController {
     private final OrderService orderService;
     private final OrderMapper orderMapper;
 
     @Operation(summary = "List orders")
-    @GetMapping("/list")
+    @GetMapping
     public List<OrderSummaryResponse> list(
-            OrderQueryParam queryParam,
-            @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
-            @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
-        List<CustomerOrder> orderList = orderService.list(queryParam, pageSize, pageNum);
+            OrderQueryParam queryParam, @PageableDefault(size = 5) Pageable pageable) {
+        List<CustomerOrder> orderList =
+                orderService.list(
+                        queryParam, pageable.getPageSize(), pageable.getPageNumber() + 1);
         return orderMapper.toSummaryList(orderList);
     }
 
     @Operation(summary = "Ship orders")
-    @PostMapping("/update/delivery")
+    @PostMapping("/delivery")
     public Integer delivery(@Valid @RequestBody List<OrderDeliveryParam> deliveryParamList) {
         int count = orderService.delivery(deliveryParamList);
         if (count <= 0) {
@@ -53,7 +57,7 @@ public class OrderController {
     }
 
     @Operation(summary = "Cancel/close orders")
-    @PostMapping("/update/close")
+    @PatchMapping("/cancel")
     public Integer close(
             @RequestParam("ids") List<Long> ids, @RequestParam("note") String note) {
         int count = orderService.close(ids, note);
@@ -64,7 +68,7 @@ public class OrderController {
     }
 
     @Operation(summary = "Delete orders")
-    @PostMapping("/delete")
+    @DeleteMapping
     public Integer delete(@RequestParam("ids") List<Long> ids) {
         int count = orderService.delete(ids);
         if (count <= 0) {
@@ -84,7 +88,7 @@ public class OrderController {
     }
 
     @Operation(summary = "Update recipient info")
-    @PostMapping("/update/receiverInfo")
+    @PatchMapping("/receiver-info")
     public Integer updateReceiverInfo(
             @Valid @RequestBody OrderReceiverInfoParam receiverInfoParam) {
         int count = orderService.updateReceiverInfo(receiverInfoParam);
@@ -95,8 +99,8 @@ public class OrderController {
     }
 
     @Operation(summary = "Update order financial info")
-    @PostMapping("/update/moneyInfo")
-    public Integer updateReceiverInfo(@Valid @RequestBody OrderMoneyInfoParam moneyInfoParam) {
+    @PatchMapping("/money-info")
+    public Integer updateMoneyInfo(@Valid @RequestBody OrderMoneyInfoParam moneyInfoParam) {
         int count = orderService.updateMoneyInfo(moneyInfoParam);
         if (count <= 0) {
             Asserts.fail("Failed to update order money info");
@@ -105,7 +109,7 @@ public class OrderController {
     }
 
     @Operation(summary = "Update order note")
-    @PostMapping("/update/note")
+    @PatchMapping("/note")
     public Integer updateNote(
             @RequestParam("id") Long id,
             @RequestParam("note") String note,
@@ -118,7 +122,7 @@ public class OrderController {
     }
 
     @Operation(summary = "Update order status")
-    @PostMapping("/update/status")
+    @PatchMapping("/status")
     public Integer updateStatus(
             @RequestParam("ids") List<Long> ids,
             @RequestParam("status") Integer status,

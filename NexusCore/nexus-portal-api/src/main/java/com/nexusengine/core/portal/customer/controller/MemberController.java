@@ -14,7 +14,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,7 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @Tag(name = "Storefront - Auth & Member", description = "Storefront member authentication and profile APIs")
-@RequestMapping("/portal/sso")
+@RequestMapping("/api/store/customer/auth")
 @RequiredArgsConstructor
 public class MemberController {
     @Value("${jwt.tokenHeader}")
@@ -63,13 +65,13 @@ public class MemberController {
     }
 
     @Operation(summary = "Upload avatar")
-    @PostMapping("/uploadAvatar")
+    @PostMapping("/avatar")
     public String uploadAvatar(@RequestParam("file") MultipartFile file) {
         return memberService.uploadAvatar(file);
     }
 
     @Operation(summary = "Update member profile")
-    @PostMapping("/updateProfile")
+    @PutMapping("/profile")
     public Member updateProfile(@Valid @RequestBody Member member) {
         Member current = memberService.getCurrentMember();
         if (member.getDisplayName() != null) {
@@ -86,7 +88,7 @@ public class MemberController {
     }
 
     @Operation(summary = "Get current member info")
-    @GetMapping("/info")
+    @GetMapping("/me")
     public Member info(Principal principal) {
         if (principal == null) {
             Asserts.fail(ResultCode.UNAUTHORIZED);
@@ -95,13 +97,13 @@ public class MemberController {
     }
 
     @Operation(summary = "Request OTP verification code via email")
-    @PostMapping("/getAuthCode")
+    @PostMapping("/otp")
     public void getAuthCode(@RequestParam("email") String email) {
         memberService.generateAuthCode(email);
     }
 
     @Operation(summary = "Update member password")
-    @PostMapping("/updatePassword")
+    @PatchMapping("/password")
     public void updatePassword(
             @RequestParam("email") String email,
             @RequestParam(value = "password", required = false) String password,
@@ -112,7 +114,7 @@ public class MemberController {
     }
 
     @Operation(summary = "Refresh JWT token")
-    @GetMapping("/refreshToken")
+    @GetMapping("/refresh-token")
     public TokenResponse refreshToken(HttpServletRequest request) {
         String token = request.getHeader(tokenHeader);
         String refreshToken = memberService.refreshToken(token);

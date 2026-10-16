@@ -9,10 +9,15 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,13 +26,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Tag(name = "Promotion - Flash Sales", description = "Admin flash sale management APIs")
-@RequestMapping("/flash")
+@RequestMapping("/api/admin/promotion/flash-sales")
 @RequiredArgsConstructor
 public class FlashSaleController {
     private final FlashSaleService flashPromotionService;
 
     @Operation(summary = "Create flash sale")
-    @PostMapping("/create")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Integer create(@Valid @RequestBody FlashSale flashPromotion) {
         int count = flashPromotionService.create(flashPromotion);
@@ -38,7 +43,7 @@ public class FlashSaleController {
     }
 
     @Operation(summary = "Update flash sale")
-    @PostMapping("/update/{id}")
+    @PutMapping("/{id}")
     public Integer update(
             @PathVariable("id") Long id, @Valid @RequestBody FlashSale flashPromotion) {
         int count = flashPromotionService.update(id, flashPromotion);
@@ -49,7 +54,7 @@ public class FlashSaleController {
     }
 
     @Operation(summary = "Delete flash sale")
-    @PostMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public Integer delete(@PathVariable("id") Long id) {
         int count = flashPromotionService.delete(id);
         if (count <= 0) {
@@ -59,7 +64,7 @@ public class FlashSaleController {
     }
 
     @Operation(summary = "Update flash sale status")
-    @PostMapping("/update/status/{id}")
+    @PatchMapping("/{id}/status")
     public Integer updateStatus(
             @PathVariable("id") Long id, @RequestParam("status") Integer status) {
         int count = flashPromotionService.updateStatus(id, status);
@@ -80,11 +85,11 @@ public class FlashSaleController {
     }
 
     @Operation(summary = "List flash sales with pagination")
-    @GetMapping("/list")
+    @GetMapping
     public Page<FlashSale> list(
             @RequestParam(value = "keyword", required = false) String keyword,
-            @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
-            @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
-        return flashPromotionService.list(keyword, pageNum, pageSize);
+            @PageableDefault(size = 5) Pageable pageable) {
+        return flashPromotionService.list(
+                keyword, pageable.getPageNumber() + 1, pageable.getPageSize());
     }
 }

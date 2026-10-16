@@ -21,14 +21,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController("portalReturnRequestController")
 @Tag(name = "Storefront - Return Requests", description = "Storefront order return request APIs")
-@RequestMapping("/portal/returnApply")
+@RequestMapping("/api/store/ordering/return-requests")
 @RequiredArgsConstructor
 public class ReturnRequestController {
     private final ReturnRequestService returnApplyService;
     private final ReturnReasonRepository returnReasonRepository;
 
     @Operation(summary = "Create return request")
-    @PostMapping("/create")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Integer create(@Valid @RequestBody ReturnApplyParam returnApply) {
         int count = returnApplyService.create(returnApply);

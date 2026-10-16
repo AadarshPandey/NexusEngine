@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Tag(name = "Storefront - AI Chatbot", description = "AI customer support chatbot APIs")
-@RequestMapping("/portal/chat")
+@RequestMapping("/api/store/ai/chat")
 public class ChatbotController {
 
     private final NexusChatService chatService;

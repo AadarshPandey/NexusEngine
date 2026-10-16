@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@Tag(name = "Infrastructure - S3 Storage", description = "S3 object storage management APIs")
-@RequestMapping("/s3")
+@Tag(name = "Infrastructure - Storage", description = "S3 object storage management APIs")
+@RequestMapping("/api/admin/infra/storage")
 @RequiredArgsConstructor
 public class S3Controller {
     private final S3Service s3Service;
@@ -26,7 +26,7 @@ public class S3Controller {
     }
 
     @Operation(summary = "S3 upload callback")
-    @PostMapping("callback")
+    @PostMapping("/callback")
     public S3CallbackResult callback(HttpServletRequest request) {
         return s3Service.callback(request);
     }

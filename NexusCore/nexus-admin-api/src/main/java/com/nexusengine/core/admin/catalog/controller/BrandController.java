@@ -13,10 +13,15 @@ import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,20 +30,20 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController("adminBrandController")
 @Tag(name = "Catalog - Brands", description = "Admin brand management APIs")
-@RequestMapping("/brand")
+@RequestMapping("/api/admin/catalog/brands")
 @RequiredArgsConstructor
 public class BrandController {
     private final BrandService brandService;
     private final BrandMapper brandMapper;
 
     @Operation(summary = "List all brands")
-    @GetMapping("/listAll")
+    @GetMapping("/all")
     public Page<BrandResponse> getList() {
         return brandService.listAllBrand().map(brandMapper::toResponse);
     }
 
     @Operation(summary = "Create brand")
-    @PostMapping("/create")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Integer create(@Valid @RequestBody BrandParam brand) {
         int count = brandService.createBrand(brand);
@@ -49,7 +54,7 @@ public class BrandController {
     }
 
     @Operation(summary = "Update brand")
-    @PostMapping("/update/{id}")
+    @PutMapping("/{id}")
     public Integer update(
             @PathVariable("id") Long id, @Valid @RequestBody BrandParam brandParam) {
         int count = brandService.updateBrand(id, brandParam);
@@ -60,7 +65,7 @@ public class BrandController {
     }
 
     @Operation(summary = "Delete brand")
-    @GetMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public void delete(@PathVariable("id") Long id) {
         int count = brandService.deleteBrand(id);
         if (count != 1) {
@@ -69,13 +74,17 @@ public class BrandController {
     }
 
     @Operation(summary = "List brands with pagination")
-    @GetMapping("/list")
+    @GetMapping
     public Page<BrandResponse> getList(
             @RequestParam(value = "keyword", required = false) String keyword,
             @RequestParam(value = "isVisible", required = false) Integer isVisible,
-            @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
-            @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize) {
-        Page<Brand> brandList = brandService.listBrand(keyword, isVisible, pageNum, pageSize);
+            @PageableDefault(size = 5) Pageable pageable) {
+        Page<Brand> brandList =
+                brandService.listBrand(
+                        keyword,
+                        isVisible,
+                        pageable.getPageNumber() + 1,
+                        pageable.getPageSize());
         return brandList.map(brandMapper::toResponse);
     }
 
@@ -90,7 +99,7 @@ public class BrandController {
     }
 
     @Operation(summary = "Delete brands in batch")
-    @PostMapping("/delete/batch")
+    @DeleteMapping("/batch")
     public Integer deleteBatch(@RequestParam("ids") List<Long> ids) {
         int count = brandService.deleteBrand(ids);
         if (count <= 0) {
@@ -100,7 +109,7 @@ public class BrandController {
     }
 
     @Operation(summary = "Update brand visibility")
-    @PostMapping("/update/isVisible")
+    @PatchMapping("/visibility")
     public Integer updateIsVisible(
             @RequestParam("ids") List<Long> ids, @RequestParam("isVisible") Integer isVisible) {
         int count = brandService.updateIsVisible(ids, isVisible);

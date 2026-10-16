@@ -11,10 +11,15 @@ import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,13 +28,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Tag(name = "IAM - Roles", description = "Admin role management APIs")
-@RequestMapping("/role")
+@RequestMapping("/api/admin/iam/roles")
 @RequiredArgsConstructor
 public class RoleController {
     private final RoleService roleService;
 
     @Operation(summary = "Create role")
-    @PostMapping("/create")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Integer create(@Valid @RequestBody Role role) {
         int count = roleService.create(role);
@@ -40,7 +45,7 @@ public class RoleController {
     }
 
     @Operation(summary = "Update role")
-    @PostMapping("/update/{id}")
+    @PutMapping("/{id}")
     public Integer update(@PathVariable("id") Long id, @Valid @RequestBody Role role) {
         int count = roleService.update(id, role);
         if (count <= 0) {
@@ -50,7 +55,7 @@ public class RoleController {
     }
 
     @Operation(summary = "Delete roles")
-    @PostMapping("/delete")
+    @DeleteMapping
     public Integer delete(@RequestParam("ids") List<Long> ids) {
         int count = roleService.delete(ids);
         if (count <= 0) {
@@ -60,22 +65,22 @@ public class RoleController {
     }
 
     @Operation(summary = "List all roles")
-    @GetMapping("/listAll")
+    @GetMapping("/all")
     public List<Role> listAll() {
         return roleService.list();
     }
 
     @Operation(summary = "List roles with pagination")
-    @GetMapping("/list")
+    @GetMapping
     public Page<Role> list(
             @RequestParam(value = "keyword", required = false) String keyword,
-            @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
-            @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
-        return roleService.list(keyword, pageSize, pageNum);
+            @PageableDefault(size = 5) Pageable pageable) {
+        return roleService.list(
+                keyword, pageable.getPageSize(), pageable.getPageNumber() + 1);
     }
 
     @Operation(summary = "Update role status")
-    @PostMapping("/updateStatus/{id}")
+    @PatchMapping("/{id}/status")
     public Integer updateStatus(
             @PathVariable("id") Long id, @RequestParam(value = "status") Integer status) {
         Role role = new Role();
@@ -88,26 +93,26 @@ public class RoleController {
     }
 
     @Operation(summary = "List menus for role")
-    @GetMapping("/listMenu/{roleId}")
+    @GetMapping("/{roleId}/menus")
     public List<ConsoleMenu> listMenu(@PathVariable("roleId") Long roleId) {
         return roleService.listMenu(roleId);
     }
 
     @Operation(summary = "List permissions for role")
-    @GetMapping("/listResource/{roleId}")
+    @GetMapping("/{roleId}/permissions")
     public List<Permission> listResource(@PathVariable("roleId") Long roleId) {
         return roleService.listResource(roleId);
     }
 
     @Operation(summary = "Assign menus to role")
-    @PostMapping("/allocMenu")
+    @PutMapping("/menus")
     public Integer allocMenu(
             @RequestParam("roleId") Long roleId, @RequestParam("menuIds") List<Long> menuIds) {
         return roleService.allocMenu(roleId, menuIds);
     }
 
     @Operation(summary = "Assign permissions to role")
-    @PostMapping("/allocResource")
+    @PutMapping("/permissions")
     public Integer allocResource(
             @RequestParam("roleId") Long roleId,
             @RequestParam("resourceIds") List<Long> resourceIds) {

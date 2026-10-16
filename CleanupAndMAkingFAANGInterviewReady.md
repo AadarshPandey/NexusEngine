@@ -905,7 +905,7 @@ Also:
   }
   ```
 
-- [ ] **3.4 — REST URL conventions.** Rename all non-RESTful URLs:
+- [x] **3.4 — REST URL conventions.** Rename all non-RESTful URLs:
   | Before | After | HTTP verb |
   |---|---|---|
   | `POST /product/create` | `POST /api/admin/products` | POST (create) |
@@ -925,7 +925,7 @@ Also:
   - Admin: `/api/admin/<context>/<resource>` (e.g. `/api/admin/catalog/products`)
   - Store: `/api/store/<context>/<resource>` (e.g. `/api/store/catalog/products`)
 
-- [ ] **3.5 — Standardize pagination.** Replace `pageNum` (1-based) + `pageSize` with Spring Data `Pageable`:
+- [x] **3.5 — Standardize pagination.** Replace `pageNum` (1-based) + `pageSize` with Spring Data `Pageable`:
   ```java
   @GetMapping("/api/admin/products")
   public Page<ProductSummaryResponse> listProducts(
@@ -955,7 +955,7 @@ Also:
 
 - [x] **3.8 — Remove `Map<String, Object>` return types.** Replace ALL 16 occurrences with typed records (e.g. `OrderConfirmationResponse`, `PaymentInitiationResponse`).
 
-- [ ] **3.9 — Update OpenAPI/Swagger tags.** Replace mall-era tags:
+- [x] **3.9 — Update OpenAPI/Swagger tags.** Replace mall-era tags:
   ```java
   @Tag(name = "Catalog - Products", description = "Admin product management")
   @RestController
@@ -2021,11 +2021,11 @@ nexus-domain/src/main/resources/db/migration/
 **Gate: Zero `CommonResult` in controller/service code. `mvn clean compile -DskipTests` passes.**
 
 #### Card 3: REST URLs + Pagination (1.5 hrs)
-- [ ] **3.1** Rename all controller `@RequestMapping` to `/api/admin/<context>/<resource>` and `/api/store/<context>/<resource>`.
-- [ ] **3.2** Fix HTTP verbs: POST for create, PUT for update, PATCH for partial, DELETE for delete, GET for read.
-- [ ] **3.3** Replace `pageNum`/`pageSize` with Spring Data `Pageable`.
-- [ ] **3.4** Update Swagger `@Tag` descriptions — remove all `Pms`/`Oms`/`Sms`/`Ums` references.
-- [ ] Commit: `refactor: RESTful URLs, proper HTTP verbs, Spring Pageable`
+- [x] **3.1** Rename all controller `@RequestMapping` to `/api/admin/<context>/<resource>` and `/api/store/<context>/<resource>`.
+- [x] **3.2** Fix HTTP verbs: POST for create, PUT for update, PATCH for partial, DELETE for delete, GET for read.
+- [x] **3.3** Replace `pageNum`/`pageSize` with Spring Data `Pageable`.
+- [x] **3.4** Update Swagger `@Tag` descriptions — remove all `Pms`/`Oms`/`Sms`/`Ums` references.
+- [x] Commit: `refactor: RESTful URLs, proper HTTP verbs, Spring Pageable`
 
 **Gate: No `pageNum`/`pageSize` in controllers. No `/product/create` style URLs. `mvn clean compile -DskipTests` passes.**
 
