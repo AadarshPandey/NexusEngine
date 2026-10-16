@@ -15,7 +15,7 @@ spring:
       maximum-pool-size: 20
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: validate
     properties:
       hibernate:
         format_sql: true
@@ -42,13 +42,6 @@ spring:
       pgvector:
         schema-name: ai
         initialize-schema: false
-
-stripe:
-  secretKey: ${STRIPE_SECRET_KEY:sk_test_your_key_here}
-  publishableKey: ${STRIPE_PUBLISHABLE_KEY:pk_test_your_key_here}
-  webhookSecret: ${STRIPE_WEBHOOK_SECRET:whsec_your_secret}
-  successUrl: ${FRONTEND_BASE_URL}/payment/success
-  cancelUrl: ${FRONTEND_BASE_URL}/payment/cancel
 
 razorpay:
   keyId: ${RAZORPAY_KEY_ID:}

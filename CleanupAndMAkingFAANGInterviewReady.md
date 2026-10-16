@@ -595,7 +595,7 @@ Also:
 
 > Goal: A fresh `git clone && make up` creates a correct, constraint-rich, interview-impressive database. Kill the "3 sources disagree" problem.
 
-- [ ] **1.1 — Dump the live schema** (read-only, no changes yet).
+- [x] **1.1 — Dump the live schema** (read-only, no changes yet).
   ```bash
   docker exec nexus-postgres pg_dump -U postgres -d nexuscore --schema-only --no-owner > /tmp/live_schema.sql
   docker exec nexus-postgres psql -U postgres -d nexuscore -Atc "
@@ -606,7 +606,7 @@ Also:
   ```
   Diff `/tmp/live_columns.txt` against entity `@Column` mappings. List any mismatches.
 
-- [ ] **1.2 — Drop legacy schemas.** If the live DB still has `public.*` app tables, `pms.*`, `users.*`, `orders.*`, `marketing.*`, `system.*`, or `integration.*` copies alongside the new `catalog.*`, `ordering.*` etc. — drop them. They're ghosts of the half-migration.
+- [x] **1.2 — Drop legacy schemas.** If the live DB still has `public.*` app tables, `pms.*`, `users.*`, `orders.*`, `marketing.*`, `system.*`, or `integration.*` copies alongside the new `catalog.*`, `ordering.*` etc. — drop them. They're ghosts of the half-migration.
   ```sql
   -- VERIFY these schemas have no tables that are the SOLE source before dropping
   DROP SCHEMA IF EXISTS pms CASCADE;
@@ -618,7 +618,7 @@ Also:
   -- Also drop duplicate tables in 'public' schema if any
   ```
 
-- [ ] **1.3 — Rewrite Flyway migrations from scratch.**
+- [x] **1.3 — Rewrite Flyway migrations from scratch.**
   Delete all existing `V*.sql` files under `nexus-domain/src/main/resources/db/migration/`.
   Write 3 clean migrations based on the **current live schema** (which has the correct bounded-context names):
 
@@ -659,7 +659,7 @@ Also:
   **`V3__demo_catalog.sql`** — Demo data (behind Flyway location `classpath:db/demo` enabled only in `local`/`docker` profiles):
   - 5 categories, 3 brands, 15-20 products with SKUs, 3 banners, 2 coupons, 1 flash sale
 
-- [ ] **1.4 — Align Flyway config** in `application.yml`:
+- [x] **1.4 — Align Flyway config** in `application.yml`:
   ```yaml
   spring:
     flyway:
@@ -683,15 +683,15 @@ Also:
       locations: classpath:db/migration,classpath:db/demo
   ```
 
-- [ ] **1.5 — Delete stale SQL files:**
+- [x] **1.5 — Delete stale SQL files:**
   - `resource_setup/postgres_data.sql` (if still exists)
   - `NexusCore/document/sql/seed.sql` (if still exists)
   - `NexusCore/nexus-admin-api/src/main/resources/data.sql` (if still exists)
   - Any `setup_docker.sh` or `fix_db.sql`
 
-- [ ] **1.6 — Test: `FlywayMigrationTest`** (Testcontainers) — migrate from empty PG → Hibernate `validate` passes → row counts match reference data.
+- [x] **1.6 — Test: `FlywayMigrationTest`** (Testcontainers) — migrate from empty PG → Hibernate `validate` passes → row counts match reference data.
 
-- [ ] Commit: `git commit -m "feat: squash Flyway migrations, drop legacy schemas, constraint-rich baseline"`
+- [x] Commit: `git commit -m "feat: squash Flyway migrations, drop legacy schemas, constraint-rich baseline"`
 
 **✅ Gate: `docker compose down -v && docker compose up -d postgres` → app boots → all tables created in correct schemas → `mvn test -pl nexus-domain` passes.**
 

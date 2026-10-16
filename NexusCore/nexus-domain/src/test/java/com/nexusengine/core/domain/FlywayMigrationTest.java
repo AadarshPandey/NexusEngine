@@ -43,7 +43,7 @@ class FlywayMigrationTest {
     }
 
     @Test
-    void testFlywayMigrations() {
+    void testFlywayMigrations() throws Exception {
         Flyway flyway = Flyway.configure()
                 .dataSource(dataSource)
                 .locations("classpath:db/migration")
@@ -53,5 +53,21 @@ class FlywayMigrationTest {
         flyway.migrate();
 
         assertTrue(flyway.info().applied().length >= 3, "Flyway migrations (V1, V2, V3) should have been applied");
+
+        try (var conn = dataSource.getConnection();
+                var stmt = conn.createStatement()) {
+            try (var rs = stmt.executeQuery("SELECT COUNT(*) FROM iam.role")) {
+                assertTrue(rs.next() && rs.getInt(1) >= 1, "Reference roles should be seeded");
+            }
+            try (var rs = stmt.executeQuery("SELECT COUNT(*) FROM iam.console_menu")) {
+                assertTrue(rs.next() && rs.getInt(1) >= 1, "Console menus should be seeded");
+            }
+            try (var rs = stmt.executeQuery("SELECT COUNT(*) FROM ordering.order_policy")) {
+                assertTrue(rs.next() && rs.getInt(1) >= 1, "Order policy row should be seeded");
+            }
+            try (var rs = stmt.executeQuery("SELECT COUNT(*) FROM catalog.product")) {
+                assertTrue(rs.next() && rs.getInt(1) >= 1, "Demo catalog products should be seeded");
+            }
+        }
     }
 }
