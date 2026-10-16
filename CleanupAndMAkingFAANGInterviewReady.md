@@ -1199,7 +1199,7 @@ Also:
 
 - [ ] **6.8 — Remove hardcoded MinIO URLs.** The `MemberController.uploadAvatar` with hardcoded `minioadmin:minioadmin` at `localhost:9000` must be removed. All uploads go through the backend `/api/admin/s3/upload` or `/api/store/s3/upload` endpoint. Frontend never talks directly to S3/MinIO.
 
-- [ ] **6.9 — Upgrade frontend dependencies** (verify latest GA on npmjs.com):
+- [x] **6.9 — Upgrade frontend dependencies** (verify latest GA on npmjs.com):
 
   **Current versions (from `package.json` analysis):**
   | Package | NexusAdminPanel | NexusFrontendWeb | Action |
