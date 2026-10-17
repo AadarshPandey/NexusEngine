@@ -36,7 +36,7 @@
     "@types/redux-mock-store": "^1.5.0",
     "@vitejs/plugin-react": "^6.1.0",
     "jsdom": "^30.0.1",
-    "oxlint": "^1.86.0",
+    "oxlint": "^1.88.0",
     "redux-mock-store": "^1.5.5",
     "typescript": "^7.0.2",
     "vite": "^8.3.2",
