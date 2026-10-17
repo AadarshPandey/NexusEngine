@@ -18,6 +18,7 @@ const ProductAttrList = lazy(() => import('@/pages/catalog/ProductAttrList'));
 const ProductAttrDetailList = lazy(() => import('@/pages/catalog/ProductAttrDetailList'));
 const BrandList = lazy(() => import('@/pages/catalog/BrandList'));
 const BrandForm = lazy(() => import('@/pages/catalog/BrandForm'));
+const ProductReviewList = lazy(() => import('@/pages/catalog/ProductReviewList'));
 
 // Ordering
 const OrderList = lazy(() => import('@/pages/ordering/OrderList'));
@@ -82,6 +83,7 @@ const router = createHashRouter([
       { path: 'catalog/brands', element: withSuspense(BrandList) },
       { path: 'catalog/brands/new', element: withSuspense(BrandForm) },
       { path: 'catalog/brands/:id/edit', element: withSuspense(BrandForm) },
+      { path: 'catalog/reviews', element: withSuspense(ProductReviewList) },
       // Modern Ordering Routes
       { path: 'ordering/orders', element: withSuspense(OrderList) },
       { path: 'ordering/orders/:id', element: withSuspense(OrderDetail) },

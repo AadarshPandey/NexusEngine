@@ -40,6 +40,10 @@ export const updateCustomerProfile = (data: Partial<Member>) => {
 
 export const updateProfile = updateCustomerProfile;
 
+export const getMemberLoginEvents = () => {
+  return request.get<unknown, import('../types/customer').MemberLoginEvent[]>('/customer/auth/login-events');
+};
+
 export const getAuthCode = (email: string) => {
   return request.post<unknown, void>(`/customer/auth/otp?email=${encodeURIComponent(email)}`);
 };

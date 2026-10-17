@@ -57,13 +57,15 @@ public class HomeServiceImpl implements HomeService {
 
     @Override
     public List<Product> recommendProductList(Integer pageSize, Integer pageNum) {
+        int page = Math.max(0, (pageNum != null && pageNum > 0 ? pageNum - 1 : 0));
+        int size = (pageSize != null && pageSize > 0) ? pageSize : 4;
         try {
             var currentMember = memberService.getCurrentMember();
             if (currentMember != null) {
                 var interests = memberCategoryInterestRepository.findByMemberId(currentMember.getId());
                 if (interests != null && !interests.isEmpty()) {
                     List<Long> catIds = interests.stream().map(com.nexusengine.core.domain.customer.entity.MemberCategoryInterest::getProductCategoryId).toList();
-                    List<Product> interestProducts = productRepository.findByProductCategoryIdIn(catIds, PageRequest.of(pageNum, pageSize)).getContent();
+                    List<Product> interestProducts = productRepository.findByProductCategoryIdIn(catIds, PageRequest.of(page, size)).getContent();
                     if (!interestProducts.isEmpty()) {
                         initializeMediaList(interestProducts);
                         return interestProducts;
@@ -72,7 +74,7 @@ public class HomeServiceImpl implements HomeService {
             }
         } catch (Exception ignored) {
         }
-        List<Product> list = productRepository.findAll(PageRequest.of(pageNum, pageSize)).getContent();
+        List<Product> list = productRepository.findAll(PageRequest.of(page, size)).getContent();
         initializeMediaList(list);
         return list;
     }

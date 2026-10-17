@@ -33,5 +33,19 @@ private OffsetDateTime createTime;
             @Column(name = "ip_address")
 private String ip;
 
+    public OffsetDateTime getOccurredAt() {
+        return createTime;
+    }
 
+    public void setOccurredAt(OffsetDateTime occurredAt) {
+        this.createTime = occurredAt;
+    }
+
+    public String getIpAddress() {
+        return ip;
+    }
+
+    public void setIpAddress(String ipAddress) {
+        this.ip = ipAddress;
+    }
 }

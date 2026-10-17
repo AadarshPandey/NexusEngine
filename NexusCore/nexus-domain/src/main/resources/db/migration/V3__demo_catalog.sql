@@ -2017,12 +2017,36 @@ INSERT INTO engagement.product_review (id, product_id, member_id, rating, body, 
 (2, 16, 1, 5, 'Best noise cancelling headphones in the market.', 2, 1)
 ON CONFLICT (id) DO NOTHING;
 
+INSERT INTO engagement.review_media (id, review_id, media_type, url, display_order) VALUES
+(1, 1, 'IMAGE', 'http://localhost:4566/nexus-media/public/catalog/skus/APPLE-IP17-SLV-128/main.svg', 0),
+(2, 2, 'IMAGE', 'http://localhost:4566/nexus-media/public/catalog/skus/SONY-WH1000XM6-BLK/main.svg', 0)
+ON CONFLICT (id) DO NOTHING;
+
 INSERT INTO promotion.member_coupon (id, coupon_id, member_id, acquisition_channel, status, redeemed_at, order_id) VALUES
 (1, 2, 1, 1, 1, CURRENT_TIMESTAMP - INTERVAL '2 hours', 1),
 (2, 1, 1, 1, 0, NULL, NULL)
 ON CONFLICT (id) DO NOTHING;
 
--- 18. Synchronize Identity Sequences
+-- 18. Demo Interests, Cart Items, and Outbox Events
+INSERT INTO customer.member_category_interest (id, member_id, category_id) VALUES
+(1, 1, 1),
+(2, 1, 3),
+(3, 2, 2)
+ON CONFLICT (id) DO NOTHING;
+
+INSERT INTO ordering.cart_item (id, product_id, sku_id, member_id, quantity, unit_price_at_add, created_at, updated_at) VALUES
+(1, 1, 1, 1, 1, 52930.00, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+(2, 16, 35, 1, 1, 34990.00, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+(3, 6, 12, 2, 1, 68520.00, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+ON CONFLICT (id) DO NOTHING;
+
+INSERT INTO messaging.outbox_event (id, aggregate_type, aggregate_id, event_type, payload, status, attempt_count, created_at) VALUES
+(1, 'ORDER', '1', 'ORDER_PAID', '{"orderId":1,"orderSn":"NX-20261017-0001","amount":52930.00,"memberId":1}', 'PUBLISHED', 1, CURRENT_TIMESTAMP - INTERVAL '2 days'),
+(2, 'ORDER', '1', 'ORDER_SHIPPED', '{"orderId":1,"carrier":"BlueDart Express","trackingNumber":"BD98421054IN"}', 'PUBLISHED', 1, CURRENT_TIMESTAMP - INTERVAL '1 day'),
+(3, 'ORDER', '4', 'ORDER_PAID', '{"orderId":4,"orderSn":"NX-20261017-0004","amount":11010.00,"memberId":1}', 'PUBLISHED', 1, CURRENT_TIMESTAMP - INTERVAL '3 hours')
+ON CONFLICT (id) DO NOTHING;
+
+-- 19. Synchronize Identity Sequences
 SELECT setval(pg_get_serial_sequence('catalog.category', 'id'), COALESCE((SELECT MAX(id) FROM catalog.category), 1));
 SELECT setval(pg_get_serial_sequence('catalog.brand', 'id'), COALESCE((SELECT MAX(id) FROM catalog.brand), 1));
 SELECT setval(pg_get_serial_sequence('catalog.product_type', 'id'), COALESCE((SELECT MAX(id) FROM catalog.product_type), 1));
@@ -2040,10 +2064,14 @@ SELECT setval(pg_get_serial_sequence('promotion.coupon_product', 'id'), COALESCE
 SELECT setval(pg_get_serial_sequence('promotion.member_coupon', 'id'), COALESCE((SELECT MAX(id) FROM promotion.member_coupon), 1));
 SELECT setval(pg_get_serial_sequence('customer.member', 'id'), COALESCE((SELECT MAX(id) FROM customer.member), 1));
 SELECT setval(pg_get_serial_sequence('customer.member_address', 'id'), COALESCE((SELECT MAX(id) FROM customer.member_address), 1));
+SELECT setval(pg_get_serial_sequence('customer.member_category_interest', 'id'), COALESCE((SELECT MAX(id) FROM customer.member_category_interest), 1));
 SELECT setval(pg_get_serial_sequence('ordering.merchant_address', 'id'), COALESCE((SELECT MAX(id) FROM ordering.merchant_address), 1));
 SELECT setval(pg_get_serial_sequence('ordering.customer_order', 'id'), COALESCE((SELECT MAX(id) FROM ordering.customer_order), 1));
 SELECT setval(pg_get_serial_sequence('ordering.order_line', 'id'), COALESCE((SELECT MAX(id) FROM ordering.order_line), 1));
+SELECT setval(pg_get_serial_sequence('ordering.cart_item', 'id'), COALESCE((SELECT MAX(id) FROM ordering.cart_item), 1));
 SELECT setval(pg_get_serial_sequence('ordering.order_status_history', 'id'), COALESCE((SELECT MAX(id) FROM ordering.order_status_history), 1));
 SELECT setval(pg_get_serial_sequence('ordering.return_request', 'id'), COALESCE((SELECT MAX(id) FROM ordering.return_request), 1));
 SELECT setval(pg_get_serial_sequence('payment.payment_transaction', 'id'), COALESCE((SELECT MAX(id) FROM payment.payment_transaction), 1));
 SELECT setval(pg_get_serial_sequence('engagement.product_review', 'id'), COALESCE((SELECT MAX(id) FROM engagement.product_review), 1));
+SELECT setval(pg_get_serial_sequence('engagement.review_media', 'id'), COALESCE((SELECT MAX(id) FROM engagement.review_media), 1));
+SELECT setval(pg_get_serial_sequence('messaging.outbox_event', 'id'), COALESCE((SELECT MAX(id) FROM messaging.outbox_event), 1));

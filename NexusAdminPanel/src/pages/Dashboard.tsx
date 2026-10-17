@@ -10,6 +10,12 @@ import {
   alpha,
   Button,
   Alert,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
 } from '@mui/material';
 import {
   ShoppingCart,
@@ -478,6 +484,137 @@ const Dashboard: React.FC = () => {
                   </Grid>
                 ))}
               </Grid>
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
+
+      {/* Enterprise Reliability & IAM Audit Section */}
+      <Grid container spacing={3} sx={{ mt: 0 }}>
+        {/* Outbox Metrics & Event Log */}
+        <Grid size={{ xs: 12, lg: 8 }}>
+          <Card>
+            <CardContent sx={{ p: 3 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2, flexWrap: 'wrap', gap: 1 }}>
+                <Box>
+                  <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                    Transactional Outbox Monitor (messaging.outbox_event)
+                  </Typography>
+                  <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                    Guaranteed at-least-once message delivery metrics across bounded contexts
+                  </Typography>
+                </Box>
+                {dashboardData.outboxMetrics && (
+                  <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                    <Chip label={`Total: ${dashboardData.outboxMetrics.totalEvents}`} size="small" variant="outlined" />
+                    <Chip label={`Published: ${dashboardData.outboxMetrics.publishedEvents}`} size="small" color="success" />
+                    <Chip label={`Pending: ${dashboardData.outboxMetrics.pendingEvents}`} size="small" color="warning" />
+                    <Chip label={`Failed: ${dashboardData.outboxMetrics.failedEvents}`} size="small" color="error" />
+                  </Box>
+                )}
+              </Box>
+
+              <TableContainer sx={{ maxHeight: 320, overflowY: 'auto' }}>
+                <Table size="small" stickyHeader>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell sx={{ fontWeight: 600 }}>Aggregate</TableCell>
+                      <TableCell sx={{ fontWeight: 600 }}>Event Type</TableCell>
+                      <TableCell sx={{ fontWeight: 600 }}>Status</TableCell>
+                      <TableCell sx={{ fontWeight: 600 }}>Retries</TableCell>
+                      <TableCell sx={{ fontWeight: 600 }}>Timestamp</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {dashboardData.outboxMetrics?.recentEvents && dashboardData.outboxMetrics.recentEvents.length > 0 ? (
+                      dashboardData.outboxMetrics.recentEvents.map((ev) => (
+                        <TableRow key={ev.id} hover>
+                          <TableCell>
+                            <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                              {ev.aggregateType} #{ev.aggregateId}
+                            </Typography>
+                          </TableCell>
+                          <TableCell>
+                            <Chip label={ev.eventType} size="small" sx={{ fontSize: '0.7rem', height: 20 }} />
+                          </TableCell>
+                          <TableCell>
+                            <Chip
+                              label={ev.status}
+                              size="small"
+                              color={ev.status === 'PUBLISHED' ? 'success' : ev.status === 'PENDING' ? 'warning' : 'error'}
+                              sx={{ fontSize: '0.7rem', height: 20 }}
+                            />
+                          </TableCell>
+                          <TableCell>{ev.attemptCount}</TableCell>
+                          <TableCell sx={{ fontSize: '0.75rem', color: 'text.secondary' }}>
+                            {ev.createdAt ? new Date(ev.createdAt).toLocaleString() : '-'}
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    ) : (
+                      <TableRow>
+                        <TableCell colSpan={5} align="center" sx={{ py: 3, color: 'text.secondary' }}>
+                          No outbox events recorded yet
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        {/* Recent Admin Logins */}
+        <Grid size={{ xs: 12, lg: 4 }}>
+          <Card sx={{ height: '100%' }}>
+            <CardContent sx={{ p: 3 }}>
+              <Typography variant="h6" sx={{ fontWeight: 600, mb: 0.5 }}>
+                IAM Security Log (iam.admin_login_event)
+              </Typography>
+              <Typography variant="body2" sx={{ color: 'text.secondary', mb: 2 }}>
+                Recent administrative access & authentication events
+              </Typography>
+
+              <TableContainer sx={{ maxHeight: 320, overflowY: 'auto' }}>
+                <Table size="small" stickyHeader>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell sx={{ fontWeight: 600 }}>Admin</TableCell>
+                      <TableCell sx={{ fontWeight: 600 }}>IP Address</TableCell>
+                      <TableCell sx={{ fontWeight: 600 }}>Timestamp</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {dashboardData.recentAdminLogins && dashboardData.recentAdminLogins.length > 0 ? (
+                      dashboardData.recentAdminLogins.map((login) => (
+                        <TableRow key={login.id} hover>
+                          <TableCell>
+                            <Box>
+                              <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                                {login.username}
+                              </Typography>
+                              <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                                ID: {login.adminId}
+                              </Typography>
+                            </Box>
+                          </TableCell>
+                          <TableCell sx={{ fontSize: '0.75rem' }}>{login.ipAddress || '127.0.0.1'}</TableCell>
+                          <TableCell sx={{ fontSize: '0.75rem', color: 'text.secondary' }}>
+                            {login.occurredAt ? new Date(login.occurredAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '-'}
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    ) : (
+                      <TableRow>
+                        <TableCell colSpan={3} align="center" sx={{ py: 3, color: 'text.secondary' }}>
+                          No administrative login events
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </TableContainer>
             </CardContent>
           </Card>
         </Grid>

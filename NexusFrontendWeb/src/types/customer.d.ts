@@ -33,3 +33,17 @@ export interface MemberAddress {
 }
 
 export type MemberInfo = Member
+
+export interface MemberLoginEvent {
+  id: number
+  memberId: number
+  occurredAt?: string
+  createTime?: string
+  ipAddress?: string
+  ip?: string
+  city?: string
+  loginMethod?: number
+  loginType?: number
+  region?: string
+  province?: string
+}

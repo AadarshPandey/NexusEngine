@@ -77,6 +77,49 @@ private List<ReviewMedia> attachmentList;
 private Boolean userLiked;
 
         @Transient
-
 private Boolean userDisliked;
+
+    public String getAuthorDisplayName() {
+        return member != null ? (member.getDisplayName() != null ? member.getDisplayName() : member.getUsername()) : null;
+    }
+
+    public String getAuthorAvatarUrl() {
+        return member != null ? member.getAvatarUrl() : null;
+    }
+
+    public String getMemberNickName() {
+        return getAuthorDisplayName();
+    }
+
+    public String getBody() {
+        return content;
+    }
+
+    public void setBody(String body) {
+        this.content = body;
+    }
+
+    public Integer getModerationStatus() {
+        return status;
+    }
+
+    public void setModerationStatus(Integer moderationStatus) {
+        this.status = moderationStatus;
+    }
+
+    public OffsetDateTime getCreatedAt() {
+        return createdTime;
+    }
+
+    public void setCreatedAt(OffsetDateTime createdAt) {
+        this.createdTime = createdAt;
+    }
+
+    public Integer getHelpfulCount() {
+        return likeCount;
+    }
+
+    public void setHelpfulCount(Integer helpfulCount) {
+        this.likeCount = helpfulCount;
+    }
 }

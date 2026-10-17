@@ -78,6 +78,7 @@ export const asyncRouterMap: RouteConfig[] = [
       { path: 'brands', name: 'brand', meta: { title: 'Brand management', iconUrl: 'product-brand' } },
       { path: 'brands/new', name: 'addBrand', meta: { title: 'Add Brand' }, hidden: true },
       { path: 'brands/:id/edit', name: 'updateBrand', meta: { title: 'Update Brand' }, hidden: true },
+      { path: 'reviews', name: 'productReview', meta: { title: 'Product Reviews', iconUrl: 'document' } },
     ],
   },
   // Bounded Context: Ordering

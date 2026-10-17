@@ -45,12 +45,15 @@ import {
   getCustomerProfile,
   getCustomerAddresses,
   createCustomerAddress,
+  updateCustomerAddress,
+  deleteCustomerAddress,
   updateCustomerProfile,
   uploadAvatar,
+  getMemberLoginEvents,
 } from '../api/customer';
 import { getMemberCoupons } from '../api/promotion';
 import type { Coupon } from '../types/promotion';
-import type { Member, MemberAddress } from '../types/customer';
+import type { Member, MemberAddress, MemberLoginEvent } from '../types/customer';
 import { createRazorpayOrder, verifyRazorpayPayment } from '../api/payment';
 import { resolveImageUrl } from '../utils/media';
 
@@ -90,9 +93,12 @@ const Profile: React.FC = () => {
   const [orders, setOrders] = useState<CustomerOrder[]>([]);
   const [addresses, setAddresses] = useState<MemberAddress[]>([]);
   const [coupons, setCoupons] = useState<Coupon[]>([]);
+  const [loginEvents, setLoginEvents] = useState<MemberLoginEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [openAddAddress, setOpenAddAddress] = useState(false);
+  const [openEditAddress, setOpenEditAddress] = useState(false);
+  const [editingAddress, setEditingAddress] = useState<Partial<MemberAddress>>({});
   const [newAddress, setNewAddress] = useState<Partial<MemberAddress>>({
     recipientName: '',
     recipientPhone: '',
@@ -106,11 +112,20 @@ const Profile: React.FC = () => {
   // Refund dialog states
   const [openRefundDialog, setOpenRefundDialog] = useState(false);
   const [openEditProfile, setOpenEditProfile] = useState(false);
-  const [editProfileData, setEditProfileData] = useState({ displayName: '', iconUrl: '' });
+  const [editProfileData, setEditProfileData] = useState({
+    displayName: '',
+    phoneE164: '',
+    email: '',
+    gender: 0,
+    iconUrl: '',
+  });
 
   const handleEditProfileOpen = () => {
     setEditProfileData({
       displayName: memberInfo?.displayName || '',
+      phoneE164: memberInfo?.phoneE164 || (memberInfo as any)?.contactPhone || '',
+      email: memberInfo?.email || '',
+      gender: (memberInfo?.gender as any) ?? 0,
       iconUrl: memberInfo?.avatarUrl || '',
     });
     setOpenEditProfile(true);
@@ -118,12 +133,53 @@ const Profile: React.FC = () => {
 
   const handleEditProfileSubmit = async () => {
     try {
-      await updateCustomerProfile(editProfileData);
+      await updateCustomerProfile(editProfileData as any);
       setOpenEditProfile(false);
       loadDashboardData();
     } catch (e) {
       console.error(e);
       alert('Failed to update profile');
+    }
+  };
+
+  const handleOpenEditAddress = (addr: MemberAddress) => {
+    setEditingAddress({ ...addr });
+    setOpenEditAddress(true);
+  };
+
+  const handleUpdateAddress = async () => {
+    if (!editingAddress.id) return;
+    try {
+      await updateCustomerAddress(editingAddress.id, editingAddress);
+      setOpenEditAddress(false);
+      const addressRes = await getCustomerAddresses();
+      setAddresses(addressRes || []);
+      alert('Address updated successfully!');
+    } catch {
+      alert('Failed to update address');
+    }
+  };
+
+  const handleDeleteAddress = async (id: number) => {
+    if (!window.confirm('Are you sure you want to delete this address?')) return;
+    try {
+      await deleteCustomerAddress(id);
+      const addressRes = await getCustomerAddresses();
+      setAddresses(addressRes || []);
+      alert('Address deleted successfully!');
+    } catch {
+      alert('Failed to delete address');
+    }
+  };
+
+  const handleSetDefaultAddress = async (addr: MemberAddress) => {
+    try {
+      await updateCustomerAddress(addr.id, { ...addr, isDefault: true, defaultStatus: true } as any);
+      const addressRes = await getCustomerAddresses();
+      setAddresses(addressRes || []);
+      alert('Default address updated!');
+    } catch {
+      alert('Failed to update default address');
     }
   };
 
@@ -152,16 +208,18 @@ const Profile: React.FC = () => {
     try {
       setLoading(true);
       setError(null);
-      const [memberRes, orderRes, addressRes, couponRes] = await Promise.all([
+      const [memberRes, orderRes, addressRes, couponRes, loginRes] = await Promise.all([
         getCustomerProfile(),
         getOrders(-1, 1, 100),
         getCustomerAddresses(),
         getMemberCoupons(0).catch(() => []),
+        getMemberLoginEvents().catch(() => []),
       ]);
       setMemberInfo(memberRes);
       setOrders(orderRes.content || []);
       setAddresses(addressRes || []);
       setCoupons(Array.isArray(couponRes) ? couponRes : []);
+      setLoginEvents(Array.isArray(loginRes) ? loginRes : []);
     } catch (err: unknown) {
       console.error('Failed to load dashboard data', err);
       setError(err instanceof Error ? err.message : 'Failed to load dashboard data');
@@ -330,11 +388,108 @@ const Profile: React.FC = () => {
 
             <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
               <Typography color="text.secondary">Username:</Typography>
-              <Typography>{memberInfo?.username}</Typography>
+              <Typography sx={{ fontWeight: 600 }}>{memberInfo?.username}</Typography>
+              
               <Typography color="text.secondary">Display Name:</Typography>
               <Typography>{memberInfo?.displayName || '-'}</Typography>
-              <Typography color="text.secondary">Phone:</Typography>
-              <Typography>{memberInfo?.phoneE164 || '-'}</Typography>
+              
+              <Typography color="text.secondary">Phone (phone_e164):</Typography>
+              <Typography>{memberInfo?.phoneE164 || (memberInfo as any)?.contactPhone || '-'}</Typography>
+
+              <Typography color="text.secondary">Email:</Typography>
+              <Typography>{memberInfo?.email || '-'}</Typography>
+
+              <Typography color="text.secondary">Gender:</Typography>
+              <Typography>
+                {memberInfo?.gender === 1 ? 'Male' : memberInfo?.gender === 2 ? 'Female' : 'Not specified'}
+              </Typography>
+
+              <Typography color="text.secondary">Account Status:</Typography>
+              <Box>
+                <Chip
+                  label={memberInfo?.accountStatus === 1 ? 'Active' : 'Disabled'}
+                  color={memberInfo?.accountStatus === 1 ? 'success' : 'default'}
+                  size="small"
+                />
+              </Box>
+
+              <Typography color="text.secondary">Signup Channel:</Typography>
+              <Box>
+                <Chip
+                  label={
+                    memberInfo?.signupChannel === 1
+                      ? 'Mobile App'
+                      : memberInfo?.signupChannel === 2
+                      ? 'WeChat'
+                      : 'Web Storefront'
+                  }
+                  size="small"
+                  variant="outlined"
+                />
+              </Box>
+
+              <Typography color="text.secondary">Member Since:</Typography>
+              <Typography>
+                {memberInfo?.createdAt ? new Date(memberInfo.createdAt).toLocaleDateString() : '-'}
+              </Typography>
+            </Box>
+
+            {/* Recent Login Events (customer.member_login_event) */}
+            <Box sx={{ mt: 4 }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1 }}>
+                Recent Security & Login Events (customer.member_login_event)
+              </Typography>
+              <TableContainer component={Paper} variant="outlined">
+                <Table size="small">
+                  <TableHead>
+                    <TableRow sx={{ bgcolor: 'action.hover' }}>
+                      <TableCell sx={{ fontWeight: 600 }}>Timestamp</TableCell>
+                      <TableCell sx={{ fontWeight: 600 }}>IP Address</TableCell>
+                      <TableCell sx={{ fontWeight: 600 }}>Method</TableCell>
+                      <TableCell sx={{ fontWeight: 600 }}>Region / Network</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {loginEvents.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={4} align="center" sx={{ py: 2, color: 'text.secondary' }}>
+                          No login events recorded yet.
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      loginEvents.map((evt, idx) => (
+                        <TableRow key={evt.id || idx}>
+                          <TableCell>
+                            {evt.occurredAt || evt.createTime
+                              ? new Date(evt.occurredAt || evt.createTime!).toLocaleString()
+                              : '-'}
+                          </TableCell>
+                          <TableCell sx={{ fontFamily: 'monospace' }}>
+                            {evt.ipAddress || evt.ip || '127.0.0.1'}
+                          </TableCell>
+                          <TableCell>
+                            <Chip
+                              label={
+                                (evt.loginMethod || evt.loginType) === 1
+                                  ? 'Web / REST API'
+                                  : 'Mobile OAuth'
+                              }
+                              size="small"
+                              color="primary"
+                              variant="outlined"
+                              sx={{ height: 22, fontSize: '0.7rem' }}
+                            />
+                          </TableCell>
+                          <TableCell>
+                            {[evt.city, evt.region || evt.province].filter(Boolean).join(', ') ||
+                              'Local Docker Network'}
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
+                  </TableBody>
+                </Table>
+              </TableContainer>
             </Box>
           </TabPanel>
 
@@ -672,7 +827,7 @@ const Profile: React.FC = () => {
 
           <TabPanel value={tabValue} index={2}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-              <Typography variant="h6">My Addresses</Typography>
+              <Typography variant="h6">My Addresses (customer.member_address)</Typography>
               <Button variant="contained" onClick={() => setOpenAddAddress(true)}>
                 Add Address
               </Button>
@@ -681,17 +836,43 @@ const Profile: React.FC = () => {
               <Typography color="text.secondary">You have no saved addresses.</Typography>
             ) : (
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                {addresses.map((address) => (
-                  <Paper key={address.id} variant="outlined" sx={{ p: 2 }}>
-                    <Typography sx={{ fontWeight: 'bold' }}>
-                      {address.recipientName} ({address.recipientPhone})
-                    </Typography>
-                    <Typography color="text.secondary">
-                      {[address.addressLine, address.district, address.city, address.state].filter(Boolean).join(', ')}{' '}
-                      - PIN: {address.postalCode}
-                    </Typography>
-                  </Paper>
-                ))}
+                {addresses.map((address) => {
+                  const isDefaultAddr = address.isDefault || (address as any).defaultStatus;
+                  return (
+                    <Paper key={address.id} variant="outlined" sx={{ p: 2.5, borderRadius: 2 }}>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                          <Typography sx={{ fontWeight: 700, fontSize: '1rem' }}>
+                            {address.recipientName}
+                          </Typography>
+                          <Typography color="text.secondary">
+                            ({address.recipientPhone})
+                          </Typography>
+                          {isDefaultAddr && (
+                            <Chip label="Default Address" color="primary" size="small" sx={{ fontWeight: 600, height: 22 }} />
+                          )}
+                        </Box>
+                        <Box sx={{ display: 'flex', gap: 1 }}>
+                          {!isDefaultAddr && (
+                            <Button size="small" variant="text" color="primary" onClick={() => handleSetDefaultAddress(address)}>
+                              Set Default
+                            </Button>
+                          )}
+                          <Button size="small" variant="outlined" onClick={() => handleOpenEditAddress(address)}>
+                            Edit
+                          </Button>
+                          <Button size="small" variant="outlined" color="error" onClick={() => handleDeleteAddress(address.id)}>
+                            Delete
+                          </Button>
+                        </Box>
+                      </Box>
+                      <Typography variant="body2" color="text.secondary">
+                        {[address.addressLine, address.district, address.city, address.state].filter(Boolean).join(', ')}{' '}
+                        — PIN: {address.postalCode}
+                      </Typography>
+                    </Paper>
+                  );
+                })}
               </Box>
             )}
           </TabPanel>
@@ -811,6 +992,65 @@ const Profile: React.FC = () => {
           <Button onClick={() => setOpenAddAddress(false)}>Cancel</Button>
           <Button variant="contained" onClick={handleAddAddress}>
             Save Address
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Edit Address Dialog */}
+      <Dialog open={openEditAddress} onClose={() => setOpenEditAddress(false)} maxWidth="sm" fullWidth>
+        <DialogTitle>Edit Shipping Address</DialogTitle>
+        <DialogContent>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
+            <TextField
+              label="Recipient Name"
+              fullWidth
+              value={editingAddress.recipientName || ''}
+              onChange={(e) => setEditingAddress({ ...editingAddress, recipientName: e.target.value })}
+            />
+            <TextField
+              label="Phone Number"
+              fullWidth
+              value={editingAddress.recipientPhone || ''}
+              onChange={(e) => setEditingAddress({ ...editingAddress, recipientPhone: e.target.value })}
+            />
+            <TextField
+              label="Full Address Line"
+              fullWidth
+              multiline
+              rows={3}
+              value={editingAddress.addressLine || ''}
+              onChange={(e) => setEditingAddress({ ...editingAddress, addressLine: e.target.value })}
+            />
+            <TextField
+              label="District / Landmark"
+              fullWidth
+              value={editingAddress.district || ''}
+              onChange={(e) => setEditingAddress({ ...editingAddress, district: e.target.value })}
+            />
+            <TextField
+              label="PIN Code"
+              fullWidth
+              value={editingAddress.postalCode || ''}
+              onChange={(e) => setEditingAddress({ ...editingAddress, postalCode: e.target.value })}
+            />
+            <TextField
+              label="City"
+              fullWidth
+              value={editingAddress.city || ''}
+              onChange={(e) => setEditingAddress({ ...editingAddress, city: e.target.value })}
+            />
+            <TextField
+              label="State"
+              fullWidth
+              value={editingAddress.state || ''}
+              onChange={(e) => setEditingAddress({ ...editingAddress, state: e.target.value })}
+            />
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenEditAddress(false)}>Cancel</Button>
+          <Button variant="contained" onClick={handleUpdateAddress}>
+            Update Address
           </Button>
         </DialogActions>
       </Dialog>
@@ -964,6 +1204,30 @@ const Profile: React.FC = () => {
               value={editProfileData.displayName}
               onChange={(e) => setEditProfileData({ ...editProfileData, displayName: e.target.value })}
             />
+            <TextField
+              label="Phone (phone_e164)"
+              fullWidth
+              value={editProfileData.phoneE164}
+              onChange={(e) => setEditProfileData({ ...editProfileData, phoneE164: e.target.value })}
+            />
+            <TextField
+              label="Email"
+              fullWidth
+              value={editProfileData.email}
+              onChange={(e) => setEditProfileData({ ...editProfileData, email: e.target.value })}
+            />
+            <FormControl fullWidth>
+              <InputLabel>Gender</InputLabel>
+              <Select
+                value={editProfileData.gender}
+                label="Gender"
+                onChange={(e) => setEditProfileData({ ...editProfileData, gender: Number(e.target.value) })}
+              >
+                <MenuItem value={0}>Not specified</MenuItem>
+                <MenuItem value={1}>Male</MenuItem>
+                <MenuItem value={2}>Female</MenuItem>
+              </Select>
+            </FormControl>
 
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
               <Avatar src={resolveImageUrl(editProfileData.iconUrl)} sx={{ width: 64, height: 64 }} />

@@ -80,6 +80,10 @@ private String email;
         return contactPhone;
     }
 
+    public void setPhone(String phone) {
+        this.contactPhone = phone;
+    }
+
     public void setPhoneE164(String phoneE164) {
         this.contactPhone = phoneE164;
     }

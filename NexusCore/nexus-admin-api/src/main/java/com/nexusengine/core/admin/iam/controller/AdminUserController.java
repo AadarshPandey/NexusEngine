@@ -52,6 +52,7 @@ public class AdminUserController {
     private final AdminUserService adminService;
     private final RoleService roleService;
     private final com.nexusengine.core.domain.catalog.repository.BrandRepository brandRepository;
+    private final com.nexusengine.core.domain.iam.repository.AdminLoginEventRepository adminLoginEventRepository;
 
     @Operation(summary = "Register admin user")
     @PostMapping("/register")
@@ -206,5 +207,11 @@ public class AdminUserController {
     @GetMapping("/{adminId}/roles")
     public List<Role> getRoleList(@PathVariable("adminId") Long adminId) {
         return adminService.getRoleList(adminId);
+    }
+
+    @Operation(summary = "Get login events for admin user")
+    @GetMapping("/{adminId}/login-events")
+    public List<com.nexusengine.core.domain.iam.entity.AdminLoginEvent> getLoginEvents(@PathVariable("adminId") Long adminId) {
+        return adminLoginEventRepository.findTop10ByAdminIdOrderByCreateTimeDesc(adminId);
     }
 }

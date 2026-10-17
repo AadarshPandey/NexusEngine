@@ -33,6 +33,8 @@ public class ReviewServiceImpl implements ReviewService {
     private final ProductRepository productRepository;
     private final BrandRepository brandRepository;
     private final com.nexusengine.core.domain.ordering.repository.CustomerOrderRepository customerOrderRepository;
+    private final com.nexusengine.core.domain.ordering.repository.OrderPolicyRepository orderPolicyRepository;
+    private final com.nexusengine.core.domain.customer.repository.MemberRepository memberRepository;
     private final org.springframework.data.redis.core.StringRedisTemplate stringRedisTemplate;
     private final S3Client s3Client;
 
@@ -55,16 +57,32 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     private void enrichReviewStates(List<ProductReview> reviews) {
+        if (reviews.isEmpty()) return;
+        List<Long> reviewIds = reviews.stream().map(ProductReview::getId).toList();
+        List<ReviewMedia> allMedia = reviewMediaRepository.findByReviewIdIn(reviewIds);
+        Map<Long, List<ReviewMedia>> mediaByReview = allMedia.stream()
+                .collect(java.util.stream.Collectors.groupingBy(ReviewMedia::getReviewId));
+
+        List<Long> memberIds = reviews.stream().map(ProductReview::getMemberId).filter(Objects::nonNull).distinct().toList();
+        Map<Long, com.nexusengine.core.domain.customer.entity.Member> memberMap = memberRepository.findAllById(memberIds).stream()
+                .collect(java.util.stream.Collectors.toMap(com.nexusengine.core.domain.customer.entity.Member::getId, m -> m));
+
         var member = memberService.getCurrentMember();
         Long userId = member != null ? member.getId() : null;
-        if (userId == null) {
-            reviews.forEach(r -> { r.setUserLiked(false); r.setUserDisliked(false); });
-            return;
-        }
+
         for (ProductReview r : reviews) {
-            String uidStr = String.valueOf(userId);
-            r.setUserLiked(Boolean.TRUE.equals(stringRedisTemplate.opsForSet().isMember("review:like:" + r.getId(), uidStr)));
-            r.setUserDisliked(Boolean.TRUE.equals(stringRedisTemplate.opsForSet().isMember("review:dislike:" + r.getId(), uidStr)));
+            r.setAttachmentList(mediaByReview.getOrDefault(r.getId(), Collections.emptyList()));
+            if (r.getMember() == null && r.getMemberId() != null) {
+                r.setMember(memberMap.get(r.getMemberId()));
+            }
+            if (userId == null) {
+                r.setUserLiked(false);
+                r.setUserDisliked(false);
+            } else {
+                String uidStr = String.valueOf(userId);
+                r.setUserLiked(Boolean.TRUE.equals(stringRedisTemplate.opsForSet().isMember("review:like:" + r.getId(), uidStr)));
+                r.setUserDisliked(Boolean.TRUE.equals(stringRedisTemplate.opsForSet().isMember("review:dislike:" + r.getId(), uidStr)));
+            }
         }
     }
 
@@ -100,6 +118,17 @@ public class ReviewServiceImpl implements ReviewService {
 
         if (param.orderId() != null) {
             customerOrderRepository.findById(param.orderId()).ifPresent(order -> {
+                if (order.getMemberId() != null && !order.getMemberId().equals(member.getId())) {
+                    com.nexusengine.core.common.exception.Asserts.fail("Order does not belong to current user");
+                }
+                var policyOpt = orderPolicyRepository.findAll().stream().findFirst();
+                int reviewWindowDays = policyOpt.map(com.nexusengine.core.domain.ordering.entity.OrderPolicy::getReviewWindowDays).orElse(7);
+                if (order.getReceiveTime() != null) {
+                    long daysSinceReceive = java.time.temporal.ChronoUnit.DAYS.between(order.getReceiveTime(), java.time.OffsetDateTime.now());
+                    if (daysSinceReceive > reviewWindowDays) {
+                        com.nexusengine.core.common.exception.Asserts.fail("Review window (" + reviewWindowDays + " days) has expired for this order");
+                    }
+                }
                 order.setCommentTime(java.time.OffsetDateTime.now());
                 customerOrderRepository.save(order);
             });

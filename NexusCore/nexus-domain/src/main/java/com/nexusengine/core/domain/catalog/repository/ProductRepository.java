@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product> {
     List<Product> findByNameContaining(String name);
+    List<Product> findByBrandId(Long brandId);
 
     Page<Product> findByBrandIdAndDeletedAtIsNullAndIsPublished(Long brandId, Boolean isPublished, Pageable pageable);
 

@@ -49,4 +49,26 @@ export interface DashboardInfo {
     weeklyRevenueTrend: string
     weeklyRevenueTrendUp: boolean
   }
+  outboxMetrics?: {
+    totalEvents: number
+    publishedEvents: number
+    pendingEvents: number
+    failedEvents: number
+    recentEvents: Array<{
+      id: number
+      aggregateType: string
+      aggregateId: string
+      eventType: string
+      status: string
+      attemptCount: number
+      createdAt: string
+    }>
+  }
+  recentAdminLogins?: Array<{
+    id: number
+    adminId: number
+    username: string
+    ipAddress?: string
+    occurredAt: string
+  }>
 }

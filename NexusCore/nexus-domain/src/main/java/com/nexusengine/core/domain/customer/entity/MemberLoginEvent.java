@@ -45,4 +45,36 @@ private Integer loginType;
 
             @Column(name = "region")
 private String province;
+
+    public OffsetDateTime getOccurredAt() {
+        return createTime;
+    }
+
+    public void setOccurredAt(OffsetDateTime occurredAt) {
+        this.createTime = occurredAt;
+    }
+
+    public String getIpAddress() {
+        return ip;
+    }
+
+    public void setIpAddress(String ipAddress) {
+        this.ip = ipAddress;
+    }
+
+    public Integer getLoginMethod() {
+        return loginType;
+    }
+
+    public void setLoginMethod(Integer loginMethod) {
+        this.loginType = loginMethod;
+    }
+
+    public String getRegion() {
+        return province;
+    }
+
+    public void setRegion(String region) {
+        this.province = region;
+    }
 }

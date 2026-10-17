@@ -110,3 +110,23 @@ export function adminGetRoleListByAdminIdAPI(adminId: number) {
 }
 
 export const getRoleByAdminIdAPI = adminGetRoleListByAdminIdAPI
+
+export interface AdminLoginEvent {
+  id: number
+  adminId?: number
+  adminUserId?: number
+  occurredAt?: string
+  createTime?: string
+  ipAddress?: string
+  ip?: string
+}
+
+export function adminGetLoginEventsByAdminIdAPI(adminId: number) {
+  return http<AdminLoginEvent[]>({
+    url: `/api/admin/iam/users/${adminId}/login-events`,
+    method: 'get',
+  })
+}
+
+export const getLoginEventsByAdminIdAPI = adminGetLoginEventsByAdminIdAPI
+

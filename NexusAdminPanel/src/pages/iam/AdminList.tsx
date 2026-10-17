@@ -39,6 +39,7 @@ import {
   FilterList,
   ViewList,
   Security,
+  History,
 } from '@mui/icons-material';
 import { 
   getAdminListAPI, 
@@ -47,7 +48,9 @@ import {
   adminRegisterAPI, 
   adminUpdateByIdAPI,
   getRoleByAdminIdAPI,
-  adminRoleUpdateAPI
+  adminRoleUpdateAPI,
+  adminGetLoginEventsByAdminIdAPI,
+  type AdminLoginEvent
 } from '@/apis/iam';
 import { getRoleListAllAPI } from '@/apis/iam';
 import type { UmsAdmin } from '@/types/iam';
@@ -79,6 +82,12 @@ const AdminList: React.FC = () => {
   const [allRoles, setAllRoles] = useState<UmsRole[]>([]);
   const [selectedRoles, setSelectedRoles] = useState<number[]>([]);
   const [activeAdminId, setActiveAdminId] = useState<number | null>(null);
+
+  // Login History Dialog State
+  const [historyDialogOpen, setHistoryDialogOpen] = useState(false);
+  const [loginEvents, setLoginEvents] = useState<AdminLoginEvent[]>([]);
+  const [historyLoading, setHistoryLoading] = useState(false);
+  const [historyAdminName, setHistoryAdminName] = useState('');
 
   const fetchList = useCallback(async (
     overridePageNum?: number,
@@ -199,6 +208,21 @@ const AdminList: React.FC = () => {
     }
   };
 
+  const openHistoryDialog = async (row: UmsAdmin) => {
+    if (!row.id) return;
+    setHistoryAdminName(row.username);
+    setHistoryDialogOpen(true);
+    setHistoryLoading(true);
+    try {
+      const events = await adminGetLoginEventsByAdminIdAPI(row.id);
+      setLoginEvents(events || []);
+    } catch {
+      setSnackbar({ open: true, message: 'Failed to load login history', severity: 'error' });
+    } finally {
+      setHistoryLoading(false);
+    }
+  };
+
   const formatTime = (timeStr?: string) => {
     if (!timeStr) return 'N/A';
     return new Date(timeStr).toLocaleString();
@@ -265,7 +289,7 @@ const AdminList: React.FC = () => {
                 <TableCell>Added Date</TableCell>
                 <TableCell>Last Login</TableCell>
                 <TableCell align="center">Enabled</TableCell>
-                <TableCell align="center" width={140}>Actions</TableCell>
+                <TableCell align="center" width={180}>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -301,6 +325,14 @@ const AdminList: React.FC = () => {
                     </TableCell>
                     <TableCell align="center">
                       <Box sx={{ display: 'flex', justifyContent: 'center', gap: 0.5 }}>
+                        <IconButton
+                          size="small"
+                          onClick={() => openHistoryDialog(row)}
+                          sx={{ color: '#0EA5E9' }}
+                          title="Login History"
+                        >
+                          <History sx={{ fontSize: 18 }} />
+                        </IconButton>
                         <IconButton
                           size="small"
                           onClick={() => openRoleDialog(row)}
@@ -430,6 +462,51 @@ const AdminList: React.FC = () => {
         <DialogActions>
           <Button onClick={() => setRoleDialogOpen(false)}>Cancel</Button>
           <Button variant="contained" onClick={handleRoleSubmit}>Save</Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Login History Dialog */}
+      <Dialog open={historyDialogOpen} onClose={() => setHistoryDialogOpen(false)} maxWidth="sm" fullWidth>
+        <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <History sx={{ color: '#0EA5E9' }} />
+          Login History: {historyAdminName}
+        </DialogTitle>
+        <DialogContent dividers>
+          {historyLoading ? (
+            <Box sx={{ py: 4, textAlign: 'center' }}>
+              <Typography sx={{ color: 'text.secondary' }}>Loading login events...</Typography>
+            </Box>
+          ) : loginEvents.length === 0 ? (
+            <Box sx={{ py: 4, textAlign: 'center' }}>
+              <Typography sx={{ color: 'text.secondary' }}>No recorded login events for this administrator.</Typography>
+            </Box>
+          ) : (
+            <TableContainer>
+              <Table size="small">
+                <TableHead>
+                  <TableRow>
+                    <TableCell sx={{ fontWeight: 600 }}>IP Address</TableCell>
+                    <TableCell sx={{ fontWeight: 600 }}>Login Time</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {loginEvents.map((ev) => (
+                    <TableRow key={ev.id} hover>
+                      <TableCell sx={{ fontFamily: 'monospace', fontSize: '0.8125rem' }}>
+                        {ev.ipAddress || ev.ip || '127.0.0.1'}
+                      </TableCell>
+                      <TableCell sx={{ fontSize: '0.8125rem', color: 'text.secondary' }}>
+                        {formatTime(ev.occurredAt || ev.createTime)}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setHistoryDialogOpen(false)}>Close</Button>
         </DialogActions>
       </Dialog>
 

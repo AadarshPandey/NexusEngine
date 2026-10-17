@@ -2428,20 +2428,20 @@ Each card is a commit boundary. If token expires, resume from the first unchecke
 
 
 #### Card 13: Wire Customer Profile, Login Audit Events, `review_media`, Reviews Moderation & Outbox Dashboard (1.5 hrs)
-- [ ] **13.1 — Wire All `customer.member`, `member_address`, `member_login_event`, and `member_category_interest` Columns (`CF-5`, `CF-6`):**
+- [x] **13.1 — Wire All `customer.member`, `member_address`, `member_login_event`, and `member_category_interest` Columns (`CF-5`, `CF-6`):**
   - Seed initial `customer.member_category_interest` and `ordering.cart_item` rows in `V3__demo_catalog.sql` & live DB.
   - In `Profile.tsx`, display and allow editing `displayName`, `phoneE164`, `email`, and `gender`, display read-only `signupChannel` and `createdAt`, add `Edit` / `Delete` / `Set Default` buttons on `member_address` cards, and display the last 5 login events from `customer.member_login_event`.
   - In `Home.tsx`, dispatch `fetchRecommendations` and render the `"Recommended For You"` section backed by `customer.member_category_interest`.
-- [ ] **13.2 — Simplify Reviews & Wire `engagement.review_media`, `moderation_status`, `reviewed_at`, and `review_window_days` (`CF-3`):**
+- [x] **13.2 — Simplify Reviews & Wire `engagement.review_media`, `moderation_status`, `reviewed_at`, and `review_window_days` (`CF-3`):**
   - Simplify `ReviewSection.tsx` and `ReviewServiceImpl.java` to flat 1-level verified-buyer reviews (remove `temp_` S3 copy hack so uploaded media saves directly into `engagement.review_media`, and seed 2 demo rows in `engagement.review_media`).
   - Enforce `order_policy.review_window_days`, stamp `customer_order.reviewed_at`, and add Admin review moderation (`moderation_status`) in `NexusAdminPanel`.
-- [ ] **13.3 — Wire `iam.admin_login_event` & `messaging.outbox_event` in Admin `Dashboard.tsx`:**
+- [x] **13.3 — Wire `iam.admin_login_event` & `messaging.outbox_event` in Admin `Dashboard.tsx`:**
   - Seed 2 `PUBLISHED` rows in `messaging.outbox_event` in `V3__demo_catalog.sql` & live DB.
   - Display recent admin login events (`iam.admin_login_event`) and Outbox event metrics (`messaging.outbox_event`) in `Dashboard.tsx` and `AdminList.tsx`.
-- [ ] **13.4 — Final Zero-Idle-Table & Zero-Idle-Column Verification Gate:**
+- [x] **13.4 — Final Zero-Idle-Table & Zero-Idle-Column Verification Gate:**
   - Run `SELECT schemaname||'.'||relname, n_live_tup FROM pg_stat_user_tables` and verify **every single kept table has `> 0` rows** and zero unused columns.
   - Rebuild Docker containers and verify end-to-end across Storefront (`:5174`), Admin Panel (`:5173` as `admin`, `samsung_admin`, and `nike_admin`), and Backend (`:8080`).
-- [ ] Commit: `feat: complete zero-idle-column wiring across customer, engagement, iam, and messaging`
+- [x] Commit: `feat: complete zero-idle-column wiring across customer, engagement, iam, and messaging`
 
 
 

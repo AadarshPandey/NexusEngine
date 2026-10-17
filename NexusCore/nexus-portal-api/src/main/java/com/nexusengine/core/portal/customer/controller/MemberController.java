@@ -36,6 +36,7 @@ public class MemberController {
     private String tokenHead;
 
     private final MemberService memberService;
+    private final com.nexusengine.core.domain.customer.repository.MemberLoginEventRepository memberLoginEventRepository;
 
     @Operation(summary = "Register member")
     @PostMapping("/register")
@@ -83,8 +84,25 @@ public class MemberController {
         if (member.getIconUrl() != null) {
             current.setIconUrl(member.getIconUrl());
         }
+        if (member.getEmail() != null) {
+            current.setEmail(member.getEmail());
+        }
+        if (member.getGender() != null) {
+            current.setGender(member.getGender());
+        }
         memberService.updateMember(current);
         return current;
+    }
+
+    @Operation(summary = "Get recent member login events")
+    @GetMapping("/login-events")
+    public java.util.List<com.nexusengine.core.domain.customer.entity.MemberLoginEvent> getLoginEvents() {
+        Member current = memberService.getCurrentMember();
+        if (current == null) {
+            Asserts.fail(ResultCode.UNAUTHORIZED);
+        }
+        return memberLoginEventRepository.findByMemberIdOrderByCreateTimeDesc(
+                current.getId(), org.springframework.data.domain.PageRequest.of(0, 5));
     }
 
     @Operation(summary = "Get current member info")

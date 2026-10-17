@@ -24,6 +24,9 @@ public class DashboardServiceImpl implements DashboardService {
 
     private final com.nexusengine.core.admin.security.AdminTenantContext adminTenantContext;
     private final com.nexusengine.core.domain.catalog.repository.BrandRepository brandRepository;
+    private final com.nexusengine.core.domain.messaging.repository.OutboxEventRepository outboxEventRepository;
+    private final com.nexusengine.core.domain.iam.repository.AdminLoginEventRepository adminLoginEventRepository;
+    private final com.nexusengine.core.domain.iam.repository.AdminUserRepository adminUserRepository;
 
     @Override
     public DashboardInfo getDashboardInfo() {
@@ -152,7 +155,8 @@ public class DashboardServiceImpl implements DashboardService {
                     todayRevenue != null ? todayRevenue : BigDecimal.ZERO,
                     yesterdayRevenue != null ? yesterdayRevenue : BigDecimal.ZERO,
                     totalProducts != null ? totalProducts : 0L,
-                    chartList, tasks, pOverview, uOverview, mSummary);
+                    chartList, tasks, pOverview, uOverview, mSummary,
+                    computeOutboxMetrics(), computeRecentAdminLogins(brandIdOpt));
         }
 
         // Global Super Admin aggregation
@@ -252,6 +256,50 @@ public class DashboardServiceImpl implements DashboardService {
             ));
         }
 
-        return new DashboardInfo(todayOrders, todayRevenue, yesterdayRevenue, totalProducts, chartList, tasks, pOverview, uOverview, mSummary);
+        return new DashboardInfo(todayOrders, todayRevenue, yesterdayRevenue, totalProducts, chartList, tasks, pOverview, uOverview, mSummary,
+                computeOutboxMetrics(), computeRecentAdminLogins(brandIdOpt));
+    }
+
+    private DashboardInfo.OutboxMetrics computeOutboxMetrics() {
+        Long total = outboxEventRepository.count();
+        Long published = outboxEventRepository.countByStatus("PUBLISHED");
+        Long pending = outboxEventRepository.countByStatus("PENDING");
+        Long failed = outboxEventRepository.countByStatus("FAILED");
+        List<com.nexusengine.core.domain.messaging.entity.OutboxEvent> recent = outboxEventRepository.findTop10ByOrderByCreatedAtDesc();
+        List<DashboardInfo.OutboxEventSummary> summaryList = recent.stream().map(e ->
+            new DashboardInfo.OutboxEventSummary(
+                e.getId(),
+                e.getAggregateType(),
+                e.getAggregateId(),
+                e.getType(),
+                e.getStatus(),
+                e.getAttemptCount(),
+                e.getCreatedAt()
+            )
+        ).toList();
+        return new DashboardInfo.OutboxMetrics(total, published, pending, failed, summaryList);
+    }
+
+    private List<DashboardInfo.RecentAdminLogin> computeRecentAdminLogins(java.util.Optional<Long> brandIdOpt) {
+        List<com.nexusengine.core.domain.iam.entity.AdminLoginEvent> events = adminLoginEventRepository.findTop10ByOrderByCreateTimeDesc();
+        java.util.Map<Long, com.nexusengine.core.domain.iam.entity.AdminUser> adminMap = adminUserRepository.findAll().stream()
+                .collect(java.util.stream.Collectors.toMap(com.nexusengine.core.domain.iam.entity.AdminUser::getId, a -> a));
+
+        return events.stream()
+            .filter(e -> {
+                if (brandIdOpt.isEmpty()) return true;
+                com.nexusengine.core.domain.iam.entity.AdminUser user = adminMap.get(e.getAdminId());
+                return user != null && brandIdOpt.get().equals(user.getBrandId());
+            })
+            .map(e -> {
+                com.nexusengine.core.domain.iam.entity.AdminUser user = adminMap.get(e.getAdminId());
+                return new DashboardInfo.RecentAdminLogin(
+                    e.getId(),
+                    e.getAdminId(),
+                    user != null ? user.getUsername() : "Admin #" + e.getAdminId(),
+                    e.getIpAddress(),
+                    e.getOccurredAt()
+                );
+            }).toList();
     }
 }
