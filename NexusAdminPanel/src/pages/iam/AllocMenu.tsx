@@ -33,20 +33,20 @@ const AllocMenu: React.FC = () => {
 
   useEffect(() => {
     if (!roleId) {
-      navigate('/iam/role');
+      navigate('/iam/roles');
       return;
     }
     
     // Fetch all menus in tree format
     getMenuTreeListAPI().then(res => {
-      setMenuTree(res.data);
+      setMenuTree(res || []);
       // Auto expand root menus
-      setExpandedMenus((res.data || []).map((m: any) => m.id!));
+      setExpandedMenus((res || []).map((m: any) => m.id!));
     }).catch(console.error);
 
     // Fetch already allocated menus
     roleListMenuByRoleIdAPI(roleId).then(res => {
-      setSelectedMenuIds((res.data || []).map((m: any) => m.id!));
+      setSelectedMenuIds((res || []).map((m: any) => m.id!));
     }).catch(console.error);
   }, [roleId, navigate]);
 
@@ -75,9 +75,9 @@ const AllocMenu: React.FC = () => {
       if (menu.children) {
         newSelected.push(...menu.children.map(c => c.id!));
       }
-      // Select its parent if not selected (this requires parentReviewId which is on UmsMenu, if available)
-      if (menu.parentReviewId !== 0 && !newSelected.includes(menu.parentReviewId!)) {
-        newSelected.push(menu.parentReviewId!);
+      const parentId = menu.parentId ?? menu.parentReviewId ?? 0;
+      if (parentId !== 0 && !newSelected.includes(parentId)) {
+        newSelected.push(parentId);
       }
     }
     
@@ -109,7 +109,7 @@ const AllocMenu: React.FC = () => {
         menuIds: selectedMenuIds.join(',')
       });
       setSnackbar({ open: true, message: 'Menus allocated successfully', severity: 'success' });
-      setTimeout(() => navigate('/iam/role'), 1000);
+      setTimeout(() => navigate('/iam/roles'), 1000);
     } catch {
       setSnackbar({ open: true, message: 'Failed to allocate menus', severity: 'error' });
     }
@@ -187,7 +187,7 @@ const AllocMenu: React.FC = () => {
           </List>
 
           <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, mt: 4 }}>
-            <Button variant="outlined" onClick={() => navigate('/iam/role')}>Cancel</Button>
+            <Button variant="outlined" onClick={() => navigate('/iam/roles')}>Cancel</Button>
             <Button variant="contained" onClick={handleSave}>Save Allocations</Button>
           </Box>
         </CardContent>

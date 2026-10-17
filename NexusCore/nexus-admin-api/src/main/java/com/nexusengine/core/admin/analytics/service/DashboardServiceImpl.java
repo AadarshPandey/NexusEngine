@@ -70,8 +70,8 @@ public class DashboardServiceImpl implements DashboardService {
 
         // Product Overview
         DashboardInfo.ProductOverview pOverview = new DashboardInfo.ProductOverview(
-            (Long) entityManager.createQuery("SELECT COUNT(p) FROM Product p WHERE p.publishStatus = 0").getSingleResult(),
-            (Long) entityManager.createQuery("SELECT COUNT(p) FROM Product p WHERE p.publishStatus = 1").getSingleResult(),
+            (Long) entityManager.createQuery("SELECT COUNT(p) FROM Product p WHERE p.isPublished = false").getSingleResult(),
+            (Long) entityManager.createQuery("SELECT COUNT(p) FROM Product p WHERE p.isPublished = true").getSingleResult(),
             (Long) entityManager.createQuery("SELECT COUNT(p) FROM Product p WHERE EXISTS (SELECT 1 FROM ProductSku s WHERE s.productId = p.id AND (COALESCE(s.onHandQty, 0) - COALESCE(s.reservedQty, 0)) < COALESCE(s.lowStockThreshold, 0))").getSingleResult(),
             totalProducts
         );

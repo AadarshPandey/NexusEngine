@@ -37,4 +37,20 @@ private String mediaUrl;
         @Column(name = "display_order")
 
 private Integer sortOrder;
+
+    public String getUrl() {
+        return this.mediaUrl;
+    }
+
+    public void setUrl(String url) {
+        this.mediaUrl = url;
+    }
+
+    public Integer getDisplayOrder() {
+        return this.sortOrder;
+    }
+
+    public void setDisplayOrder(Integer displayOrder) {
+        this.sortOrder = displayOrder;
+    }
 }

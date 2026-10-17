@@ -1,4 +1,4 @@
-import type { S3PolicyResult, S3PresignedPolicy, S3UploadResult } from '@/types/s3'
+import type { S3PolicyResult, S3UploadResult } from '@/types/s3'
 import http from '@/utils/http'
 import { LOCALSTACK_S3_BASE, S3_BUCKET_NAME } from '@/utils/constant'
 
@@ -9,7 +9,7 @@ export function s3PolicyAPI() {
   return http<S3PolicyResult>({
     url: '/api/admin/infra/storage/presign',
     method: 'get',
-  }).then((res: any) => ({ data: res }))
+  })
 }
 
 /**
@@ -24,7 +24,7 @@ export function s3UploadAPI(file: File, folder = 'media') {
     method: 'post',
     data: formData,
     headers: { 'Content-Type': 'multipart/form-data' },
-  }).then((res: any) => ({ data: res }))
+  })
 }
 
 /**
@@ -34,8 +34,7 @@ export async function uploadDirectToLocalStack(
   file: File,
   folder = 'uploads'
 ): Promise<string> {
-  const res = await s3PolicyAPI()
-  const policy = res.data
+  const policy = await s3PolicyAPI()
   const fileKey = `${policy.dir || folder}/${Date.now()}_${file.name}`
 
   const formData = new FormData()

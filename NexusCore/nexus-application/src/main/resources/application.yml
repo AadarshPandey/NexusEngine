@@ -119,6 +119,8 @@ spring:
         schema-name: ai
   application:
     name: nexus-monolith
+  main:
+    allow-bean-definition-overriding: true
   autoconfigure:
     exclude:
     - io.awspring.cloud.autoconfigure.s3.S3AutoConfiguration

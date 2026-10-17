@@ -134,9 +134,9 @@ const Profile: React.FC = () => {
         getOrders(-1, 1, 100),
         getCustomerAddresses(),
       ]);
-      setMemberInfo(memberRes.data);
-      setOrders(orderRes.data.list || []);
-      setAddresses(addressRes.data || []);
+      setMemberInfo(memberRes);
+      setOrders(orderRes.content || []);
+      setAddresses(addressRes || []);
     } catch (err: unknown) {
       console.error('Failed to load dashboard data', err);
       setError(err instanceof Error ? err.message : 'Failed to load dashboard data');
@@ -154,7 +154,7 @@ const Profile: React.FC = () => {
       await createCustomerAddress(newAddress);
       setOpenAddAddress(false);
       const addressRes = await getCustomerAddresses();
-      setAddresses(addressRes.data || []);
+      setAddresses(addressRes || []);
       setNewAddress({ recipientName: '', recipientPhone: '', addressLine: '', postalCode: '', city: '', state: '', district: '' });
       alert('Address added successfully!');
     } catch {
@@ -168,7 +168,7 @@ const Profile: React.FC = () => {
     setRefundReason('');
     try {
       const res = await getReturnReasons();
-      const reasons = res.data || [];
+      const reasons = res || [];
       setReturnReasonsList(reasons);
       if (reasons.length > 0) {
         setRefundReason(reasons[0].name);
@@ -377,7 +377,7 @@ const Profile: React.FC = () => {
                                   try {
                                     // 1. Get Razorpay Order details from backend
                                     const res = await createRazorpayOrder(order.id);
-                                    const { razorpayOrderId, keyId, amount } = res.data;
+                                    const { razorpayOrderId, keyId, amount } = res;
 
                                     // 2. Load Razorpay script dynamically
                                     const loadScript = (src: string) =>
@@ -717,8 +717,8 @@ const Profile: React.FC = () => {
                     const file = e.target.files[0];
                     try {
                       const res = await uploadAvatar(file);
-                      if (res.data) {
-                        setEditProfileData({ ...editProfileData, iconUrl: res.data });
+                      if (res) {
+                        setEditProfileData({ ...editProfileData, iconUrl: res });
                       }
                     } catch (err) {
                       console.error(err);

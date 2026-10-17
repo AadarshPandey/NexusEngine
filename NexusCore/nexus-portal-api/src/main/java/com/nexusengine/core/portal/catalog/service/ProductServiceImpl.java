@@ -116,7 +116,7 @@ public class ProductServiceImpl implements ProductService {
     public List<CategoryNode> categoryTreeList() {
         List<Category> allList = productCategoryRepository.findAll(PageRequest.of(0, 1000)).getContent();
         return allList.stream()
-                .filter(item -> item.getParentId().equals(0L))
+                .filter(item -> item.getParentId() == null || item.getParentId().equals(0L))
                 .map(item -> covert(item, allList))
                 .collect(Collectors.toList());
     }
@@ -166,7 +166,7 @@ public class ProductServiceImpl implements ProductService {
 
     private CategoryNode covert(Category item, List<Category> allList) {
         List<CategoryNode> children = allList.stream()
-                .filter(subItem -> subItem.getParentId().equals(item.getId()))
+                .filter(subItem -> subItem.getParentId() != null && subItem.getParentId().equals(item.getId()))
                 .map(subItem -> covert(subItem, allList)).collect(Collectors.toList());
         return new CategoryNode(item, children);
     }

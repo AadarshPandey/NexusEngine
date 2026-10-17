@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router';
+import { useNavigate, useParams, useSearchParams } from 'react-router';
 import {
   Box,
   Card,
@@ -7,9 +7,6 @@ import {
   Typography,
   TextField,
   Button,
-  FormControl,
-  Select,
-  MenuItem,
   Switch,
   Snackbar,
   Alert,
@@ -24,8 +21,9 @@ interface Props {
 
 const AdvertiseDetail: React.FC<Props> = ({ isEdit = false }) => {
   const navigate = useNavigate();
+  const { id: paramId } = useParams<{ id: string }>();
   const [searchParams] = useSearchParams();
-  const id = searchParams.get('id');
+  const id = paramId || searchParams.get('id');
 
   const [formData, setFormData] = useState<SmsHomeAdvertise>({
     name: '',
@@ -43,24 +41,24 @@ const AdvertiseDetail: React.FC<Props> = ({ isEdit = false }) => {
 
   useEffect(() => {
     if (isEdit && id) {
-      getHomeAdvertiseByIdAPI(Number(id)).then(res => {
-        // format dates for datetime-local input
-        const data = res.data;
-        if (!data.primaryImageUrl && (data.pic || data.imageUrl)) {
-          data.primaryImageUrl = data.pic || data.imageUrl;
+      getHomeAdvertiseByIdAPI(Number(id)).then(data => {
+        if (!data) return;
+        const clone = { ...data };
+        if (!clone.primaryImageUrl && (clone.pic || clone.imageUrl)) {
+          clone.primaryImageUrl = clone.pic || clone.imageUrl;
         }
-        if (data.startsAt) data.startsAt = new Date(data.startsAt).toISOString().slice(0, 16);
-        if (data.endsAt) data.endsAt = new Date(data.endsAt).toISOString().slice(0, 16);
-        setFormData(data);
+        if (clone.startsAt) clone.startsAt = new Date(clone.startsAt).toISOString().slice(0, 16);
+        if (clone.endsAt) clone.endsAt = new Date(clone.endsAt).toISOString().slice(0, 16);
+        setFormData(clone);
       }).catch(console.error);
     }
   }, [isEdit, id]);
 
   const handleSubmit = async () => {
     try {
-      // Convert dates back to ISO or appropriate format if needed, backend usually accepts ISO string
       const payload = { 
         ...formData,
+        status: Boolean(formData.status),
         startsAt: formData.startsAt ? new Date(formData.startsAt).toISOString() : undefined,
         endsAt: formData.endsAt ? new Date(formData.endsAt).toISOString() : undefined,
       };
@@ -72,7 +70,7 @@ const AdvertiseDetail: React.FC<Props> = ({ isEdit = false }) => {
         await homeAdvertiseCreateAPI(payload);
         setSnackbar({ open: true, message: 'Created successfully', severity: 'success' });
       }
-      setTimeout(() => navigate('/promotion/advertise'), 1000);
+      setTimeout(() => navigate('/promotion/banners'), 1000);
     } catch {
       setSnackbar({ open: true, message: 'Operation failed', severity: 'error' });
     }
@@ -92,7 +90,6 @@ const AdvertiseDetail: React.FC<Props> = ({ isEdit = false }) => {
               fullWidth
               required
             />
-            
 
             <TextField
               label="Image URL"
@@ -159,7 +156,7 @@ const AdvertiseDetail: React.FC<Props> = ({ isEdit = false }) => {
             />
 
             <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, mt: 2 }}>
-              <Button variant="outlined" onClick={() => navigate('/promotion/advertise')}>Cancel</Button>
+              <Button variant="outlined" onClick={() => navigate('/promotion/banners')}>Cancel</Button>
               <Button variant="contained" onClick={handleSubmit}>Submit</Button>
             </Box>
           </Box>

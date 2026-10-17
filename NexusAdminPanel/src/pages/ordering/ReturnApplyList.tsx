@@ -15,7 +15,8 @@ const ReturnApplyList: React.FC = () => {
   const fetchApplies = async () => {
     try {
       const res = await getReturnApplyListAPI({ pageNum: 1, pageSize: 50 });
-      const sortedList = (res.data.list || []).slice().sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      const list = Array.isArray(res) ? res : (res as any)?.content || [];
+      const sortedList = list.slice().sort((a: any, b: any) => new Date(b.createTime || b.createdAt).getTime() - new Date(a.createTime || a.createdAt).getTime());
       setApplies(sortedList);
     } catch (e) {
       console.error(e);
@@ -41,7 +42,6 @@ const ReturnApplyList: React.FC = () => {
             <TableRow sx={{ bgcolor: 'grey.50' }}>
               <TableCell>Service ID</TableCell>
               <TableCell>Applied Time</TableCell>
-              
               <TableCell>Return Amount</TableCell>
               <TableCell>Application Status</TableCell>
               <TableCell>Processing Time</TableCell>
@@ -49,19 +49,23 @@ const ReturnApplyList: React.FC = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {applies.map((apply) => (
-              <TableRow key={apply.id} hover>
-                <TableCell>{apply.id}</TableCell>
-                <TableCell>{new Date(apply.createdAt).toLocaleString()}</TableCell>
-                
-                <TableCell>₹{apply.refundAmount?.toFixed(2)}</TableCell>
-                <TableCell>{getStatusChip(apply.status)}</TableCell>
-                <TableCell>{apply.reviewedAt ? new Date(apply.reviewedAt).toLocaleString() : 'N/A'}</TableCell>
-                <TableCell>
-                  <Button size="small" variant="text" onClick={() => navigate(`/oms/returnApply/${apply.id}`)}>View Details</Button>
-                </TableCell>
-              </TableRow>
-            ))}
+            {applies.map((apply: any) => {
+              const appliedAt = apply.createTime || apply.createdAt;
+              const reviewedAt = apply.handleTime || apply.reviewedAt;
+              const amount = Number(apply.refundAmount ?? apply.returnAmount ?? 0);
+              return (
+                <TableRow key={apply.id} hover>
+                  <TableCell>{apply.id}</TableCell>
+                  <TableCell>{appliedAt ? new Date(appliedAt).toLocaleString() : '-'}</TableCell>
+                  <TableCell>₹{amount.toFixed(2)}</TableCell>
+                  <TableCell>{getStatusChip(apply.status)}</TableCell>
+                  <TableCell>{reviewedAt ? new Date(reviewedAt).toLocaleString() : 'N/A'}</TableCell>
+                  <TableCell>
+                    <Button size="small" variant="text" onClick={() => navigate(`/ordering/return-requests/${apply.id}`)}>View Details</Button>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
             {applies.length === 0 && (
               <TableRow>
                 <TableCell colSpan={6} align="center" sx={{ py: 5 }}>No return applications found.</TableCell>

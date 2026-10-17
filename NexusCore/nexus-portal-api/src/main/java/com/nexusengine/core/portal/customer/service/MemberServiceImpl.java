@@ -59,7 +59,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public Member getByUsername(String username) {
         Member member = memberCacheService.getMember(username);
-        if (member != null && member.getPassword() != null) return member;
+        if (member != null) return member;
         member = memberRepository.findByUsername(username);
         if (member != null) {
             memberCacheService.setMember(member);
@@ -171,6 +171,9 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public UserDetails loadUserByUsername(String username) {
         Member member = getByUsername(username);
+        if (member != null && member.getPassword() == null) {
+            member = memberRepository.findByUsername(username);
+        }
         if (member != null) {
             return new MemberDetails(member);
         }

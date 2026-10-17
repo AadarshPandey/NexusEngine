@@ -68,12 +68,24 @@ private String email;
         return iconUrl;
     }
 
+    public void setAvatarUrl(String avatarUrl) {
+        this.iconUrl = avatarUrl;
+    }
+
     public String getPhoneE164() {
         return contactPhone;
     }
 
+    public void setPhoneE164(String phoneE164) {
+        this.contactPhone = phoneE164;
+    }
+
     public Integer getAccountStatus() {
         return status;
+    }
+
+    public void setAccountStatus(Integer accountStatus) {
+        this.status = accountStatus;
     }
 
     @PrePersist

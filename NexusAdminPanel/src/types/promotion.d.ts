@@ -127,7 +127,7 @@ export interface Banner {
   endsAt?: string
   endTime?: string
   isActive?: boolean | number
-  status?: number
+  status?: boolean | number
   clickCount?: number
   orderCount?: number
   internalNote?: string

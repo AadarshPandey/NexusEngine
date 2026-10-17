@@ -114,6 +114,10 @@ public class Product {
     @Formula("(SELECT COALESCE(min(s.list_price), 0) FROM catalog.product_sku s WHERE s.product_id = id)")
     private BigDecimal listPrice;
 
+    @Schema(title = "On-hand quantity")
+    @Formula("(SELECT COALESCE(sum(s.on_hand_qty), 0) FROM catalog.product_sku s WHERE s.product_id = id)")
+    private Integer onHandQty;
+
     @Formula("(SELECT b.name FROM catalog.brand b WHERE b.id = brand_id)")
     private String brandName;
 

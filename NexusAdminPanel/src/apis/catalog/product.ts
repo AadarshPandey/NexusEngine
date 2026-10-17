@@ -1,26 +1,31 @@
-import type { CommonPage, PageParam } from '@/types/common'
-import type { PmsProduct, Product, ProductParam, ProductQueryParam } from '@/types/catalog'
+import type { PageParam, PageResponse } from '@/types/common'
+import type { Product, ProductParam, ProductQueryParam } from '@/types/catalog'
 import http from '@/utils/http'
 
-export function getProductListAPI(params: ProductQueryParam) {
-  const queryParams: Record<string, any> = { ...params }
+function toCleanQueryParams(params?: Record<string, any>) {
+  const queryParams: Record<string, any> = {}
+  if (!params) return queryParams
+  for (const [k, v] of Object.entries(params)) {
+    if (v !== '' && v !== undefined && v !== null) {
+      queryParams[k] = v
+    }
+  }
   if (queryParams.pageNum !== undefined) {
-    queryParams.page = (queryParams.pageNum || 1) - 1
+    queryParams.page = (Number(queryParams.pageNum) || 1) - 1
+    delete queryParams.pageNum
   }
   if (queryParams.pageSize !== undefined) {
-    queryParams.size = queryParams.pageSize
+    queryParams.size = Number(queryParams.pageSize)
+    delete queryParams.pageSize
   }
-  return http<CommonPage<Product>>({
+  return queryParams
+}
+
+export function getProductListAPI(params: ProductQueryParam) {
+  return http<PageResponse<Product>>({
     url: '/api/admin/catalog/products',
     method: 'get',
-    params: queryParams,
-  }).then((res: any) => {
-    // Normalise Spring Page to CommonPage structure { list, total }
-    if (res && res.content && res.list === undefined) {
-      res.list = res.content
-      res.total = res.totalElements ?? res.content.length
-    }
-    return { data: res }
+    params: toCleanQueryParams(params),
   })
 }
 
@@ -29,18 +34,18 @@ export function getSimpleProductListAPI(keyword?: string) {
     url: '/api/admin/catalog/products/simple',
     method: 'get',
     params: keyword ? { keyword } : undefined,
-  }).then((res: any) => ({ data: res }))
+  })
 }
 
 export function getPruductUpdateInfoAPI(id: number) {
   return http<ProductParam>({
     url: `/api/admin/catalog/products/${id}`,
     method: 'get',
-  }).then((res: any) => ({ data: res }))
+  })
 }
 
 export function productCreateAPI(data: ProductParam) {
-  return http({
+  return http<number>({
     url: '/api/admin/catalog/products',
     method: 'post',
     data,
@@ -48,7 +53,7 @@ export function productCreateAPI(data: ProductParam) {
 }
 
 export function productUpdateByIdAPI(id: number, data: ProductParam) {
-  return http({
+  return http<number>({
     url: `/api/admin/catalog/products/${id}`,
     method: 'put',
     data,
@@ -56,7 +61,7 @@ export function productUpdateByIdAPI(id: number, data: ProductParam) {
 }
 
 export function productUpdatePublishStatusAPI(params: { ids: string; isPublished: number }) {
-  return http({
+  return http<number>({
     url: '/api/admin/catalog/products/publish-status',
     method: 'patch',
     params: {
@@ -67,7 +72,7 @@ export function productUpdatePublishStatusAPI(params: { ids: string; isPublished
 }
 
 export function productUpdateNewStatusAPI(params: { ids: string; isNewArrival: number }) {
-  return http({
+  return http<number>({
     url: '/api/admin/catalog/products/new-arrival-status',
     method: 'patch',
     params: {
@@ -78,7 +83,7 @@ export function productUpdateNewStatusAPI(params: { ids: string; isNewArrival: n
 }
 
 export function productUpdateRecommendStatusAPI(params: { ids: string; isFeatured: number }) {
-  return http({
+  return http<number>({
     url: '/api/admin/catalog/products/featured-status',
     method: 'patch',
     params: {
@@ -89,7 +94,7 @@ export function productUpdateRecommendStatusAPI(params: { ids: string; isFeature
 }
 
 export function productUpdateDeleteStatusAPI(params: { ids: string; deletedAt?: number; deleteStatus?: number }) {
-  return http({
+  return http<number>({
     url: '/api/admin/catalog/products',
     method: 'delete',
     params: {
@@ -100,7 +105,7 @@ export function productUpdateDeleteStatusAPI(params: { ids: string; deletedAt?: 
 }
 
 export function productUpdateApprovalStatusAPI(params: { ids: string; approvalStatus: number; detail?: string; comment?: string }) {
-  return http({
+  return http<number>({
     url: '/api/admin/catalog/products/approval',
     method: 'patch',
     params: {
@@ -112,15 +117,15 @@ export function productUpdateApprovalStatusAPI(params: { ids: string; approvalSt
 }
 
 export function getProductAuditLogsAPI(id: number) {
-  return http({
+  return http<any[]>({
     url: `/api/admin/catalog/products/${id}/audit-logs`,
     method: 'get',
-  }).then((res: any) => ({ data: res }))
+  })
 }
 
 export function getProductApprovalHistoryAPI(id: number) {
-  return http({
+  return http<any[]>({
     url: `/api/admin/catalog/products/${id}/approval-history`,
     method: 'get',
-  }).then((res: any) => ({ data: res }))
+  })
 }

@@ -21,7 +21,7 @@ const ProductCategoryAdd: React.FC = () => {
   const fetchCategories = async () => {
     try {
       const res = await getProductCategoryListWithChildrenAPI();
-      setCategories(res.data);
+      setCategories(Array.isArray(res) ? res : []);
     } catch (e) {
       console.error(e);
     }
@@ -31,7 +31,7 @@ const ProductCategoryAdd: React.FC = () => {
     e.preventDefault();
     try {
       await productCategoryCreateAPI(formData);
-      navigate('/catalog/productCate');
+      navigate('/catalog/categories');
     } catch (e) {
       console.error('Failed to create category');
     }
@@ -62,7 +62,7 @@ const ProductCategoryAdd: React.FC = () => {
 
             <Box sx={{ mt: 3, display: 'flex', gap: 2 }}>
               <Button type="submit" variant="contained" color="primary">Submit</Button>
-              <Button variant="outlined" onClick={() => navigate('/catalog/productCate')}>Cancel</Button>
+              <Button variant="outlined" onClick={() => navigate('/catalog/categories')}>Cancel</Button>
             </Box>
           </form>
         </CardContent>

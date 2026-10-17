@@ -5,12 +5,13 @@ import { getBrandListAPI } from '@/apis/catalog';
 import { getProductCategoryListWithChildrenAPI } from '@/apis/catalog';
 import { getProductAttributeCategoryListAPI } from '@/apis/catalog';
 import { resolveImageUrl } from '@/utils/media';
-import { useNavigate, useSearchParams } from 'react-router';
+import { useNavigate, useParams, useSearchParams } from 'react-router';
 
 const ProductUpdate: React.FC = () => {
   const navigate = useNavigate();
+  const { id: paramId } = useParams<{ id: string }>();
   const [searchParams] = useSearchParams();
-  const id = searchParams.get('id');
+  const id = paramId || searchParams.get('id');
 
   const [brands, setBrands] = useState<import('@/types/catalog').PmsBrand[]>([]);
   const [categories, setCategories] = useState<import('@/types/catalog').PmsProductCategory[]>([]);
@@ -37,45 +38,58 @@ const ProductUpdate: React.FC = () => {
       fetchDependenciesAndProduct(Number(id));
     } else {
       alert('Product ID is missing');
-      navigate('/catalog/product');
+      navigate('/catalog/products');
     }
   }, [id]);
 
-  const fetchDependenciesAndProduct = async (orderLineId: number) => {
+  const fetchDependenciesAndProduct = async (productId: number) => {
     try {
       setLoading(true);
       const [brandRes, cateRes, typeRes, prodRes] = await Promise.all([
         getBrandListAPI({ pageNum: 1, pageSize: 100 }),
         getProductCategoryListWithChildrenAPI(),
         getProductAttributeCategoryListAPI({ pageNum: 1, pageSize: 100 }),
-        getPruductUpdateInfoAPI(orderLineId)
+        getPruductUpdateInfoAPI(productId)
       ]);
-      setBrands(brandRes.data?.list || []);
-      setCategories(cateRes.data || []);
-      setProductTypes(typeRes.data?.list || []);
+      setBrands(brandRes?.content || []);
+      setCategories(Array.isArray(cateRes) ? cateRes : []);
+      setProductTypes(typeRes?.content || []);
       
-      if (prodRes.data) {
+      if (prodRes) {
+        const prod = prodRes as any;
         setFormData({
           ...formData,
-          ...prodRes.data,
-          productCategoryId: prodRes.data.productCategoryId?.toString() || prodRes.data.permissionGroupId?.toString() || '',
-          productAttributeCategoryId: prodRes.data.productAttributeCategoryId?.toString() || prodRes.data.productAttributeCategoryId?.toString() || '',
-          brandId: prodRes.data.brandId?.toString() || '',
-          keywords: prodRes.data.keywords || '',
-          description: prodRes.data.description || prodRes.data.customerComment || '',
-          skuStockList: prodRes.data.skuStockList?.length ? prodRes.data.skuStockList.map((sku: any) => ({
-            id: sku.id,
-            skuCode: sku.skuCode || '',
-            listPrice: sku.price?.toString() || sku.listPrice?.toString() || '',
-            promotionPrice: sku.promotionPrice?.toString() || sku.salePrice?.toString() || '',
-            onHandQty: sku.stock?.toString() || sku.onHandQty?.toString() || '',
-            lowStock: sku.lowStock?.toString() || sku.lowStockThreshold?.toString() || '',
-            pic: sku.pic || sku.primaryImageUrl || '',
-            sale: sku.sale?.toString() || sku.unitsSold?.toString() || '',
-            lockStock: sku.lockStock?.toString() || sku.reservedQty?.toString() || '',
-            spDataList: sku.spData ? (typeof sku.spData === 'string' ? (() => { try { return JSON.parse(sku.spData); } catch (e) { return []; } })() : sku.spData) : [],
-            version: sku.version?.toString() || ''
-          })) : [{ skuCode: '', listPrice: '', onHandQty: '', promotionPrice: '', lowStock: '', pic: '', sale: '', lockStock: '', spDataList: [] as {key: string, value: string}[], version: '' }]
+          ...prod,
+          primaryImageUrl: prod.primaryImageUrl || prod.pic || '',
+          productCategoryId: prod.productCategoryId?.toString() || prod.categoryId?.toString() || '',
+          productAttributeCategoryId: prod.productAttributeCategoryId?.toString() || prod.productTypeId?.toString() || '',
+          brandId: prod.brandId?.toString() || '',
+          keywords: Array.isArray(prod.searchKeywords) ? prod.searchKeywords.join(',') : (prod.keywords || prod.searchKeywords || ''),
+          description: prod.description || '',
+          skuStockList: prod.skuStockList?.length ? prod.skuStockList.map((sku: any) => {
+            const rawSp = sku.skuAttributes || sku.spData;
+            let parsedSp: { key: string; value: string }[] = [];
+            try {
+              const p = typeof rawSp === 'string' ? JSON.parse(rawSp) : rawSp;
+              if (Array.isArray(p)) parsedSp = p;
+              else if (typeof p === 'object' && p !== null) {
+                parsedSp = Object.entries(p).map(([key, value]) => ({ key, value: String(value) }));
+              }
+            } catch {}
+            return {
+              id: sku.id,
+              skuCode: sku.skuCode || '',
+              listPrice: sku.price?.toString() || sku.listPrice?.toString() || '',
+              promotionPrice: sku.promotionPrice?.toString() || sku.salePrice?.toString() || '',
+              onHandQty: sku.stock?.toString() || sku.onHandQty?.toString() || '',
+              lowStock: sku.lowStock?.toString() || sku.lowStockThreshold?.toString() || '',
+              pic: sku.imageUrl || sku.pic || sku.primaryImageUrl || '',
+              sale: sku.sale?.toString() || sku.unitsSold?.toString() || '',
+              lockStock: sku.lockStock?.toString() || sku.reservedQty?.toString() || '',
+              spDataList: parsedSp,
+              version: sku.version?.toString() || ''
+            };
+          }) : [{ skuCode: '', listPrice: '', onHandQty: '', promotionPrice: '', lowStock: '', pic: '', sale: '', lockStock: '', spDataList: [] as {key: string, value: string}[], version: '' }]
         });
       }
     } catch (error) {
@@ -165,7 +179,7 @@ const ProductUpdate: React.FC = () => {
         skuStockList: formattedSkus
       } as unknown as import('@/types/catalog').PmsProductParam);
       alert('Product updated successfully!');
-      navigate('/catalog/product');
+      navigate('/catalog/products');
     } catch (error) {
       alert('Failed to update product');
     }
@@ -298,7 +312,7 @@ const ProductUpdate: React.FC = () => {
             <Grid size={{ xs: 12 }}>
               <Box sx={{ display: 'flex', gap: 2 }}>
                 <Button type="submit" variant="contained" color="primary" size="large">Update Product</Button>
-                <Button variant="outlined" size="large" onClick={() => navigate('/catalog/product')}>Cancel</Button>
+                <Button variant="outlined" size="large" onClick={() => navigate('/catalog/products')}>Cancel</Button>
               </Box>
             </Grid>
           </Grid>

@@ -41,17 +41,40 @@ cat << 'EOF' > /tmp/public-policy-bucket.json
 EOF
 awslocal s3api put-bucket-policy --bucket nexus-bucket --policy file:///tmp/public-policy-bucket.json || true
 
+# Apply CORS configuration on buckets
+cat << 'EOF' > /tmp/cors.json
+{
+  "CORSRules": [
+    {
+      "AllowedHeaders": ["*"],
+      "AllowedMethods": ["GET", "PUT", "POST", "DELETE", "HEAD"],
+      "AllowedOrigins": ["*"],
+      "ExposeHeaders": ["ETag", "x-amz-request-id"]
+    }
+  ]
+}
+EOF
+awslocal s3api put-bucket-cors --bucket nexus-media --cors-configuration file:///tmp/cors.json || true
+awslocal s3api put-bucket-cors --bucket nexus-bucket --cors-configuration file:///tmp/cors.json || true
+
 # Sync all extracted media assets into LocalStack S3 buckets
+DATA_DIR=""
 if [ -d "/s3-data/nexus-media" ]; then
-    echo "=== [LocalStack Init] Syncing media assets to s3://nexus-media ==="
-    awslocal s3 sync /s3-data/nexus-media s3://nexus-media --quiet
+    DATA_DIR="/s3-data/nexus-media"
+elif [ -d "/trash/s3-data/nexus-media" ]; then
+    DATA_DIR="/trash/s3-data/nexus-media"
+fi
+
+if [ -n "$DATA_DIR" ]; then
+    echo "=== [LocalStack Init] Syncing media assets from $DATA_DIR to s3://nexus-media ==="
+    awslocal s3 sync "$DATA_DIR" s3://nexus-media --quiet
 
     echo "=== [LocalStack Init] Syncing legacy /public/pms alias to s3://nexus-media ==="
-    awslocal s3 sync /s3-data/nexus-media/public/catalog s3://nexus-media/public/pms --quiet
+    awslocal s3 sync "$DATA_DIR/public/catalog" s3://nexus-media/public/pms --quiet
 
     echo "=== [LocalStack Init] Syncing media assets to s3://nexus-bucket ==="
-    awslocal s3 sync /s3-data/nexus-media s3://nexus-bucket --quiet
-    awslocal s3 sync /s3-data/nexus-media/public/catalog s3://nexus-bucket/public/pms --quiet
+    awslocal s3 sync "$DATA_DIR" s3://nexus-bucket --quiet
+    awslocal s3 sync "$DATA_DIR/public/catalog" s3://nexus-bucket/public/pms --quiet
 
     echo "=== [LocalStack Init] Sync completed successfully! ==="
 fi

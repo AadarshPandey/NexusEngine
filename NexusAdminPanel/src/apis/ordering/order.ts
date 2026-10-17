@@ -1,4 +1,4 @@
-import type { CommonPage } from '@/types/common'
+import type { PageResponse } from '@/types/common'
 import type {
   CustomerOrder,
   OrderDeliveryParam,
@@ -12,24 +12,16 @@ export function getOrderListAPI(params: OrderQueryParams) {
   const queryParams: Record<string, any> = { ...params }
   if (queryParams.pageNum !== undefined) {
     queryParams.page = (queryParams.pageNum || 1) - 1
+    delete queryParams.pageNum
   }
   if (queryParams.pageSize !== undefined) {
     queryParams.size = queryParams.pageSize
+    delete queryParams.pageSize
   }
   return http<CustomerOrder[]>({
     url: '/api/admin/ordering/orders',
     method: 'get',
     params: queryParams,
-  }).then((res: any) => {
-    // If backend returns a raw list, wrap in list/total
-    if (Array.isArray(res)) {
-      return { data: { list: res, total: res.length } }
-    }
-    if (res && res.content && res.list === undefined) {
-      res.list = res.content
-      res.total = res.totalElements ?? res.content.length
-    }
-    return { data: res }
   })
 }
 
@@ -37,11 +29,13 @@ export function getOrderDetailByIdAPI(id: number) {
   return http<CustomerOrder>({
     url: `/api/admin/ordering/orders/${id}`,
     method: 'get',
-  }).then((res: any) => ({ data: res }))
+  })
 }
 
+export const getOrderDetailAPI = getOrderDetailByIdAPI
+
 export function orderDeliveryAPI(data: OrderDeliveryParam[]) {
-  return http({
+  return http<number>({
     url: '/api/admin/ordering/orders/delivery',
     method: 'post',
     data,
@@ -49,7 +43,7 @@ export function orderDeliveryAPI(data: OrderDeliveryParam[]) {
 }
 
 export function orderCloseBatchAPI(params: { ids: string; note: string }) {
-  return http({
+  return http<number>({
     url: '/api/admin/ordering/orders/cancel',
     method: 'patch',
     params,
@@ -57,7 +51,7 @@ export function orderCloseBatchAPI(params: { ids: string; note: string }) {
 }
 
 export function orderDeleteBatchAPI(params: { ids: string }) {
-  return http({
+  return http<number>({
     url: '/api/admin/ordering/orders',
     method: 'delete',
     params,
@@ -65,7 +59,7 @@ export function orderDeleteBatchAPI(params: { ids: string }) {
 }
 
 export function orderUpdateReceiverInfoAPI(data: OrderReceiverInfoParam) {
-  return http({
+  return http<number>({
     url: '/api/admin/ordering/orders/receiver-info',
     method: 'patch',
     data,
@@ -73,7 +67,7 @@ export function orderUpdateReceiverInfoAPI(data: OrderReceiverInfoParam) {
 }
 
 export function orderUpdateMoneyInfoAPI(data: OrderMoneyInfoParam) {
-  return http({
+  return http<number>({
     url: '/api/admin/ordering/orders/money-info',
     method: 'patch',
     data,
@@ -81,7 +75,7 @@ export function orderUpdateMoneyInfoAPI(data: OrderMoneyInfoParam) {
 }
 
 export function orderUpdateNoteAPI(params: { id: number; note: string; status: number }) {
-  return http({
+  return http<number>({
     url: '/api/admin/ordering/orders/note',
     method: 'patch',
     params,
@@ -89,7 +83,7 @@ export function orderUpdateNoteAPI(params: { id: number; note: string; status: n
 }
 
 export function orderUpdateStatusAPI(params: { ids: string; status: number; note?: string }) {
-  return http({
+  return http<number>({
     url: '/api/admin/ordering/orders/status',
     method: 'patch',
     params,

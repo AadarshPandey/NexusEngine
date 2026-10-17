@@ -39,9 +39,9 @@ const ProductDetail: React.FC = () => {
     try {
       setLoading(true);
       const res = await getProductDetail(productId);
-      setProductDetail(res.data);
-      if (res.data?.product?.primaryImageUrl) {
-        setActiveImage(res.data.product.primaryImageUrl);
+      setProductDetail(res);
+      if (res?.product?.primaryImageUrl) {
+        setActiveImage(res.product.primaryImageUrl);
       }
     } catch (error) {
       console.error(error);
@@ -108,9 +108,46 @@ const ProductDetail: React.FC = () => {
     : (productDetail?.skuStockList ? productDetail.skuStockList.reduce((sum, s) => sum + (s.availableQty ?? Math.max(0, s.onHandQty - (s.reservedQty || 0))), 0) : 0);
   const isOutOfStock = !displayStock || displayStock <= 0;
 
+  // Build selectable SKU variant attributes from SKU stock combinations & attribute value rows
+  const skuAttrMap = new Map<string, string[]>();
+  (productDetail?.skuStockList || []).forEach(sku => {
+    parseSkuAttrs(sku.skuAttributes).forEach(({ key, value }) => {
+      if (!key || !value) return;
+      const existing = skuAttrMap.get(key) || [];
+      if (!existing.includes(value)) {
+        existing.push(value);
+        skuAttrMap.set(key, existing);
+      }
+    });
+  });
+
+  const attributesToRender = (() => {
+    const list: { id: number | string; name: string; values: string[] }[] = [];
+    const seenNames = new Set<string>();
+    (productDetail?.productAttributeList || [])
+      .filter((attr: any) => attr.type === 0)
+      .forEach((attr: any) => {
+        const fromSkus = skuAttrMap.get(attr.name) || [];
+        const fromVals = (productDetail?.productAttributeValueList || [])
+          .filter((val: any) => val.productAttributeId === attr.id && val.value)
+          .flatMap((val: any) => String(val.value).split(',').map((s: string) => s.trim()).filter(Boolean));
+        const merged = Array.from(new Set([...fromSkus, ...fromVals]));
+        if (merged.length > 0) {
+          seenNames.add(attr.name);
+          list.push({ id: attr.id, name: attr.name, values: merged });
+        }
+      });
+    skuAttrMap.forEach((values, name) => {
+      if (!seenNames.has(name) && values.length > 0) {
+        list.push({ id: name, name, values });
+      }
+    });
+    return list;
+  })();
+
   // Has user selected all required attributes?
-  const requiredAttributes = productDetail?.productAttributeList?.filter((a: any) => a.type === 0) || [];
-  const isFullySelected = requiredAttributes.length === 0 || requiredAttributes.every((attr: any) => selectedAttributes[attr.name]);
+  const requiredAttributes = attributesToRender;
+  const isFullySelected = requiredAttributes.length === 0 || requiredAttributes.every((attr) => Boolean(selectedAttributes[attr.name]));
 
   const handleAddToCart = async () => {
     if (!isAuthenticated) {
@@ -148,15 +185,19 @@ const ProductDetail: React.FC = () => {
     return <Box sx={{ mt: 10, textAlign: 'center' }}><Typography variant="h5">Product not found</Typography></Box>;
   }
 
-  const { product, productAttributeList, productAttributeValueList } = productDetail;
-  const allImages = [product.primaryImageUrl, ...(product.galleryList ? [...product.galleryList].sort((a,b)=>((a.displayOrder ?? 0)-(b.displayOrder ?? 0))).map(m=>m.url) : [])].filter(Boolean) as string[];
-
-  // Group attribute values for rendering
-  const attributesToRender = productAttributeList?.filter((attr: any) => attr.type === 0).map((attr: any) => {
-    const valObj = productAttributeValueList?.find((val: any) => val.productAttributeId === attr.id);
-    const values: string[] = valObj?.value ? valObj.value.split(',') : [];
-    return { ...attr, values };
-  }) || [];
+  const { product } = productDetail;
+  const allImages = Array.from(
+    new Set(
+      [
+        product.primaryImageUrl,
+        ...(product.galleryList
+          ? [...product.galleryList]
+              .sort((a, b) => ((a.displayOrder ?? a.sortOrder ?? 0) - (b.displayOrder ?? b.sortOrder ?? 0)))
+              .map(m => m.url || m.mediaUrl)
+          : []),
+      ].filter(Boolean) as string[]
+    )
+  );
 
   return (
     <Box sx={{ mt: 4 }}>

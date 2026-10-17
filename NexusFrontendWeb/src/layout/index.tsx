@@ -1,19 +1,37 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Outlet, Link } from 'react-router';
 import { AppBar, Toolbar, Typography, Button, Container, Box, Badge, IconButton } from '@mui/material';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { useSelector, useDispatch } from 'react-redux';
-import type { RootState } from '../store';
-import { logout } from '../store/slices/authSlice';
+import type { RootState, AppDispatch } from '../store';
+import { logout, updateUser } from '../store/slices/authSlice';
+import { loadCartData, clearCart } from '../store/slices/cartSlice';
+import { getCustomerProfile } from '../api/customer';
 import ChatWidget from '../components/ChatWidget';
 
 const Layout: React.FC = () => {
-  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
+  const { isAuthenticated, user } = useSelector((state: RootState) => state.auth);
   const { totalQuantity } = useSelector((state: RootState) => state.cart);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      dispatch(loadCartData());
+      if (!user?.id) {
+        getCustomerProfile()
+          .then((member) => {
+            if (member) dispatch(updateUser(member));
+          })
+          .catch(() => {});
+      }
+    } else {
+      dispatch(clearCart());
+    }
+  }, [isAuthenticated, user?.id, dispatch]);
 
   const handleLogout = () => {
     dispatch(logout());
+    dispatch(clearCart());
   };
 
   return (

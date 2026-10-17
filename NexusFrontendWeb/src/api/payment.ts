@@ -12,7 +12,7 @@ export interface RazorpayOrderData {
 }
 
 export const createRazorpayOrder = (orderId: number) => {
-  return request.post<unknown, { data: RazorpayOrderData }>(`/ordering/orders/payment/razorpay?orderId=${orderId}`);
+  return request.post<unknown, RazorpayOrderData>(`/ordering/orders/payment/razorpay?orderId=${orderId}`);
 };
 
 export const verifyRazorpayPayment = (
@@ -21,7 +21,7 @@ export const verifyRazorpayPayment = (
   razorpayOrderId: string,
   razorpaySignature: string
 ) => {
-  return request.post<unknown, { data: unknown }>(
+  return request.post<unknown, string>(
     `/ordering/orders/payment/razorpay/verify?orderId=${orderId}&razorpayPaymentId=${encodeURIComponent(razorpayPaymentId)}&razorpayOrderId=${encodeURIComponent(razorpayOrderId)}&razorpaySignature=${encodeURIComponent(razorpaySignature)}`
   );
 };

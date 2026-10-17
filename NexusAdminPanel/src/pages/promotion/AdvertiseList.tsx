@@ -66,8 +66,9 @@ const AdvertiseList: React.FC = () => {
         pageNum: pageNum + 1, 
         pageSize 
       });
-      setList(res.data.list);
-      setTotal(res.data.total);
+      const items = Array.isArray(res) ? res : (res as any)?.content || [];
+      setList(items);
+      setTotal(Array.isArray(res) ? res.length : (res as any)?.totalElements || 0);
     } catch (error) {
       console.error('Failed to fetch advertise list:', error);
     } finally {
@@ -97,10 +98,10 @@ const AdvertiseList: React.FC = () => {
   };
 
   const handleStatusChange = async (row: SmsHomeAdvertise) => {
-    const newStatus = row.status === 1 ? 0 : 1;
+    const newStatus = Boolean(row.status) ? 0 : 1;
     try {
       await homeAdvertiseUpdateStatusAPI({ id: row.id!, status: newStatus });
-      setList((prev) => prev.map((item) => (item.id === row.id ? { ...item, status: newStatus } : item)));
+      setList((prev) => prev.map((item) => (item.id === row.id ? { ...item, status: Boolean(newStatus) } : item)));
       setSnackbar({ open: true, message: 'Status updated', severity: 'success' });
     } catch {
       setSnackbar({ open: true, message: 'Failed to update status', severity: 'error' });
@@ -193,7 +194,7 @@ const AdvertiseList: React.FC = () => {
             variant="contained"
             startIcon={<Add />}
             size="small"
-            onClick={() => navigate('/promotion/addAdvertise')}
+            onClick={() => navigate('/promotion/banners/new')}
           >
             Add Advertisement
           </Button>
@@ -273,7 +274,7 @@ const AdvertiseList: React.FC = () => {
                     <TableCell align="center">
                       <IconButton
                         size="small"
-                        onClick={() => navigate(`/sms/updateAdvertise?id=${row.id}`)}
+                        onClick={() => navigate(`/promotion/banners/${row.id}/edit`)}
                         sx={{ color: '#6366F1' }}
                       >
                         <Edit sx={{ fontSize: 18 }} />

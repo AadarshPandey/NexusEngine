@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class FlashSaleSlotController {
     private final FlashSaleSlotRepository sessionRepository;
+    private final com.nexusengine.core.domain.promotion.repository.FlashSaleItemRepository itemRepository;
 
     @Operation(summary = "List all flash sale slots")
     @GetMapping
@@ -37,8 +38,24 @@ public class FlashSaleSlotController {
     @Operation(summary = "List selectable flash sale slots")
     @GetMapping("/selectable")
     public List<FlashSaleSlot> selectList(
-            @RequestParam("flashPromotionId") Long flashPromotionId) {
+            @RequestParam(value = "flashPromotionId", required = false) Long flashPromotionId) {
         return sessionRepository.findAll();
+    }
+
+    @Operation(summary = "List flash sale items for a campaign and slot")
+    @GetMapping("/items")
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    public org.springframework.data.domain.Page<com.nexusengine.core.domain.promotion.entity.FlashSaleItem> listItems(
+            @RequestParam("flashSaleId") Long flashSaleId,
+            @RequestParam("slotId") Long slotId,
+            @org.springframework.data.web.PageableDefault(size = 20) org.springframework.data.domain.Pageable pageable) {
+        var page = itemRepository.findByFlashPromotionIdAndFlashPromotionSessionId(flashSaleId, slotId, pageable);
+        page.getContent().forEach(item -> {
+            if (item.getProduct() != null) {
+                org.hibernate.Hibernate.initialize(item.getProduct().getGalleryList());
+            }
+        });
+        return page;
     }
 
     @Operation(summary = "Create flash sale slot")

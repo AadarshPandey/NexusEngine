@@ -36,7 +36,7 @@ import {
 } from '@mui/icons-material';
 import { getBrandListAPI, brandUpdateShowStatusAPI, brandDeleteByIdAPI } from '@/apis/catalog';
 import type { PmsBrand } from '@/types/catalog';
-import http from '@/utils/http';
+import { resolveImageUrl } from '@/utils/media';
 
 const BrandList: React.FC = () => {
   const navigate = useNavigate();
@@ -55,8 +55,8 @@ const BrandList: React.FC = () => {
     setLoading(true);
     try {
       const res = await getBrandListAPI({ keyword, pageNum: pageNum + 1, pageSize });
-      setList(res.data.list);
-      setTotal(res.data.total);
+      setList(res?.content || []);
+      setTotal(res?.totalElements || 0);
     } catch (error) {
       console.error('Failed to fetch brand list:', error);
     } finally {
@@ -89,7 +89,7 @@ const BrandList: React.FC = () => {
     const newVisibility = row.isVisible ? 0 : 1;
     try {
       await brandUpdateShowStatusAPI({ ids: String(row.id), isVisible: newVisibility });
-      setList((prev) => prev.map((item) => (item.id === row.id ? { ...item, isVisible: newVisibility } : item)));
+      setList((prev) => prev.map((item) => (item.id === row.id ? { ...item, isVisible: Boolean(newVisibility) } : item)));
       setSnackbar({ open: true, message: 'Status updated', severity: 'success' });
     } catch {
       setSnackbar({ open: true, message: 'Failed to update status', severity: 'error' });
@@ -173,7 +173,7 @@ const BrandList: React.FC = () => {
             variant="contained"
             startIcon={<Add />}
             size="small"
-            onClick={() => navigate('/catalog/addBrand')}
+            onClick={() => navigate('/catalog/brands/new')}
           >
             Add Brand
           </Button>
@@ -195,6 +195,7 @@ const BrandList: React.FC = () => {
                   />
                 </TableCell>
                 <TableCell>ID</TableCell>
+                <TableCell>Logo</TableCell>
                 <TableCell>Brand Name</TableCell>
                 <TableCell align="center">Visible</TableCell>
                 <TableCell align="center">Actions</TableCell>
@@ -203,13 +204,13 @@ const BrandList: React.FC = () => {
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={5} sx={{ textAlign: 'center', py: 6 }}>
+                  <TableCell colSpan={6} sx={{ textAlign: 'center', py: 6 }}>
                     <Typography sx={{ color: 'text.secondary' }}>Loading...</Typography>
                   </TableCell>
                 </TableRow>
               ) : list.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={5} sx={{ textAlign: 'center', py: 6 }}>
+                  <TableCell colSpan={6} sx={{ textAlign: 'center', py: 6 }}>
                     <Typography sx={{ color: 'text.secondary' }}>No brands found</Typography>
                   </TableCell>
                 </TableRow>
@@ -224,6 +225,16 @@ const BrandList: React.FC = () => {
                       />
                     </TableCell>
                     <TableCell>{row.id}</TableCell>
+                    <TableCell>
+                      {(row.logo || row.logoUrl) ? (
+                        <Box
+                          component="img"
+                          src={resolveImageUrl(row.logo || row.logoUrl)}
+                          alt={row.name}
+                          sx={{ height: 36, maxWidth: 80, objectFit: 'contain' }}
+                        />
+                      ) : '-'}
+                    </TableCell>
                     <TableCell sx={{ fontWeight: 500 }}>{row.name}</TableCell>
                     <TableCell align="center">
                       <Switch
@@ -237,7 +248,7 @@ const BrandList: React.FC = () => {
                       <Box sx={{ display: 'flex', justifyContent: 'center', gap: 0.5 }}>
                         <IconButton
                           size="small"
-                          onClick={() => navigate(`/pms/updateBrand?id=${row.id}`)}
+                          onClick={() => navigate(`/catalog/brands/${row.id}/edit`)}
                           sx={{ color: '#6366F1' }}
                         >
                           <Edit sx={{ fontSize: 18 }} />

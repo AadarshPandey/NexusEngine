@@ -43,14 +43,22 @@ export interface GenerateOrderResult {
   order: CustomerOrder;
 }
 
+export interface PageResponse<T> {
+  content: T[];
+  totalElements: number;
+  totalPages: number;
+  size: number;
+  number: number;
+}
+
 export const getCart = () => {
-  return request.get<unknown, { data: EnrichedCartItem[] }>('/ordering/cart/promotion');
+  return request.get<unknown, EnrichedCartItem[]>('/ordering/cart/promotion');
 };
 
 export const fetchCartList = getCart;
 
 export const addItemToCart = (data: { productId?: number; productSkuId?: number; skuId?: number; quantity: number; price?: number }) => {
-  return request.post<unknown, { data: unknown }>('/ordering/cart', {
+  return request.post<unknown, number>('/ordering/cart', {
     productId: data.productId,
     productSkuId: data.skuId || data.productSkuId,
     quantity: data.quantity,
@@ -73,39 +81,39 @@ export const updateItemQuantity = (cartId: number, quantity: number) => {
 export const updateCartItemQuantity = updateItemQuantity;
 
 export const generateConfirmOrder = (cartIds: number[]) => {
-  return request.post<unknown, { data: ConfirmOrderResult }>('/ordering/orders/confirm', cartIds);
+  return request.post<unknown, ConfirmOrderResult>('/ordering/orders/confirm', cartIds);
 };
 
 export const createOrder = (orderParam: OrderParam) => {
-  return request.post<unknown, { data: GenerateOrderResult }>('/ordering/orders', orderParam);
+  return request.post<unknown, GenerateOrderResult>('/ordering/orders', orderParam);
 };
 
 export const generateOrder = createOrder;
 
 export const getOrders = (status: number = -1, pageNum: number = 1, pageSize: number = 10) => {
-  return request.get<unknown, { data: { list: CustomerOrder[] } }>('/ordering/orders', {
-    params: { status, pageNum, pageSize },
+  return request.get<unknown, PageResponse<CustomerOrder>>('/ordering/orders', {
+    params: { status, page: Math.max(0, pageNum - 1), size: pageSize },
   });
 };
 
 export const fetchOrderList = getOrders;
 
 export const getOrderDetail = (orderId: number) => {
-  return request.get<unknown, { data: CustomerOrder }>(`/ordering/orders/${orderId}`);
+  return request.get<unknown, CustomerOrder>(`/ordering/orders/${orderId}`);
 };
 
 export const cancelUserOrder = (orderId: number) => {
-  return request.patch<unknown, { data: unknown }>('/ordering/orders/cancel', null, { params: { orderId } });
+  return request.patch<unknown, void>('/ordering/orders/cancel', null, { params: { orderId } });
 };
 
 export const confirmReceiveOrder = (orderId: number) => {
-  return request.patch<unknown, { data: unknown }>('/ordering/orders/confirm-receipt', null, { params: { orderId } });
+  return request.patch<unknown, void>('/ordering/orders/confirm-receipt', null, { params: { orderId } });
 };
 
 export const submitReturnApply = (data: unknown) => {
-  return request.post<unknown, { data: unknown }>('/ordering/return-requests', data);
+  return request.post<unknown, number>('/ordering/return-requests', data);
 };
 
 export const getReturnReasons = () => {
-  return request.get<unknown, { data: { id: number; name: string }[] }>('/ordering/return-requests/reasons');
+  return request.get<unknown, { id: number; name: string }[]>('/ordering/return-requests/reasons');
 };

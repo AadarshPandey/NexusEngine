@@ -8,11 +8,11 @@ import { MemoryRouter } from 'react-router';
 
 // Mock the API calls
 vi.mock('../api/customer', () => ({
-  getCustomerProfile: vi.fn().mockResolvedValue({ data: { username: 'testuser', displayName: 'Test Nickname' } }),
-  getCustomerAddresses: vi.fn().mockResolvedValue({ data: [] }),
+  getCustomerProfile: vi.fn().mockResolvedValue({ username: 'testuser', displayName: 'Test Nickname' }),
+  getCustomerAddresses: vi.fn().mockResolvedValue([]),
 }));
 vi.mock('../api/ordering', () => ({
-  getOrders: vi.fn().mockResolvedValue({ data: { list: [] } }),
+  getOrders: vi.fn().mockResolvedValue({ content: [], totalElements: 0, totalPages: 0, size: 100, number: 0 }),
 }));
 
 describe('Profile Component', () => {

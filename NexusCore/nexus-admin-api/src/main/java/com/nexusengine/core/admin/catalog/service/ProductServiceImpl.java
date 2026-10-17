@@ -170,17 +170,17 @@ public class ProductServiceImpl implements ProductService {
 
         return productRepository.findAll((root, query, cb) -> {
             var predicates = new java.util.ArrayList<jakarta.persistence.criteria.Predicate>();
-            if (queryParam.publishStatus() != null) {
-                predicates.add(cb.equal(root.get("isPublished"), queryParam.publishStatus() == 1));
+            if (queryParam.isPublished() != null) {
+                predicates.add(cb.equal(root.get("isPublished"), queryParam.isPublished() == 1));
             }
-            if (queryParam.verifyStatus() != null) {
-                predicates.add(cb.equal(root.get("approvalStatus"), queryParam.verifyStatus()));
+            if (queryParam.approvalStatus() != null) {
+                predicates.add(cb.equal(root.get("approvalStatus"), queryParam.approvalStatus()));
             }
             if (StringUtils.hasText(queryParam.keyword())) {
                 predicates.add(cb.like(cb.lower(root.get("name")), "%" + queryParam.keyword().toLowerCase() + "%"));
             }
-            if (StringUtils.hasText(queryParam.productSn())) {
-                predicates.add(cb.equal(root.get("productCode"), queryParam.productSn()));
+            if (StringUtils.hasText(queryParam.productCode())) {
+                predicates.add(cb.equal(root.get("productCode"), queryParam.productCode()));
             }
             if (queryParam.brandId() != null) {
                 predicates.add(cb.equal(root.get("brandId"), queryParam.brandId()));

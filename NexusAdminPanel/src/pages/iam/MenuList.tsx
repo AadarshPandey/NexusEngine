@@ -41,10 +41,9 @@ const MenuList: React.FC = () => {
   const fetchList = useCallback(async () => {
     setLoading(true);
     try {
-      // Force pageNum > 0 check on backend
-      const res = await getMenuListByParentIdAPI(parentReviewId, { pageNum: pageNum > 0 ? pageNum : 0, pageSize });
-      setList(res.data.list);
-      setTotal(res.data.total);
+      const res = await getMenuListByParentIdAPI(parentReviewId, { pageNum: pageNum + 1, pageSize });
+      setList(res.content || []);
+      setTotal(res.totalElements || 0);
     } catch (error) {
       console.error(error);
     } finally {
@@ -112,7 +111,7 @@ const MenuList: React.FC = () => {
         <Button
           variant="contained"
           startIcon={<Add />}
-          onClick={() => navigate('/iam/addMenu')}
+          onClick={() => navigate('/iam/menus/new')}
           sx={{ bgcolor: '#6366F1', '&:hover': { bgcolor: '#4F46E5' }, textTransform: 'none' }}
         >
           Add Menu
@@ -136,27 +135,30 @@ const MenuList: React.FC = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {list.map((row) => (
+                {list.map((row) => {
+                  const menuLevel = row.level ?? row.depth ?? 0;
+                  const isHidden = Boolean(row.hidden ?? row.isHidden);
+                  return (
                   <TableRow key={row.id} hover>
                     <TableCell>{row.id}</TableCell>
                     <TableCell sx={{ fontWeight: 500 }}>{row.title}</TableCell>
                     <TableCell>
-                      <Chip label={row.depth === 0 ? 'Top Level' : 'Sub Level'} size="small" color={row.depth === 0 ? 'primary' : 'default'} variant="outlined" />
+                      <Chip label={menuLevel === 0 ? 'Top Level' : 'Sub Level'} size="small" color={menuLevel === 0 ? 'primary' : 'default'} variant="outlined" />
                     </TableCell>
                     <TableCell>{row.name}</TableCell>
-                    <TableCell>{row.iconUrl}</TableCell>
+                    <TableCell>{row.icon || row.iconUrl}</TableCell>
                     <TableCell>
                       <Switch
-                        checked={row.hidden === 0}
+                        checked={!isHidden}
                         onChange={(e) => handleToggleHidden(row.id!, e.target.checked ? 0 : 1)}
                         color="success"
                       />
                     </TableCell>
-                    <TableCell>{row.displayOrder}</TableCell>
+                    <TableCell>{row.sort ?? row.displayOrder ?? 0}</TableCell>
                     <TableCell align="center">
                       <Button 
                         size="small" 
-                        disabled={row.depth !== 0} 
+                        disabled={menuLevel !== 0} 
                         onClick={() => {
                           setPageNum(0);
                           setSearchParams({ parentReviewId: row.id!.toString() });
@@ -165,7 +167,7 @@ const MenuList: React.FC = () => {
                       >
                         View Next Level
                       </Button>
-                      <IconButton size="small" onClick={() => navigate(`/ums/updateMenu?id=${row.id}`)} sx={{ color: '#6366F1' }}>
+                      <IconButton size="small" onClick={() => navigate(`/iam/menus/${row.id}/edit`)} sx={{ color: '#6366F1' }}>
                         <Edit fontSize="small" />
                       </IconButton>
                       <IconButton size="small" onClick={() => handleDelete(row.id!)} sx={{ color: '#EF4444' }}>
@@ -173,7 +175,8 @@ const MenuList: React.FC = () => {
                       </IconButton>
                     </TableCell>
                   </TableRow>
-                ))}
+                  );
+                })}
                 {list.length === 0 && !loading && (
                   <TableRow>
                     <TableCell colSpan={8} align="center" sx={{ py: 4, color: 'text.secondary' }}>

@@ -168,8 +168,7 @@ const Dashboard: React.FC = () => {
     setLoading(true);
     setError(null);
     getDashboardInfoAPI()
-      .then((res: any) => {
-        const data = res?.data || res;
+      .then((data) => {
         if (data && data.chartData) {
           data.chartData = [...data.chartData].reverse();
         }

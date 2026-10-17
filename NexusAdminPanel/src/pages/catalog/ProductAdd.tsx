@@ -39,9 +39,9 @@ const ProductAdd: React.FC = () => {
         getProductCategoryListWithChildrenAPI(),
         getProductAttributeCategoryListAPI({ pageNum: 1, pageSize: 100 })
       ]);
-      setBrands(brandRes.data?.list || []);
-      setCategories(cateRes.data || []);
-      setProductTypes(typeRes.data?.list || []);
+      setBrands(brandRes?.content || []);
+      setCategories(Array.isArray(cateRes) ? cateRes : []);
+      setProductTypes(typeRes?.content || []);
     } catch (e) {
       console.error(e);
     }
@@ -125,7 +125,7 @@ const ProductAdd: React.FC = () => {
         skuStockList: formattedSkus
       } as unknown as import('@/types/catalog').PmsProductParam);
       alert('Product created successfully!');
-      navigate('/catalog/product');
+      navigate('/catalog/products');
     } catch (error) {
       alert('Failed to create product');
     }
@@ -249,7 +249,7 @@ const ProductAdd: React.FC = () => {
             <Grid size={{ xs: 12 }}>
               <Box sx={{ display: 'flex', gap: 2 }}>
                 <Button type="submit" variant="contained" color="primary" size="large">Submit Product</Button>
-                <Button variant="outlined" size="large" onClick={() => navigate('/catalog/product')}>Cancel</Button>
+                <Button variant="outlined" size="large" onClick={() => navigate('/catalog/products')}>Cancel</Button>
               </Box>
             </Grid>
           </Grid>

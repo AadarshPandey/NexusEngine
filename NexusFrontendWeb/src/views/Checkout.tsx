@@ -82,9 +82,9 @@ const Checkout: React.FC = () => {
       setLoading(true);
       const cartIds = items.map(i => i.id);
       const res = await generateConfirmOrder(cartIds);
-      setConfirmData(res.data);
-      if (res.data.memberReceiveAddressList && res.data.memberReceiveAddressList.length > 0) {
-        const addressList = res.data.memberReceiveAddressList;
+      setConfirmData(res);
+      if (res.memberReceiveAddressList && res.memberReceiveAddressList.length > 0) {
+        const addressList = res.memberReceiveAddressList;
         const defaultAddr = addressList.find((a) => Boolean(a.isDefault)) || addressList[0];
         setSelectedAddressId(defaultAddr.id);
       }
@@ -112,12 +112,12 @@ const Checkout: React.FC = () => {
         couponId: selectedCouponId ? (selectedCouponId as number) : undefined
       });
       
-      const order = orderRes.data.order;
+      const order = orderRes.order;
       const orderNum = order.orderNumber;
       
       // 2. Get Razorpay specific order details from backend
       const rzpRes = await createRazorpayOrder(order.id);
-      const { razorpayOrderId, keyId, amount } = rzpRes.data;
+      const { razorpayOrderId, keyId, amount } = rzpRes;
 
       // 3. Load Razorpay script
       const loadScript = (src: string) => new Promise((resolve) => {

@@ -14,5 +14,6 @@ public record ProductSummaryResponse(
         Boolean isFeatured,
         Integer approvalStatus,
         Integer unitsSold,
+        Integer onHandQty,
         BigDecimal listPrice,
         String brandName) {}

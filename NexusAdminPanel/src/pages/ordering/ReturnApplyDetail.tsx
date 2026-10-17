@@ -18,10 +18,12 @@ const ReturnApplyDetail: React.FC = () => {
 
   const fetchDetail = async (applyId: number) => {
     try {
-      const res = await getReturnApplyByIdAPI(applyId);
-      setDetail(res.data);
-      setReturnAmount(res.data.refundAmount || 0);
-      setHandleNote(res.data.reviewNote || '');
+      const res: any = await getReturnApplyByIdAPI(applyId);
+      if (res) {
+        setDetail(res);
+        setReturnAmount(res.refundAmount ?? res.returnAmount ?? 0);
+        setHandleNote(res.reviewNote || res.handleNote || '');
+      }
     } catch (e) {
       console.error(e);
     }
@@ -50,6 +52,8 @@ const ReturnApplyDetail: React.FC = () => {
 
   if (!comment) return <Typography sx={{ p: 3 }}>Loading...</Typography>;
 
+  const c: any = comment;
+
   return (
     <Card sx={{ p: 3, m: 3 }}>
       <Typography variant="h5" gutterBottom>Return Application Details</Typography>
@@ -61,10 +65,7 @@ const ReturnApplyDetail: React.FC = () => {
             <Typography color="text.secondary">Service ID: <Typography component="span" color="text.primary">{comment.id}</Typography></Typography>
           </Grid>
           <Grid size={{xs: 12, sm: 6}}>
-            <Typography color="text.secondary">Order SN: <Typography component="span" color="text.primary">{comment.orderNumber}</Typography></Typography>
-          </Grid>
-          <Grid size={{xs: 12, sm: 6}}>
-            
+            <Typography color="text.secondary">Order SN: <Typography component="span" color="text.primary">{comment.orderNumber || c.orderSn}</Typography></Typography>
           </Grid>
           <Grid size={{xs: 12, sm: 6}}>
             <Typography component="div" color="text.secondary">Status: 
@@ -75,7 +76,7 @@ const ReturnApplyDetail: React.FC = () => {
             </Typography>
           </Grid>
           <Grid size={{xs: 12, sm: 6}}>
-            <Typography color="text.secondary">Applied Time: <Typography component="span" color="text.primary">{new Date(comment.createdAt).toLocaleString()}</Typography></Typography>
+            <Typography color="text.secondary">Applied Time: <Typography component="span" color="text.primary">{(c.createTime || comment.createdAt) ? new Date(c.createTime || comment.createdAt).toLocaleString() : '-'}</Typography></Typography>
           </Grid>
         </Grid>
       </Paper>
@@ -83,21 +84,21 @@ const ReturnApplyDetail: React.FC = () => {
       <Paper sx={{ p: 3, mb: 3 }} variant="outlined">
         <Typography variant="h6" gutterBottom>Product Information</Typography>
         <Box sx={{ display: 'flex', gap: 3, alignItems: 'center' }}>
-          <img src={resolveImageUrl(comment.productImageUrl)} alt={comment.productName} style={{ width: 100, height: 100, objectFit: 'cover' }} />
+          <img src={resolveImageUrl(comment.productImageUrl || c.productPic)} alt={comment.productName} style={{ width: 100, height: 100, objectFit: 'contain' }} />
           <Box>
             <Typography variant="subtitle1" fontWeight="bold">{comment.productName}</Typography>
-            <Typography color="text.secondary">Brand: {comment.brandName}</Typography>
-            <Typography color="text.secondary">Attributes: {typeof comment.skuAttributes === 'object' ? JSON.stringify(comment.skuAttributes) : (comment.skuAttributes || '-')}</Typography>
-            <Typography color="text.secondary">Quantity: {comment.quantity}</Typography>
-            <Typography color="text.secondary">Price Paid: ₹{comment.unitRefundAmount?.toFixed(2)}</Typography>
+            <Typography color="text.secondary">Brand: {comment.brandName || c.productBrand}</Typography>
+            <Typography color="text.secondary">Attributes: {typeof comment.skuAttributes === 'object' ? JSON.stringify(comment.skuAttributes) : (comment.skuAttributes || c.productAttr || '-')}</Typography>
+            <Typography color="text.secondary">Quantity: {comment.quantity ?? c.productCount}</Typography>
+            <Typography color="text.secondary">Price Paid: ₹{Number(comment.unitRefundAmount ?? c.productRealPrice ?? 0).toFixed(2)}</Typography>
           </Box>
         </Box>
       </Paper>
 
       <Paper sx={{ p: 3, mb: 3 }} variant="outlined">
         <Typography variant="h6" gutterBottom>Customer Request</Typography>
-        <Typography color="error.main" fontWeight="bold" gutterBottom>Reason: {comment.reasonId}</Typography>
-        <Typography color="text.secondary">Description: {comment.customerComment || 'No additional customerComment provided.'}</Typography>
+        <Typography color="error.main" fontWeight="bold" gutterBottom>Reason: {c.reason || comment.reasonId}</Typography>
+        <Typography color="text.secondary">Description: {comment.customerComment || c.description || 'No additional comment provided.'}</Typography>
       </Paper>
 
       <Paper sx={{ p: 3, mb: 3 }} variant="outlined">
@@ -136,7 +137,7 @@ const ReturnApplyDetail: React.FC = () => {
           {comment.status === 1 && (
             <Button variant="contained" color="success" onClick={() => handleUpdateStatus(2)}>Confirm Receipt & Complete Refund</Button>
           )}
-          <Button variant="outlined" onClick={() => navigate('/ordering/returnApply')}>Back to List</Button>
+          <Button variant="outlined" onClick={() => navigate('/ordering/return-requests')}>Back to List</Button>
         </Box>
       </Paper>
     </Card>

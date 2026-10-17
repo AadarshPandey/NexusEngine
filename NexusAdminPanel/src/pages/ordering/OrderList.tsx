@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Chip, Paper, Button, Menu, MenuItem, TextField, Grid, FormControl, InputLabel, Select, Box } from '@mui/material';
+import { useNavigate } from 'react-router';
 import { getOrderListAPI, orderUpdateStatusAPI } from '@/apis/ordering';
 import type { OmsOrder } from '@/types/ordering';
 
 const OrderList: React.FC = () => {
+  const navigate = useNavigate();
   const [orders, setOrders] = useState<OmsOrder[]>([]);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedOrder, setSelectedOrder] = useState<OmsOrder | null>(null);
@@ -11,7 +13,6 @@ const OrderList: React.FC = () => {
   // Search states
   const [searchId, setSearchId] = useState('');
   const [searchSn, setSearchSn] = useState('');
-  
   const [searchAmount, setSearchAmount] = useState('');
   const [searchPayType, setSearchPayType] = useState<number | ''>('');
   const [searchStatus, setSearchStatus] = useState<number | ''>('');
@@ -24,7 +25,7 @@ const OrderList: React.FC = () => {
   const fetchOrders = async () => {
     try {
       const res = await getOrderListAPI({ pageNum: 1, pageSize: 500 });
-      setOrders(res.data.list);
+      setOrders(Array.isArray(res) ? res : (res as any)?.content || []);
     } catch (e) {
       console.error(e);
     }
@@ -69,20 +70,23 @@ const OrderList: React.FC = () => {
   const resetSearch = () => {
     setSearchId('');
     setSearchSn('');
-    
     setSearchAmount('');
     setSearchPayType('');
     setSearchStatus('');
     setSearchDate('');
   };
 
-  const filteredOrders = orders.filter(order => {
-    if (searchId && order.id.toString() !== searchId && !order.orderNumber?.includes(searchId)) return false;
-    if (searchSn && !order.orderNumber?.includes(searchSn)) return false;
-        if (searchAmount && order.subtotalAmount?.toString() !== searchAmount) return false;
-    if (searchPayType !== '' && order.paymentMethod !== searchPayType) return false;
+  const filteredOrders = orders.filter((order: any) => {
+    const sn = order.orderSn || order.orderNumber || '';
+    const amount = order.totalAmount ?? order.subtotalAmount;
+    const payType = order.payType ?? order.paymentMethod;
+    const created = order.createTime || order.createdAt || '';
+    if (searchId && order.id.toString() !== searchId && !sn.includes(searchId)) return false;
+    if (searchSn && !sn.includes(searchSn)) return false;
+    if (searchAmount && amount?.toString() !== searchAmount) return false;
+    if (searchPayType !== '' && payType !== searchPayType) return false;
     if (searchStatus !== '' && order.status !== searchStatus) return false;
-    if (searchDate && !order.createdAt?.startsWith(searchDate)) return false;
+    if (searchDate && !created.startsWith(searchDate)) return false;
     return true;
   });
 
@@ -109,8 +113,8 @@ const OrderList: React.FC = () => {
               <Select value={searchPayType} label="Payment Type" onChange={e => setSearchPayType(e.target.value as number | '')}>
                 <MenuItem value=""><em>All</em></MenuItem>
                 <MenuItem value={0}>Unpaid</MenuItem>
-                <MenuItem value={1}>Alipay</MenuItem>
-                <MenuItem value={2}>Razorpay</MenuItem>
+                <MenuItem value={1}>Razorpay</MenuItem>
+                <MenuItem value={2}>Stripe</MenuItem>
               </Select>
             </FormControl>
           </Grid>
@@ -144,7 +148,6 @@ const OrderList: React.FC = () => {
             <TableRow sx={{ bgcolor: 'grey.50' }}>
               <TableCell>Order ID</TableCell>
               <TableCell>Order Serial Number</TableCell>
-              
               <TableCell>Total Amount</TableCell>
               <TableCell>Payment Type</TableCell>
               <TableCell>Status</TableCell>
@@ -153,20 +156,28 @@ const OrderList: React.FC = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredOrders.map((order) => (
-              <TableRow key={order.id} hover>
-                <TableCell>{order.id}</TableCell>
-                <TableCell>{order.orderNumber}</TableCell>
-                
-                <TableCell>₹{order.subtotalAmount?.toFixed(2)}</TableCell>
-                <TableCell>{order.paymentMethod === 1 ? 'Razorpay' : order.paymentMethod === 2 ? 'Stripe' : 'Unpaid'}</TableCell>
-                <TableCell>{getStatusChip(order.status)}</TableCell>
-                <TableCell>{new Date(order.createdAt).toLocaleString()}</TableCell>
-                <TableCell align="right">
-                  <Button size="small" variant="outlined" onClick={(e) => handleUpdateClick(e, order)}>Update Status</Button>
-                </TableCell>
-              </TableRow>
-            ))}
+            {filteredOrders.map((order: any) => {
+              const sn = order.orderSn || order.orderNumber;
+              const amount = Number(order.totalAmount ?? order.subtotalAmount ?? 0);
+              const payType = order.payType ?? order.paymentMethod;
+              const created = order.createTime || order.createdAt;
+              return (
+                <TableRow key={order.id} hover>
+                  <TableCell>{order.id}</TableCell>
+                  <TableCell>{sn}</TableCell>
+                  <TableCell>₹{amount.toFixed(2)}</TableCell>
+                  <TableCell>{payType === 1 ? 'Razorpay' : payType === 2 ? 'Stripe' : 'Unpaid'}</TableCell>
+                  <TableCell>{getStatusChip(order.status)}</TableCell>
+                  <TableCell>{created ? new Date(created).toLocaleString() : '-'}</TableCell>
+                  <TableCell align="right">
+                    <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
+                      <Button size="small" variant="text" onClick={() => navigate(`/ordering/orders/${order.id}`)}>View Details</Button>
+                      <Button size="small" variant="outlined" onClick={(e) => handleUpdateClick(e, order)}>Update Status</Button>
+                    </Box>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
             {filteredOrders.length === 0 && (
               <TableRow>
                 <TableCell colSpan={7} align="center" sx={{ py: 5 }}>No orders found.</TableCell>

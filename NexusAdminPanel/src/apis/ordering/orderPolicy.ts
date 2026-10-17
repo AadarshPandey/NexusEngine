@@ -5,11 +5,11 @@ export function getOrderSettingByIdAPI(id: number) {
   return http<OrderPolicy>({
     url: `/api/admin/ordering/policies/${id}`,
     method: 'get',
-  }).then((res: any) => ({ data: res }))
+  })
 }
 
 export function orderSettingUpdateByIdAPI(id: number, data: OrderPolicy) {
-  return http({
+  return http<number>({
     url: `/api/admin/ordering/policies/${id}`,
     method: 'put',
     data,

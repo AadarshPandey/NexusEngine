@@ -5,5 +5,5 @@ export function getCompanyAddressListAllAPI() {
   return http<MerchantAddress[]>({
     url: '/api/admin/ordering/merchant-addresses',
     method: 'get',
-  }).then((res: any) => ({ data: res }))
+  })
 }

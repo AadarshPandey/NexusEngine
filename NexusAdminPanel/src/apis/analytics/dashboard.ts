@@ -7,5 +7,5 @@ export function getDashboardInfoAPI() {
   return http<DashboardInfo>({
     url: '/api/admin/analytics/dashboard',
     method: 'get',
-  }).then((res: any) => ({ data: res }))
+  })
 }

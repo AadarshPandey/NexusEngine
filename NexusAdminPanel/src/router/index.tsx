@@ -18,8 +18,6 @@ const ProductCategoryAdd = lazy(() => import('@/pages/catalog/ProductCategoryAdd
 const ProductCategoryUpdate = lazy(() => import('@/pages/catalog/ProductCategoryUpdate'));
 const ProductAttrList = lazy(() => import('@/pages/catalog/ProductAttrList'));
 const ProductAttrDetailList = lazy(() => import('@/pages/catalog/ProductAttrDetailList'));
-const ProductAttrAdd = lazy(() => import('@/pages/catalog/ProductAttrAdd'));
-const ProductAttrUpdate = lazy(() => import('@/pages/catalog/ProductAttrUpdate'));
 const BrandList = lazy(() => import('@/pages/catalog/BrandList'));
 const BrandAdd = lazy(() => import('@/pages/catalog/BrandAdd'));
 const BrandUpdate = lazy(() => import('@/pages/catalog/BrandUpdate'));
@@ -41,10 +39,6 @@ const CouponList = lazy(() => import('@/pages/promotion/CouponList'));
 const CouponAdd = lazy(() => import('@/pages/promotion/CouponAdd'));
 const CouponUpdate = lazy(() => import('@/pages/promotion/CouponUpdate'));
 const CouponHistory = lazy(() => import('@/pages/promotion/CouponHistory'));
-const HomeBrand = lazy(() => import('@/pages/promotion/HomeBrand'));
-const HomeNew = lazy(() => import('@/pages/promotion/HomeNew'));
-const HomeHot = lazy(() => import('@/pages/promotion/HomeHot'));
-const HomeSubject = lazy(() => import('@/pages/promotion/HomeSubject'));
 const AdvertiseList = lazy(() => import('@/pages/promotion/AdvertiseList'));
 const AdvertiseAdd = lazy(() => import('@/pages/promotion/AdvertiseAdd'));
 const AdvertiseUpdate = lazy(() => import('@/pages/promotion/AdvertiseUpdate'));
@@ -119,6 +113,7 @@ const router = createHashRouter([
       { path: 'promotion/coupons/:id/history', element: withSuspense(CouponHistory) },
       { path: 'promotion/flash-sales', element: withSuspense(FlashList) },
       { path: 'promotion/flash-sales/:id/slots', element: withSuspense(FlashSessionList) },
+      { path: 'promotion/flash-sales/select-session', element: withSuspense(SelectSession) },
       { path: 'promotion/flash-sales/:id/items', element: withSuspense(FlashProductRelation) },
       { path: 'promotion/banners', element: withSuspense(AdvertiseList) },
       { path: 'promotion/banners/new', element: withSuspense(AdvertiseAdd) },

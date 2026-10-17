@@ -16,8 +16,8 @@ const Login: React.FC = () => {
     e.preventDefault();
     try {
       const response = await loginMember({ username, password, passwordHash: password });
-      if (response.data?.token) {
-        dispatch(login({ token: response.data.token, user: { username } }));
+      if (response?.token) {
+        dispatch(login({ token: response.token, user: { username } }));
         navigate('/');
       }
     } catch (err: unknown) {

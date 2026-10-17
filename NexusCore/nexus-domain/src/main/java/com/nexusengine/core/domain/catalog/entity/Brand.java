@@ -28,4 +28,12 @@ public class Brand {
     @Schema(title = "Logo")
     @Column(name = "logo_url")
     private String logo;
+
+    public String getLogoUrl() {
+        return this.logo;
+    }
+
+    public void setLogoUrl(String logoUrl) {
+        this.logo = logoUrl;
+    }
 }

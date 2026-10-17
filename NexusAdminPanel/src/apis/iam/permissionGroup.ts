@@ -3,13 +3,13 @@ import http from '@/utils/http'
 
 export function resourceCategoryListAllAPI() {
   return http<PermissionGroup[]>({
-    url: '/api/admin/iam/permission-groups/all',
+    url: '/api/admin/iam/permission-groups',
     method: 'get',
-  }).then((res: any) => ({ data: res }))
+  })
 }
 
 export function resourceCategoryCreateAPI(data: any) {
-  return http({
+  return http<number>({
     url: '/api/admin/iam/permission-groups',
     method: 'post',
     data,
@@ -17,7 +17,7 @@ export function resourceCategoryCreateAPI(data: any) {
 }
 
 export function resourceCategoryUpdateByIdAPI(id: number, data: any) {
-  return http({
+  return http<number>({
     url: `/api/admin/iam/permission-groups/${id}`,
     method: 'put',
     data,
@@ -25,7 +25,7 @@ export function resourceCategoryUpdateByIdAPI(id: number, data: any) {
 }
 
 export function resourceCategoryDeleteByIdAPI(id: number) {
-  return http({
+  return http<number>({
     url: `/api/admin/iam/permission-groups/${id}`,
     method: 'delete',
   })

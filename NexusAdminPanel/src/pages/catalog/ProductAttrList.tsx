@@ -25,9 +25,9 @@ const ProductAttrList: React.FC = () => {
     setLoading(true);
     try {
       const res = await getProductAttributeCategoryListAPI({ pageNum, pageSize });
-      if (res.data) {
-        setList(res.data.list || []);
-        setTotal(res.data.total || 0);
+      if (res) {
+        setList(res.content || []);
+        setTotal(res.totalElements || 0);
       }
     } catch (e) {
       console.error(e);
@@ -115,10 +115,10 @@ const ProductAttrList: React.FC = () => {
                     <TableCell align="center">{row.attributeCount === null ? 0 : row.attributeCount}</TableCell>
                     <TableCell align="center">{row.paramCount === null ? 0 : row.paramCount}</TableCell>
                     <TableCell align="center">
-                      <Button size="small" variant="outlined" sx={{ mr: 1 }} onClick={() => navigate(`/pms/productAttrList?cid=${row.id}&type=0`)}>
+                      <Button size="small" variant="outlined" sx={{ mr: 1 }} onClick={() => navigate(`/catalog/attributes/${row.id}/items?type=0`)}>
                         Manage Attributes
                       </Button>
-                      <Button size="small" variant="outlined" color="secondary" onClick={() => navigate(`/pms/productAttrList?cid=${row.id}&type=1`)}>
+                      <Button size="small" variant="outlined" color="secondary" onClick={() => navigate(`/catalog/attributes/${row.id}/items?type=1`)}>
                         Attribute Definition
                       </Button>
                     </TableCell>

@@ -31,7 +31,7 @@ export const userLogin = createAsyncThunk(
   'user/login',
   async (loginParam: LoginParam, { dispatch }) => {
     const res = await adminLoginAPI(loginParam);
-    const tokenStr = res.data.tokenHead + res.data.token;
+    const tokenStr = (res.tokenHead || '') + res.token;
     dispatch(setToken(tokenStr));
     dispatch(setCredentials(loginParam));
     // Fetch user info after login
@@ -43,8 +43,7 @@ export const userLogin = createAsyncThunk(
 export const fetchUserInfo = createAsyncThunk(
   'user/fetchInfo',
   async () => {
-    const res = await getAdminInfoAPI();
-    return res.data;
+    return await getAdminInfoAPI();
   },
 );
 

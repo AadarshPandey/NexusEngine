@@ -18,19 +18,10 @@ const SelectSession: React.FC = () => {
   const fetchSessions = async () => {
     try {
       const res = await getFlashSessionListAPI();
-      console.log('API Response:', res);
-      if (res && res.data) {
-        if (Array.isArray(res.data)) {
-           setSessions(res.data);
-        } else if ((res.data as any).list && Array.isArray((res.data as any).list)) {
-           setSessions((res.data as any).list);
-        } else {
-           setSessions([]);
-           setErrorMsg('API returned data but it is not an array: ' + JSON.stringify(res.data));
-        }
+      if (Array.isArray(res)) {
+        setSessions(res);
       } else {
         setSessions([]);
-        setErrorMsg('API returned empty res.data: ' + JSON.stringify(res));
       }
     } catch (e: any) {
       console.error(e);
@@ -56,6 +47,7 @@ const SelectSession: React.FC = () => {
       <Card>
         <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Typography variant="h6">Select Session to Manage Products</Typography>
+          <Button variant="outlined" onClick={() => navigate('/promotion/flash-sales')}>Back to Campaigns</Button>
         </Box>
         {errorMsg && <Alert severity="error">{errorMsg}</Alert>}
         {sessions.length === 0 && !errorMsg && <Alert severity="info">No sessions loaded. Please verify API response.</Alert>}
@@ -74,14 +66,14 @@ const SelectSession: React.FC = () => {
               {sessions.map((session) => (
                 <TableRow key={session.id}>
                   <TableCell>{session.id}</TableCell>
-                  <TableCell>{session.name}</TableCell>
-                  <TableCell>{formatTime(session.startsAt)}</TableCell>
-                  <TableCell>{formatTime(session.endsAt)}</TableCell>
+                  <TableCell>{session.name || session.label}</TableCell>
+                  <TableCell>{formatTime(session.startTime || session.startsAt)}</TableCell>
+                  <TableCell>{formatTime(session.endTime || session.endsAt)}</TableCell>
                   <TableCell align="center">
                     <Button 
                       variant="contained" 
                       size="small" 
-                      onClick={() => navigate(`/sms/flashProductRelation?flashSaleId=${flashSaleId}&slotId=${session.id}`)}
+                      onClick={() => navigate(`/promotion/flash-sales/${flashSaleId || 1}/items?flashSaleId=${flashSaleId || 1}&slotId=${session.id}`)}
                     >
                       Product List
                     </Button>

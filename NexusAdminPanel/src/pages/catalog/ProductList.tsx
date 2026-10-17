@@ -1,27 +1,44 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Typography, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Switch, TextField, MenuItem, Select, FormControl, InputLabel, ListSubheader, Grid, IconButton, Divider, Breadcrumbs, Link, TablePagination, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import { useNavigate } from 'react-router';
-import { getProductListAPI, productUpdateDeleteStatusAPI, productUpdatePublishStatusAPI, productUpdateNewStatusAPI, productUpdateRecommendStatusAPI } from '@/apis/catalog';
-import http from '@/utils/http';
-import { getBrandListAPI } from '@/apis/catalog';
-import { getProductCategoryListWithChildrenAPI } from '@/apis/catalog';
+import {
+  getProductListAPI,
+  productUpdateDeleteStatusAPI,
+  productUpdatePublishStatusAPI,
+  productUpdateNewStatusAPI,
+  productUpdateRecommendStatusAPI,
+  productUpdateApprovalStatusAPI,
+  getProductAuditLogsAPI,
+  getProductApprovalHistoryAPI,
+  getSkuStockByPidAPI,
+  skuStockUpdateAPI,
+  getBrandListAPI,
+  getProductCategoryListWithChildrenAPI,
+} from '@/apis/catalog';
 import { resolveImageUrl } from '@/utils/media';
 
 interface PmsProductAuditLog {
   id?: number;
-  orderLineId?: number;
+  productId?: number;
+  priceOld?: number;
+  priceNew?: number;
   oldListPrice?: number;
   newListPrice?: number;
+  operateMan?: string;
   changedByAdminId?: string;
+  createTime?: string;
   createdAt?: string;
 }
 
 interface PmsProductApprovalHistory {
   id?: number;
-  orderLineId?: number;
+  productId?: number;
+  createTime?: string;
   createdAt?: string;
+  reviewerName?: string;
   reviewerAdminId?: string;
   status?: number;
+  detail?: string;
   comment?: string;
 }
 
@@ -38,7 +55,7 @@ const ProductList: React.FC = () => {
   const [searchParams, setSearchParams] = useState({
     keyword: '',
     productCode: '',
-    permissionGroupId: '',
+    productCategoryId: '',
     brandId: '',
     isPublished: '',
     approvalStatus: '',
@@ -63,10 +80,10 @@ const ProductList: React.FC = () => {
   const saveSkuChanges = async () => {
     if (!selectedProductId) return;
     try {
-      await http.post('/sku/update/' + selectedProductId, editingSkuList);
+      await skuStockUpdateAPI(selectedProductId, editingSkuList);
       alert('SKUs updated successfully!');
       setIsEditingSku(false);
-      openSkuModal(selectedProductId); // refresh
+      openSkuModal(selectedProductId);
     } catch (e) {
       alert('Failed to update SKUs');
     }
@@ -75,9 +92,10 @@ const ProductList: React.FC = () => {
   const openSkuModal = async (id: number) => {
     setSelectedProductId(id);
     try {
-      const res = await http.get('/sku/' + id);
-      setSkuList(res.data || []);
-      setEditingSkuList(JSON.parse(JSON.stringify(res.data || [])));
+      const res = await getSkuStockByPidAPI(id);
+      const list = Array.isArray(res) ? res : [];
+      setSkuList(list);
+      setEditingSkuList(JSON.parse(JSON.stringify(list)));
       setIsEditingSku(false);
       setSkuModalOpen(true);
     } catch (e) {
@@ -95,8 +113,10 @@ const ProductList: React.FC = () => {
   const submitVerify = async () => {
     if (!selectedProductId) return;
     try {
-      await http.post('/product/update/approvalStatus', null, {
-        params: { ids: selectedProductId.toString(), approvalStatus, comment: verifyDetail }
+      await productUpdateApprovalStatusAPI({
+        ids: selectedProductId.toString(),
+        approvalStatus,
+        detail: verifyDetail,
       });
       alert('Verification updated successfully!');
       setVerifyModalOpen(false);
@@ -109,10 +129,12 @@ const ProductList: React.FC = () => {
   const openLogModal = async (id: number) => {
     setSelectedProductId(id);
     try {
-      const resOperate = await http.get('/product/auditLog/' + id);
-      setAuditLogs(resOperate.data || []);
-      const resVerify = await http.get('/product/approvalHistory/' + id);
-      setApprovalHistorys(resVerify.data || []);
+      const [resOperate, resVerify] = await Promise.all([
+        getProductAuditLogsAPI(id),
+        getProductApprovalHistoryAPI(id),
+      ]);
+      setAuditLogs(Array.isArray(resOperate) ? resOperate : []);
+      setApprovalHistorys(Array.isArray(resVerify) ? resVerify : []);
       setLogModalOpen(true);
     } catch (e) {
       alert('Failed to fetch logs');
@@ -133,8 +155,8 @@ const ProductList: React.FC = () => {
         getBrandListAPI({ pageNum: 1, pageSize: 100 }),
         getProductCategoryListWithChildrenAPI()
       ]);
-      setBrands(brandRes.data?.list || []);
-      setCategories(cateRes.data || []);
+      setBrands(brandRes?.content || []);
+      setCategories(Array.isArray(cateRes) ? cateRes : []);
     } catch (e) {
       console.error(e);
     }
@@ -143,8 +165,8 @@ const ProductList: React.FC = () => {
   const fetchProducts = async (params = searchParams) => {
     try {
       const res = await getProductListAPI(params as unknown as import('@/types/catalog').ProductQueryParam);
-      setProducts(res.data?.list || []);
-      setTotal(res.data?.total || 0);
+      setProducts(res?.content || []);
+      setTotal(res?.totalElements || 0);
     } catch (error) {
       console.error('Failed to fetch products', error);
     }
@@ -157,7 +179,7 @@ const ProductList: React.FC = () => {
   };
 
   const handleReset = () => {
-    const resetParams = { ...searchParams, keyword: '', productCode: '', permissionGroupId: '', brandId: '', isPublished: '', approvalStatus: '', pageNum: 1 };
+    const resetParams = { ...searchParams, keyword: '', productCode: '', productCategoryId: '', brandId: '', isPublished: '', approvalStatus: '', pageNum: 1 };
     setSearchParams(resetParams);
     fetchProducts(resetParams);
   };
@@ -214,7 +236,7 @@ const ProductList: React.FC = () => {
           <Grid size={{ xs: 12, md: 4 }}>
             <FormControl fullWidth size="small">
               <InputLabel>Product Category</InputLabel>
-              <Select label="Product Category" value={searchParams.permissionGroupId} onChange={(e) => setSearchParams({ ...searchParams, permissionGroupId: e.target.value as string })}>
+              <Select label="Product Category" value={searchParams.productCategoryId} onChange={(e) => setSearchParams({ ...searchParams, productCategoryId: e.target.value as string })}>
                 <MenuItem value="">Please select</MenuItem>
                 {categories.map((parent: import('@/types/catalog').PmsProductCategory) => [
                   <ListSubheader key={`header-${parent.id}`}>{parent.name}</ListSubheader>,
@@ -267,7 +289,7 @@ const ProductList: React.FC = () => {
           <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center' }}>
             <Box component="span" sx={{ mr: 1 }}>📄</Box> target data list
           </Typography>
-          <Button variant="outlined" size="small" onClick={() => navigate('/catalog/addProduct')}>Add product</Button>
+          <Button variant="outlined" size="small" onClick={() => navigate('/catalog/products/new')}>Add product</Button>
         </Box>
         <TableContainer>
           <Table size="medium">
@@ -326,13 +348,13 @@ const ProductList: React.FC = () => {
                   <TableCell>{row.onHandQty || 0}</TableCell>
                   <TableCell>
                     <Typography variant="body2">{row.approvalStatus === 1 ? 'Approved' : 'Not reviewed'}</Typography>
-                    <Link href="#" variant="caption" underline="hover">Review details</Link>
+                    <Link href="#" variant="caption" underline="hover" onClick={(e) => { e.preventDefault(); openLogModal(row.id!); }}>Review details</Link>
                   </TableCell>
                   <TableCell align="center">
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                       <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
                         <Button size="small" variant="text" onClick={() => openVerifyModal(row.id!)}>Check</Button>
-                        <Button size="small" variant="text" color="primary" onClick={() => navigate(`/pms/updateProduct?id=${row.id}`)}>edit</Button>
+                        <Button size="small" variant="text" color="primary" onClick={() => navigate(`/catalog/products/${row.id}/edit`)}>edit</Button>
                       </Box>
                       <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
                         <Button size="small" variant="text" color="success" onClick={() => openSkuModal(row.id!)}>SKUs</Button>
@@ -396,9 +418,14 @@ const ProductList: React.FC = () => {
                 {(isEditingSku ? editingSkuList : skuList).map((sku: import('@/types/catalog').PmsSkuStock, idx: number) => {
                   let attrs = '';
                   try {
-                    if (sku.spData) {
-                      const spData = JSON.parse(sku.spData);
-                      attrs = spData.map((d: PmsSpData) => `${d.key}: ${d.value}`).join(', ');
+                    const rawAttr = sku.skuAttributes || sku.spData;
+                    if (rawAttr) {
+                      const parsed = typeof rawAttr === 'string' ? JSON.parse(rawAttr) : rawAttr;
+                      if (Array.isArray(parsed)) {
+                        attrs = parsed.map((d: PmsSpData) => `${d.key}: ${d.value}`).join(', ');
+                      } else if (typeof parsed === 'object' && parsed !== null) {
+                        attrs = Object.entries(parsed).map(([k, v]) => `${k}: ${v}`).join(', ');
+                      }
                     }
                   } catch(e) {}
                   return (
@@ -473,17 +500,17 @@ const ProductList: React.FC = () => {
                 <TableRow>
                   <TableCell>Operator</TableCell>
                   <TableCell>Time</TableCell>
-                  <TableCell>New PK Price</TableCell>
+                  <TableCell>Old Price</TableCell>
                   <TableCell>New Price</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {auditLogs.map((log: PmsProductAuditLog, idx: number) => (
                   <TableRow key={idx}>
-                    <TableCell>{log.changedByAdminId || 'System'}</TableCell>
-                    <TableCell>{log.createdAt ? new Date(log.createdAt).toLocaleString() : '-'}</TableCell>
-                    <TableCell>{log.oldListPrice || '-'}</TableCell>
-                    <TableCell>{log.newListPrice || '-'}</TableCell>
+                    <TableCell>{log.operateMan || log.changedByAdminId || 'System'}</TableCell>
+                    <TableCell>{(log.createTime || log.createdAt) ? new Date((log.createTime || log.createdAt)!).toLocaleString() : '-'}</TableCell>
+                    <TableCell>₹{log.priceOld ?? log.oldListPrice ?? '-'}</TableCell>
+                    <TableCell>₹{log.priceNew ?? log.newListPrice ?? '-'}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -506,10 +533,10 @@ const ProductList: React.FC = () => {
               <TableBody>
                 {approvalHistorys.map((rec: PmsProductApprovalHistory, idx: number) => (
                   <TableRow key={idx}>
-                    <TableCell>{rec.reviewerAdminId || 'System'}</TableCell>
-                    <TableCell>{rec.createdAt ? new Date(rec.createdAt).toLocaleString() : '-'}</TableCell>
+                    <TableCell>{rec.reviewerName || rec.reviewerAdminId || 'System'}</TableCell>
+                    <TableCell>{(rec.createTime || rec.createdAt) ? new Date((rec.createTime || rec.createdAt)!).toLocaleString() : '-'}</TableCell>
                     <TableCell>{rec.status === 1 ? 'Approved' : 'Rejected'}</TableCell>
-                    <TableCell>{rec.comment || '-'}</TableCell>
+                    <TableCell>{rec.detail || rec.comment || '-'}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

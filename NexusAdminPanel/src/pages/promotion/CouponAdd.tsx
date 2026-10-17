@@ -46,7 +46,7 @@ const CouponAdd: React.FC = () => {
               };
       await couponCreateAPI(payload);
       setSnackbar({ open: true, message: 'Coupon created successfully', severity: 'success' });
-      setTimeout(() => navigate('/promotion/coupon'), 1000);
+      setTimeout(() => navigate('/promotion/coupons'), 1000);
     } catch {
       setSnackbar({ open: true, message: 'Failed to create coupon', severity: 'error' });
     } finally {
@@ -158,7 +158,7 @@ const CouponAdd: React.FC = () => {
             
 
             <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, mt: 2 }}>
-              <Button variant="outlined" onClick={() => navigate('/promotion/coupon')}>Cancel</Button>
+              <Button variant="outlined" onClick={() => navigate('/promotion/coupons')}>Cancel</Button>
               <Button variant="contained" onClick={handleSubmit} disabled={saving}>
                 {saving ? 'Creating...' : 'Add Coupon'}
               </Button>

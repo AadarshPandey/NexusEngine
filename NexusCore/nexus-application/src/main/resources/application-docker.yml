@@ -1,0 +1,55 @@
+server:
+  port: 8080
+
+spring:
+  flyway:
+    enabled: true
+    schemas: catalog,ordering,customer,iam,promotion,engagement,payment,ai,messaging
+  datasource:
+    url: jdbc:postgresql://postgres:5432/nexuscore?stringtype=unspecified
+    username: ${POSTGRES_USER:postgres}
+    password: ${POSTGRES_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+  data:
+    redis:
+      host: redis
+      database: 0
+      port: 6379
+      timeout: 300ms
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    virtual-host: /nexuscore
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+  elasticsearch:
+    uris: http://elasticsearch:9200
+  ai:
+    google:
+      genai:
+        api-key: ${GEMINI_API_KEY:sk-your-key-here}
+        chat:
+          options:
+            model: gemini-2.5-flash
+    vectorstore:
+      pgvector:
+        schema-name: ai
+        initialize-schema: false
+
+razorpay:
+  keyId: ${RAZORPAY_KEY_ID:}
+  keySecret: ${RAZORPAY_KEY_SECRET:}
+
+logging:
+  level:
+    root: info
+    com.nexusengine.core: info

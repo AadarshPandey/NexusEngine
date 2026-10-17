@@ -9,7 +9,7 @@ export const loadCartData = createAsyncThunk('cart/loadData', async (_, { getSta
     return [];
   }
   const response = await getCart();
-  const rawItems: any[] = response.data || [];
+  const rawItems: any[] = Array.isArray(response) ? response : [];
   return rawItems.map((item: any) => ({
     id: item.id,
     productId: item.productId,

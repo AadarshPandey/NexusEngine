@@ -19,7 +19,7 @@ export interface ConsoleMenu {
   displayOrder?: number
   sort?: number
   isHidden?: boolean | number
-  hidden?: number
+  hidden?: boolean | number
   children?: ConsoleMenu[]
   createdAt?: string
   createTime?: string
@@ -36,7 +36,7 @@ export interface Role {
   description?: string
   customerComment?: string
   isActive?: boolean | number
-  status?: number
+  status?: boolean | number
   displayOrder?: number
   sort?: number
   adminCount?: number
@@ -78,7 +78,7 @@ export interface AdminUser {
   iconUrl?: string
   note?: string
   isEnabled?: boolean | number
-  status?: number
+  status?: boolean | number
   roles?: Role[]
   menus?: ConsoleMenu[]
   lastLoginAt?: string
@@ -101,6 +101,7 @@ export interface AdminInfoResponse {
   username: string
   menus: ConsoleMenu[]
   icon?: string
+  iconUrl?: string
   avatarUrl?: string
   roles: string[]
 }
@@ -127,7 +128,7 @@ export interface AdminUserParam {
   icon?: string
   note?: string
   isEnabled?: boolean | number
-  status?: number
+  status?: boolean | number
 }
 
 export type ResourceQueryParam = PageParam & {

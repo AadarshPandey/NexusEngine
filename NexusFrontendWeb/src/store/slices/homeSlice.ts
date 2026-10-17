@@ -8,8 +8,8 @@ export const loadHomeData = createAsyncThunk('home/loadData', async () => {
   const contentResponse = await fetchHomeContent();
   const recommendResponse = await fetchRecommendProductList(8, 1);
   return {
-    body: contentResponse.data,
-    recommendations: recommendResponse.data,
+    body: contentResponse,
+    recommendations: recommendResponse,
   };
 });
 

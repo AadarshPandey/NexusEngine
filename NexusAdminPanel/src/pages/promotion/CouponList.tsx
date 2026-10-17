@@ -26,9 +26,9 @@ const CouponList: React.FC = () => {
     setLoading(true);
     try {
       const res = await getCouponListAPI(queryParams);
-      if (res.data) {
-        setList(res.data.list || []);
-        setTotal(res.data.total || 0);
+      if (res) {
+        setList(res.content || []);
+        setTotal(res.totalElements || 0);
       }
     } catch (e) {
       console.error(e);
@@ -114,7 +114,7 @@ const CouponList: React.FC = () => {
       <Card>
         <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid', borderColor: 'divider' }}>
           <Typography variant="h6">Coupon List</Typography>
-          <Button variant="contained" startIcon={<Add />} onClick={() => navigate('/promotion/addCoupon')}>
+          <Button variant="contained" startIcon={<Add />} onClick={() => navigate('/promotion/coupons/new')}>
             Add Coupon
           </Button>
         </Box>
@@ -163,8 +163,8 @@ const CouponList: React.FC = () => {
                       )}
                     </TableCell>
                     <TableCell align="center">
-                      <Button size="small" onClick={() => navigate(`/sms/couponHistory?couponId=${row.id}`)}>History</Button>
-                      <Button size="small" color="primary" onClick={() => navigate(`/sms/updateCoupon?id=${row.id}`)}>Edit</Button>
+                      <Button size="small" onClick={() => navigate(`/promotion/coupons/${row.id}/history`)}>History</Button>
+                      <Button size="small" color="primary" onClick={() => navigate(`/promotion/coupons/${row.id}/edit`)}>Edit</Button>
                       <Button size="small" color="error" onClick={() => handleDelete(row.id!)}>Delete</Button>
                     </TableCell>
                   </TableRow>

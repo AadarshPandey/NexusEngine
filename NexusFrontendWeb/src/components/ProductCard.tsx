@@ -50,11 +50,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             </Typography>
           )}
         </Box>
-        {product.unitsSold !== undefined && (
-          <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.5 }}>
-            {product.unitsSold} units sold
-          </Typography>
-        )}
+        <Typography
+          variant="caption"
+          color={(product.onHandQty ?? 0) > 0 ? 'success.main' : 'error.main'}
+          sx={{ display: 'block', mt: 0.5, fontWeight: 500 }}
+        >
+          {(product.onHandQty ?? 0) > 0 ? `${product.onHandQty} in stock` : 'Out of stock'}
+        </Typography>
       </CardContent>
       <CardActions sx={{ p: 2, pt: 0 }}>
         <Button size="small" variant="contained" fullWidth component={Link} to={`/product/${product.id}`}>

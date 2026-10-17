@@ -3,7 +3,7 @@ import { store } from '../store';
 import { logout } from '../store/slices/authSlice';
 
 const request = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || '/api/store',
+  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api/store',
   timeout: 30000,
 });
 
@@ -22,19 +22,7 @@ request.interceptors.request.use(
 );
 
 request.interceptors.response.use(
-  (response) => {
-    const res = response.data;
-    if (res && typeof res === 'object' && 'code' in res && res.code !== 200) {
-      if (res.code === 401) {
-        if (window.location.pathname !== '/login') {
-          store.dispatch(logout());
-          window.location.href = '/login';
-        }
-      }
-      return Promise.reject(new Error(res.message || 'Error'));
-    }
-    return res;
-  },
+  (response) => response.data,
   (error) => {
     if (error.response && error.response.status === 401) {
       if (window.location.pathname !== '/login') {

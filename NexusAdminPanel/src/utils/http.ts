@@ -1,12 +1,23 @@
-import axios from 'axios';
+import axios, { type AxiosInstance, type AxiosRequestConfig } from 'axios';
 import { store } from '@/store';
 import { fedLogout } from '@/store/slices/userSlice';
 
+export interface HttpClient extends Omit<AxiosInstance, 'get' | 'post' | 'put' | 'patch' | 'delete' | 'request'> {
+  <T = any>(config: AxiosRequestConfig): Promise<T>;
+  <T = any>(url: string, config?: AxiosRequestConfig): Promise<T>;
+  request<T = any>(config: AxiosRequestConfig): Promise<T>;
+  get<T = any>(url: string, config?: AxiosRequestConfig): Promise<T>;
+  delete<T = any>(url: string, config?: AxiosRequestConfig): Promise<T>;
+  post<T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T>;
+  put<T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T>;
+  patch<T = any>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T>;
+}
+
 // Create axios instance
 const http = axios.create({
-  baseURL: import.meta.env.VITE_BASE_SERVER_URL || '',
+  baseURL: import.meta.env.VITE_BASE_SERVER_URL || 'http://localhost:8080',
   timeout: 15000,
-});
+}) as HttpClient;
 
 // Request interceptor — attach JWT token
 http.interceptors.request.use(
@@ -20,22 +31,9 @@ http.interceptors.request.use(
   (e) => Promise.reject(e),
 );
 
-// Response interceptor — handle errors and RFC 9457 ProblemDetail
+// Response interceptor — unwrap response body and handle RFC 9457 ProblemDetail
 http.interceptors.response.use(
-  (response) => {
-    const res = response.data;
-    // Support legacy {code, message, data} envelope if present
-    if (res && typeof res === 'object' && 'code' in res && typeof res.code === 'number') {
-      if (res.code !== 200) {
-        if (res.code === 401) {
-          store.dispatch(fedLogout());
-        }
-        return Promise.reject(new Error(res.message || 'Request failed'));
-      }
-      return res.data !== undefined ? res.data : res;
-    }
-    return res;
-  },
+  (response) => response.data,
   (error) => {
     console.error('Request error:', error);
     if (error.response && error.response.status === 401) {

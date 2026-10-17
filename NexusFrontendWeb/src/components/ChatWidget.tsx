@@ -29,7 +29,7 @@ const ChatWidget: React.FC = () => {
     setConversationId(cId);
     getChatHistory(cId)
       .then(res => {
-        const history = (res.data || []).map((item) => ({
+        const history = (res || []).map((item) => ({
           role: item.role,
           body: item.content || item.body || '',
         }));
@@ -61,7 +61,7 @@ const ChatWidget: React.FC = () => {
 
     try {
       const response = await sendChatMessage(conversationId, userMessage);
-      const answer = (response.data as any)?.answer || (response.data as any)?.reply || 'I am ready to help!';
+      const answer = response?.answer || 'I am ready to help!';
       setMessages(prev => [...prev, { role: 'ASSISTANT', body: answer }]);
     } catch {
       setMessages(prev => [...prev, { role: 'ASSISTANT', body: 'Sorry, I am having trouble connecting right now.' }]);

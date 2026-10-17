@@ -41,7 +41,7 @@ services:
     container_name: nexus-frontend-web
     restart: unless-stopped
     ports:
-      - "5174:80"
+      - "5174:5174"
     depends_on:
       - nexus-application
     networks:
@@ -55,7 +55,7 @@ services:
     container_name: nexus-admin-panel
     restart: unless-stopped
     ports:
-      - "5173:80"
+      - "5173:5173"
     depends_on:
       - nexus-application
     networks:
@@ -118,7 +118,7 @@ services:
       - nexus-network
 
   elasticsearch:
-    image: elasticsearch:8.17.2
+    image: elasticsearch:9.1.0
     container_name: elasticsearch
     restart: always
     environment:
@@ -150,7 +150,26 @@ services:
       - EXTRA_CORS_ALLOWED_ORIGINS=https://app.localstack.cloud,http://localhost:5173,http://localhost:5174
     volumes:
       - ./resource_setup/s3-init:/etc/localstack/init/ready.d
+      - ./trash/s3-data:/s3-data:ro
       - localstack-data:/var/lib/localstack
+    networks:
+      - nexus-network
+
+  s3-ui:
+    image: cloudlena/s3manager:latest
+    container_name: s3-ui
+    restart: unless-stopped
+    ports:
+      - "9001:8080"
+    environment:
+      - ENDPOINT=http://localstack:4566
+      - ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-test}
+      - SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-test}
+      - REGION=${AWS_REGION:-us-east-1}
+      - USE_SSL=false
+      - FORCE_PATH_STYLE=true
+    depends_on:
+      - localstack
     networks:
       - nexus-network
 

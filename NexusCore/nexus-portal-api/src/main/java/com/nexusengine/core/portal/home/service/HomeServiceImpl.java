@@ -98,6 +98,7 @@ public class HomeServiceImpl implements HomeService {
                     List<FlashPromotionProduct> flashProductList = new java.util.ArrayList<>();
                     for (FlashSaleItem relation : relations) {
                         productRepository.findById(relation.getProductId()).ifPresent(p -> {
+                            org.hibernate.Hibernate.initialize(p.getGalleryList());
                             FlashPromotionProduct flashProduct = new FlashPromotionProduct(p, relation.getFlashPromotionPrice(), relation.getFlashPromotionCount(), relation.getFlashPromotionLimit());
                             flashProductList.add(flashProduct);
                         });

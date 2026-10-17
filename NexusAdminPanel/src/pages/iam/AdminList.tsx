@@ -95,8 +95,8 @@ const AdminList: React.FC = () => {
         pageNum: finalPageNum + 1, 
         pageSize 
       });
-      setList(res.data.list);
-      setTotal(res.data.total);
+      setList(res.content || []);
+      setTotal(res.totalElements || 0);
     } catch (error) {
       console.error(error);
     } finally {
@@ -109,7 +109,7 @@ const AdminList: React.FC = () => {
   }, [fetchList]);
 
   useEffect(() => {
-    getRoleListAllAPI().then(res => setAllRoles(res.data)).catch(console.error);
+    getRoleListAllAPI().then(res => setAllRoles(res || [])).catch(console.error);
   }, []);
 
   const handleSearch = () => {
@@ -136,7 +136,7 @@ const AdminList: React.FC = () => {
   };
 
   const handleStatusChange = async (row: UmsAdmin) => {
-    const newStatus = row.status === 1 ? 0 : 1;
+    const newStatus = Boolean(row.status) ? 0 : 1;
     try {
       await adminUpdateStatusByIdAPI(row.id!, { status: newStatus });
       setList((prev) => prev.map((item) => (item.id === row.id ? { ...item, status: newStatus } : item)));
@@ -181,7 +181,7 @@ const AdminList: React.FC = () => {
     setActiveAdminId(row.id!);
     try {
       const res = await getRoleByAdminIdAPI(row.id!);
-      setSelectedRoles(res.data.map((r: any) => r.id!));
+      setSelectedRoles((res || []).map((r: any) => r.id!));
       setRoleDialogOpen(true);
     } catch {
       setSnackbar({ open: true, message: 'Failed to fetch roles', severity: 'error' });
@@ -421,7 +421,7 @@ const AdminList: React.FC = () => {
               {allRoles.map((role) => (
                 <MenuItem key={role.id} value={role.id}>
                   <Checkbox checked={selectedRoles.indexOf(role.id!) > -1} />
-                  <ListItemText primary={role.name} secondary={role.customerComment} />
+                  <ListItemText primary={role.name} secondary={role.description || role.customerComment} />
                 </MenuItem>
               ))}
             </Select>

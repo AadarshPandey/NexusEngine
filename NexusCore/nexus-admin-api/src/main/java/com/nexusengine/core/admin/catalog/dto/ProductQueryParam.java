@@ -11,11 +11,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * Provides core functionality and operations for ProductQueryParam.
  */
 public record ProductQueryParam(
-    @Schema(title = "Publish status") @com.fasterxml.jackson.annotation.JsonProperty("isPublished") Integer publishStatus,
-    @Schema(title = "Verify status") @com.fasterxml.jackson.annotation.JsonProperty("approvalStatus") Integer verifyStatus,
-    @Schema(title = "Keyword") String keyword,
-    @Schema(title = "Product sn") @com.fasterxml.jackson.annotation.JsonProperty("productCode") String productSn,
-    @Schema(title = "Product category id") Long productCategoryId,
-    @Schema(title = "Brand id") Long brandId
-) {
-}
+        @Schema(title = "Publish status") Integer isPublished,
+        @Schema(title = "Approval status") Integer approvalStatus,
+        @Schema(title = "Keyword") String keyword,
+        @Schema(title = "Product code") String productCode,
+        @Schema(title = "Product category id") Long productCategoryId,
+        @Schema(title = "Brand id") Long brandId) {}

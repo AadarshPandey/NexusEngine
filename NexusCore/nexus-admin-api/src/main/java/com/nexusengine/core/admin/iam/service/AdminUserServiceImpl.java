@@ -60,7 +60,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Override
     public AdminUser getAdminByUsername(String username) {
         AdminUser admin = getCacheService().getAdmin(username);
-        if (admin != null && admin.getPassword() != null) return admin;
+        if (admin != null) return admin;
         admin = adminRepository.findByUsername(username);
         if (admin != null) {
             getCacheService().setAdmin(admin);
@@ -113,17 +113,20 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     private void insertLoginLog(String username) {
-        AdminUser admin = getAdminByUsername(username);
+        AdminUser admin = adminRepository.findByUsername(username);
         if(admin==null) return;
         AdminLoginEvent loginLog = new AdminLoginEvent();
         loginLog.setAdminId(admin.getId());
         loginLog.setCreateTime(java.time.OffsetDateTime.now());
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        HttpServletRequest request = attributes.getRequest();
-        loginLog.setIp(RequestUtil.getRequestIp(request));
+        if (attributes != null) {
+            HttpServletRequest request = attributes.getRequest();
+            loginLog.setIp(RequestUtil.getRequestIp(request));
+        }
         loginLogRepository.save(loginLog);
         admin.setLoginTime(loginLog.getCreateTime());
         adminRepository.save(admin);
+        getCacheService().setAdmin(admin);
     }
 
     @Override
@@ -156,14 +159,13 @@ public class AdminUserServiceImpl implements AdminUserService {
         admin.setId(id);
         AdminUser rawAdmin = adminRepository.findById(id).orElse(null);
         if (rawAdmin != null) {
-            if(rawAdmin.getPassword().equals(admin.getPassword())){
-                admin.setPassword(null);
-            }else{
-                if(!StringUtils.hasText(admin.getPassword())){
-                    admin.setPassword(null);
-                }else{
-                    admin.setPassword(passwordEncoder.encode(admin.getPassword()));
-                }
+            if (!StringUtils.hasText(admin.getPassword()) || rawAdmin.getPassword().equals(admin.getPassword())) {
+                admin.setPassword(rawAdmin.getPassword());
+            } else {
+                admin.setPassword(passwordEncoder.encode(admin.getPassword()));
+            }
+            if (admin.getCreateTime() == null) {
+                admin.setCreateTime(rawAdmin.getCreateTime());
             }
         }
         adminRepository.save(admin);
@@ -244,6 +246,9 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Override
     public UserDetails loadUserByUsername(String username){
         AdminUser admin = getAdminByUsername(username);
+        if (admin != null && admin.getPassword() == null) {
+            admin = adminRepository.findByUsername(username);
+        }
         if (admin != null) {
             List<Permission> resourceList = getResourceList(admin.getId());
             return new AdminUserDetails(admin,resourceList);

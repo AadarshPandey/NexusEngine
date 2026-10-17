@@ -46,7 +46,7 @@ const Home: React.FC = () => {
     setSearchLoading(true);
     try {
       const res = await searchProducts(keyword);
-      setSearchResults(res.data.list);
+      setSearchResults(res || []);
     } catch (err) {
       console.error(err);
     } finally {

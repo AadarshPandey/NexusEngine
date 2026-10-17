@@ -40,7 +40,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     private void copyCategoryParam(CategoryParam param, Category category) {
-        category.setParentId(param.parentId());
+        category.setParentId(param.parentId() != null && param.parentId() == 0L ? null : param.parentId());
         category.setName(param.name());
         if (param.navStatus() != null) {
             category.setIsInNavigation(param.navStatus() == 1);
@@ -79,8 +79,8 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public org.springframework.data.domain.Page<Category> getList(Long parentId, Integer pageSize, Integer pageNum) {
         org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(pageNum > 0 ? pageNum - 1 : 0, pageSize, Sort.by(Sort.Direction.ASC, "id"));
-
-        return productCategoryRepository.findByParentId(parentId, pageable);
+        Long effectiveParentId = (parentId != null && parentId == 0L) ? null : parentId;
+        return productCategoryRepository.findByParentId(effectiveParentId, pageable);
     }
 
     @Override
@@ -121,7 +121,7 @@ public class CategoryServiceImpl implements CategoryService {
         List<CategoryWithChildrenItem> result = new ArrayList<>();
 
         for (Category category : allCategories) {
-            if (category.getParentId() == 0) {
+            if (category.getParentId() == null || category.getParentId() == 0L) {
                 List<Category> children = new ArrayList<>();
                 for (Category child : allCategories) {
                     if (child.getParentId() != null && child.getParentId().equals(category.getId())) {
@@ -137,7 +137,8 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     private void setCategoryLevel(Category productCategory) {
-        if (productCategory.getParentId() == null || productCategory.getParentId() == 0) {
+        if (productCategory.getParentId() == null || productCategory.getParentId() == 0L) {
+            productCategory.setParentId(null);
             productCategory.setDepth(0);
         } else {
             Category parentCategory = productCategoryRepository.findById(productCategory.getParentId()).orElse(null);

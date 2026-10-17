@@ -20,8 +20,8 @@ const OrderSetting: React.FC = () => {
     setLoading(true);
     try {
       const res = await getOrderSettingByIdAPI(SETTING_ID);
-      if (res.data) {
-        setSetting(res.data);
+      if (res) {
+        setSetting(res);
       }
     } catch (e) {
       console.error(e);

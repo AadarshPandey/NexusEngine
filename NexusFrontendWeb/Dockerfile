@@ -1,30 +1,10 @@
-FROM node:22-alpine AS build
+FROM node:22-alpine
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 COPY . .
+ENV VITE_API_BASE_URL=http://localhost:8080/api/store
 RUN npm run build
+EXPOSE 5174
+CMD ["npx", "vite", "preview", "--host", "0.0.0.0", "--port", "5174"]
 
-FROM nginx:alpine
-COPY --from=build /app/dist /usr/share/nginx/html
-RUN echo 'server { \
-    listen 80; \
-    client_max_body_size 10M; \
-    location / { \
-        root /usr/share/nginx/html; \
-        index index.html index.htm; \
-        try_files $uri $uri/ /index.html; \
-    } \
-    location /api/search/ { \
-        proxy_pass http://nexus-application:8080/; \
-        proxy_set_header Host $host; \
-        proxy_set_header X-Real-IP $remote_addr; \
-    } \
-    location /api/ { \
-        proxy_pass http://nexus-application:8080/; \
-        proxy_set_header Host $host; \
-        proxy_set_header X-Real-IP $remote_addr; \
-    } \
-}' > /etc/nginx/conf.d/default.conf
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]

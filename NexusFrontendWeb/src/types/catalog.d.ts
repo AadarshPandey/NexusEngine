@@ -16,6 +16,7 @@ export interface Product {
   isFeatured?: boolean
   approvalStatus?: number
   unitsSold: number
+  onHandQty?: number
   price?: number
   listPrice: number
   salePrice?: number
@@ -52,6 +53,7 @@ export interface Brand {
   name: string
   slug?: string
   logoUrl: string
+  logo?: string
   bannerUrl?: string
   brandStory?: string
   firstLetter?: string
@@ -75,6 +77,8 @@ export interface ProductMedia {
   id?: number
   productId?: number
   url: string
-  mediaType?: 'IMAGE' | 'VIDEO'
+  mediaUrl?: string
+  mediaType?: 'IMAGE' | 'VIDEO' | string
   displayOrder?: number
+  sortOrder?: number
 }

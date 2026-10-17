@@ -1,4 +1,4 @@
-import type { CommonPage, PageParam } from '@/types/common'
+import type { PageParam, PageResponse } from '@/types/common'
 import type { AdminInfoResponse, AdminUser, AdminUserParam, LoginParam, LoginResult, Role } from '@/types/iam'
 import http from '@/utils/http'
 
@@ -7,18 +7,18 @@ export function adminLoginAPI(data: LoginParam) {
     url: '/api/admin/iam/users/login',
     method: 'post',
     data,
-  }).then((res: any) => ({ data: res }))
+  })
 }
 
 export function getAdminInfoAPI() {
   return http<AdminInfoResponse>({
     url: '/api/admin/iam/users/me',
     method: 'get',
-  }).then((res: any) => ({ data: res }))
+  })
 }
 
 export function adminLogoutAPI() {
-  return http({
+  return http<void>({
     url: '/api/admin/iam/users/logout',
     method: 'post',
   })
@@ -28,32 +28,28 @@ export function refreshTokenAPI() {
   return http<LoginResult>({
     url: '/api/admin/iam/users/refresh-token',
     method: 'get',
-  }).then((res: any) => ({ data: res }))
+  })
 }
 
 export function getAdminListAPI(params: PageParam & { keyword?: string }) {
   const queryParams: Record<string, any> = { ...params }
   if (queryParams.pageNum !== undefined) {
     queryParams.page = (queryParams.pageNum || 1) - 1
+    delete queryParams.pageNum
   }
   if (queryParams.pageSize !== undefined) {
     queryParams.size = queryParams.pageSize
+    delete queryParams.pageSize
   }
-  return http<CommonPage<AdminUser>>({
+  return http<PageResponse<AdminUser>>({
     url: '/api/admin/iam/users',
     method: 'get',
     params: queryParams,
-  }).then((res: any) => {
-    if (res && res.content && res.list === undefined) {
-      res.list = res.content
-      res.total = res.totalElements ?? res.content.length
-    }
-    return { data: res }
   })
 }
 
 export function adminRegisterAPI(data: AdminUserParam) {
-  return http({
+  return http<AdminUser>({
     url: '/api/admin/iam/users/register',
     method: 'post',
     data,
@@ -61,7 +57,7 @@ export function adminRegisterAPI(data: AdminUserParam) {
 }
 
 export function adminUpdateByIdAPI(id: number, data: AdminUserParam) {
-  return http({
+  return http<number>({
     url: `/api/admin/iam/users/${id}`,
     method: 'put',
     data,
@@ -69,22 +65,22 @@ export function adminUpdateByIdAPI(id: number, data: AdminUserParam) {
 }
 
 export function adminUpdatePasswordAPI(data: any) {
-  return http({
+  return http<number>({
     url: '/api/admin/iam/users/password',
-    method: 'put',
+    method: 'patch',
     data,
   })
 }
 
 export function adminDeleteByIdAPI(id: number) {
-  return http({
+  return http<number>({
     url: `/api/admin/iam/users/${id}`,
     method: 'delete',
   })
 }
 
 export function adminUpdateStatusByIdAPI(id: number, params: { status: number }) {
-  return http({
+  return http<number>({
     url: `/api/admin/iam/users/${id}/status`,
     method: 'patch',
     params,
@@ -96,7 +92,7 @@ export function adminRoleUpdateAPI(data: { adminId?: number; adminUserId?: numbe
   const roleIdList = Array.isArray(data.roleIds)
     ? data.roleIds
     : String(data.roleIds).split(',').filter(Boolean).map(Number)
-  return http({
+  return http<number>({
     url: '/api/admin/iam/users/roles',
     method: 'put',
     params: {
@@ -106,12 +102,11 @@ export function adminRoleUpdateAPI(data: { adminId?: number; adminUserId?: numbe
   })
 }
 
-export function adminGetRoleListByAdminIdAPI(adminId: number): Promise<{ data: Role[] }> {
+export function adminGetRoleListByAdminIdAPI(adminId: number) {
   return http<Role[]>({
     url: `/api/admin/iam/users/${adminId}/roles`,
     method: 'get',
-  }).then((res: any) => ({ data: (Array.isArray(res) ? res : res?.data || []) as Role[] }))
+  })
 }
 
 export const getRoleByAdminIdAPI = adminGetRoleListByAdminIdAPI
-

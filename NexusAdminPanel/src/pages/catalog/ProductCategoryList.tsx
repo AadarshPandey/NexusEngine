@@ -19,8 +19,8 @@ const ProductCategoryList: React.FC = () => {
   const fetchCategories = async () => {
     try {
       const res = await getProductCategoryListAPI(parentId, { pageNum, pageSize });
-      setCategories(res.data.list);
-      setTotal(res.data.total);
+      setCategories(res?.content || []);
+      setTotal(res?.totalElements || 0);
     } catch (e) {
       console.error(e);
     }
@@ -63,7 +63,7 @@ const ProductCategoryList: React.FC = () => {
           {parentId !== 0 && (
             <Button variant="outlined" sx={{ mr: 2 }} onClick={() => setParentId(0)}>Back to Root</Button>
           )}
-          <Button variant="contained" color="primary" onClick={() => navigate('/catalog/addProductCate')}>Add Category</Button>
+          <Button variant="contained" color="primary" onClick={() => navigate('/catalog/categories/new')}>Add Category</Button>
         </Box>
       </Box>
 
@@ -87,7 +87,7 @@ const ProductCategoryList: React.FC = () => {
                 <TableCell>{row.id}</TableCell>
                 <TableCell>{row.name}</TableCell>
                 <TableCell>{row.depth === 0 ? 'Level 1' : 'Level 2'}</TableCell>
-                <TableCell>{row.quantity}</TableCell>
+                <TableCell>{row.productCount ?? row.quantity ?? 0}</TableCell>
                 <TableCell>
                   <Switch 
                     checked={Boolean(row.isInNavigation)} 
@@ -113,7 +113,7 @@ const ProductCategoryList: React.FC = () => {
                   </Button>
                 </TableCell>
                 <TableCell align="right">
-                  <Button size="small" sx={{ mr: 1 }} onClick={() => navigate(`/pms/updateProductCate/${row.id}`)}>Edit</Button>
+                  <Button size="small" sx={{ mr: 1 }} onClick={() => navigate(`/catalog/categories/${row.id}/edit`)}>Edit</Button>
                   <Button size="small" color="error" onClick={() => handleDelete(row.id as number)}>Delete</Button>
                 </TableCell>
               </TableRow>

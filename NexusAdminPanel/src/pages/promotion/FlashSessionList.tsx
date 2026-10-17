@@ -15,7 +15,7 @@ const FlashSessionList: React.FC = () => {
   const fetchSessions = async () => {
     try {
       const res = await getFlashSessionListAPI();
-      setSessions(res.data || []);
+      setSessions(Array.isArray(res) ? res : []);
     } catch (e) {
       console.error(e);
     }
@@ -23,9 +23,8 @@ const FlashSessionList: React.FC = () => {
 
   const formatTime = (timeString: string) => {
     if (!timeString) return 'N/A';
-    // Often time is returned like '08:00:00'
-    const parts = timeString.split(':');
-    return `${parts[0]}:${parts[1]}`;
+    const parts = String(timeString).split(':');
+    return parts.length >= 2 ? `${parts[0]}:${parts[1]}` : String(timeString);
   };
 
   return (
@@ -50,14 +49,14 @@ const FlashSessionList: React.FC = () => {
             {sessions.map((session) => (
               <TableRow key={session.id} hover>
                 <TableCell>{session.id}</TableCell>
-                <TableCell>{session.name}</TableCell>
-                <TableCell>{formatTime(session.startsAt || '')}</TableCell>
-                <TableCell>{formatTime(session.endsAt || '')}</TableCell>
+                <TableCell>{session.name || session.label}</TableCell>
+                <TableCell>{formatTime(session.startTime || session.startsAt || '')}</TableCell>
+                <TableCell>{formatTime(session.endTime || session.endsAt || '')}</TableCell>
                 <TableCell>
-                  <Switch size="small" checked={session.status === 1} color="primary" />
+                  <Switch size="small" checked={Boolean(session.status ?? session.isActive)} color="primary" />
                 </TableCell>
                 <TableCell>
-                  <Button size="small" variant="contained" color="secondary" onClick={() => navigate(`/sms/flashProductRelation?flashSaleId=1&slotId=${session.id}`)}>Product Config</Button>
+                  <Button size="small" variant="contained" color="secondary" onClick={() => navigate(`/promotion/flash-sales/1/items?flashSaleId=1&slotId=${session.id}`)}>Product Config</Button>
                   <Button size="small" variant="text" color="primary">Edit</Button>
                   <Button size="small" variant="text" color="error">Delete</Button>
                 </TableCell>

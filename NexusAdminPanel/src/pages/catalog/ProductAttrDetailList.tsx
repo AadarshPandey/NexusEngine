@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Card, Typography, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TablePagination, Paper, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import { Add } from '@mui/icons-material';
-import { useNavigate, useSearchParams } from 'react-router';
+import { useNavigate, useParams, useSearchParams } from 'react-router';
 import { getProductAttributeListAPI, productAttributeDeleteByIds, productAttributeCreateAPI, productAttributeUpdateAPI } from '@/apis/catalog';
 import type { PmsProductAttribute } from '@/types/catalog';
 
 const ProductAttrDetailList: React.FC = () => {
   const navigate = useNavigate();
+  const { id: paramId } = useParams<{ id: string }>();
   const [searchParams] = useSearchParams();
-  const cid = Number(searchParams.get('cid') || 0);
+  const cid = Number(paramId || searchParams.get('cid') || 0);
   const type = Number(searchParams.get('type') || 0);
 
   const [list, setList] = useState<PmsProductAttribute[]>([]);
@@ -30,9 +31,9 @@ const ProductAttrDetailList: React.FC = () => {
     setLoading(true);
     try {
       const res = await getProductAttributeListAPI(cid, { pageNum, pageSize, type });
-      if (res.data) {
-        setList(res.data.list || []);
-        setTotal(res.data.total || 0);
+      if (res) {
+        setList(res.content || []);
+        setTotal(res.totalElements || 0);
       }
     } catch (e) {
       console.error(e);
@@ -94,7 +95,7 @@ const ProductAttrDetailList: React.FC = () => {
             </Typography>
           </Box>
           <Box>
-            <Button variant="outlined" sx={{ mr: 2 }} onClick={() => navigate('/catalog/skuAttributes')}>
+            <Button variant="outlined" sx={{ mr: 2 }} onClick={() => navigate('/catalog/attributes')}>
               Back to Types
             </Button>
             <Button variant="contained" startIcon={<Add />} onClick={() => handleOpenDialog()}>

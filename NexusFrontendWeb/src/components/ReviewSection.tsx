@@ -39,13 +39,13 @@ export const ReviewSection: React.FC<{ productId: number }> = ({ productId }) =>
   const loadReviews = async () => {
     try {
       const res = await getReviewsByProductId(productId);
-      const fetchedReviews = res.data.list || [];
+      const fetchedReviews = res.content || [];
 
       const reviewsWithReplies = await Promise.all(
         fetchedReviews.map(async (review) => {
           try {
             const repliesRes = await getReviewReplies(review.id);
-            return { ...review, replies: repliesRes.data || [] };
+            return { ...review, replies: repliesRes || [] };
           } catch {
             return { ...review, replies: [] };
           }
@@ -65,7 +65,7 @@ export const ReviewSection: React.FC<{ productId: number }> = ({ productId }) =>
         const res = await uploadReviewAttachment(file);
         const newMedia: AttachmentParam = {
           mediaType: file.type.startsWith('video/') ? 'VIDEO' : 'IMAGE',
-          mediaUrl: res.data.url,
+          mediaUrl: res.url,
           sortOrder: isReply ? replyAttachmentList.length : attachmentList.length,
         };
         if (isReply) {

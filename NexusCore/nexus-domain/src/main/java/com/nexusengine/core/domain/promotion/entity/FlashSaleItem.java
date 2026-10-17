@@ -42,11 +42,9 @@ private FlashSaleSlot flashPromotionSession;
         @Column(name = "product_id", nullable = false)
 
 private Long productId;
-        @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_id", insertable = false, updatable = false)
-
-private Product product;
+    private Product product;
 
         @Column(name = "flash_price", nullable = false)
 

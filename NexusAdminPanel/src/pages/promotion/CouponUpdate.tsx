@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router';
+import { useNavigate, useParams, useSearchParams } from 'react-router';
 import {
   Box,
   Card,
@@ -24,8 +24,9 @@ import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 
 const CouponUpdate: React.FC = () => {
   const navigate = useNavigate();
+  const { id: paramId } = useParams<{ id: string }>();
   const [searchParams] = useSearchParams();
-  const id = searchParams.get('id');
+  const id = paramId || searchParams.get('id');
 
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -39,7 +40,7 @@ const CouponUpdate: React.FC = () => {
     perLimit: 1,
     minOrderAmount: 0,
     useType: 0,
-          });
+  });
 
   useEffect(() => {
     if (id) {
@@ -50,12 +51,12 @@ const CouponUpdate: React.FC = () => {
   const fetchCoupon = async (couponId: number) => {
     setLoading(true);
     try {
-      const res = await getCouponByIdAPI(couponId);
-      if (res.data) {
-        const data = res.data;
-        if (data.startTime) data.startTime = new Date(data.startTime).toISOString().slice(0, 16);
-        if (data.endTime) data.endTime = new Date(data.endTime).toISOString().slice(0, 16);
-        setFormData(data);
+      const data = await getCouponByIdAPI(couponId);
+      if (data) {
+        const clone = { ...data };
+        if (clone.startTime) clone.startTime = new Date(clone.startTime).toISOString().slice(0, 16);
+        if (clone.endTime) clone.endTime = new Date(clone.endTime).toISOString().slice(0, 16);
+        setFormData(clone);
       }
     } catch (e) {
       console.error(e);
@@ -73,10 +74,10 @@ const CouponUpdate: React.FC = () => {
         ...formData,
         startTime: formData.startTime ? new Date(formData.startTime).toISOString() : undefined,
         endTime: formData.endTime ? new Date(formData.endTime).toISOString() : undefined,
-              };
+      };
       await couponUpdateByIdAPI(Number(id), payload);
       setSnackbar({ open: true, message: 'Coupon updated successfully', severity: 'success' });
-      setTimeout(() => navigate('/promotion/coupon'), 1000);
+      setTimeout(() => navigate('/promotion/coupons'), 1000);
     } catch {
       setSnackbar({ open: true, message: 'Failed to update coupon', severity: 'error' });
     } finally {
@@ -169,8 +170,6 @@ const CouponUpdate: React.FC = () => {
             </FormControl>
 
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-            
-
             <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
               <DateTimePicker
                 label="Start Time"
@@ -189,10 +188,8 @@ const CouponUpdate: React.FC = () => {
             </Box>
           </LocalizationProvider>
 
-            
-
             <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, mt: 2 }}>
-              <Button variant="outlined" onClick={() => navigate('/promotion/coupon')}>Cancel</Button>
+              <Button variant="outlined" onClick={() => navigate('/promotion/coupons')}>Cancel</Button>
               <Button variant="contained" onClick={handleSubmit} disabled={saving}>
                 {saving ? 'Saving...' : 'Update Coupon'}
               </Button>

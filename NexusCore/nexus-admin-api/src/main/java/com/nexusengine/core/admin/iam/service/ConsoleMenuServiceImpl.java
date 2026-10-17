@@ -30,7 +30,8 @@ public class ConsoleMenuServiceImpl implements ConsoleMenuService {
     }
 
     private void updateLevel(ConsoleMenu consoleMenu) {
-        if (consoleMenu.getParentId() == 0) {
+        if (consoleMenu.getParentId() == null || consoleMenu.getParentId() == 0L) {
+            consoleMenu.setParentId(null);
             consoleMenu.setLevel(0);
         } else {
             ConsoleMenu parentMenu = menuRepository.findById(consoleMenu.getParentId()).orElse(null);
@@ -64,7 +65,8 @@ public class ConsoleMenuServiceImpl implements ConsoleMenuService {
     @Override
     public org.springframework.data.domain.Page<ConsoleMenu> list(Long parentId, Integer pageSize, Integer pageNum) {
         int page = pageNum > 0 ? pageNum - 1 : 0;
-        return menuRepository.findByParentId(parentId, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "sort")));
+        Long effectiveParentId = (parentId != null && parentId == 0L) ? null : parentId;
+        return menuRepository.findByParentId(effectiveParentId, PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "sort")));
     }
 
     @Override
@@ -72,7 +74,7 @@ public class ConsoleMenuServiceImpl implements ConsoleMenuService {
         List<ConsoleMenu> menuList = /* findAll() is acceptable for small reference tables */
         menuRepository.findAll();
         List<MenuNode> result = menuList.stream()
-                .filter(menu -> menu.getParentId().equals(0L))
+                .filter(menu -> menu.getParentId() == null || menu.getParentId().equals(0L))
                 .map(menu -> covertMenuNode(menu, menuList))
                 .collect(Collectors.toList());
         return result;
@@ -89,7 +91,7 @@ public class ConsoleMenuServiceImpl implements ConsoleMenuService {
 
     private MenuNode covertMenuNode(ConsoleMenu menu, List<ConsoleMenu> menuList) {
         List<MenuNode> children = menuList.stream()
-                .filter(subMenu -> subMenu.getParentId().equals(menu.getId()))
+                .filter(subMenu -> subMenu.getParentId() != null && subMenu.getParentId().equals(menu.getId()))
                 .map(subMenu -> covertMenuNode(subMenu, menuList)).collect(Collectors.toList());
         return new MenuNode(menu, children);
     }

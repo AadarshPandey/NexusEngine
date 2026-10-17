@@ -24,9 +24,10 @@ const ReturnReasonList: React.FC = () => {
     setLoading(true);
     try {
       const res = await getReturnReasonListAPI({ pageNum, pageSize });
-      if (res.data) {
-        setList(res.data.list || []);
-        setTotal(res.data.total || 0);
+      if (res) {
+        const items = Array.isArray(res) ? res : (res as any)?.content || [];
+        setList(items);
+        setTotal(Array.isArray(res) ? res.length : (res as any)?.totalElements || 0);
       }
     } catch (e) {
       console.error(e);
@@ -58,9 +59,9 @@ const ReturnReasonList: React.FC = () => {
     setSelected(newSelected);
   };
 
-  const handleStatusChange = async (id: number, currentStatus?: number) => {
+  const handleStatusChange = async (id: number, currentStatus?: number | boolean) => {
     try {
-      const newStatus = (currentStatus ?? 0) === 1 ? 0 : 1;
+      const newStatus = Boolean(currentStatus) ? 0 : 1;
       await returnReasonUpdateStatusAPI({ ids: String(id), status: newStatus });
       fetchList();
     } catch (e) {

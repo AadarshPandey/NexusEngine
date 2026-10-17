@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Card, CardContent, TextField, Button, Typography, Switch, FormControlLabel, Select, MenuItem, InputLabel, FormControl } from '@mui/material';
-import { useNavigate, useSearchParams } from 'react-router';
+import { useNavigate, useParams, useSearchParams } from 'react-router';
 import { productCategoryUpdateByIdAPI, getProductCategoryByIdAPI, getProductCategoryListWithChildrenAPI } from '@/apis/catalog';
 import type { PmsProductCategory, PmsProductCategoryExt } from '@/types/catalog';
 
 const ProductCategoryUpdate: React.FC = () => {
   const navigate = useNavigate();
+  const { id: paramId } = useParams<{ id: string }>();
   const [searchParams] = useSearchParams();
-  const id = Number(searchParams.get('id'));
+  const id = Number(paramId || searchParams.get('id'));
 
   const [categories, setCategories] = useState<PmsProductCategoryExt[]>([]);
   const [formData, setFormData] = useState<PmsProductCategory>({
@@ -27,7 +28,7 @@ const ProductCategoryUpdate: React.FC = () => {
   const fetchCategory = async () => {
     try {
       const res = await getProductCategoryByIdAPI(id);
-      setFormData(res.data);
+      if (res) setFormData(res);
     } catch (e) {
       console.error(e);
     }
@@ -36,7 +37,7 @@ const ProductCategoryUpdate: React.FC = () => {
   const fetchCategories = async () => {
     try {
       const res = await getProductCategoryListWithChildrenAPI();
-      setCategories(res.data);
+      setCategories(Array.isArray(res) ? res : []);
     } catch (e) {
       console.error(e);
     }
@@ -46,7 +47,7 @@ const ProductCategoryUpdate: React.FC = () => {
     e.preventDefault();
     try {
       await productCategoryUpdateByIdAPI(id, formData);
-      navigate('/catalog/productCate');
+      navigate('/catalog/categories');
     } catch (e) {
       console.error('Failed to update category');
     }
@@ -77,7 +78,7 @@ const ProductCategoryUpdate: React.FC = () => {
 
             <Box sx={{ mt: 3, display: 'flex', gap: 2 }}>
               <Button type="submit" variant="contained" color="primary">Submit</Button>
-              <Button variant="outlined" onClick={() => navigate('/catalog/productCate')}>Cancel</Button>
+              <Button variant="outlined" onClick={() => navigate('/catalog/categories')}>Cancel</Button>
             </Box>
           </form>
         </CardContent>

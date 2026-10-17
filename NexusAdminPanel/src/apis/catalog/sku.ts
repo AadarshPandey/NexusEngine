@@ -6,11 +6,11 @@ export function getSkuStockByPidAPI(pid: number, params?: { keyword?: string }) 
     url: `/api/admin/catalog/skus/${pid}`,
     method: 'get',
     params,
-  }).then((res: any) => ({ data: res }))
+  })
 }
 
 export function skuStockUpdateAPI(pid: number, data: ProductSku[]) {
-  return http({
+  return http<number>({
     url: `/api/admin/catalog/skus/${pid}`,
     method: 'put',
     data,

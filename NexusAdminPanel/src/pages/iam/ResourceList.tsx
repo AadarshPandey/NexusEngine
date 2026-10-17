@@ -46,13 +46,12 @@ const ResourceList: React.FC = () => {
   // Form Dialog
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
-  const [formData, setFormData] = useState<UmsResource>({ name: '', url: '', permissionGroupId: 0, customerComment: '' });
+  const [formData, setFormData] = useState<UmsResource>({ name: '', url: '', categoryId: 0, description: '' });
 
   const fetchCategories = async () => {
     try {
       const res = await resourceCategoryListAllAPI();
-      // @ts-ignore
-      setCategories(res.data);
+      setCategories(res || []);
     } catch (e) {
       console.error(e);
     }
@@ -75,12 +74,12 @@ const ResourceList: React.FC = () => {
       const res = await getResourceListAPI({ 
         nameKeyword: finalName || undefined,
         urlKeyword: finalUrl || undefined,
-        permissionGroupId: finalCat === '' ? undefined : finalCat,
+        categoryId: finalCat === '' ? undefined : finalCat,
         pageNum: finalPageNum + 1, 
         pageSize 
       });
-      setList(res.data.list);
-      setTotal(res.data.total);
+      setList(res.content || []);
+      setTotal(res.totalElements || 0);
     } catch (error) {
       console.error(error);
     } finally {
@@ -122,18 +121,22 @@ const ResourceList: React.FC = () => {
 
   const openAddDialog = () => {
     setIsEdit(false);
-    setFormData({ name: '', url: '', permissionGroupId: categories.length > 0 ? categories[0].id! : 0, customerComment: '' });
+    setFormData({ name: '', url: '', categoryId: categories.length > 0 ? categories[0].id! : 0, description: '' });
     setDialogOpen(true);
   };
 
   const openEditDialog = (row: UmsResource) => {
     setIsEdit(true);
-    setFormData({ ...row });
+    setFormData({
+      ...row,
+      categoryId: row.categoryId ?? row.permissionGroupId ?? 0,
+      description: row.description || row.customerComment || '',
+    });
     setDialogOpen(true);
   };
 
   const handleFormSubmit = async () => {
-    if (!formData.name || !formData.url || !formData.permissionGroupId) {
+    if (!formData.name || !formData.url || !formData.categoryId) {
       setSnackbar({ open: true, message: 'Name, URL, and Category are required', severity: 'warning' });
       return;
     }
@@ -232,10 +235,10 @@ const ResourceList: React.FC = () => {
                   <TableRow key={row.id} hover>
                     <TableCell>{row.id}</TableCell>
                     <TableCell sx={{ fontWeight: 500 }}>{row.name}</TableCell>
-                    <TableCell sx={{ color: 'text.secondary', fontFamily: 'monospace' }}>{row.url}</TableCell>
-                    <TableCell>{row.customerComment || '-'}</TableCell>
-                    <TableCell>{getCategoryName(row.permissionGroupId)}</TableCell>
-                    <TableCell>{formatTime(row.createdAt)}</TableCell>
+                    <TableCell sx={{ color: 'text.secondary', fontFamily: 'monospace' }}>{row.url || row.urlPattern}</TableCell>
+                    <TableCell>{row.description || row.customerComment || '-'}</TableCell>
+                    <TableCell>{getCategoryName(row.categoryId ?? row.permissionGroupId)}</TableCell>
+                    <TableCell>{formatTime(row.createTime || row.createdAt)}</TableCell>
                     <TableCell align="center">
                       <IconButton size="small" onClick={() => openEditDialog(row)} sx={{ color: '#6366F1' }}>
                         <Edit fontSize="small" />
@@ -292,8 +295,8 @@ const ResourceList: React.FC = () => {
             label="Category"
             fullWidth
             required
-            value={formData.permissionGroupId}
-            onChange={e => setFormData({ ...formData, permissionGroupId: Number(e.target.value) })}
+            value={formData.categoryId ?? 0}
+            onChange={e => setFormData({ ...formData, categoryId: Number(e.target.value) })}
           >
             {categories.map((c) => (
               <MenuItem key={c.id} value={c.id}>{c.name}</MenuItem>
@@ -304,8 +307,8 @@ const ResourceList: React.FC = () => {
             fullWidth
             multiline
             rows={2}
-            value={formData.customerComment || ''}
-            onChange={e => setFormData({ ...formData, customerComment: e.target.value })}
+            value={formData.description || ''}
+            onChange={e => setFormData({ ...formData, description: e.target.value })}
           />
         </DialogContent>
         <DialogActions>

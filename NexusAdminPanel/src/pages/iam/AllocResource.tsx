@@ -31,7 +31,7 @@ const AllocResource: React.FC = () => {
 
   useEffect(() => {
     if (!roleId) {
-      navigate('/iam/role');
+      navigate('/iam/roles');
       return;
     }
 
@@ -41,19 +41,16 @@ const AllocResource: React.FC = () => {
       fetchAllResourceList(),
       roleListResourceById(roleId)
     ]).then(([catRes, resRes, allocRes]) => {
-      // @ts-ignore
-      setCategories(catRes.data);
-      // @ts-ignore
-      setResources(resRes.data);
+      setCategories(catRes || []);
+      setResources(resRes || []);
       
-      // @ts-ignore
-      const allocatedIds = allocRes.data.map((r: { id: number }) => r.id);
+      const allocatedIds = (allocRes || []).map((r: UmsResource) => r.id!);
       setSelectedResourceIds(allocatedIds);
     }).catch(console.error);
   }, [roleId, navigate]);
 
-  const handleToggleCategory = (permissionGroupId: number) => {
-    const categoryResources = resources.filter(r => r.permissionGroupId === permissionGroupId).map(r => r.id!);
+  const handleToggleCategory = (categoryId: number) => {
+    const categoryResources = resources.filter(r => (r.categoryId ?? r.permissionGroupId) === categoryId).map(r => r.id!);
     const allSelected = categoryResources.every(id => selectedResourceIds.includes(id));
     
     let newSelected = [...selectedResourceIds];
@@ -80,7 +77,7 @@ const AllocResource: React.FC = () => {
         resourceIds: selectedResourceIds.join(',')
       });
       setSnackbar({ open: true, message: 'Resources allocated successfully', severity: 'success' });
-      setTimeout(() => navigate('/iam/role'), 1000);
+      setTimeout(() => navigate('/iam/roles'), 1000);
     } catch {
       setSnackbar({ open: true, message: 'Failed to allocate resources', severity: 'error' });
     }
@@ -110,7 +107,7 @@ const AllocResource: React.FC = () => {
 
           <List disablePadding>
             {categories.map((category) => {
-              const catResources = resources.filter(r => r.permissionGroupId === category.id);
+              const catResources = resources.filter(r => (r.categoryId ?? r.permissionGroupId) === category.id);
               if (catResources.length === 0) return null;
               
               const isAllSelected = catResources.length > 0 && catResources.every(r => selectedResourceIds.includes(r.id!));
@@ -140,7 +137,7 @@ const AllocResource: React.FC = () => {
                         <Box>
                           <Typography variant="body2" sx={{ fontWeight: 500 }}>{resource.name}</Typography>
                           <Typography variant="caption" color="text.secondary" sx={{ wordBreak: 'break-all' }}>
-                            {resource.url}
+                            {resource.url || resource.urlPattern}
                           </Typography>
                         </Box>
                       </Box>
@@ -153,7 +150,7 @@ const AllocResource: React.FC = () => {
           </List>
 
           <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, mt: 4 }}>
-            <Button variant="outlined" onClick={() => navigate('/iam/role')}>Cancel</Button>
+            <Button variant="outlined" onClick={() => navigate('/iam/roles')}>Cancel</Button>
             <Button variant="contained" onClick={handleSave}>Save Allocations</Button>
           </Box>
         </CardContent>

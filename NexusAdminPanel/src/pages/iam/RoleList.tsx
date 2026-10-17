@@ -62,9 +62,9 @@ const RoleList: React.FC = () => {
   const [isEdit, setIsEdit] = useState(false);
   const [formData, setFormData] = useState<UmsRole>({
     name: '',
-    customerComment: '',
+    description: '',
     status: 1,
-    displayOrder: 0
+    sort: 0
   });
 
   const fetchList = useCallback(async () => {
@@ -72,11 +72,11 @@ const RoleList: React.FC = () => {
     try {
       const res = await getRoleListAPI({ 
         keyword: keyword || undefined, 
-        pageNum: pageNum > 0 ? pageNum : 0, 
+        pageNum: pageNum + 1, 
         pageSize 
       });
-      setList(res.data.list);
-      setTotal(res.data.total);
+      setList(res.content || []);
+      setTotal(res.totalElements || 0);
     } catch (error) {
       console.error('Failed to fetch role list:', error);
     } finally {
@@ -123,7 +123,7 @@ const RoleList: React.FC = () => {
   };
 
   const handleStatusChange = async (row: UmsRole) => {
-    const newStatus = row.status === 1 ? 0 : 1;
+    const newStatus = Boolean(row.status) ? 0 : 1;
     try {
       await roleUpdateStatusAPI(row.id!, { status: newStatus });
       setList((prev) => prev.map((item) => (item.id === row.id ? { ...item, status: newStatus } : item)));
@@ -150,13 +150,13 @@ const RoleList: React.FC = () => {
   // Form handling
   const openAddDialog = () => {
     setIsEdit(false);
-    setFormData({ name: '', customerComment: '', status: 1, displayOrder: 0 });
+    setFormData({ name: '', description: '', status: 1, sort: 0 });
     setFormDialogOpen(true);
   };
 
   const openEditDialog = (row: UmsRole) => {
     setIsEdit(true);
-    setFormData({ ...row });
+    setFormData({ ...row, description: row.description || row.customerComment || '' });
     setFormDialogOpen(true);
   };
 
@@ -282,9 +282,9 @@ const RoleList: React.FC = () => {
                     </TableCell>
                     <TableCell>{row.id}</TableCell>
                     <TableCell sx={{ fontWeight: 500 }}>{row.name}</TableCell>
-                    <TableCell>{row.customerComment || (row as any).description || '-'}</TableCell>
+                    <TableCell>{row.description || row.customerComment || '-'}</TableCell>
                     <TableCell>{row.adminCount ?? '-'}</TableCell>
-                    <TableCell>{formatTime(row.createdAt || (row as any).createTime)}</TableCell>
+                    <TableCell>{formatTime(row.createTime || row.createdAt)}</TableCell>
                     <TableCell align="center">
                       <Switch
                         checked={Boolean(row.status)}
@@ -298,7 +298,7 @@ const RoleList: React.FC = () => {
                       <Box sx={{ display: 'flex', justifyContent: 'center', gap: 0.5 }}>
                         <IconButton
                           size="small"
-                          onClick={() => navigate(`/ums/allocMenu?roleId=${row.id}`)}
+                          onClick={() => navigate(`/iam/allocMenu?roleId=${row.id}`)}
                           sx={{ color: '#10B981' }}
                           title="Assign UI Menus to Role"
                         >
@@ -306,7 +306,7 @@ const RoleList: React.FC = () => {
                         </IconButton>
                         <IconButton
                           size="small"
-                          onClick={() => navigate(`/ums/allocResource?roleId=${row.id}`)}
+                          onClick={() => navigate(`/iam/allocResource?roleId=${row.id}`)}
                           sx={{ color: '#F59E0B' }}
                           title="Assign API Resources to Role"
                         >
@@ -370,8 +370,8 @@ const RoleList: React.FC = () => {
               label="Description"
               multiline
               rows={3}
-              value={formData.customerComment || ''}
-              onChange={e => setFormData({ ...formData, customerComment: e.target.value })}
+              value={formData.description || ''}
+              onChange={e => setFormData({ ...formData, description: e.target.value })}
               fullWidth
             />
             {!isEdit && (
