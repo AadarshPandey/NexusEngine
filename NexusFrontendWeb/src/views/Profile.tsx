@@ -416,14 +416,9 @@ const Profile: React.FC = () => {
               <Typography color="text.secondary">Signup Channel:</Typography>
               <Box>
                 <Chip
-                  label={
-                    memberInfo?.signupChannel === 1
-                      ? 'Mobile App'
-                      : memberInfo?.signupChannel === 2
-                      ? 'WeChat'
-                      : 'Web Storefront'
-                  }
+                  label="Web Storefront"
                   size="small"
+                  color="primary"
                   variant="outlined"
                 />
               </Box>
@@ -701,9 +696,9 @@ const Profile: React.FC = () => {
                           <TableRow>
                             <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
                               <Collapse in={isExpanded} timeout="auto" unmountOnExit>
-                                <Box sx={{ py: 2, px: 3, bgcolor: '#f9fafb', borderRadius: 1.5, my: 1.5, border: '1px solid #e5e7eb' }}>
+                                <Box sx={{ py: 2.5, px: 3, bgcolor: 'background.default', borderRadius: 2, my: 1.5, border: '1px solid', borderColor: 'divider' }}>
                                   {/* 1. Ordered Products */}
-                                  <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
+                                  <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1.5, color: 'text.primary' }}>
                                     Ordered Products ({items.length})
                                   </Typography>
                                   <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mb: 2 }}>
@@ -716,8 +711,9 @@ const Profile: React.FC = () => {
                                           gap: 2,
                                           bgcolor: 'background.paper',
                                           p: 1.5,
-                                          borderRadius: 1,
-                                          border: '1px solid #f0f0f0',
+                                          borderRadius: 1.5,
+                                          border: '1px solid',
+                                          borderColor: 'divider',
                                         }}
                                       >
                                         <Box
@@ -839,7 +835,17 @@ const Profile: React.FC = () => {
                 {addresses.map((address) => {
                   const isDefaultAddr = address.isDefault || (address as any).defaultStatus;
                   return (
-                    <Paper key={address.id} variant="outlined" sx={{ p: 2.5, borderRadius: 2 }}>
+                    <Paper
+                      key={address.id}
+                      elevation={0}
+                      sx={{
+                        p: 2.5,
+                        borderRadius: 2,
+                        bgcolor: 'background.default',
+                        border: '1px solid',
+                        borderColor: 'divider',
+                      }}
+                    >
                       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                           <Typography sx={{ fontWeight: 700, fontSize: '1rem' }}>
@@ -891,18 +897,26 @@ const Profile: React.FC = () => {
                 {coupons.map((coupon) => (
                   <Grid size={{ xs: 12, sm: 6 }} key={coupon.id}>
                     <Paper
-                      variant="outlined"
+                      elevation={0}
                       sx={{
                         p: 2.5,
                         borderRadius: 2,
+                        bgcolor: 'background.default',
+                        border: '1px solid',
+                        borderColor: 'divider',
                         borderLeft: '5px solid #6366F1',
                         display: 'flex',
                         flexDirection: 'column',
-                        gap: 1,
+                        gap: 1.5,
+                        transition: 'transform 0.15s, box-shadow 0.15s',
+                        '&:hover': {
+                          transform: 'translateY(-2px)',
+                          boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
+                        },
                       }}
                     >
                       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                        <Typography variant="subtitle1" sx={{ fontWeight: 700, color: 'text.primary' }}>
                           {coupon.name}
                         </Typography>
                         <Chip
@@ -913,22 +927,37 @@ const Profile: React.FC = () => {
                               ? `${coupon.discountValue}% OFF`
                               : 'FREE SHIPPING'
                           }
-                          color="success"
+                          color="primary"
                           size="small"
                           sx={{ fontWeight: 'bold' }}
                         />
                       </Box>
                       {coupon.code && (
-                        <Typography variant="caption" sx={{ fontFamily: 'monospace', bgcolor: '#F1F5F9', px: 1, py: 0.5, borderRadius: 1, width: 'fit-content' }}>
-                          Code: {coupon.code}
-                        </Typography>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                          <Typography
+                            variant="caption"
+                            sx={{
+                              fontFamily: 'monospace',
+                              fontWeight: 700,
+                              bgcolor: 'rgba(99, 102, 241, 0.15)',
+                              color: '#90caf9',
+                              border: '1px dashed #6366F1',
+                              px: 1.5,
+                              py: 0.5,
+                              borderRadius: 1,
+                              width: 'fit-content',
+                            }}
+                          >
+                            CODE: {coupon.code}
+                          </Typography>
+                        </Box>
                       )}
-                      <Typography variant="body2" color="text.secondary">
+                      <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                         {coupon.minSpendAmount > 0
                           ? `Valid on orders above ₹${coupon.minSpendAmount}`
                           : 'No minimum order value required'}
                       </Typography>
-                      <Typography variant="caption" color="text.secondary">
+                      <Typography variant="caption" sx={{ color: 'text.secondary' }}>
                         Expires:{' '}
                         {coupon.endsAt
                           ? new Date(coupon.endsAt).toLocaleDateString()
