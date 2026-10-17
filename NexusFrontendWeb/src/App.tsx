@@ -3,16 +3,8 @@ import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { store, persistor } from './store';
 import { router } from './router';
-import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
-
-const theme = createTheme({
-  palette: {
-    mode: 'dark',
-    primary: {
-      main: '#90caf9',
-    },
-  },
-});
+import { ThemeProvider, CssBaseline } from '@mui/material';
+import theme from './theme/theme';
 
 function App() {
   return (

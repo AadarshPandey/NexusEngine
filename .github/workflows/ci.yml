@@ -81,3 +81,39 @@ jobs:
 
       - name: Typecheck & Build
         run: npm run build
+
+  terraform:
+    name: Terraform IaC (Format & Validate)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./terraform
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.10.5
+
+      - name: Check Terraform Formatting
+        run: terraform fmt -check -recursive
+
+      - name: Validate Root Configuration
+        run: |
+          terraform init -backend=false
+          terraform validate
+
+      - name: Validate Dev Environment
+        run: |
+          cd environments/dev
+          terraform init -backend=false
+          terraform validate
+
+      - name: Validate Prod Environment
+        run: |
+          cd environments/prod
+          terraform init -backend=false
+          terraform validate

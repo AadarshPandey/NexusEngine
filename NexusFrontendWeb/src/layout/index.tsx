@@ -37,9 +37,19 @@ const Layout: React.FC = () => {
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <AppBar position="static">
         <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            <Link to="/" style={{ color: 'white', textDecoration: 'none' }}>Nexus Storefront</Link>
-          </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
+            <Link to="/" style={{ display: 'flex', alignItems: 'center', color: '#f8fafc', textDecoration: 'none' }}>
+              <Box
+                component="img"
+                src="/favicon.ico"
+                alt="Nexus Logo"
+                sx={{ width: 28, height: 28, mr: 1.5, borderRadius: '6px' }}
+              />
+              <Typography variant="h6" component="span" sx={{ fontWeight: 700, letterSpacing: '-0.02em', background: 'linear-gradient(135deg, #FFFFFF 0%, #E2E8F0 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                NexusFrontend
+              </Typography>
+            </Link>
+          </Box>
           
           <IconButton color="inherit" component={Link} to="/cart" sx={{ mr: 2 }}>
             <Badge badgeContent={totalQuantity} color="error">

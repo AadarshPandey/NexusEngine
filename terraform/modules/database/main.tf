@@ -1,3 +1,26 @@
+resource "random_password" "db_password" {
+  length           = 24
+  special          = true
+  override_special = "!#$%&*()-_=+[]{}<>:?"
+}
+
+resource "aws_secretsmanager_secret" "db_credentials" {
+  name                    = "${var.env}-nexuscore-db-credentials"
+  recovery_window_in_days = 0
+}
+
+resource "aws_secretsmanager_secret_version" "db_credentials_val" {
+  secret_id = aws_secretsmanager_secret.db_credentials.id
+  secret_string = jsonencode({
+    engine   = "postgres"
+    host     = aws_rds_cluster.postgresql.endpoint
+    port     = 5432
+    database = "nexuscore"
+    username = "postgres"
+    password = random_password.db_password.result
+  })
+}
+
 resource "aws_db_subnet_group" "main" {
   name       = "${var.env}-db-subnet-group"
   subnet_ids = var.subnet_ids
@@ -8,7 +31,7 @@ resource "aws_rds_cluster" "postgresql" {
   engine                 = "aurora-postgresql"
   database_name          = "nexuscore"
   master_username        = "postgres"
-  master_password        = "postgres123" # In production, use AWS Secrets Manager
+  master_password        = random_password.db_password.result
   skip_final_snapshot    = true
   db_subnet_group_name   = aws_db_subnet_group.main.name
   vpc_security_group_ids = [aws_security_group.db_sg.id]
@@ -38,23 +61,67 @@ resource "aws_elasticache_cluster" "redis" {
 }
 
 resource "aws_security_group" "db_sg" {
-  name   = "${var.env}-db-sg"
-  vpc_id = var.vpc_id
-  ingress {
-    from_port   = 5432
-    to_port     = 5432
-    protocol    = "tcp"
-    cidr_blocks = ["10.0.0.0/8"]
+  name        = "${var.env}-db-sg"
+  description = "Security group for NexusCore Aurora PostgreSQL"
+  vpc_id      = var.vpc_id
+
+  dynamic "ingress" {
+    for_each = var.allowed_security_group_id != "" ? [var.allowed_security_group_id] : []
+    content {
+      from_port       = 5432
+      to_port         = 5432
+      protocol        = "tcp"
+      security_groups = [ingress.value]
+    }
+  }
+
+  dynamic "ingress" {
+    for_each = var.allowed_security_group_id == "" ? ["10.0.0.0/8"] : []
+    content {
+      from_port   = 5432
+      to_port     = 5432
+      protocol    = "tcp"
+      cidr_blocks = [ingress.value]
+    }
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 }
 
 resource "aws_security_group" "redis_sg" {
-  name   = "${var.env}-redis-sg"
-  vpc_id = var.vpc_id
-  ingress {
-    from_port   = 6379
-    to_port     = 6379
-    protocol    = "tcp"
-    cidr_blocks = ["10.0.0.0/8"]
+  name        = "${var.env}-redis-sg"
+  description = "Security group for NexusCore ElastiCache Redis"
+  vpc_id      = var.vpc_id
+
+  dynamic "ingress" {
+    for_each = var.allowed_security_group_id != "" ? [var.allowed_security_group_id] : []
+    content {
+      from_port       = 6379
+      to_port         = 6379
+      protocol        = "tcp"
+      security_groups = [ingress.value]
+    }
+  }
+
+  dynamic "ingress" {
+    for_each = var.allowed_security_group_id == "" ? ["10.0.0.0/8"] : []
+    content {
+      from_port   = 6379
+      to_port     = 6379
+      protocol    = "tcp"
+      cidr_blocks = [ingress.value]
+    }
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 }

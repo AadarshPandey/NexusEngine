@@ -240,7 +240,7 @@ export const ReviewSection: React.FC<{ productId: number }> = ({ productId }) =>
                         sx={{
                           borderRadius: 2,
                           overflow: 'hidden',
-                          border: '1px solid #E2E8F0',
+                          border: '1px solid #334155',
                           width: 100,
                           height: 100,
                         }}

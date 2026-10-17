@@ -247,7 +247,7 @@ const ProductDetail: React.FC = () => {
                       height: 80,
                       objectFit: 'cover',
                       cursor: 'pointer',
-                      border: activeImage === img ? '2px solid #1976d2' : '1px solid #ddd',
+                      border: activeImage === img ? '2px solid #6366F1' : '1px solid #334155',
                       borderRadius: 1
                     }}
                   />

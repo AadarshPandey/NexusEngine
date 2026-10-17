@@ -416,7 +416,7 @@ const Profile: React.FC = () => {
               <Typography color="text.secondary">Signup Channel:</Typography>
               <Box>
                 <Chip
-                  label="Web Storefront"
+                  label={memberInfo?.signupChannel === 1 ? 'Mobile App' : 'Web'}
                   size="small"
                   color="primary"
                   variant="outlined"

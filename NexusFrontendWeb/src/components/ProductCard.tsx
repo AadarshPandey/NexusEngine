@@ -20,6 +20,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
+        overflow: 'hidden',
         transition: '0.3s',
         '&:hover': { transform: 'scale(1.02)', boxShadow: 6 },
       }}
@@ -29,7 +30,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         height="200"
         image={imageUrl}
         alt={product.name}
-        sx={{ objectFit: 'contain', p: 2, bgcolor: '#fafafa' }}
+        sx={{ objectFit: 'contain' }}
       />
       <CardContent sx={{ flexGrow: 1 }}>
         <Typography gutterBottom variant="h6" component="h2" noWrap title={product.name}>
@@ -50,13 +51,20 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             </Typography>
           )}
         </Box>
-        <Typography
-          variant="caption"
-          color={(product.onHandQty ?? 0) > 0 ? 'success.main' : 'error.main'}
-          sx={{ display: 'block', mt: 0.5, fontWeight: 500 }}
-        >
-          {(product.onHandQty ?? 0) > 0 ? `${product.onHandQty} in stock` : 'Out of stock'}
-        </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 0.5 }}>
+          <Typography
+            variant="caption"
+            color={(product.onHandQty ?? 0) > 0 ? 'success.main' : 'error.main'}
+            sx={{ fontWeight: 500 }}
+          >
+            {(product.onHandQty ?? 0) > 0 ? `${product.onHandQty} in stock` : 'Out of stock'}
+          </Typography>
+          {product.unitsSold !== undefined && (
+            <Typography variant="caption" color="text.secondary">
+              {product.unitsSold} units sold
+            </Typography>
+          )}
+        </Box>
       </CardContent>
       <CardActions sx={{ p: 2, pt: 0 }}>
         <Button size="small" variant="contained" fullWidth component={Link} to={`/product/${product.id}`}>

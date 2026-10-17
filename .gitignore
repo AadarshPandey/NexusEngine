@@ -39,3 +39,12 @@ trash/
 # Local binary DB data
 resource_setup/postgres-data/
 resource_setup/s3-data/
+
+# Terraform
+.terraform/
+**/.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+*.tfvars
+!*.tfvars.example

@@ -1,8 +1,3 @@
-# This is the root entry point connecting modules if you want to deploy all environments from here,
-# or it can serve as a shared resources definition.
-# Often, users run `terraform apply` directly inside `environments/dev` or `environments/prod`.
-# If you run it here, you can define workspaces or common resources.
-
 terraform {
   required_version = ">= 1.5.0"
   required_providers {
@@ -10,19 +5,45 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 5.0"
     }
+    random = {
+      source  = "hashicorp/random"
+      version = "~> 3.6"
+    }
   }
 }
 
 provider "aws" {
-  region = "us-east-1"
+  region = var.aws_region
 }
 
-# Example of calling the dev environment directly from root (optional)
-# module "dev_environment" {
-#   source = "./environments/dev"
-# }
+variable "aws_region" {
+  description = "AWS deployment region"
+  type        = string
+  default     = "us-east-1"
+}
 
-# Example of calling the prod environment directly from root (optional)
-# module "prod_environment" {
-#   source = "./environments/prod"
-# }
+# Root entry point delegates to the dev environment by default.
+# For environment-specific deploys, navigate to environments/dev or environments/prod.
+module "nexus_dev" {
+  source = "./environments/dev"
+}
+
+output "dev_aurora_endpoint" {
+  description = "Aurora PostgreSQL cluster endpoint"
+  value       = module.nexus_dev.aurora_endpoint
+}
+
+output "dev_storefront_cloudfront_url" {
+  description = "Storefront CDN distribution URL"
+  value       = module.nexus_dev.storefront_cloudfront_url
+}
+
+output "dev_admin_cloudfront_url" {
+  description = "Admin panel CDN distribution URL"
+  value       = module.nexus_dev.admin_cloudfront_url
+}
+
+output "dev_s3_media_bucket" {
+  description = "Media assets bucket name"
+  value       = module.nexus_dev.s3_media_bucket
+}

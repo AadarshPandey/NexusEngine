@@ -10,6 +10,7 @@ import { MemoryRouter } from 'react-router';
 vi.mock('../api/customer', () => ({
   getCustomerProfile: vi.fn().mockResolvedValue({ username: 'testuser', displayName: 'Test Nickname' }),
   getCustomerAddresses: vi.fn().mockResolvedValue([]),
+  getMemberLoginEvents: vi.fn().mockResolvedValue([]),
 }));
 vi.mock('../api/ordering', () => ({
   getOrders: vi.fn().mockResolvedValue({ content: [], totalElements: 0, totalPages: 0, size: 100, number: 0 }),
@@ -50,6 +51,6 @@ describe('Profile Component', () => {
 
     // Switch to Tab 3 (Addresses)
     fireEvent.click(addressTab);
-    expect(screen.getByText('My Addresses')).toBeInTheDocument();
+    expect(screen.getByText(/My Addresses/)).toBeInTheDocument();
   });
 });
