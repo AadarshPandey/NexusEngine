@@ -3,6 +3,20 @@
  * Aligned with ADR 0003 and modular monolith domain model
  */
 
+export const CouponDiscountType = {
+  FIXED_AMOUNT: 0,
+  PERCENTAGE: 1,
+  FREE_SHIPPING: 2,
+} as const;
+export type CouponDiscountType = (typeof CouponDiscountType)[keyof typeof CouponDiscountType];
+
+export const CouponApplicabilityScope = {
+  ALL: 0,
+  CATEGORY: 1,
+  PRODUCT: 2,
+} as const;
+export type CouponApplicabilityScope = (typeof CouponApplicabilityScope)[keyof typeof CouponApplicabilityScope];
+
 export interface Coupon {
   id: number
   discountType: 0 | 1 | 2 // 0: FIXED_AMOUNT, 1: PERCENTAGE, 2: FREE_SHIPPING
@@ -20,12 +34,6 @@ export interface Coupon {
   isStackable?: boolean
   isPublic?: boolean
   status?: number
-  // Legacy aliases
-  type?: number
-  amount?: number
-  startTime?: string
-  endTime?: string
-  useStatus?: number
 }
 
 export interface FlashSale {
@@ -54,9 +62,6 @@ export interface FlashSaleItem {
   flashPrice: number
   quantityAvailable: number
   perMemberLimit: number
-  // Legacy aliases
-  flashPromotionPrice?: number
-  flashPromotionCount?: number
 }
 
 export interface Banner {
@@ -71,11 +76,6 @@ export interface Banner {
   isActive?: boolean
   clickCount?: number
   orderCount?: number
-  // Legacy aliases
-  name?: string
-  type?: number
-  pic?: string
-  url?: string
 }
 
 export type PromotionalBanner = Banner;

@@ -13,13 +13,13 @@ export interface ChatMessageDto {
 }
 
 export const getChatHistory = (sessionId: string) => {
-  return request.get<unknown, { data: ChatMessageDto[] }>('/chat/history', {
+  return request.get<unknown, { data: ChatMessageDto[] }>('/ai/chat/history', {
     params: { slotId: sessionId },
   });
 };
 
 export const sendChatMessage = (sessionId: string, question: string) => {
-  return request.post<unknown, { data: { question: string; answer: string; sessionId: string } }>('/chat', {
+  return request.post<unknown, { data: { question: string; answer: string; sessionId: string } }>('/ai/chat', {
     question,
     sessionId,
   });

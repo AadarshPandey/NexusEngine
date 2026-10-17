@@ -27,9 +27,9 @@ export const authSlice = createSlice({
       const u = action.payload.user;
       state.user = {
         ...u,
-        displayName: u.displayName || u.nickname || '',
-        avatarUrl: u.avatarUrl || u.icon || '',
-        phoneE164: u.phoneE164 || u.phone || '',
+        displayName: u.displayName || '',
+        avatarUrl: u.avatarUrl || '',
+        phoneE164: u.phoneE164 || '',
       };
       state.isAuthenticated = true;
       localStorage.setItem('token', action.payload.token);
@@ -39,9 +39,9 @@ export const authSlice = createSlice({
         state.user = {
           ...state.user,
           ...action.payload,
-          displayName: action.payload.displayName || action.payload.nickname || state.user.displayName,
-          avatarUrl: action.payload.avatarUrl || action.payload.icon || state.user.avatarUrl,
-          phoneE164: action.payload.phoneE164 || action.payload.phone || state.user.phoneE164,
+          displayName: action.payload.displayName || state.user.displayName,
+          avatarUrl: action.payload.avatarUrl || state.user.avatarUrl,
+          phoneE164: action.payload.phoneE164 || state.user.phoneE164,
         };
       }
     },

@@ -411,11 +411,15 @@ public class CheckoutService {
             totalAmount = totalAmount.add(item.cartItem().getPrice().multiply(new BigDecimal(item.cartItem().getQuantity())));
             promotionAmount = promotionAmount.add(item.reduceAmount().multiply(new BigDecimal(item.cartItem().getQuantity())));
         }
+        calcAmount.setSubtotalAmount(totalAmount);
         calcAmount.setTotalAmount(totalAmount);
         calcAmount.setPromotionAmount(promotionAmount);
         BigDecimal freightAmount = calculateFreight(totalAmount);
+        calcAmount.setShippingAmount(freightAmount);
         calcAmount.setFreightAmount(freightAmount);
-        calcAmount.setPayAmount(totalAmount.subtract(promotionAmount).add(freightAmount));
+        BigDecimal grandTotal = totalAmount.subtract(promotionAmount).add(freightAmount);
+        calcAmount.setGrandTotalAmount(grandTotal);
+        calcAmount.setPayAmount(grandTotal);
         return calcAmount;
     }
 }

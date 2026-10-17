@@ -32,13 +32,19 @@ public class ConfirmOrderResult {
 
     @Getter
     @Setter
-    public static class CalcAmount{
+    public static class CalcAmount {
+        @Schema(title = "Subtotal amount")
+        private BigDecimal subtotalAmount;
         @Schema(title = "Total amount")
         private BigDecimal totalAmount;
+        @Schema(title = "Shipping amount")
+        private BigDecimal shippingAmount;
         @Schema(title = "Freight amount")
         private BigDecimal freightAmount;
         @Schema(title = "Promotion amount")
         private BigDecimal promotionAmount;
+        @Schema(title = "Grand total amount")
+        private BigDecimal grandTotalAmount;
         @Schema(title = "Pay amount")
         private BigDecimal payAmount;
     }

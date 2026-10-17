@@ -102,6 +102,30 @@ private BigDecimal realAmount;
 
 private String productAttr;
 
+    public String getProductImageUrl() {
+        return productPic;
+    }
+
+    public String getBrandName() {
+        return productBrand;
+    }
+
+    public BigDecimal getUnitPrice() {
+        return productPrice;
+    }
+
+    public Integer getQuantity() {
+        return productQuantity;
+    }
+
+    public BigDecimal getLineTotalAmount() {
+        return realAmount;
+    }
+
+    public String getSkuAttributes() {
+        return productAttr;
+    }
+
     @PrePersist
     protected void onCreate() {
         if (productPrice == null) {

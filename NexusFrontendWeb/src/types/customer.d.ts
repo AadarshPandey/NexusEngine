@@ -16,12 +16,6 @@ export interface Member {
   signupChannel?: number
   accountStatus: number
   createdAt: string
-  // Backward compatibility aliases
-  nickname?: string
-  phone?: string
-  icon?: string
-  iconUrl?: string
-  contactPhone?: string
 }
 
 export interface MemberAddress {
@@ -36,16 +30,6 @@ export interface MemberAddress {
   state: string
   postalCode: string
   countryCode?: string
-  // Backward compatibility aliases
-  name?: string
-  phoneNumber?: string
-  receiverPhone?: string
-  defaultStatus?: number
-  detailAddress?: string
-  postCode?: string
-  region?: string
 }
 
 export type MemberInfo = Member
-export type UmsMember = Member
-export type UmsMemberReceiveAddress = MemberAddress

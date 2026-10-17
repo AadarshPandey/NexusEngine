@@ -4,6 +4,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import type { RootState, AppDispatch } from '../store';
 import { generateConfirmOrder, createOrder } from '../api/ordering';
 import type { ConfirmOrderResult } from '../api/ordering';
+import { PaymentMethod } from '../types/ordering';
+import { CouponDiscountType, CouponApplicabilityScope } from '../types/promotion';
 import { createRazorpayOrder, verifyRazorpayPayment } from '../api/payment';
 import { clearCart } from '../store/slices/cartSlice';
 import { useNavigate } from 'react-router';
@@ -28,16 +30,16 @@ const Checkout: React.FC = () => {
     const coupon = comment.coupon;
     
     let applicableAmount = 0;
-    if (coupon.applicabilityScope === 0) {
+    if (coupon.applicabilityScope === CouponApplicabilityScope.ALL) {
       // All products
-      applicableAmount = confirmData.calcAmount.totalAmount || 0;
-    } else if (coupon.applicabilityScope === 1) {
+      applicableAmount = confirmData.calcAmount.subtotalAmount || 0;
+    } else if (coupon.applicabilityScope === CouponApplicabilityScope.CATEGORY) {
       // Specific categories
       const allowedCategories = comment.categoryRelationList?.map(c => c.productCategoryId) || [];
       applicableAmount = confirmData.cartPromotionItemList
         .filter(item => item.productCategoryId !== undefined && allowedCategories.includes(item.productCategoryId))
         .reduce((sum, item) => sum + ((item.price ?? 0) * item.quantity), 0);
-    } else if (coupon.applicabilityScope === 2) {
+    } else if (coupon.applicabilityScope === CouponApplicabilityScope.PRODUCT) {
       // Specific products
       const allowedProducts = comment.productRelationList?.map(p => p.productId) || [];
       applicableAmount = confirmData.cartPromotionItemList
@@ -50,22 +52,22 @@ const Checkout: React.FC = () => {
       return 0; 
     }
 
-    if (coupon.type === 0) {
+    if (coupon.discountType === CouponDiscountType.FIXED_AMOUNT) {
       return Math.min(coupon.discountValue, applicableAmount);
-    } else if (coupon.type === 1) {
+    } else if (coupon.discountType === CouponDiscountType.PERCENTAGE) {
       let discountRate = applicableAmount * (coupon.discountValue / 100);
       if (coupon.maxDiscountAmount && discountRate > coupon.maxDiscountAmount) {
         discountRate = coupon.maxDiscountAmount;
       }
       return discountRate;
-    } else if (coupon.type === 2) {
-      return confirmData.calcAmount.freightAmount || 0;
+    } else if (coupon.discountType === CouponDiscountType.FREE_SHIPPING) {
+      return confirmData.calcAmount.shippingAmount || 0;
     }
     return 0;
   };
 
   const manualAdjustmentAmount = calculateDiscount();
-  const finalPayAmount = Math.max((confirmData?.calcAmount.payAmount || 0) - manualAdjustmentAmount, 0);
+  const finalPayAmount = Math.max((confirmData?.calcAmount.grandTotalAmount || 0) - manualAdjustmentAmount, 0);
 
   useEffect(() => {
     if (!isAuthenticated || items.length === 0) {
@@ -105,13 +107,13 @@ const Checkout: React.FC = () => {
       // 1. Generate the actual order in the backend
       const orderRes = await createOrder({
         memberReceiveAddressId: selectedAddressId as number,
-        payType: 2, // 2 = Razorpay
+        payType: PaymentMethod.RAZORPAY,
         cartIds: items.map(i => i.id),
         couponId: selectedCouponId ? (selectedCouponId as number) : undefined
       });
       
       const order = orderRes.data.order;
-      const orderNum = order.orderNumber || order.orderSn;
+      const orderNum = order.orderNumber;
       
       // 2. Get Razorpay specific order details from backend
       const rzpRes = await createRazorpayOrder(order.id);
@@ -211,11 +213,11 @@ const Checkout: React.FC = () => {
               onChange={(e) => setSelectedAddressId(e.target.value as number)}
             >
               {confirmData.memberReceiveAddressList.map((addr: any) => {
-                const name = addr.recipientName || addr.name;
-                const phone = addr.recipientPhone || addr.phoneNumber || addr.receiverPhone;
-                const line = addr.addressLine || addr.detailAddress;
-                const postal = addr.postalCode || addr.postCode;
-                const locality = [line, addr.district || addr.region, addr.city, addr.state].filter(Boolean).join(', ');
+                const name = addr.recipientName;
+                const phone = addr.recipientPhone;
+                const line = addr.addressLine;
+                const postal = addr.postalCode;
+                const locality = [line, addr.district, addr.city, addr.state].filter(Boolean).join(', ');
                 return (
                   <MenuItem key={addr.id} value={addr.id}>
                     {name} - {phone} ({locality} - PIN: {postal})
@@ -245,9 +247,9 @@ const Checkout: React.FC = () => {
               {confirmData.couponHistoryDetailList.map((comment) => (
                 <MenuItem key={comment.coupon.id} value={comment.coupon.id}>
                   {comment.coupon.name} 
-                  {comment.coupon.type === 0 && ` (₹${comment.coupon.discountValue} off)`}
-                  {comment.coupon.type === 1 && ` (${comment.coupon.discountValue}% off)`}
-                  {comment.coupon.type === 2 && ` (Free Shipping)`}
+                  {comment.coupon.discountType === CouponDiscountType.FIXED_AMOUNT && ` (₹${comment.coupon.discountValue} off)`}
+                  {comment.coupon.discountType === CouponDiscountType.PERCENTAGE && ` (${comment.coupon.discountValue}% off)`}
+                  {comment.coupon.discountType === CouponDiscountType.FREE_SHIPPING && ` (Free Shipping)`}
                 </MenuItem>
               ))}
             </Select>
@@ -263,19 +265,19 @@ const Checkout: React.FC = () => {
         <Typography variant="h6" gutterBottom>Order Items</Typography>
         {confirmData?.cartPromotionItemList.map((item) => (
           <Box key={item.id} sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-            <Typography>{item.name || item.productName} x {item.quantity}</Typography>
+            <Typography>{item.name} x {item.quantity}</Typography>
             <Typography>₹{((item.price ?? 0) * item.quantity).toFixed(2)}</Typography>
           </Box>
         ))}
         <Divider sx={{ my: 2 }} />
         
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 4, mb: 1 }}>
-          <Typography color="text.secondary">Total Amount:</Typography>
-          <Typography>₹{confirmData?.calcAmount.totalAmount?.toFixed(2)}</Typography>
+          <Typography color="text.secondary">Subtotal:</Typography>
+          <Typography>₹{confirmData?.calcAmount.subtotalAmount?.toFixed(2)}</Typography>
         </Box>
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 4, mb: 1 }}>
-          <Typography color="text.secondary">Freight:</Typography>
-          <Typography>₹{confirmData?.calcAmount.freightAmount?.toFixed(2)}</Typography>
+          <Typography color="text.secondary">Shipping:</Typography>
+          <Typography>₹{confirmData?.calcAmount.shippingAmount?.toFixed(2)}</Typography>
         </Box>
         {manualAdjustmentAmount > 0 && (
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 4, mb: 1 }}>

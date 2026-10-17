@@ -152,4 +152,84 @@ private OffsetDateTime receiveTime;
     @Schema(title = "Receive note")
 
 private String receiveNote;
+
+    public Integer getQuantity() {
+        return productCount;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.productCount = quantity;
+    }
+
+    public BigDecimal getUnitRefundAmount() {
+        return productRealPrice;
+    }
+
+    public void setUnitRefundAmount(BigDecimal unitRefundAmount) {
+        this.productRealPrice = unitRefundAmount;
+    }
+
+    public BigDecimal getRefundAmount() {
+        return returnAmount;
+    }
+
+    public void setRefundAmount(BigDecimal refundAmount) {
+        this.returnAmount = refundAmount;
+    }
+
+    public String getContactName() {
+        return returnName;
+    }
+
+    public void setContactName(String contactName) {
+        this.returnName = contactName;
+    }
+
+    public String getContactPhone() {
+        return returnPhone;
+    }
+
+    public void setContactPhone(String contactPhone) {
+        this.returnPhone = contactPhone;
+    }
+
+    public String getOrderNumber() {
+        return orderSn;
+    }
+
+    public void setOrderNumber(String orderNumber) {
+        this.orderSn = orderNumber;
+    }
+
+    public String getProductImageUrl() {
+        return productPic;
+    }
+
+    public void setProductImageUrl(String productImageUrl) {
+        this.productPic = productImageUrl;
+    }
+
+    public String getBrandName() {
+        return productBrand;
+    }
+
+    public void setBrandName(String brandName) {
+        this.productBrand = brandName;
+    }
+
+    public String getSkuAttributes() {
+        return productAttr;
+    }
+
+    public void setSkuAttributes(String skuAttributes) {
+        this.productAttr = skuAttributes;
+    }
+
+    public String getCustomerComment() {
+        return description;
+    }
+
+    public void setCustomerComment(String customerComment) {
+        this.description = customerComment;
+    }
 }

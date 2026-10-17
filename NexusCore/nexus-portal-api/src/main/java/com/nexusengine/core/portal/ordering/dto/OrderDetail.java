@@ -19,4 +19,7 @@ public record OrderDetail(
     @Schema(title = "Order item list") List<OrderLine> orderItemList,
     @Schema(title = "Return apply list") List<ReturnRequest> returnApplyList
 ) {
+    public List<OrderLine> getOrderLines() {
+        return orderItemList;
+    }
 }

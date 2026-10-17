@@ -78,7 +78,3 @@ export interface ProductMedia {
   mediaType?: 'IMAGE' | 'VIDEO'
   displayOrder?: number
 }
-
-// Backward-compatible alias
-export type PmsProduct = Product
-export type PmsProductCategory = Category

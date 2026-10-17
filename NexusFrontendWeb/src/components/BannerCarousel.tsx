@@ -31,8 +31,8 @@ const BannerCarousel: React.FC<BannerCarouselProps> = ({ banners }) => {
     <Box sx={{ position: 'relative', width: '100%', height: { xs: 200, md: 400 }, overflow: 'hidden', borderRadius: 2, bgcolor: '#000' }}>
       {banners.map((banner, index) => {
         const bgImg = resolveImageUrl(banner.primaryImageUrl || banner.imageUrl);
-        const linkUrl = banner.targetUrl || banner.url;
-        const bannerTitle = banner.title || banner.name || 'Special Promotion';
+        const linkUrl = banner.targetUrl;
+        const bannerTitle = banner.title || 'Special Promotion';
 
         return (
           <Box

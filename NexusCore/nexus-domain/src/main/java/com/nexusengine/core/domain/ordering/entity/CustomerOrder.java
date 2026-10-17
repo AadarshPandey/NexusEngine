@@ -198,6 +198,58 @@ public class CustomerOrder {
         return payType;
     }
 
+    public void setPaymentMethod(Integer paymentMethod) {
+        this.payType = paymentMethod;
+    }
+
+    public void setOrderNumber(String orderNumber) {
+        this.orderSn = orderNumber;
+    }
+
+    public void setSubtotalAmount(BigDecimal subtotalAmount) {
+        this.totalAmount = subtotalAmount;
+    }
+
+    public void setGrandTotalAmount(BigDecimal grandTotalAmount) {
+        this.payAmount = grandTotalAmount;
+    }
+
+    public void setShippingAmount(BigDecimal shippingAmount) {
+        this.freightAmount = shippingAmount;
+    }
+
+    public String getRecipientName() {
+        return receiverName;
+    }
+
+    public void setRecipientName(String recipientName) {
+        this.receiverName = recipientName;
+    }
+
+    public String getRecipientPhone() {
+        return receiverPhone;
+    }
+
+    public void setRecipientPhone(String recipientPhone) {
+        this.receiverPhone = recipientPhone;
+    }
+
+    public String getShippingPostalCode() {
+        return receiverPostCode;
+    }
+
+    public void setShippingPostalCode(String shippingPostalCode) {
+        this.receiverPostCode = shippingPostalCode;
+    }
+
+    public String getShippingAddressLine() {
+        return receiverDetailAddress;
+    }
+
+    public void setShippingAddressLine(String shippingAddressLine) {
+        this.receiverDetailAddress = shippingAddressLine;
+    }
+
     @PrePersist
     protected void onCreate() {
         if (createTime == null) {

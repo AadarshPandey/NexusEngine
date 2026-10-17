@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Box, TextField, Button, Typography, Paper, Alert } from '@mui/material';
 import { useNavigate, Link } from 'react-router';
-import request from '../utils/request';
-import { getAuthCode } from '../api/customer';
+import { getAuthCode, registerMember } from '../api/customer';
 
 const Register: React.FC = () => {
   const [username, setUsername] = useState('');
@@ -57,13 +56,7 @@ const Register: React.FC = () => {
       return;
     }
     try {
-      const params = new URLSearchParams();
-      params.append('username', username);
-      params.append('password', password);
-      params.append('passwordHash', password);
-      params.append('email', email);
-      params.append('authCode', authCode);
-      await request.post('/sso/register', params);
+      await registerMember({ username, password, passwordHash: password, email, authCode });
       
       setSuccess('Registration successful! You can now log in.');
       setError('');

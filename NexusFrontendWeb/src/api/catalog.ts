@@ -32,63 +32,46 @@ export interface HomeContentResult {
 }
 
 export const getProductDetail = (id: number) => {
-  return request.get<unknown, { data: ProductDetailResult }>(`/product/detail/${id}`);
+  return request.get<unknown, { data: ProductDetailResult }>(`/catalog/products/${id}`);
 };
 
 export const fetchProductDetail = getProductDetail;
 
 export const getCategoryList = (parentId: number = 0) => {
-  return request.get<unknown, { data: Category[] }>(`/home/productCateList/${parentId}`);
+  return request.get<unknown, { data: Category[] }>(`/home/categories/${parentId}`);
 };
 
 export const fetchHomeContent = () => {
-  return request.get<unknown, { data: HomeContentResult }>('/home/body');
+  return request.get<unknown, { data: HomeContentResult }>('/home');
 };
 
 export const getRecommendProducts = (pageSize: number = 4, pageNum: number = 1) => {
-  return request.get<unknown, { data: Product[] }>('/home/recommendProductList', {
-    params: { pageSize, pageNum },
+  return request.get<unknown, { data: Product[] }>('/home/recommended-products', {
+    params: { size: pageSize, page: pageNum - 1 },
   });
 };
 
 export const fetchRecommendProductList = getRecommendProducts;
 
 export const getHotProducts = (pageSize: number = 6, pageNum: number = 1) => {
-  return request.get<unknown, { data: Product[] }>('/home/hotProductList', {
-    params: { pageSize, pageNum },
+  return request.get<unknown, { data: Product[] }>('/home/hot-products', {
+    params: { size: pageSize, page: pageNum - 1 },
   });
 };
 
 export const fetchHotProductList = getHotProducts;
 
 export const getNewProducts = (pageSize: number = 6, pageNum: number = 1) => {
-  return request.get<unknown, { data: Product[] }>('/home/newProductList', {
-    params: { pageSize, pageNum },
+  return request.get<unknown, { data: Product[] }>('/home/new-products', {
+    params: { size: pageSize, page: pageNum - 1 },
   });
 };
 
 export const fetchNewProductList = getNewProducts;
 
 export const searchProducts = async (keyword: string, pageNum: number = 0, pageSize: number = 20) => {
-  const res = await request.get<unknown, { data: { list: any[] } }>('/api/search/esProduct/search', {
-    baseURL: '/', // Search endpoint sits at /api/search
-    params: { keyword, pageNum, pageSize }
+  const res = await request.get<unknown, { data: { list: Product[] } }>('/catalog/products/search', {
+    params: { keyword, pageNum, pageSize },
   });
-  if (res && res.data && res.data.list) {
-    res.data.list = res.data.list.map(item => ({
-      ...item,
-      primaryImageUrl: item.primaryImageUrl || item.pic || '',
-      listPrice: item.listPrice !== undefined ? item.listPrice : (item.price ?? 0),
-      salePrice: item.salePrice !== undefined ? item.salePrice : item.price,
-      unitsSold: item.unitsSold !== undefined ? item.unitsSold : (item.sale ?? 0),
-      onHandQty: item.onHandQty !== undefined ? item.onHandQty : (item.stock ?? 0),
-      productCode: item.productCode || item.productSn || '',
-    }));
-  }
-  return res as unknown as { data: { list: Product[] } };
+  return res;
 };
-
-// Backward-compatible type aliases
-export type PmsPortalProductDetail = ProductDetailResult;
-export type PmsSkuStock = ProductSku;
-export type PmsProduct = Product;

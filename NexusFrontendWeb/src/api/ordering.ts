@@ -11,10 +11,10 @@ import type { Coupon } from '../types/promotion';
 export type { CustomerOrder, EnrichedCartItem, OrderLine, ReturnRequest };
 
 export interface ConfirmOrderCalcAmount {
-  totalAmount: number;
-  freightAmount: number;
-  promotionAmount: number;
-  payAmount: number;
+  subtotalAmount: number;
+  shippingAmount: number;
+  promotionAmount?: number;
+  grandTotalAmount: number;
 }
 
 export interface CouponHistoryDetail {
@@ -44,13 +44,13 @@ export interface GenerateOrderResult {
 }
 
 export const getCart = () => {
-  return request.get<unknown, { data: EnrichedCartItem[] }>('/cart/list/promotion');
+  return request.get<unknown, { data: EnrichedCartItem[] }>('/ordering/cart/promotion');
 };
 
 export const fetchCartList = getCart;
 
 export const addItemToCart = (data: { productId?: number; productSkuId?: number; skuId?: number; quantity: number; price?: number }) => {
-  return request.post<unknown, { data: unknown }>('/cart/add', {
+  return request.post<unknown, { data: unknown }>('/ordering/cart', {
     productId: data.productId,
     productSkuId: data.skuId || data.productSkuId,
     quantity: data.quantity,
@@ -61,50 +61,51 @@ export const addItemToCart = (data: { productId?: number; productSkuId?: number;
 export const addToCart = addItemToCart;
 
 export const removeCartItems = (cartIds: number[]) => {
-  return request.post<unknown, unknown>('/cart/delete', null, { params: { ids: cartIds.join(',') } });
+  return request.delete<unknown, unknown>('/ordering/cart', { params: { ids: cartIds.join(',') } });
 };
 
 export const deleteCartItem = removeCartItems;
 
 export const updateItemQuantity = (cartId: number, quantity: number) => {
-  return request.get<unknown, unknown>('/cart/update/quantity', { params: { id: cartId, quantity } });
+  return request.patch<unknown, unknown>('/ordering/cart/quantity', null, { params: { id: cartId, quantity } });
 };
 
 export const updateCartItemQuantity = updateItemQuantity;
 
 export const generateConfirmOrder = (cartIds: number[]) => {
-  return request.post<unknown, { data: ConfirmOrderResult }>('/order/generateConfirmOrder', cartIds);
+  return request.post<unknown, { data: ConfirmOrderResult }>('/ordering/orders/confirm', cartIds);
 };
 
 export const createOrder = (orderParam: OrderParam) => {
-  return request.post<unknown, { data: GenerateOrderResult }>('/order/generateOrder', orderParam);
+  return request.post<unknown, { data: GenerateOrderResult }>('/ordering/orders', orderParam);
 };
 
 export const generateOrder = createOrder;
 
 export const getOrders = (status: number = -1, pageNum: number = 1, pageSize: number = 10) => {
-  return request.get<unknown, { data: { list: CustomerOrder[] } }>('/order/list', {
+  return request.get<unknown, { data: { list: CustomerOrder[] } }>('/ordering/orders', {
     params: { status, pageNum, pageSize },
   });
 };
 
 export const fetchOrderList = getOrders;
 
+export const getOrderDetail = (orderId: number) => {
+  return request.get<unknown, { data: CustomerOrder }>(`/ordering/orders/${orderId}`);
+};
+
 export const cancelUserOrder = (orderId: number) => {
-  return request.post<unknown, { data: unknown }>(`/order/cancelUserOrder?orderId=${orderId}`);
+  return request.patch<unknown, { data: unknown }>('/ordering/orders/cancel', null, { params: { orderId } });
+};
+
+export const confirmReceiveOrder = (orderId: number) => {
+  return request.patch<unknown, { data: unknown }>('/ordering/orders/confirm-receipt', null, { params: { orderId } });
 };
 
 export const submitReturnApply = (data: unknown) => {
-  return request.post<unknown, { data: unknown }>('/returnApply/create', data);
+  return request.post<unknown, { data: unknown }>('/ordering/return-requests', data);
 };
 
 export const getReturnReasons = () => {
-  return request.get<unknown, { data: { id: number; name: string }[] }>('/returnApply/reasons');
+  return request.get<unknown, { data: { id: number; name: string }[] }>('/ordering/return-requests/reasons');
 };
-
-// Backward-compatible aliases
-export type OmsCartItem = EnrichedCartItem;
-export type OmsOrderDetail = CustomerOrder;
-export type OmsOrderItem = OrderLine;
-export type OmsOrderReturnApply = ReturnRequest;
-export type SmsCouponHistoryDetail = CouponHistoryDetail;

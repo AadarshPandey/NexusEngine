@@ -29,7 +29,7 @@ import {
 import { useSelector } from 'react-redux';
 import type { RootState } from '../store';
 import { getOrders, submitReturnApply, getReturnReasons, cancelUserOrder } from '../api/ordering';
-import type { CustomerOrder, OrderLine, ReturnRequest } from '../types/ordering';
+import { OrderStatus, type CustomerOrder, type OrderLine, type ReturnRequest } from '../types/ordering';
 import {
   getCustomerProfile,
   getCustomerAddresses,
@@ -47,6 +47,16 @@ interface TabPanelProps {
   index: number;
   value: number;
 }
+
+const ORDER_STATUS_LABELS: Record<number, string> = {
+  [OrderStatus.PENDING_PAYMENT]: 'Pending Payment',
+  [OrderStatus.AWAITING_SHIPMENT]: 'Awaiting Shipment',
+  [OrderStatus.SHIPPED]: 'Shipped',
+  [OrderStatus.COMPLETED]: 'Completed',
+  [OrderStatus.CANCELLED]: 'Cancelled',
+  5: 'Out for Delivery',
+  6: 'Refunded',
+};
 
 function TabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
@@ -69,13 +79,13 @@ const Profile: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [openAddAddress, setOpenAddAddress] = useState(false);
   const [newAddress, setNewAddress] = useState<Partial<MemberAddress>>({
-    name: '',
-    phoneNumber: '',
-    detailAddress: '',
-    postCode: '',
+    recipientName: '',
+    recipientPhone: '',
+    addressLine: '',
+    postalCode: '',
     city: '',
     state: '',
-    region: '',
+    district: '',
   });
 
   // Refund dialog states
@@ -86,7 +96,7 @@ const Profile: React.FC = () => {
   const handleEditProfileOpen = () => {
     setEditProfileData({
       displayName: memberInfo?.displayName || '',
-      iconUrl: memberInfo?.avatarUrl || memberInfo?.iconUrl || '',
+      iconUrl: memberInfo?.avatarUrl || '',
     });
     setOpenEditProfile(true);
   };
@@ -145,7 +155,7 @@ const Profile: React.FC = () => {
       setOpenAddAddress(false);
       const addressRes = await getCustomerAddresses();
       setAddresses(addressRes.data || []);
-      setNewAddress({ name: '', phoneNumber: '', detailAddress: '', postCode: '', city: '', state: '', region: '' });
+      setNewAddress({ recipientName: '', recipientPhone: '', addressLine: '', postalCode: '', city: '', state: '', district: '' });
       alert('Address added successfully!');
     } catch {
       alert('Failed to add address');
@@ -176,8 +186,8 @@ const Profile: React.FC = () => {
       const totalReturnedQty =
         refundOrder?.returnApplyList
           ?.filter((r: ReturnRequest) => r.productId === item.productId)
-          .reduce((sum, r) => sum + (r.productCount || 0), 0) || 0;
-      const qty = item.productQuantity ?? item.quantity ?? 1;
+          .reduce((sum, r) => sum + (r.quantity || 0), 0) || 0;
+      const qty = item.quantity ?? 1;
       const maxReturnableQty = Math.max(0, qty - totalReturnedQty);
       newSelected.push({ ...item, returnQuantity: maxReturnableQty });
     } else {
@@ -200,27 +210,26 @@ const Profile: React.FC = () => {
     try {
       await Promise.all(
         selectedRefundItems.map((item) => {
-          const itemQty = item.productQuantity ?? item.quantity ?? 1;
-          const itemAmt = item.realAmount ?? item.lineTotalAmount ?? 0;
+          const itemQty = item.quantity ?? 1;
+          const itemAmt = item.lineTotalAmount ?? 0;
           return submitReturnApply({
             orderId: refundOrder.id,
             productId: item.productId,
-            orderSn: refundOrder.orderNumber || refundOrder.orderSn,
-            returnName: memberInfo?.displayName || memberInfo?.username,
-            returnPhone: memberInfo?.phoneE164 || memberInfo?.contactPhone || '',
-            productPic: item.productPic || item.productImageUrl,
+            orderNumber: refundOrder.orderNumber,
+            contactName: memberInfo?.displayName || memberInfo?.username,
+            contactPhone: memberInfo?.phoneE164 || '',
+            productImageUrl: item.productImageUrl,
             productName: item.productName,
-            productBrand: item.productBrand || item.brandName,
-            productAttr:
-              item.productAttr ||
-              (typeof item.skuAttributes === 'string'
+            brandName: item.brandName,
+            skuAttributes:
+              typeof item.skuAttributes === 'string'
                 ? item.skuAttributes
-                : JSON.stringify(item.skuAttributes || '')),
-            productCount: item.returnQuantity,
-            productPrice: item.productPrice ?? item.unitPrice,
-            returnAmount: (itemAmt / itemQty) * item.returnQuantity,
+                : JSON.stringify(item.skuAttributes || ''),
+            quantity: item.returnQuantity,
+            unitPrice: item.unitPrice,
+            unitRefundAmount: itemAmt / itemQty,
             reason: refundReason,
-            description: refundReason,
+            customerComment: refundReason,
           });
         }),
       );
@@ -260,7 +269,7 @@ const Profile: React.FC = () => {
       <Box sx={{ flex: 1 }}>
         <Paper sx={{ p: 4, textAlign: 'center' }}>
           <Avatar
-            src={resolveImageUrl(memberInfo?.avatarUrl || memberInfo?.iconUrl) || 'https://via.placeholder.com/100'}
+            src={resolveImageUrl(memberInfo?.avatarUrl) || 'https://via.placeholder.com/100'}
             sx={{ width: 100, height: 100, mx: 'auto', mb: 2 }}
           />
           <Typography variant="h5" gutterBottom>
@@ -295,7 +304,7 @@ const Profile: React.FC = () => {
               <Typography color="text.secondary">Display Name:</Typography>
               <Typography>{memberInfo?.displayName || '-'}</Typography>
               <Typography color="text.secondary">Phone:</Typography>
-              <Typography>{memberInfo?.phoneE164 || memberInfo?.contactPhone || '-'}</Typography>
+              <Typography>{memberInfo?.phoneE164 || '-'}</Typography>
             </Box>
           </TabPanel>
 
@@ -319,39 +328,28 @@ const Profile: React.FC = () => {
                   </TableHead>
                   <TableBody>
                     {orders.map((order) => {
+                      const items = order.orderLines ?? [];
                       const totalOrderQty =
-                        order.orderItemList?.reduce(
-                          (sum: number, item: OrderLine) => sum + (item.productQuantity ?? item.quantity ?? 0),
+                        items.reduce(
+                          (sum: number, item: OrderLine) => sum + (item.quantity ?? 0),
                           0,
-                        ) || 0;
+                        );
                       const totalReturnedQty =
                         order.returnApplyList?.reduce(
-                          (sum: number, r: ReturnRequest) => sum + (r.productCount || 0),
+                          (sum: number, r: ReturnRequest) => sum + (r.quantity || 0),
                           0,
                         ) || 0;
                       const isOrderFullyRefunded = totalOrderQty > 0 && totalReturnedQty >= totalOrderQty;
 
                       return (
                         <TableRow key={order.id}>
-                          <TableCell>{order.orderNumber || order.orderSn}</TableCell>
-                          <TableCell>{new Date(order.createTime || order.createdAt).toLocaleDateString()}</TableCell>
+                          <TableCell>{order.orderNumber}</TableCell>
+                          <TableCell>{new Date(order.createdAt).toLocaleDateString()}</TableCell>
                           <TableCell>
                             <Typography variant="body2">
                               {isOrderFullyRefunded
                                 ? 'Refunded'
-                                : order.status === 0
-                                  ? 'Pending Payment'
-                                  : order.status === 1
-                                    ? 'Awaiting Shipment'
-                                    : order.status === 2
-                                      ? 'Shipped'
-                                      : order.status === 3
-                                        ? 'Completed'
-                                        : order.status === 5
-                                          ? 'Out for Delivery'
-                                          : order.status === 6
-                                            ? 'Refunded'
-                                            : 'Cancelled'}
+                                : (ORDER_STATUS_LABELS[order.status] ?? 'Unknown')}
                             </Typography>
                             {order.returnApplyList && order.returnApplyList.length > 0 && (
                               <Chip
@@ -367,7 +365,7 @@ const Profile: React.FC = () => {
                             </Typography>
                           </TableCell>
                           <TableCell align="right">
-                            ₹{(order.grandTotalAmount ?? order.totalAmount ?? 0).toFixed(2)}
+                            ₹{(order.grandTotalAmount ?? 0).toFixed(2)}
                           </TableCell>
                           <TableCell align="center">
                             {order.status === 0 && (
@@ -408,7 +406,7 @@ const Profile: React.FC = () => {
                                       amount: amount,
                                       currency: 'INR',
                                       name: 'Nexus Engine',
-                                      description: `Payment for Order #${order.orderNumber || order.orderSn}`,
+                                      description: `Payment for Order #${order.orderNumber}`,
                                       order_id: razorpayOrderId,
                                       handler: async function (response: RazorpayResponse) {
                                         try {
@@ -427,8 +425,8 @@ const Profile: React.FC = () => {
                                       },
                                       prefill: {
                                         name: memberInfo?.displayName || memberInfo?.username || 'Test Customer',
-                                        email: 'test@example.com',
-                                        contact: memberInfo?.phoneE164 || memberInfo?.contactPhone || '9000090000',
+                                        email: memberInfo?.email || 'test@example.com',
+                                        contact: memberInfo?.phoneE164 || '9000090000',
                                       },
                                       theme: { color: '#3399cc' },
                                     };
@@ -502,11 +500,11 @@ const Profile: React.FC = () => {
                 {addresses.map((address) => (
                   <Paper key={address.id} variant="outlined" sx={{ p: 2 }}>
                     <Typography sx={{ fontWeight: 'bold' }}>
-                      {address.name} ({address.phoneNumber || address.receiverPhone})
+                      {address.recipientName} ({address.recipientPhone})
                     </Typography>
                     <Typography color="text.secondary">
-                      {[address.detailAddress, address.region, address.city, address.state].filter(Boolean).join(', ')}{' '}
-                      - PIN: {address.postCode}
+                      {[address.addressLine, address.district, address.city, address.state].filter(Boolean).join(', ')}{' '}
+                      - PIN: {address.postalCode}
                     </Typography>
                   </Paper>
                 ))}
@@ -522,30 +520,42 @@ const Profile: React.FC = () => {
         <DialogContent>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
             <TextField
-              label="Name"
+              label="Recipient Name"
               fullWidth
-              value={newAddress.name}
-              onChange={(e) => setNewAddress({ ...newAddress, name: e.target.value })}
+              value={newAddress.recipientName || ''}
+              onChange={(e) => setNewAddress({ ...newAddress, recipientName: e.target.value })}
             />
             <TextField
               label="Phone Number"
               fullWidth
-              value={newAddress.phoneNumber}
-              onChange={(e) => setNewAddress({ ...newAddress, phoneNumber: e.target.value })}
+              value={newAddress.recipientPhone || ''}
+              onChange={(e) => setNewAddress({ ...newAddress, recipientPhone: e.target.value })}
             />
             <TextField
               label="Full Address"
               fullWidth
               multiline
               rows={3}
-              value={newAddress.detailAddress}
-              onChange={(e) => setNewAddress({ ...newAddress, detailAddress: e.target.value })}
+              value={newAddress.addressLine || ''}
+              onChange={(e) => setNewAddress({ ...newAddress, addressLine: e.target.value })}
             />
             <TextField
               label="PIN Code"
               fullWidth
-              value={newAddress.postCode}
-              onChange={(e) => setNewAddress({ ...newAddress, postCode: e.target.value })}
+              value={newAddress.postalCode || ''}
+              onChange={(e) => setNewAddress({ ...newAddress, postalCode: e.target.value })}
+            />
+            <TextField
+              label="City"
+              fullWidth
+              value={newAddress.city || ''}
+              onChange={(e) => setNewAddress({ ...newAddress, city: e.target.value })}
+            />
+            <TextField
+              label="State"
+              fullWidth
+              value={newAddress.state || ''}
+              onChange={(e) => setNewAddress({ ...newAddress, state: e.target.value })}
             />
           </Box>
         </DialogContent>
@@ -565,12 +575,12 @@ const Profile: React.FC = () => {
             Select the items you wish to return and provide a reason.
           </Typography>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            {refundOrder?.orderItemList?.map((item: OrderLine) => {
+            {(refundOrder?.orderLines ?? []).map((item: OrderLine) => {
               const totalReturnedQty =
                 refundOrder?.returnApplyList
                   ?.filter((r: ReturnRequest) => r.productId === item.productId)
-                  .reduce((sum, r) => sum + (r.productCount || 0), 0) || 0;
-              const qty = item.productQuantity ?? item.quantity ?? 1;
+                  .reduce((sum, r) => sum + (r.quantity || 0), 0) || 0;
+              const qty = item.quantity ?? 1;
               const maxReturnableQty = Math.max(0, qty - totalReturnedQty);
               const isFullyReturned = maxReturnableQty <= 0;
               const isSelected = selectedRefundItems.some((i) => i.id === item.id);
@@ -597,20 +607,19 @@ const Profile: React.FC = () => {
                   }}
                 >
                   <img
-                    src={resolveImageUrl(item.productPic || item.productImageUrl) || 'https://via.placeholder.com/60'}
+                    src={resolveImageUrl(item.productImageUrl) || 'https://via.placeholder.com/60'}
                     alt={item.productName}
                     style={{ width: 60, height: 60, objectFit: 'cover' }}
                   />
                   <Box sx={{ flex: 1 }}>
                     <Typography variant="subtitle2">{item.productName}</Typography>
                     <Typography variant="body2" color="text.secondary">
-                      {item.productAttr ||
-                        (typeof item.skuAttributes === 'string'
-                          ? item.skuAttributes
-                          : JSON.stringify(item.skuAttributes || ''))}
+                      {typeof item.skuAttributes === 'string'
+                        ? item.skuAttributes
+                        : JSON.stringify(item.skuAttributes || '')}
                     </Typography>
                     <Typography variant="body2">
-                      Qty: {item.productQuantity ?? item.quantity} | ₹{item.realAmount ?? item.lineTotalAmount}
+                      Qty: {item.quantity} | ₹{item.lineTotalAmount}
                     </Typography>
                     {totalReturnedQty > 0 && isFullyReturned && (
                       <Typography variant="caption" color="error" sx={{ fontWeight: 'bold' }}>

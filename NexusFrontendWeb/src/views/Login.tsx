@@ -3,7 +3,7 @@ import { Box, TextField, Button, Typography, Paper, Alert } from '@mui/material'
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { login } from '../store/slices/authSlice';
-import request from '../utils/request';
+import { loginMember } from '../api/customer';
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState('');
@@ -15,11 +15,7 @@ const Login: React.FC = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const params = new URLSearchParams();
-      params.append('username', username);
-      params.append('password', password);
-      params.append('passwordHash', password);
-      const response = await request.post('/sso/login', params);
+      const response = await loginMember({ username, password, passwordHash: password });
       if (response.data?.token) {
         dispatch(login({ token: response.data.token, user: { username } }));
         navigate('/');

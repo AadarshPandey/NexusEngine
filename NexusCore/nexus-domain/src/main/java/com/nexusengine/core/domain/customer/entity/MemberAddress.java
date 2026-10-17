@@ -89,6 +89,30 @@ public class MemberAddress {
         return region;
     }
 
+    public void setRecipientName(String recipientName) {
+        this.name = recipientName;
+    }
+
+    public void setRecipientPhone(String recipientPhone) {
+        this.phoneNumber = recipientPhone;
+    }
+
+    public void setIsDefault(Boolean isDefault) {
+        this.defaultStatus = isDefault;
+    }
+
+    public void setAddressLine(String addressLine) {
+        this.detailAddress = addressLine;
+    }
+
+    public void setPostalCode(String postalCode) {
+        this.postCode = postalCode;
+    }
+
+    public void setDistrict(String district) {
+        this.region = district;
+    }
+
     @PrePersist
     protected void onCreate() {
         if (defaultStatus == null) {

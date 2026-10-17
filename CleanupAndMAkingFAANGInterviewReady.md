@@ -1956,29 +1956,29 @@ nexus-domain/src/main/resources/db/migration/
 **Gate: Both apps `tsc -b && vite build` pass. Same MUI major version in both `package.json`.**
 
 #### Card 7: Admin Panel Real Cleanup (2 hrs)
-- [ ] **7.1** Move REAL API logic FROM root files (`src/apis/product.ts`, `brand.ts`, ...) INTO bounded-context dirs (`src/apis/catalog/product.ts`, `catalog/brand.ts`, ...). Delete root legacy files. Delete shim re-exports.
-- [ ] **7.2** Move pages: `src/pages/pms/` → `src/pages/catalog/`, `oms/` → `ordering/`, `sms/` → `promotion/`, `ums/` → `iam/`. Update router imports.
-- [ ] **7.3** Delete ALL 28 legacy type files. Keep only bounded-context types.
-- [ ] **7.4** Delete duplicate/legacy routes in router. Keep only modern bounded-context paths.
-- [ ] **7.5** Fix proxy bypass: remove hardcoded `baseURL: 'http://localhost:8080'` from `http.ts` — use Vite proxy instead.
-- [ ] **7.6** Update all API calls to new backend URLs (`/api/admin/<context>/<resource>`).
-- [ ] **7.7** Update types to match new backend DTO shapes (no `CommonResult` wrapper, proper `Page<T>` pagination).
-- [ ] Commit: `refactor: admin panel real bounded-context cleanup`
+- [x] **7.1** Move REAL API logic FROM root files (`src/apis/product.ts`, `brand.ts`, ...) INTO bounded-context dirs (`src/apis/catalog/product.ts`, `catalog/brand.ts`, ...). Delete root legacy files. Delete shim re-exports.
+- [x] **7.2** Move pages: `src/pages/pms/` → `src/pages/catalog/`, `oms/` → `ordering/`, `sms/` → `promotion/`, `ums/` → `iam/`. Update router imports.
+- [x] **7.3** Delete ALL 28 legacy type files. Keep only bounded-context types.
+- [x] **7.4** Delete duplicate/legacy routes in router. Keep only modern bounded-context paths.
+- [x] **7.5** Fix proxy bypass: remove hardcoded `baseURL: 'http://localhost:8080'` from `http.ts` — use Vite proxy instead.
+- [x] **7.6** Update all API calls to new backend URLs (`/api/admin/<context>/<resource>`).
+- [x] **7.7** Update types to match new backend DTO shapes (no `CommonResult` wrapper, proper `Page<T>` pagination).
+- [x] Commit: `refactor: admin panel real bounded-context cleanup` (Committed in `abf181ae`)
 
-**Gate: `ls src/pages/pms src/pages/oms src/pages/sms src/pages/ums` → all error (dirs don't exist). `tsc -b && vite build` pass.**
+**Gate: `ls src/pages/pms src/pages/oms src/pages/sms src/pages/ums` → all error (dirs don't exist). `tsc -b && vite build` pass. ✅ PASSED**
 
 #### Card 8: Storefront Cleanup (1.5 hrs)
-- [ ] **8.1** Kill response patching in `src/api/catalog.ts` (remove `|| item.pic`, `?? item.stock`, `?? item.sale` patterns).
-- [ ] **8.2** Delete legacy type aliases: remove `export type PmsProduct = Product`, `UmsMember = Member`, etc.
-- [ ] **8.3** Delete legacy optional fields from types: remove `orderSn?`, `totalAmount?`, `payAmount?`, etc.
-- [ ] **8.4** Fix Profile.tsx fallback chains (use single canonical field names).
-- [ ] **8.5** Fix Checkout.tsx magic numbers (use typed status constants).
-- [ ] **8.6** Update Vite proxy — route ALL `/api` to single backend (remove separate `/api/search` → `localhost:8081`).
-- [ ] **8.7** Update all API calls to new backend URLs (`/api/store/<context>/<resource>`).
-- [ ] **8.8** Update types to match new backend DTO shapes.
-- [ ] Commit: `refactor: storefront kill fallbacks, legacy aliases, patching`
+- [x] **8.1** Kill response patching in `src/api/catalog.ts` (remove `|| item.pic`, `?? item.stock`, `?? item.sale` patterns).
+- [x] **8.2** Delete legacy type aliases: remove `export type PmsProduct = Product`, `UmsMember = Member`, etc.
+- [x] **8.3** Delete legacy optional fields from types: remove `orderSn?`, `totalAmount?`, `payAmount?`, etc.
+- [x] **8.4** Fix Profile.tsx fallback chains (use single canonical field names).
+- [x] **8.5** Fix Checkout.tsx magic numbers (use typed status constants).
+- [x] **8.6** Update Vite proxy — route ALL `/api` to single backend (remove separate `/api/search` → `localhost:8081`).
+- [x] **8.7** Update all API calls to new backend URLs (`/api/store/<context>/<resource>`).
+- [x] **8.8** Update types to match new backend DTO shapes.
+- [x] Commit: `refactor: storefront kill fallbacks, legacy aliases, patching`
 
-**Gate: `grep -rn 'PmsProduct\|UmsMember\|OmsOrder' src/types/` → 0 results. `grep -rn '|| item.pic\|?? item.stock' src/api/` → 0 results. `tsc -b && vite build` pass.**
+**Gate: `grep -rn 'PmsProduct\|UmsMember\|OmsOrder' src/types/` → 0 results. `grep -rn '|| item.pic\|?? item.stock' src/api/` → 0 results. `tsc -b && vite build` pass. ✅ PASSED**
 
 ---
 

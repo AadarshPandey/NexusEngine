@@ -36,17 +36,7 @@ export interface CustomerOrder {
   createdAt: string
   updatedAt?: string
   orderLines?: OrderLine[]
-  // Legacy aliases
-  orderSn?: string
-  totalAmount?: number
-  payAmount?: number
-  freightAmount?: number
-  promotionAmount?: number
-  couponAmount?: number
-  discountAmount?: number
-  orderItemList?: OrderLine[]
   returnApplyList?: ReturnRequest[]
-  createTime?: string
 }
 
 export interface OrderLine {
@@ -65,13 +55,6 @@ export interface OrderLine {
   promotionDiscountAmount?: number
   couponDiscountAmount?: number
   lineTotalAmount: number
-  // Legacy aliases
-  productPic?: string
-  productQuantity?: number
-  productPrice?: number
-  realAmount?: number
-  productBrand?: string
-  productAttr?: string
 }
 
 export interface CartItemRecord {
@@ -104,11 +87,6 @@ export interface EnrichedCartItem {
   hasPriceChanged?: boolean
   isAvailable?: boolean
   productCategoryId?: number
-  // Legacy aliases
-  productPic?: string
-  productName?: string
-  productSkuCode?: string
-  productAttr?: string
 }
 
 export interface ReturnRequest {
@@ -117,25 +95,35 @@ export interface ReturnRequest {
   orderLineId?: number
   memberId?: number
   quantity: number
-  productCount?: number
   productId?: number
   unitRefundAmount?: number
-  refundAmount?: number
-  returnAmount?: number
   contactName?: string
   contactPhone?: string
   reason?: string
   reasonId?: number
   customerComment?: string
-  description?: string
   evidenceUrls?: string[]
-  proofPics?: string
   status: number // 0: PENDING, 1: APPROVED, 2: COMPLETED, 3: REJECTED
   reviewNote?: string
   handleNote?: string
   createdAt?: string
-  createTime?: string
 }
+
+export const PaymentMethod = {
+  UNSET: 0,
+  RAZORPAY: 1,
+  STRIPE: 2,
+} as const;
+export type PaymentMethod = (typeof PaymentMethod)[keyof typeof PaymentMethod];
+
+export const OrderStatus = {
+  PENDING_PAYMENT: 0,
+  AWAITING_SHIPMENT: 1,
+  SHIPPED: 2,
+  COMPLETED: 3,
+  CANCELLED: 4,
+} as const;
+export type OrderStatus = (typeof OrderStatus)[keyof typeof OrderStatus];
 
 export type Order = CustomerOrder
 export type OrderItem = OrderLine
