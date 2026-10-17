@@ -15,17 +15,13 @@ export interface ProductDetailResult {
   productAttributeList?: any[];
   productAttributeValueList?: any[];
   skuStockList?: ProductSku[];
-  productVolumeDiscountList?: any[];
-  productSpendDiscountList?: any[];
   couponList?: Coupon[];
-  flashSaleActive?: boolean;
 }
 
 export interface HomeContentResult {
   banners: Banner[];
   advertiseList?: Banner[];
   brandList?: Brand[];
-  homeFlashPromotion?: unknown;
   newProductList: Product[];
   hotProductList: Product[];
   recommendProductList?: Product[];

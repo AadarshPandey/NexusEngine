@@ -2,22 +2,13 @@ package com.nexusengine.core.admin.iam.service;
 
 import lombok.RequiredArgsConstructor;
 
-import com.nexusengine.core.domain.iam.entity.ConsoleMenu;
 import com.nexusengine.core.domain.iam.entity.Role;
-import com.nexusengine.core.domain.iam.entity.RoleMenu;
-import com.nexusengine.core.domain.iam.entity.Permission;
-import com.nexusengine.core.domain.iam.entity.RolePermission;
-
 import com.nexusengine.core.domain.iam.repository.RoleRepository;
-import com.nexusengine.core.domain.iam.repository.RoleMenuRepository;
-import com.nexusengine.core.domain.iam.repository.RolePermissionRepository;
-
 
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
 
 /**
  * Role management Service Implementation
@@ -26,9 +17,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RoleServiceImpl implements RoleService {
     private final RoleRepository roleRepository;
-    private final RoleMenuRepository roleMenuRelationRepository;
-    private final RolePermissionRepository roleResourceRelationRepository;
-    private final AdminUserCacheService adminCacheService;
 
     @Override
     public int create(Role role) {
@@ -49,14 +37,12 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public int delete(List<Long> ids) {
         roleRepository.deleteAllById(ids);
-        adminCacheService.delResourceListByRoleIds(ids);
         return ids.size();
     }
 
     @Override
     public List<Role> list() {
-        return /* findAll() is acceptable for small reference tables */
-        roleRepository.findAll();
+        return roleRepository.findAll();
     }
 
     @Override
@@ -69,45 +55,5 @@ public class RoleServiceImpl implements RoleService {
             }, pageable);
         }
         return roleRepository.findAll(pageable);
-    }
-
-    @Override
-    public List<ConsoleMenu> getMenuList(Long adminId) {
-        return roleRepository.getMenuList(adminId);
-    }
-
-    @Override
-    public List<ConsoleMenu> listMenu(Long roleId) {
-        return roleRepository.getMenuListByRoleId(roleId);
-    }
-
-    @Override
-    public List<Permission> listResource(Long roleId) {
-        return roleRepository.getResourceListByRoleId(roleId);
-    }
-
-    @Override
-    public int allocMenu(Long roleId, List<Long> menuIds) {
-        roleMenuRelationRepository.deleteByRoleId(roleId);
-        for (Long menuId : menuIds) {
-            RoleMenu relation = new RoleMenu();
-            relation.setRoleId(roleId);
-            relation.setMenuId(menuId);
-            roleMenuRelationRepository.save(relation);
-        }
-        return menuIds.size();
-    }
-
-    @Override
-    public int allocResource(Long roleId, List<Long> resourceIds) {
-        roleResourceRelationRepository.deleteByRoleId(roleId);
-        for (Long resourceId : resourceIds) {
-            RolePermission relation = new RolePermission();
-            relation.setRoleId(roleId);
-            relation.setResourceId(resourceId);
-            roleResourceRelationRepository.save(relation);
-        }
-        adminCacheService.delResourceListByRole(roleId);
-        return resourceIds.size();
     }
 }

@@ -99,24 +99,11 @@ secure:
     - /portal/product/**
     - /portal/brand/**
     - /portal/review/product/**
-    - /portal/review/*/replies
-    - /portal/chat/**
     - /uploads/**
     - /admin/login
     - /admin/info
     - /admin/logout
 spring:
-  ai:
-    google:
-      genai:
-        api-key: ${GEMINI_API_KEY:demo-key}
-        chat:
-          options:
-            model: gemini-2.5-flash
-    vectorstore:
-      pgvector:
-        initialize-schema: false
-        schema-name: ai
   application:
     name: nexus-monolith
   main:

@@ -11,8 +11,5 @@ import java.util.List;
 public interface ProductReviewRepository extends JpaRepository<ProductReview, Long>, JpaSpecificationExecutor<ProductReview> {
 
     @EntityGraph(attributePaths = {"attachmentList"})
-    Page<ProductReview> findByProductIdAndParentIdIsNullAndStatus(Long productId, Integer status, Pageable pageable);
-
-    @EntityGraph(attributePaths = {"attachmentList"})
-    List<ProductReview> findByParentIdAndStatus(Long parentId, Integer status);
+    Page<ProductReview> findByProductIdAndStatus(Long productId, Integer status, Pageable pageable);
 }

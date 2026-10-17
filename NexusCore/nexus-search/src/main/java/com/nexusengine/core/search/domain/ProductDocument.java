@@ -39,7 +39,6 @@ public class ProductDocument implements Serializable {
     private Integer newStatus;
     private Integer recommendStatus;
     private Integer stock;
-    private Integer promotionType;
     @Field(type = FieldType.Nested, fielddata = true)
     private List<ProductAttributeValueDoc> attrValueList;
 }

@@ -32,10 +32,6 @@
             <groupId>com.nexusengine.core</groupId>
             <artifactId>nexus-security</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.nexusengine.core</groupId>
-            <artifactId>nexus-ai</artifactId>
-        </dependency>
         <!--RabbitMQ-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -54,21 +50,6 @@
         </dependency>
 
         <!--MongoDB for member activity data (read history, collections, brand attention)-->
-        
-
-        <dependency>
-            <groupId>org.springframework.ai</groupId>
-            <artifactId>spring-ai-starter-model-google-genai</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.ai</groupId>
-            <artifactId>spring-ai-starter-vector-store-pgvector</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.pgvector</groupId>
-            <artifactId>pgvector</artifactId>
-            
-        </dependency>
         
 
         <!--Testcontainers for Integration Testing-->

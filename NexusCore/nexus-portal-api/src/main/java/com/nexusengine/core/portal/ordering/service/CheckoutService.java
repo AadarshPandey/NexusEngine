@@ -112,8 +112,6 @@ public class CheckoutService {
             orderItem.setProductQuantity(cartPromotionItem.cartItem().getQuantity());
             orderItem.setProductSkuId(cartPromotionItem.cartItem().getProductSkuId());
             orderItem.setProductCategoryId(cartPromotionItem.cartItem().getProductCategoryId());
-            orderItem.setPromotionAmount(cartPromotionItem.reduceAmount());
-            orderItem.setPromotionName(cartPromotionItem.promotionMessage());
             orderItemList.add(orderItem);
         }
 
@@ -142,7 +140,6 @@ public class CheckoutService {
         order.setTotalAmount(calcTotalAmount(orderItemList));
         BigDecimal originalFreight = calculateFreight(order.getTotalAmount());
         order.setFreightAmount(originalFreight);
-        order.setPromotionAmount(calcPromotionAmount(orderItemList));
 
         if (orderParam.couponId() == null) {
             order.setCouponAmount(BigDecimal.ZERO);
@@ -162,7 +159,6 @@ public class CheckoutService {
         order.setCreateTime(OffsetDateTime.now());
         order.setPayType(orderParam.payType());
         order.setStatus(0);
-        order.setOrderType(0);
 
         MemberAddress address = memberReceiveAddressService.getItem(orderParam.memberReceiveAddressId());
         if (address == null) {
@@ -214,15 +210,10 @@ public class CheckoutService {
     }
 
     public void sendDelayMessageCancelOrder(Long orderId) {
-        CustomerOrder order = orderRepository.findById(orderId).orElse(null);
         OrderPolicy orderSetting = orderSettingRepository.findById(1L).orElse(null);
         long timeoutMin = 30L;
-        if (orderSetting != null) {
-            if (order != null && Integer.valueOf(1).equals(order.getOrderType()) && orderSetting.getFlashPaymentTimeoutMin() != null) {
-                timeoutMin = orderSetting.getFlashPaymentTimeoutMin();
-            } else if (orderSetting.getPaymentTimeoutMin() != null) {
-                timeoutMin = orderSetting.getPaymentTimeoutMin();
-            }
+        if (orderSetting != null && orderSetting.getPaymentTimeoutMin() != null) {
+            timeoutMin = orderSetting.getPaymentTimeoutMin();
         } else {
             log.warn("Order policy record not found in database; using default {}-minute timeout for order {}", timeoutMin, orderId);
         }
@@ -291,7 +282,6 @@ public class CheckoutService {
     private void handleRealAmount(List<OrderLine> orderItemList) {
         for (OrderLine orderItem : orderItemList) {
             BigDecimal realAmount = orderItem.getProductPrice()
-                    .subtract(orderItem.getPromotionAmount() != null ? orderItem.getPromotionAmount() : BigDecimal.ZERO)
                     .subtract(orderItem.getCouponAmount() != null ? orderItem.getCouponAmount() : BigDecimal.ZERO);
             orderItem.setRealAmount(realAmount);
         }
@@ -299,7 +289,6 @@ public class CheckoutService {
 
     private BigDecimal calcPayAmount(CustomerOrder order) {
         return order.getTotalAmount().add(order.getFreightAmount())
-                .subtract(order.getPromotionAmount() != null ? order.getPromotionAmount() : BigDecimal.ZERO)
                 .subtract(order.getCouponAmount() != null ? order.getCouponAmount() : BigDecimal.ZERO);
     }
 
@@ -308,16 +297,6 @@ public class CheckoutService {
         for (OrderLine item : orderItemList) {
             if (item.getCouponAmount() != null) {
                 amount = amount.add(item.getCouponAmount().multiply(new BigDecimal(item.getProductQuantity())));
-            }
-        }
-        return amount;
-    }
-
-    private BigDecimal calcPromotionAmount(List<OrderLine> orderItemList) {
-        BigDecimal amount = BigDecimal.ZERO;
-        for (OrderLine item : orderItemList) {
-            if (item.getPromotionAmount() != null) {
-                amount = amount.add(item.getPromotionAmount().multiply(new BigDecimal(item.getProductQuantity())));
             }
         }
         return amount;

@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 
 import com.nexusengine.core.domain.iam.entity.AdminUser;
 import com.nexusengine.core.domain.iam.entity.Role;
-import com.nexusengine.core.domain.iam.entity.Permission;
 import com.nexusengine.core.domain.iam.entity.AdminLoginEvent;
 import com.nexusengine.core.domain.iam.entity.AdminUserRole;
 
@@ -182,7 +181,6 @@ public class AdminUserServiceImpl implements AdminUserService {
     public int delete(Long id) {
         adminRepository.deleteById(id);
         getCacheService().delAdmin(id);
-        getCacheService().delResourceList(id);
         return 1;
     }
 
@@ -200,26 +198,12 @@ public class AdminUserServiceImpl implements AdminUserService {
             }
             adminRoleRelationRepository.saveAll(list);
         }
-        getCacheService().delResourceList(adminId);
         return count;
     }
 
     @Override
     public List<Role> getRoleList(Long adminId) {
         return adminRoleRelationRepository.getRoleList(adminId);
-    }
-
-    @Override
-    public List<Permission> getResourceList(Long adminId) {
-        List<Permission> resourceList = getCacheService().getResourceList(adminId);
-        if (resourceList != null && !resourceList.isEmpty()) {
-            return resourceList;
-        }
-        resourceList = adminRoleRelationRepository.getResourceList(adminId);
-        if (resourceList != null && !resourceList.isEmpty()) {
-            getCacheService().setResourceList(adminId,resourceList);
-        }
-        return resourceList;
     }
 
     @Override
@@ -255,8 +239,8 @@ public class AdminUserServiceImpl implements AdminUserService {
             admin = adminRepository.findByUsername(username);
         }
         if (admin != null) {
-            List<Permission> resourceList = getResourceList(admin.getId());
-            return new AdminUserDetails(admin,resourceList);
+            List<Role> roleList = getRoleList(admin.getId());
+            return new AdminUserDetails(admin, roleList);
         }
         throw new UsernameNotFoundException("Invalid username or password");
     }
@@ -271,7 +255,6 @@ public class AdminUserServiceImpl implements AdminUserService {
         AdminUser admin = getCacheService().getAdmin(username);
         if (admin != null) {
             getCacheService().delAdmin(admin.getId());
-            getCacheService().delResourceList(admin.getId());
         }
     }
 }

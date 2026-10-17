@@ -1,24 +1,18 @@
 package com.nexusengine.core.portal.ordering.service;
 
 import lombok.RequiredArgsConstructor;
-
 import com.nexusengine.core.domain.ordering.entity.CartItem;
-
-import com.nexusengine.core.domain.promotion.entity.SpendThresholdDiscount;
-import com.nexusengine.core.domain.promotion.entity.QuantityTierDiscount;
 import com.nexusengine.core.domain.catalog.entity.ProductSku;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.*;
 import com.nexusengine.core.portal.ordering.dto.CartPromotionItem;
 import com.nexusengine.core.portal.catalog.dao.ProductDao;
 import com.nexusengine.core.portal.catalog.dto.PromotionProduct;
 
-
 /**
- * Promotion calculation Service implementation
+ * Promotion calculation Service implementation - standard list vs sale price promotions
  */
 @Service
 @RequiredArgsConstructor
@@ -27,179 +21,56 @@ public class PromotionCalculationServiceImpl implements PromotionCalculationServ
 
     @Override
     public List<CartPromotionItem> calcCartPromotion(List<CartItem> cartItemList) {
-        Map<Long, List<CartItem>> productCartMap = groupCartItemBySpu(cartItemList);
-        List<PromotionProduct> promotionProductList = getPromotionProductList(cartItemList);
-        List<CartPromotionItem> cartPromotionItemList = new ArrayList<>();
-        for (Map.Entry<Long, List<CartItem>> entry : productCartMap.entrySet()) {
-            Long productId = entry.getKey();
-            PromotionProduct promotionProduct = getPromotionProductById(productId, promotionProductList);
-            List<CartItem> itemList = entry.getValue();
-            if (promotionProduct == null) {
-                handleNoReduce(cartPromotionItemList, itemList, null);
-                continue;
+        if (cartItemList == null || cartItemList.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<Long> productIds = cartItemList.stream().map(CartItem::getProductId).filter(Objects::nonNull).distinct().toList();
+        List<PromotionProduct> promotionProducts = productDao.getPromotionProductList(productIds);
+        Map<Long, PromotionProduct> productMap = new HashMap<>();
+        for (PromotionProduct pp : promotionProducts) {
+            if (pp.product() != null && pp.product().getId() != null) {
+                productMap.put(pp.product().getId(), pp);
             }
-            Integer promotionType = promotionProduct.product().getPromotionType();
-            if (promotionType == null) {
-                handleNoReduce(cartPromotionItemList, itemList, promotionProduct);
-                continue;
-            }
-            if (promotionType == 1) {
-                for (CartItem item : itemList) {
-                    String promotionMessage = "Single item promotion";
-                    BigDecimal reduceAmount = new BigDecimal(0);
-                    Integer realStock = 0;
-                    ProductSku skuStock = getOriginalPrice(promotionProduct, item.getProductSkuId());
-                    if (skuStock != null) {
-                        BigDecimal originalPrice = skuStock.getListPrice();
-                        item.setPrice(originalPrice);
-                        reduceAmount = originalPrice.subtract(
-                                skuStock.getSalePrice() != null ? skuStock.getSalePrice() : originalPrice);
-                        realStock = skuStock.getOnHandQty() - skuStock.getReservedQty();
-                    } else {
-                        realStock = promotionProduct.skuStockList() != null ? promotionProduct.skuStockList().stream().mapToInt(s -> (s.getOnHandQty() != null ? s.getOnHandQty() : 0) - (s.getReservedQty() != null ? s.getReservedQty() : 0)).sum() : 0;
-                    }
-                    cartPromotionItemList.add(new CartPromotionItem(item, promotionMessage, reduceAmount, realStock, null));
+        }
+
+        List<CartPromotionItem> result = new ArrayList<>();
+        for (CartItem item : cartItemList) {
+            PromotionProduct pp = productMap.get(item.getProductId());
+            ProductSku sku = findSku(pp, item.getProductSkuId());
+
+            BigDecimal reduceAmount = BigDecimal.ZERO;
+            String message = "Regular price";
+            int realStock = 0;
+
+            if (sku != null) {
+                BigDecimal listPrice = sku.getListPrice() != null ? sku.getListPrice() : BigDecimal.ZERO;
+                BigDecimal salePrice = sku.getSalePrice() != null ? sku.getSalePrice() : listPrice;
+                item.setPrice(listPrice);
+
+                if (salePrice.compareTo(listPrice) < 0) {
+                    reduceAmount = listPrice.subtract(salePrice);
+                    message = "Special discount";
                 }
-            } else if (promotionType == 3) {
-                int count = getCartItemCount(itemList);
-                QuantityTierDiscount ladder = getProductLadder(count, promotionProduct.productVolumeDiscountList());
-                if (ladder != null) {
-                    for (CartItem item : itemList) {
-                        String promotionMessage = "Ladder discount: buy " + ladder.getCount() + " get " + ladder.getDiscount().multiply(new BigDecimal(10)) + "% off";
-                        BigDecimal reduceAmount = new BigDecimal(0);
-                        Integer realStock = 0;
-                        ProductSku skuStock = getOriginalPrice(promotionProduct, item.getProductSkuId());
-                        if (skuStock != null) {
-                            BigDecimal originalPrice = skuStock.getListPrice();
-                            reduceAmount = originalPrice.subtract(ladder.getDiscount().multiply(originalPrice));
-                            realStock = skuStock.getOnHandQty() - skuStock.getReservedQty();
-                        } else {
-                            realStock = promotionProduct.skuStockList() != null ? promotionProduct.skuStockList().stream().mapToInt(s -> (s.getOnHandQty() != null ? s.getOnHandQty() : 0) - (s.getReservedQty() != null ? s.getReservedQty() : 0)).sum() : 0;
-                        }
-                        cartPromotionItemList.add(new CartPromotionItem(item, promotionMessage, reduceAmount, realStock, null));
-                    }
-                } else {
-                    handleNoReduce(cartPromotionItemList, itemList, promotionProduct);
-                }
-            } else if (promotionType == 4) {
-                BigDecimal totalAmount = getCartItemAmount(itemList, promotionProductList);
-                SpendThresholdDiscount fullReduction = getProductFullReduction(totalAmount, promotionProduct.productSpendDiscountList());
-                if (fullReduction != null) {
-                    for (CartItem item : itemList) {
-                        String promotionMessage = "Full reduction: spend " + fullReduction.getFullPrice() + " save " + fullReduction.getReducePrice();
-                        BigDecimal reduceAmount = new BigDecimal(0);
-                        Integer realStock = 0;
-                        ProductSku skuStock = getOriginalPrice(promotionProduct, item.getProductSkuId());
-                        if (skuStock != null) {
-                            BigDecimal originalPrice = skuStock.getListPrice();
-                            reduceAmount = originalPrice.divide(totalAmount, RoundingMode.HALF_EVEN).multiply(fullReduction.getReducePrice());
-                            realStock = skuStock.getOnHandQty() - skuStock.getReservedQty();
-                        } else {
-                            realStock = promotionProduct.skuStockList() != null ? promotionProduct.skuStockList().stream().mapToInt(s -> (s.getOnHandQty() != null ? s.getOnHandQty() : 0) - (s.getReservedQty() != null ? s.getReservedQty() : 0)).sum() : 0;
-                        }
-                        cartPromotionItemList.add(new CartPromotionItem(item, promotionMessage, reduceAmount, realStock, null));
-                    }
-                } else {
-                    handleNoReduce(cartPromotionItemList, itemList, promotionProduct);
-                }
-            } else {
-                handleNoReduce(cartPromotionItemList, itemList, promotionProduct);
+
+                int onHand = sku.getOnHandQty() != null ? sku.getOnHandQty() : 0;
+                int reserved = sku.getReservedQty() != null ? sku.getReservedQty() : 0;
+                realStock = Math.max(0, onHand - reserved);
             }
+
+            result.add(new CartPromotionItem(item, message, reduceAmount, realStock, null));
         }
-        return cartPromotionItemList;
+
+        return result;
     }
 
-    private List<PromotionProduct> getPromotionProductList(List<CartItem> cartItemList) {
-        List<Long> productIdList = new ArrayList<>();
-        for (CartItem cartItem : cartItemList) {
-            productIdList.add(cartItem.getProductId());
+    private ProductSku findSku(PromotionProduct promotionProduct, Long skuId) {
+        if (promotionProduct == null || promotionProduct.skuStockList() == null || skuId == null) {
+            return null;
         }
-        return productDao.getPromotionProductList(productIdList);
-    }
-
-    private Map<Long, List<CartItem>> groupCartItemBySpu(List<CartItem> cartItemList) {
-        Map<Long, List<CartItem>> productCartMap = new TreeMap<>();
-        for (CartItem cartItem : cartItemList) {
-            productCartMap.computeIfAbsent(cartItem.getProductId(), k -> new ArrayList<>()).add(cartItem);
-        }
-        return productCartMap;
-    }
-
-    private void handleNoReduce(List<CartPromotionItem> cartPromotionItemList, List<CartItem> itemList, PromotionProduct promotionProduct) {
-        for (CartItem item : itemList) {
-            String promotionMessage = "No promotion";
-            BigDecimal reduceAmount = new BigDecimal(0);
-            Integer realStock = 0;
-            if (promotionProduct != null) {
-                ProductSku skuStock = getOriginalPrice(promotionProduct, item.getProductSkuId());
-                if (skuStock != null) {
-                    realStock = skuStock.getOnHandQty() - skuStock.getReservedQty();
-                } else {
-                    realStock = promotionProduct.skuStockList() != null ? promotionProduct.skuStockList().stream().mapToInt(s -> (s.getOnHandQty() != null ? s.getOnHandQty() : 0) - (s.getReservedQty() != null ? s.getReservedQty() : 0)).sum() : 0;
-                }
-            }
-            cartPromotionItemList.add(new CartPromotionItem(item, promotionMessage, reduceAmount, realStock, null));
-        }
-    }
-
-    private SpendThresholdDiscount getProductFullReduction(BigDecimal totalAmount, List<SpendThresholdDiscount> fullReductionList) {
-        if (fullReductionList == null || fullReductionList.isEmpty()) return null;
-        fullReductionList.sort((o1, o2) -> o2.getFullPrice().subtract(o1.getFullPrice()).intValue());
-        for (SpendThresholdDiscount fullReduction : fullReductionList) {
-            if (totalAmount.subtract(fullReduction.getFullPrice()).intValue() >= 0) {
-                return fullReduction;
-            }
-        }
-        return null;
-    }
-
-    private QuantityTierDiscount getProductLadder(int count, List<QuantityTierDiscount> productVolumeDiscountList) {
-        if (productVolumeDiscountList == null || productVolumeDiscountList.isEmpty()) return null;
-        productVolumeDiscountList.sort((o1, o2) -> o2.getCount() - o1.getCount());
-        for (QuantityTierDiscount productVolumeDiscount : productVolumeDiscountList) {
-            if (count >= productVolumeDiscount.getCount()) {
-                return productVolumeDiscount;
-            }
-        }
-        return null;
-    }
-
-    private int getCartItemCount(List<CartItem> itemList) {
-        int count = 0;
-        for (CartItem item : itemList) {
-            count += item.getQuantity();
-        }
-        return count;
-    }
-
-    private BigDecimal getCartItemAmount(List<CartItem> itemList, List<PromotionProduct> promotionProductList) {
-        BigDecimal amount = new BigDecimal(0);
-        for (CartItem item : itemList) {
-            PromotionProduct promotionProduct = getPromotionProductById(item.getProductId(), promotionProductList);
-            if (promotionProduct != null) {
-                ProductSku skuStock = getOriginalPrice(promotionProduct, item.getProductSkuId());
-                if (skuStock != null) {
-                    amount = amount.add(skuStock.getListPrice().multiply(new BigDecimal(item.getQuantity())));
-                }
-            }
-        }
-        return amount;
-    }
-
-    private ProductSku getOriginalPrice(PromotionProduct promotionProduct, Long productSkuId) {
-        if (promotionProduct.skuStockList() == null) return null;
-        for (ProductSku skuStock : promotionProduct.skuStockList()) {
-            if (productSkuId != null && productSkuId.equals(skuStock.getId())) {
-                return skuStock;
-            }
-        }
-        return null;
-    }
-
-    private PromotionProduct getPromotionProductById(Long productId, List<PromotionProduct> promotionProductList) {
-        for (PromotionProduct promotionProduct : promotionProductList) {
-            if (productId.equals(promotionProduct.product().getId())) {
-                return promotionProduct;
+        for (ProductSku sku : promotionProduct.skuStockList()) {
+            if (skuId.equals(sku.getId())) {
+                return sku;
             }
         }
         return null;

@@ -2368,34 +2368,34 @@ Each card is a commit boundary. If token expires, resume from the first unchecke
 - [x] Commit: `feat: implement brand-scoped multi-tenant isolation for samsung_admin and nike_admin`
 
 #### Card 10: Prune Unwanted Subsystems, Dependent Backend Classes, Dead DB Tables/Columns & Frontend Clones (2.5 hrs)
-- [ ] **10.1 — Drop dead tables & dependent columns from `V1__baseline.sql`, `V2__reference_data.sql`, `V3__demo_catalog.sql`, and live PostgreSQL (`§13.2.1`):**
-  - **Drop 10–14 Tables:**
+- [x] **10.1 — Drop dead tables & dependent columns from `V1__baseline.sql`, `V2__reference_data.sql`, `V3__demo_catalog.sql`, and live PostgreSQL (`§13.2.1`):**
+  - **Drop 14 Tables:**
     - `catalog.category_attribute`
     - `promotion.quantity_tier_discount`, `promotion.spend_threshold_discount`
     - `iam.permission`, `iam.permission_group`, `iam.role_permission`, `iam.console_menu`, `iam.role_menu`
     - `DROP SCHEMA ai CASCADE;` (`ai.vector_store`, `ai.chat_message`) + `DROP EXTENSION IF EXISTS vector;`
-    - *(If Option A chosen for Flash Sales)*: `promotion.flash_sale`, `promotion.flash_sale_slot`, `promotion.flash_sale_item`, `promotion.flash_sale_purchase`
+    - `promotion.flash_sale`, `promotion.flash_sale_slot`, `promotion.flash_sale_item`, `promotion.flash_sale_purchase`
   - **Drop 7 Dependent Columns on Kept Tables:**
     - `catalog.product.promotion_type`
     - `engagement.product_review.parent_review_id` (plus `idx_product_review_parent_id`)
-    - `ordering.order_policy.flash_payment_timeout_min` *(if Flash Sale Option A)*
-    - `ordering.customer_order.order_type` *(if Flash Sale Option A)*
+    - `ordering.order_policy.flash_payment_timeout_min`
+    - `ordering.customer_order.order_type`
     - `ordering.customer_order.promotion_discount_amount`
     - `ordering.order_line.promotion_name`
     - `ordering.order_line.promotion_discount_amount`
-- [ ] **10.2 — Move corresponding backend entities, repositories, services, controllers, and orphaned helpers to `trash/` (`§13.2.1`):**
-  - `CategoryAttribute*`, `QuantityTierDiscount*`, `SpendThresholdDiscount*`, `Permission*`, `PermissionGroup*`, `RolePermission*`, `ConsoleMenu*`, `RoleMenu*`, `MenuNode.java`, `PromotionCalculationService*`, `OrderTimeOutCancelTask.java`, `BucketPolicyConfigDto.java`, `S3CallbackResult.java`, `S3PolicyResult.java`, and the entire `nexus-ai` module (remove `nexus-ai`, `spring-ai`, `pgvector` from `pom.xml`).
-  - *(If Option A)* Move `FlashSale*`, `FlashOrder*`, `FlashPromotionProduct.java`, `HomeFlashPromotion.java`, and `FlashSaleWarmupServiceImpl.java` to `trash/`.
-  - Remove `productLadderList` / `productFullReductionList` from `ProductParam`, `ProductResult`, and `ProductServiceImpl`; remove `menus` / `resourceList` from `AdminInfoResponse`, `AdminUserDetails`, `AdminUserService*`, and `RoleController` / `RoleService*`.
-- [ ] **10.3 — Move corresponding Admin Panel & Storefront bloat to `trash/`, consolidate `*Add`/`*Update` clones (`AP-9`), and delete dead utils/assets (`AP-10`):**
-  - Move `NexusAdminPanel/src/pages/iam/{ResourceList,ResourceCategoryList,AllocResource,MenuList,MenuAdd,MenuUpdate,AllocMenu}.tsx` and `src/apis/iam/{permission,permissionGroup,menu}.ts` to `trash/`.
-  - Move `NexusFrontendWeb/src/components/ChatWidget.tsx` and `src/api/ai.ts` to `trash/`, and remove `<ChatWidget />` from `NexusFrontendWeb/src/layout/index.tsx`.
-  - *(If Option A)* Move `NexusAdminPanel/src/pages/promotion/{FlashList,FlashSessionList,SelectSession,FlashProductRelation}.tsx` and `src/apis/promotion/flashSale.ts` to `trash/`.
-  - Consolidate 10 duplicate `*Add.tsx` / `*Update.tsx` files into 5 unified form components (`BrandForm.tsx`, `ProductCategoryForm.tsx`, `AdvertiseForm.tsx`, `CouponForm.tsx`, `ProductForm.tsx`).
-  - Move dead frontend files (`orderSlice.ts`, `cookie.ts`, `validate.ts`, `src/assets/images/*`, `hero.png`, `react.svg`, `vite.svg`, unused `App.css`) to `trash/`, and remove `js-cookie` from `NexusAdminPanel/package.json`.
-  - Update `NexusAdminPanel/src/store/slices/permissionSlice.ts` to filter `asyncRouterMap` using role metadata (`roles: ['Super Admin', 'Product Manager']`) instead of `iam.console_menu`.
-- [ ] **10.4 — Gate:** `mvn clean compile -DskipTests` and `npx tsc -b && npx vite build` in both frontend apps pass with 0 errors.
-- [ ] Commit: `refactor: prune placebo iam permissions/menus, dead promo tables/columns, ai widget, and frontend clones`
+- [x] **10.2 — Move corresponding backend entities, repositories, services, controllers, and orphaned helpers to `trash/` (`§13.2.1`):**
+  - `CategoryAttribute*`, `QuantityTierDiscount*`, `SpendThresholdDiscount*`, `Permission*`, `PermissionGroup*`, `RolePermission*`, `ConsoleMenu*`, `RoleMenu*`, `MenuNode.java`, `OrderTimeOutCancelTask.java` (renamed to `OrderAutoConfirmTask.java`), `BucketPolicyConfigDto.java`, `S3CallbackResult.java`, `S3PolicyResult.java`, and the entire `nexus-ai` module (removed `nexus-ai`, `spring-ai`, `pgvector` from `pom.xml`).
+  - Moved `FlashSale*`, `FlashOrder*`, `FlashPromotionProduct.java`, `HomeFlashPromotion.java`, and `FlashSaleWarmupServiceImpl.java` to `trash/backend/`.
+  - Removed `productLadderList` / `productFullReductionList` from `ProductParam`, `ProductResult`, and `ProductServiceImpl`; removed `menus` / `resourceList` from `AdminInfoResponse`, `AdminUserDetails`, `AdminUserService*`, and `RoleController` / `RoleService*`.
+- [x] **10.3 — Move corresponding Admin Panel & Storefront bloat to `trash/`, consolidate `*Add`/`*Update` clones (`AP-9`), and delete dead utils/assets (`AP-10`):**
+  - Moved `NexusAdminPanel/src/pages/iam/{ResourceList,ResourceCategoryList,AllocResource,MenuList,MenuAdd,MenuUpdate,AllocMenu}.tsx` and `src/apis/iam/{permission,permissionGroup,menu}.ts` to `trash/frontend/admin/`.
+  - Moved `NexusFrontendWeb/src/components/ChatWidget.tsx` and `src/api/ai.ts` to `trash/frontend/storefront/`, and removed `<ChatWidget />` from `NexusFrontendWeb/src/layout/index.tsx`.
+  - Moved `NexusAdminPanel/src/pages/promotion/{FlashList,FlashSessionList,SelectSession,FlashProductRelation}.tsx` and `src/apis/promotion/flashSale.ts` to `trash/frontend/admin/`.
+  - Consolidated 10 duplicate `*Add.tsx` / `*Update.tsx` files into 5 unified form components (`BrandForm.tsx`, `ProductCategoryForm.tsx`, `AdvertiseForm.tsx`, `CouponForm.tsx`, `ProductForm.tsx`) with manual system-managed fields removed.
+  - Moved dead frontend files (`orderSlice.ts`, `cookie.ts`, `validate.ts`, `src/assets/images/*`, `hero.png`, `react.svg`, `vite.svg`) to `trash/`, and removed `js-cookie` from `NexusAdminPanel/package.json`.
+  - Updated `NexusAdminPanel/src/store/slices/permissionSlice.ts` to filter `asyncRouterMap` using role metadata (`roles: ['Super Admin', 'Product Manager']`) instead of `iam.console_menu`.
+- [x] **10.4 — Gate:** `mvn clean compile -DskipTests` and `npx tsc -b && npx vite build` in both frontend apps pass with 0 errors. Unit tests in `nexus-domain` (Flyway Testcontainer) and `nexus-admin-api` (22 tests) pass with 100% success.
+- [x] Commit: `refactor: prune placebo iam permissions/menus, dead promo tables/columns, ai widget, and frontend clones`
 
 #### Card 11: Wire All Catalog & Promotion Tables/Columns End-to-End (1.5 hrs)
 - [ ] **11.1 — Clean & Wire `ProductAdd.tsx` and `ProductUpdate.tsx` (`AP-5`):**

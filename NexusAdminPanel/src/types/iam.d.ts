@@ -101,7 +101,7 @@ export interface TokenResponse {
 
 export interface AdminInfoResponse {
   username: string
-  menus: ConsoleMenu[]
+  menus?: ConsoleMenu[]
   icon?: string
   iconUrl?: string
   avatarUrl?: string
@@ -114,7 +114,7 @@ export interface UserInfo {
   token: string
   username: string
   roles: string[]
-  menus: ConsoleMenu[]
+  menus?: ConsoleMenu[]
   icon?: string
   avatar?: string
   avatarUrl?: string

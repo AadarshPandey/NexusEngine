@@ -15,11 +15,6 @@ public class OrderPolicy {
 
 private Long id;
 
-        @Column(name = "flash_payment_timeout_min")
-    @Schema(title = "Flash order overtime")
-
-private Integer flashPaymentTimeoutMin;
-
         @Column(name = "payment_timeout_min")
     @Schema(title = "Normal order overtime")
 

@@ -12,7 +12,6 @@ COPY nexus-security/pom.xml nexus-security/
 COPY nexus-admin-api/pom.xml nexus-admin-api/
 COPY nexus-portal-api/pom.xml nexus-portal-api/
 COPY nexus-search/pom.xml nexus-search/
-COPY nexus-ai/pom.xml nexus-ai/
 COPY nexus-application/pom.xml nexus-application/
 
 # Copy source and build

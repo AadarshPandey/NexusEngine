@@ -8,15 +8,14 @@ import com.nexusengine.core.portal.ordering.service.OrderService;
 
 
 /**
- * Represents the OrderTimeOutCancelTask component.
- * Provides core functionality and operations for OrderTimeOutCancelTask.
+ * Periodically auto-confirms receipt for orders shipped longer than the policy days.
  */
 @org.springframework.stereotype.Component
-public class OrderTimeOutCancelTask {
-    private static final Logger LOGGER = LoggerFactory.getLogger(OrderTimeOutCancelTask.class);
+public class OrderAutoConfirmTask {
+    private static final Logger LOGGER = LoggerFactory.getLogger(OrderAutoConfirmTask.class);
     private final OrderService portalOrderService;
 
-    public OrderTimeOutCancelTask(OrderService portalOrderService) {
+    public OrderAutoConfirmTask(OrderService portalOrderService) {
         this.portalOrderService = portalOrderService;
     }
 

@@ -1,5 +1,5 @@
 import type { PageParam, PageResponse } from '@/types/common'
-import type { ConsoleMenu, Permission, Role } from '@/types/iam'
+import type { Role } from '@/types/iam'
 import http from '@/utils/http'
 
 export function getRoleListAPI(params: PageParam & { keyword?: string }) {
@@ -66,36 +66,6 @@ export function roleUpdateStatusByIdAPI(id: number, params: { status: number }) 
   return http<number>({
     url: `/api/admin/iam/roles/${id}/status`,
     method: 'patch',
-    params,
-  })
-}
-
-export function roleListMenuByRoleIdAPI(roleId: number) {
-  return http<ConsoleMenu[]>({
-    url: `/api/admin/iam/roles/${roleId}/menus`,
-    method: 'get',
-  })
-}
-
-export function roleListResourceById(roleId: number) {
-  return http<Permission[]>({
-    url: `/api/admin/iam/roles/${roleId}/permissions`,
-    method: 'get',
-  })
-}
-
-export function roleAllocMenuAPI(params: { roleId: number; menuIds: string }) {
-  return http<number>({
-    url: '/api/admin/iam/roles/menus',
-    method: 'put',
-    params,
-  })
-}
-
-export function roleAllocResourceAPI(params: { roleId: number; resourceIds: string }) {
-  return http<number>({
-    url: '/api/admin/iam/roles/permissions',
-    method: 'put',
     params,
   })
 }

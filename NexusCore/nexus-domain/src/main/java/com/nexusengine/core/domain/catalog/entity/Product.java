@@ -105,11 +105,6 @@ public class Product {
     @JsonManagedReference
     private List<ProductMedia> galleryList;
 
-    @Column(name = "promotion_type")
-    @Schema(title = "Promotion type")
-    @JdbcTypeCode(SqlTypes.SMALLINT)
-    private Integer promotionType;
-
     @Schema(title = "List Price")
     @Formula("(SELECT COALESCE(min(s.list_price), 0) FROM catalog.product_sku s WHERE s.product_id = id)")
     private BigDecimal listPrice;
@@ -147,9 +142,6 @@ public class Product {
         }
         if (unitsSold == null) {
             unitsSold = 0;
-        }
-        if (promotionType == null) {
-            promotionType = 0;
         }
         if (productCode == null) {
             productCode = "PROD-" + System.currentTimeMillis();

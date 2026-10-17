@@ -16,7 +16,6 @@
         <module>nexus-admin-api</module>
         <module>nexus-search</module>
         <module>nexus-portal-api</module>
-        <module>nexus-ai</module>
         <module>nexus-application</module>
     </modules>
 
@@ -40,8 +39,6 @@
         <spring-cloud-aws.version>3.3.1</spring-cloud-aws.version>
         <resilience4j.version>2.4.0</resilience4j.version>
         <bucket4j.version>8.10.0</bucket4j.version>
-        <spring-ai.version>2.0.1</spring-ai.version>
-        <pgvector.version>0.1.6</pgvector.version>
         <redisson.version>4.7.0</redisson.version>
         <mapstruct.version>1.6.3</mapstruct.version>
         <razorpay.version>1.4.6</razorpay.version>
@@ -69,14 +66,6 @@
 
     <dependencyManagement>
         <dependencies>
-            <!-- Spring AI BOM -->
-            <dependency>
-                <groupId>org.springframework.ai</groupId>
-                <artifactId>spring-ai-bom</artifactId>
-                <version>${spring-ai.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
             <!-- Spring Cloud AWS BOM -->
             <dependency>
                 <groupId>io.awspring.cloud</groupId>
@@ -108,11 +97,6 @@
             <dependency>
                 <groupId>com.nexusengine.core</groupId>
                 <artifactId>nexus-security</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.nexusengine.core</groupId>
-                <artifactId>nexus-ai</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -149,13 +133,6 @@
                 <groupId>org.redisson</groupId>
                 <artifactId>redisson-spring-boot-starter</artifactId>
                 <version>${redisson.version}</version>
-            </dependency>
-
-            <!-- PGVector -->
-            <dependency>
-                <groupId>com.pgvector</groupId>
-                <artifactId>pgvector</artifactId>
-                <version>${pgvector.version}</version>
             </dependency>
 
             <!-- Razorpay Payment Gateway -->

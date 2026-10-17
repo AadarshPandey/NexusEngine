@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Card, CardContent, TextField, Button, Typography, Switch, FormControlLabel } from '@mui/material';
 import { useNavigate, useParams, useSearchParams } from 'react-router';
-import { getBrandByIdAPI, brandUpdateByIdAPI } from '@/apis/catalog';
+import { brandCreateAPI, getBrandByIdAPI, brandUpdateByIdAPI } from '@/apis/catalog';
 import { resolveImageUrl } from '@/utils/media';
 
-const BrandUpdate: React.FC = () => {
+const BrandForm: React.FC = () => {
   const navigate = useNavigate();
   const { id: paramId } = useParams<{ id: string }>();
   const [searchParams] = useSearchParams();
   const id = Number(paramId || searchParams.get('id'));
+  const isEdit = Boolean(id);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -17,7 +18,7 @@ const BrandUpdate: React.FC = () => {
   });
 
   useEffect(() => {
-    if (id) {
+    if (isEdit && id) {
       getBrandByIdAPI(id)
         .then((res) => {
           if (res) {
@@ -30,15 +31,19 @@ const BrandUpdate: React.FC = () => {
         })
         .catch((err) => console.error('Failed to load brand', err));
     }
-  }, [id]);
+  }, [id, isEdit]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await brandUpdateByIdAPI(id, formData);
+      if (isEdit && id) {
+        await brandUpdateByIdAPI(id, formData);
+      } else {
+        await brandCreateAPI(formData);
+      }
       navigate('/catalog/brands');
     } catch (err) {
-      console.error('Failed to update brand', err);
+      console.error(isEdit ? 'Failed to update brand' : 'Failed to create brand', err);
     }
   };
 
@@ -46,7 +51,7 @@ const BrandUpdate: React.FC = () => {
     <Box sx={{ p: 3, maxWidth: 640, margin: '0 auto' }}>
       <Card>
         <CardContent>
-          <Typography variant="h6" gutterBottom>Update Brand</Typography>
+          <Typography variant="h6" gutterBottom>{isEdit ? 'Update Brand' : 'Add Brand'}</Typography>
           <form onSubmit={handleSubmit}>
             <TextField
               fullWidth
@@ -91,4 +96,4 @@ const BrandUpdate: React.FC = () => {
   );
 };
 
-export default BrandUpdate;
+export default BrandForm;

@@ -3,13 +3,10 @@ package com.nexusengine.core.admin.catalog.service;
 import lombok.RequiredArgsConstructor;
 
 import com.nexusengine.core.domain.catalog.entity.Category;
-import com.nexusengine.core.domain.catalog.entity.CategoryAttribute;
 import org.springframework.data.domain.Sort;
 
-import com.nexusengine.core.domain.catalog.repository.CategoryAttributeRepository;
 import com.nexusengine.core.domain.catalog.repository.CategoryRepository;
 import com.nexusengine.core.domain.catalog.repository.ProductRepository;
-
 
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
@@ -17,13 +14,11 @@ import java.util.List;
 import com.nexusengine.core.admin.catalog.dto.CategoryParam;
 import com.nexusengine.core.admin.catalog.dto.CategoryWithChildrenItem;
 
-
 @Service
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository productCategoryRepository;
     private final ProductRepository productRepository;
-    private final CategoryAttributeRepository productCategoryAttributeRelationRepository;
 
     @Override
     public int create(CategoryParam categoryParam) {
@@ -32,10 +27,6 @@ public class CategoryServiceImpl implements CategoryService {
         copyCategoryParam(categoryParam, productCategory);
         setCategoryLevel(productCategory);
         productCategoryRepository.save(productCategory);
-        List<Long> productAttributeIdList = categoryParam.productAttributeIdList();
-        if (productAttributeIdList != null && !productAttributeIdList.isEmpty()) {
-            insertRelationList(productCategory.getId(), productAttributeIdList);
-        }
         return 1;
     }
 
@@ -51,27 +42,12 @@ public class CategoryServiceImpl implements CategoryService {
         category.setIconUrl(param.icon());
     }
 
-    private void insertRelationList(Long productCategoryId, List<Long> productAttributeIdList) {
-        List<CategoryAttribute> relationList = new ArrayList<>();
-        for (Long productAttrId : productAttributeIdList) {
-            CategoryAttribute relation = new CategoryAttribute();
-            relation.setProductAttributeId(productAttrId);
-            relation.setProductCategoryId(productCategoryId);
-            relationList.add(relation);
-        }
-        productCategoryAttributeRelationRepository.saveAll(relationList);
-    }
-
     @Override
     public int update(Long id, CategoryParam categoryParam) {
         Category productCategory = new Category();
         productCategory.setId(id);
         copyCategoryParam(categoryParam, productCategory);
         setCategoryLevel(productCategory);
-        productCategoryAttributeRelationRepository.deleteByProductCategoryId(id);
-        if (categoryParam.productAttributeIdList() != null && !categoryParam.productAttributeIdList().isEmpty()) {
-            insertRelationList(id, categoryParam.productAttributeIdList());
-        }
         productCategoryRepository.save(productCategory);
         return 1;
     }

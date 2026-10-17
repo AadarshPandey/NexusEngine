@@ -18,7 +18,6 @@ export interface ModernHomeContent {
   newProducts: Product[];
   hotProducts: Product[];
   brandList?: unknown[];
-  homeFlashPromotion?: unknown;
 }
 
 interface HomeState {

@@ -31,17 +31,6 @@ spring:
     virtual-host: /nexuscore
     username: ${RABBITMQ_USERNAME:guest}
     password: ${RABBITMQ_PASSWORD:guest}
-  ai:
-    google:
-      genai:
-        api-key: ${GEMINI_API_KEY:sk-your-key-here}
-        chat:
-          options:
-            model: gemini-2.5-flash
-    vectorstore:
-      pgvector:
-        schema-name: ai
-        initialize-schema: false
 
 razorpay:
   keyId: ${RAZORPAY_KEY_ID:}

@@ -1,7 +1,6 @@
 package com.nexusengine.core.portal.integration.config;
 
 import org.mockito.Mockito;
-import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.context.annotation.Bean;
@@ -36,11 +35,6 @@ public class TestcontainersConfig {
         return new GenericContainer<>(DockerImageName.parse("redis:8-alpine"))
                 .withExposedPorts(6379)
                 .withReuse(true);
-    }
-
-    @Bean
-    VectorStore vectorStore() {
-        return Mockito.mock(VectorStore.class);
     }
 
     @Bean

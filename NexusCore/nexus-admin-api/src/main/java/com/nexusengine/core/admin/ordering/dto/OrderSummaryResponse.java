@@ -13,7 +13,6 @@ public record OrderSummaryResponse(
         BigDecimal freightAmount,
         Integer payType,
         Integer status,
-        Integer orderType,
         String deliveryCompany,
         String deliverySn,
         String receiverName,

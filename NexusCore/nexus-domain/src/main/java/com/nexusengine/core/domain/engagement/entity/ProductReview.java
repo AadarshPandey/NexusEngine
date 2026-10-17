@@ -42,11 +42,6 @@ private Long memberId;
 
 private Member member;
 
-        @Column(name = "parent_review_id")
-    @Schema(title = "Parent review ID if this is a reply")
-
-private Long parentId;
-
         @Schema(title = "Rating from 1-5")
     @JdbcTypeCode(SqlTypes.SMALLINT)
 private Integer rating;

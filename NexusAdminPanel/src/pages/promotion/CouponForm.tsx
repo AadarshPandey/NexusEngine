@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams, useSearchParams } from 'react-router';
 import {
   Box,
   Card,
@@ -11,18 +11,25 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  CircularProgress,
   Snackbar,
   Alert,
 } from '@mui/material';
-import { couponCreateAPI } from '@/apis/promotion';
+import { getCouponByIdAPI, couponCreateAPI, couponUpdateByIdAPI } from '@/apis/promotion';
 import type { SmsCouponExt } from '@/types/promotion';
 import dayjs from 'dayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 
-const CouponAdd: React.FC = () => {
+const CouponForm: React.FC = () => {
   const navigate = useNavigate();
+  const { id: paramId } = useParams<{ id: string }>();
+  const [searchParams] = useSearchParams();
+  const id = paramId || searchParams.get('id');
+  const isEdit = Boolean(id);
+
+  const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' as 'success' | 'error' });
 
@@ -34,7 +41,31 @@ const CouponAdd: React.FC = () => {
     perLimit: 1,
     minOrderAmount: 0,
     useType: 0,
-          });
+  });
+
+  useEffect(() => {
+    if (isEdit && id) {
+      fetchCoupon(Number(id));
+    }
+  }, [id, isEdit]);
+
+  const fetchCoupon = async (couponId: number) => {
+    setLoading(true);
+    try {
+      const data = await getCouponByIdAPI(couponId);
+      if (data) {
+        const clone = { ...data };
+        if (clone.startTime) clone.startTime = new Date(clone.startTime).toISOString().slice(0, 16);
+        if (clone.endTime) clone.endTime = new Date(clone.endTime).toISOString().slice(0, 16);
+        setFormData(clone);
+      }
+    } catch (e) {
+      console.error(e);
+      setSnackbar({ open: true, message: 'Failed to fetch coupon details', severity: 'error' });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSubmit = async () => {
     setSaving(true);
@@ -43,22 +74,31 @@ const CouponAdd: React.FC = () => {
         ...formData,
         startTime: formData.startTime ? new Date(formData.startTime).toISOString() : undefined,
         endTime: formData.endTime ? new Date(formData.endTime).toISOString() : undefined,
-              };
-      await couponCreateAPI(payload);
-      setSnackbar({ open: true, message: 'Coupon created successfully', severity: 'success' });
+      };
+      if (isEdit && id) {
+        await couponUpdateByIdAPI(Number(id), payload);
+        setSnackbar({ open: true, message: 'Coupon updated successfully', severity: 'success' });
+      } else {
+        await couponCreateAPI(payload);
+        setSnackbar({ open: true, message: 'Coupon created successfully', severity: 'success' });
+      }
       setTimeout(() => navigate('/promotion/coupons'), 1000);
     } catch {
-      setSnackbar({ open: true, message: 'Failed to create coupon', severity: 'error' });
+      setSnackbar({ open: true, message: isEdit ? 'Failed to update coupon' : 'Failed to create coupon', severity: 'error' });
     } finally {
       setSaving(false);
     }
   };
 
+  if (loading) {
+    return <Box sx={{ display: 'flex', justifyContent: 'center', p: 5 }}><CircularProgress /></Box>;
+  }
+
   return (
     <Box sx={{ maxWidth: 800, mx: 'auto', mt: 4 }}>
       <Card>
         <CardContent sx={{ p: 4 }}>
-          <Typography variant="h6" gutterBottom>Add Coupon</Typography>
+          <Typography variant="h6" gutterBottom>{isEdit ? 'Edit Coupon' : 'Add Coupon'}</Typography>
 
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, mt: 3 }}>
             <TextField
@@ -134,33 +174,29 @@ const CouponAdd: React.FC = () => {
               </Select>
             </FormControl>
 
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            
-
-            <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
-              <DateTimePicker
-                label="Start Time"
-                format="DD/MM/YYYY HH:mm"
-                value={formData.startTime ? dayjs(formData.startTime) : null}
-                onChange={(newValue) => setFormData({ ...formData, startTime: newValue ? newValue.format('YYYY-MM-DDTHH:mm') : '' })}
-                slotProps={{ textField: { fullWidth: true } }}
-              />
-              <DateTimePicker
-                label="End Time"
-                format="DD/MM/YYYY HH:mm"
-                value={formData.endTime ? dayjs(formData.endTime) : null}
-                onChange={(newValue) => setFormData({ ...formData, endTime: newValue ? newValue.format('YYYY-MM-DDTHH:mm') : '' })}
-                slotProps={{ textField: { fullWidth: true } }}
-              />
-            </Box>
-          </LocalizationProvider>
-
-            
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+                <DateTimePicker
+                  label="Start Time"
+                  format="DD/MM/YYYY HH:mm"
+                  value={formData.startTime ? dayjs(formData.startTime) : null}
+                  onChange={(newValue) => setFormData({ ...formData, startTime: newValue ? newValue.format('YYYY-MM-DDTHH:mm') : '' })}
+                  slotProps={{ textField: { fullWidth: true } }}
+                />
+                <DateTimePicker
+                  label="End Time"
+                  format="DD/MM/YYYY HH:mm"
+                  value={formData.endTime ? dayjs(formData.endTime) : null}
+                  onChange={(newValue) => setFormData({ ...formData, endTime: newValue ? newValue.format('YYYY-MM-DDTHH:mm') : '' })}
+                  slotProps={{ textField: { fullWidth: true } }}
+                />
+              </Box>
+            </LocalizationProvider>
 
             <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, mt: 2 }}>
               <Button variant="outlined" onClick={() => navigate('/promotion/coupons')}>Cancel</Button>
               <Button variant="contained" onClick={handleSubmit} disabled={saving}>
-                {saving ? 'Creating...' : 'Add Coupon'}
+                {saving ? (isEdit ? 'Saving...' : 'Creating...') : (isEdit ? 'Update Coupon' : 'Add Coupon')}
               </Button>
             </Box>
           </Box>
@@ -174,4 +210,4 @@ const CouponAdd: React.FC = () => {
   );
 };
 
-export default CouponAdd;
+export default CouponForm;

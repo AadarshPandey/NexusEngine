@@ -23,7 +23,6 @@ export const iconMap: Record<string, string> = {
   'order-return': 'AssignmentReturn',
   'order-return-reasonId': 'HelpOutline',
   sms: 'Campaign',
-  'sms-flash': 'FlashOn',
   'sms-coupon': 'LocalOffer',
   'sms-new': 'FiberNew',
   'sms-hot': 'Whatshot',
@@ -32,8 +31,6 @@ export const iconMap: Record<string, string> = {
   ums: 'AdminPanelSettings',
   'ums-admin': 'People',
   'ums-role': 'Security',
-  'ums-menu': 'Menu',
-  'ums-resource': 'Source',
 };
 
 // Static routes (always available)
@@ -108,9 +105,6 @@ export const asyncRouterMap: RouteConfig[] = [
       { path: 'coupons/new', name: 'addCoupon', meta: { title: 'Add Coupon' }, hidden: true },
       { path: 'coupons/:id/edit', name: 'updateCoupon', meta: { title: 'Update Coupon' }, hidden: true },
       { path: 'coupons/:id/history', name: 'couponHistory', meta: { title: 'Coupon History' }, hidden: true },
-      { path: 'flash-sales', name: 'flash', meta: { title: 'Flash Sales', iconUrl: 'sms-flash' } },
-      { path: 'flash-sales/:id/slots', name: 'flashSession', meta: { title: 'Flash Sessions' }, hidden: true },
-      { path: 'flash-sales/:id/items', name: 'flashProductRelation', meta: { title: 'Flash Products' }, hidden: true },
       { path: 'banners', name: 'homeAdvertise', meta: { title: 'Advertisements', iconUrl: 'sms-ad' } },
       { path: 'banners/new', name: 'addHomeAdvertise', meta: { title: 'Add Advertisement' }, hidden: true },
       { path: 'banners/:id/edit', name: 'updateHomeAdvertise', meta: { title: 'Update Advertisement' }, hidden: true },
@@ -124,13 +118,6 @@ export const asyncRouterMap: RouteConfig[] = [
     children: [
       { path: 'admins', name: 'admin', meta: { title: 'Admin Users', iconUrl: 'ums-admin' } },
       { path: 'roles', name: 'role', meta: { title: 'Roles', iconUrl: 'ums-role' } },
-      { path: 'permissions', name: 'resource', meta: { title: 'Permissions', iconUrl: 'ums-resource' } },
-      { path: 'permission-groups', name: 'resourceCategory', meta: { title: 'Permission Groups' }, hidden: true },
-      { path: 'menus', name: 'menu', meta: { title: 'Menus', iconUrl: 'ums-menu' } },
-      { path: 'menus/new', name: 'addMenu', meta: { title: 'Add Menu' }, hidden: true },
-      { path: 'menus/:id/edit', name: 'updateMenu', meta: { title: 'Update Menu' }, hidden: true },
-      { path: 'allocMenu', name: 'allocMenu', meta: { title: 'Assign Menus' }, hidden: true },
-      { path: 'allocResource', name: 'allocResource', meta: { title: 'Assign Resources' }, hidden: true },
     ],
   },
 ];

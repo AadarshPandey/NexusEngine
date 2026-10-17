@@ -18,11 +18,7 @@ public enum QueueEnum {
      * Executes the operation.
      * @return the result of the operation
      */
-    QUEUE_TTL_ORDER_CANCEL("nexus.order.direct.ttl", "nexus.order.cancel.ttl", "nexus.order.cancel.ttl"),
-    /**
-     * Flash Sale Order Queue
-     */
-    QUEUE_FLASH_ORDER("nexus.flash.direct", "nexus.flash.order", "nexus.flash.order");
+    QUEUE_TTL_ORDER_CANCEL("nexus.order.direct.ttl", "nexus.order.cancel.ttl", "nexus.order.cancel.ttl");
 
         /**
      * The exchange property.

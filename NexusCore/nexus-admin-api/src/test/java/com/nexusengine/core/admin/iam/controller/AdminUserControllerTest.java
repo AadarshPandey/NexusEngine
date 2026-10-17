@@ -91,7 +91,6 @@ class AdminUserControllerTest {
         role.setName("ROLE_ADMIN");
 
         when(adminService.getAdminByUsername("admin")).thenReturn(admin);
-        when(roleService.getMenuList(1L)).thenReturn(Collections.emptyList());
         when(adminService.getRoleList(1L)).thenReturn(Collections.singletonList(role));
 
         Principal principal = () -> "admin";

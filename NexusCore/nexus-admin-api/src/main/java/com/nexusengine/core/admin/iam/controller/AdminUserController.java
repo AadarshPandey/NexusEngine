@@ -107,7 +107,6 @@ public class AdminUserController {
         }
         return new AdminInfoResponse(
                 adminUser.getUsername(),
-                roleService.getMenuList(adminUser.getId()),
                 adminUser.getIcon(),
                 roles,
                 brandId,

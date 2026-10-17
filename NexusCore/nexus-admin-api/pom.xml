@@ -25,10 +25,6 @@
             <groupId>com.nexusengine.core</groupId>
             <artifactId>nexus-security</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.nexusengine.core</groupId>
-            <artifactId>nexus-ai</artifactId>
-        </dependency>
         <!--Spring Cloud AWS S3 for file storage-->
         <dependency>
             <groupId>io.awspring.cloud</groupId>

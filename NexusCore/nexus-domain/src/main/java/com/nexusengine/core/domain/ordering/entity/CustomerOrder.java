@@ -77,10 +77,6 @@ public class CustomerOrder {
     @Schema(title = "Freight amount")
     private BigDecimal freightAmount;
 
-    @Column(name = "promotion_discount_amount")
-    @Schema(title = "Promotion amount")
-    private BigDecimal promotionAmount;
-
     @Column(name = "coupon_discount_amount")
     @Schema(title = "Coupon amount")
     private BigDecimal couponAmount;
@@ -97,11 +93,6 @@ public class CustomerOrder {
     @Schema(title = "Status")
     @JdbcTypeCode(SqlTypes.SMALLINT)
     private Integer status;
-
-    @Column(name = "order_type")
-    @Schema(title = "Order type")
-    @JdbcTypeCode(SqlTypes.SMALLINT)
-    private Integer orderType;
 
     @Column(name = "carrier_name")
     @Schema(title = "Delivery company")
@@ -182,10 +173,6 @@ public class CustomerOrder {
         return freightAmount;
     }
 
-    public BigDecimal getPromotionDiscountAmount() {
-        return promotionAmount;
-    }
-
     public BigDecimal getCouponDiscountAmount() {
         return couponAmount;
     }
@@ -264,9 +251,6 @@ public class CustomerOrder {
         if (freightAmount == null) {
             freightAmount = BigDecimal.ZERO;
         }
-        if (promotionAmount == null) {
-            promotionAmount = BigDecimal.ZERO;
-        }
         if (couponAmount == null) {
             couponAmount = BigDecimal.ZERO;
         }
@@ -278,9 +262,6 @@ public class CustomerOrder {
         }
         if (status == null) {
             status = 0;
-        }
-        if (orderType == null) {
-            orderType = 0;
         }
         if (confirmStatus == null) {
             confirmStatus = false;

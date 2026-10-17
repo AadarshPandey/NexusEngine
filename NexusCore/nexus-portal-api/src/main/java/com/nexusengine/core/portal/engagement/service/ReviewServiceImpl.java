@@ -43,7 +43,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public Page<ProductReview> list(Long productId, Integer pageNum, Integer pageSize) {
-        Page<ProductReview> page = reviewRepository.findByProductIdAndParentIdIsNullAndStatus(
+        Page<ProductReview> page = reviewRepository.findByProductIdAndStatus(
                 productId, 1, PageRequest.of(pageNum - 1, pageSize, Sort.by(Sort.Direction.DESC, "id")));
         enrichReviewStates(page.getContent());
         return page;
@@ -51,10 +51,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public List<ProductReview> listReplies(Long parentId) {
-        List<ProductReview> allDescendants = new ArrayList<>();
-        collectDescendants(parentId, allDescendants);
-        enrichReviewStates(allDescendants);
-        return allDescendants;
+        return Collections.emptyList();
     }
 
     private void enrichReviewStates(List<ProductReview> reviews) {
@@ -71,22 +68,11 @@ public class ReviewServiceImpl implements ReviewService {
         }
     }
 
-    private void collectDescendants(Long parentId, List<ProductReview> allDescendants) {
-        List<ProductReview> children = reviewRepository.findByParentIdAndStatus(parentId, 1);
-        if (children != null && !children.isEmpty()) {
-            allDescendants.addAll(children);
-            for (ProductReview child : children) {
-                collectDescendants(child.getId(), allDescendants);
-            }
-        }
-    }
-
     @Override
     public ProductReview create(ReviewParam param) {
         var member = memberService.getCurrentMember();
         ProductReview review = new ProductReview();
         review.setProductId(param.productId());
-        review.setParentId(param.parentId());
         review.setMemberId(member.getId());
         review.setRating(param.rating());
         review.setContent(param.content());
@@ -101,31 +87,10 @@ public class ReviewServiceImpl implements ReviewService {
             List<ReviewMedia> attachmentList = new ArrayList<>();
 
             for (var m : param.attachmentList()) {
-                String mediaUrl = m.mediaUrl();
-                if (mediaUrl.contains("public/users/comments/temp_" + member.getId())) {
-                    try {
-                        String oldObjectName = mediaUrl.substring(mediaUrl.indexOf("public/users/comments/temp_"));
-                        String uuidAndExt = oldObjectName.substring(oldObjectName.lastIndexOf("/") + 1);
-                        String newObjectName = "public/users/comments/" + member.getId() + "/" + param.productId() + "/" + saved.getId() + "_" + uuidAndExt;
-
-                        s3Client.copyObject(
-                                CopyObjectRequest.builder()
-                                        .sourceBucket(bucketName)
-                                        .sourceKey(oldObjectName)
-                                        .destinationBucket(bucketName)
-                                        .destinationKey(newObjectName)
-                                        .build());
-
-                        mediaUrl = s3Endpoint + "/" + bucketName + "/" + newObjectName;
-                    } catch (Exception e) {
-                        org.slf4j.LoggerFactory.getLogger(ReviewServiceImpl.class).error("Failed to copy media object", e);
-                    }
-                }
-
                 ReviewMedia media = new ReviewMedia();
                 media.setReviewId(saved.getId());
                 media.setMediaType(m.mediaType());
-                media.setMediaUrl(mediaUrl);
+                media.setMediaUrl(m.mediaUrl());
                 media.setSortOrder(m.sortOrder());
                 attachmentList.add(media);
             }
@@ -154,7 +119,7 @@ public class ReviewServiceImpl implements ReviewService {
                             ? originalFilename.substring(originalFilename.lastIndexOf("."))
                             : ".png";
             String uuid = UUID.randomUUID().toString();
-            String objectName = "public/users/comments/temp_" + userId + "/" + uuid + ext;
+            String objectName = "public/users/comments/" + userId + "/" + uuid + ext;
 
             s3Client.putObject(
                     PutObjectRequest.builder()

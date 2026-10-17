@@ -1,7 +1,7 @@
 package com.nexusengine.core.admin.iam.dto;
 
 import com.nexusengine.core.domain.iam.entity.AdminUser;
-import com.nexusengine.core.domain.iam.entity.Permission;
+import com.nexusengine.core.domain.iam.entity.Role;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,21 +11,22 @@ import java.util.List;
 
 public class AdminUserDetails implements UserDetails {
     private final AdminUser adminUser;
-    private final List<Permission> resourceList;
+    private final List<Role> roleList;
 
-    public AdminUserDetails(AdminUser adminUser, List<Permission> resourceList) {
+    public AdminUserDetails(AdminUser adminUser, List<Role> roleList) {
         this.adminUser = adminUser;
-        this.resourceList = resourceList;
+        this.roleList = roleList;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new java.util.ArrayList<>();
         authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
-        if (resourceList != null) {
+        if (roleList != null) {
             authorities.addAll(
-                    resourceList.stream()
-                            .map(resource -> new SimpleGrantedAuthority(resource.getName()))
+                    roleList.stream()
+                            .filter(r -> r.getName() != null)
+                            .map(r -> new SimpleGrantedAuthority("ROLE_" + r.getName().toUpperCase().replace(" ", "_")))
                             .toList());
         }
         return authorities;

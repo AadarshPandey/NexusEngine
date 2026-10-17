@@ -32,7 +32,7 @@ class FlywayMigrationTest {
         registry.add("spring.datasource.password", postgres::getPassword);
         registry.add("spring.jpa.hibernate.ddl-auto", () -> "validate");
         registry.add("spring.flyway.enabled", () -> "true");
-        registry.add("spring.flyway.schemas", () -> "catalog,ordering,customer,iam,promotion,engagement,payment,ai,messaging");
+        registry.add("spring.flyway.schemas", () -> "catalog,ordering,customer,iam,promotion,engagement,payment,messaging");
     }
 
     private final DataSource dataSource;
@@ -47,7 +47,7 @@ class FlywayMigrationTest {
         Flyway flyway = Flyway.configure()
                 .dataSource(dataSource)
                 .locations("classpath:db/migration")
-                .schemas("catalog", "ordering", "customer", "iam", "promotion", "engagement", "payment", "ai", "messaging")
+                .schemas("catalog", "ordering", "customer", "iam", "promotion", "engagement", "payment", "messaging")
                 .load();
 
         flyway.migrate();
@@ -59,8 +59,8 @@ class FlywayMigrationTest {
             try (var rs = stmt.executeQuery("SELECT COUNT(*) FROM iam.role")) {
                 assertTrue(rs.next() && rs.getInt(1) >= 1, "Reference roles should be seeded");
             }
-            try (var rs = stmt.executeQuery("SELECT COUNT(*) FROM iam.console_menu")) {
-                assertTrue(rs.next() && rs.getInt(1) >= 1, "Console menus should be seeded");
+            try (var rs = stmt.executeQuery("SELECT COUNT(*) FROM iam.admin_user")) {
+                assertTrue(rs.next() && rs.getInt(1) >= 1, "Admin users should be seeded");
             }
             try (var rs = stmt.executeQuery("SELECT COUNT(*) FROM ordering.order_policy")) {
                 assertTrue(rs.next() && rs.getInt(1) >= 1, "Order policy row should be seeded");

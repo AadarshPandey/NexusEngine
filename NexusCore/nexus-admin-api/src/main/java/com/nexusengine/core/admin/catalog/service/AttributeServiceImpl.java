@@ -2,11 +2,8 @@ package com.nexusengine.core.admin.catalog.service;
 
 import lombok.RequiredArgsConstructor;
 
-import com.nexusengine.core.domain.catalog.repository.CategoryAttributeRepository;
-
 import com.nexusengine.core.admin.catalog.dto.AttributeInfo;
 import com.nexusengine.core.admin.catalog.dto.AttributeParam;
-import com.nexusengine.core.domain.catalog.entity.CategoryAttribute;
 
 import com.nexusengine.core.domain.catalog.repository.ProductTypeRepository;
 import com.nexusengine.core.domain.catalog.repository.AttributeDefinitionRepository;
@@ -15,6 +12,7 @@ import com.nexusengine.core.domain.catalog.entity.ProductType;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -23,7 +21,6 @@ import java.util.ArrayList;
 @RequiredArgsConstructor
 public class AttributeServiceImpl implements AttributeService {
     private final AttributeDefinitionRepository productAttributeRepository;
-    private final CategoryAttributeRepository relationRepository;
     private final ProductTypeRepository productAttributeCategoryRepository;
 
     @Override
@@ -95,19 +92,6 @@ public class AttributeServiceImpl implements AttributeService {
 
     @Override
     public List<AttributeInfo> getProductAttrInfo(Long productCategoryId) {
-
-        List<CategoryAttribute> relations = relationRepository.findAll();
-        List<AttributeInfo> result = new ArrayList<>();
-
-        for (CategoryAttribute rel : relations) {
-            if (rel.getProductCategoryId() != null && rel.getProductCategoryId().equals(productCategoryId)) {
-                AttributeDefinition attr = productAttributeRepository.findById(rel.getProductAttributeId()).orElse(null);
-                if (attr != null) {
-                    AttributeInfo info = new AttributeInfo(attr.getId(), attr.getProductAttributeCategoryId());
-                    result.add(info);
-                }
-            }
-        }
-        return result;
+        return Collections.emptyList();
     }
 }

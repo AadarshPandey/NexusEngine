@@ -4,28 +4,19 @@ import lombok.RequiredArgsConstructor;
 
 import com.nexusengine.core.domain.catalog.repository.ProductAttributeValueRepository;
 import com.nexusengine.core.domain.catalog.entity.ProductSku;
-import com.nexusengine.core.domain.promotion.entity.FlashSale;
 import com.nexusengine.core.domain.catalog.repository.ProductSkuRepository;
 import com.nexusengine.core.domain.catalog.entity.Product;
 import com.nexusengine.core.domain.catalog.repository.ProductRepository;
 import com.nexusengine.core.domain.catalog.entity.Category;
-import com.nexusengine.core.domain.promotion.repository.FlashSaleRepository;
 import com.nexusengine.core.domain.promotion.entity.Coupon;
 import com.nexusengine.core.domain.catalog.entity.Brand;
 import com.nexusengine.core.domain.catalog.entity.ProductAttributeValue;
 import com.nexusengine.core.domain.catalog.repository.BrandRepository;
 import com.nexusengine.core.domain.catalog.repository.CategoryRepository;
-import com.nexusengine.core.domain.promotion.entity.SpendThresholdDiscount;
-import com.nexusengine.core.domain.promotion.repository.QuantityTierDiscountRepository;
-import com.nexusengine.core.domain.promotion.repository.SpendThresholdDiscountRepository;
 import com.nexusengine.core.domain.catalog.entity.AttributeDefinition;
 import com.nexusengine.core.domain.catalog.repository.AttributeDefinitionRepository;
-import com.nexusengine.core.domain.promotion.entity.QuantityTierDiscount;
 
 import org.springframework.util.StringUtils;
-
-
-
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -41,7 +32,6 @@ import com.nexusengine.core.portal.catalog.dto.CategoryNode;
 import com.nexusengine.core.portal.catalog.dao.ProductDao;
 import com.nexusengine.core.portal.catalog.dto.ProductDetail;
 
-
 /**
  * Portal product management Service implementation
  */
@@ -55,10 +45,7 @@ public class ProductServiceImpl implements ProductService {
     private final AttributeDefinitionRepository productAttributeRepository;
     private final ProductAttributeValueRepository productAttributeValueRepository;
     private final ProductSkuRepository skuStockRepository;
-    private final QuantityTierDiscountRepository productVolumeDiscountRepository;
-    private final SpendThresholdDiscountRepository productSpendDiscountRepository;
     private final ProductDao productDao;
-    private final FlashSaleRepository flashPromotionRepository;
 
     private void initializeMediaList(List<Product> products) {
         if (products != null) {
@@ -98,6 +85,7 @@ public class ProductServiceImpl implements ProductService {
 
                 predicates.add(cb.or(namePredicate, keywordsPredicate, categoryPredicate, brandPredicate));
             }
+
             if (brandId != null) {
                 predicates.add(cb.equal(root.get("brandId"), brandId));
             }
@@ -109,7 +97,7 @@ public class ProductServiceImpl implements ProductService {
 
         List<Product> list = productRepository.findAll(spec, PageRequest.of(pageNum - 1, pageSize, sortOrder)).getContent();
         initializeMediaList(list);
-        System.out.println("LIST SIZE: " + list.size()); return list;
+        return list;
     }
 
     @Override
@@ -127,7 +115,7 @@ public class ProductServiceImpl implements ProductService {
         if (product != null && product.getGalleryList() != null) {
             org.hibernate.Hibernate.initialize(product.getGalleryList());
         }
-        if (product == null) return new ProductDetail(null, null, null, null, null, null, null, null, null);
+        if (product == null) return new ProductDetail(null, null, null, null, null, null);
 
         Brand brand = null;
         if (product.getBrandId() != null) {
@@ -145,23 +133,9 @@ public class ProductServiceImpl implements ProductService {
 
         List<ProductSku> skuStockList = skuStockRepository.findByProductId(product.getId());
 
-        List<QuantityTierDiscount> productVolumeDiscountList = null;
-        if (product.getPromotionType() != null && product.getPromotionType() == 3) {
-            productVolumeDiscountList = productVolumeDiscountRepository.findByProductId(product.getId());
-        }
-
-        List<SpendThresholdDiscount> productSpendDiscountList = null;
-        if (product.getPromotionType() != null && product.getPromotionType() == 4) {
-            productSpendDiscountList = productSpendDiscountRepository.findByProductId(product.getId());
-        }
-
         List<Coupon> couponList = productDao.getAvailableCouponList(product.getId(), product.getProductCategoryId());
 
-        java.time.LocalDate today = java.time.LocalDate.now();
-        List<FlashSale> promotions = flashPromotionRepository.findByStatusAndStartDateLessThanEqualAndEndDateGreaterThanEqual(true, today, today);
-        Boolean flashSaleActive = !promotions.isEmpty();
-
-        return new ProductDetail(product, brand, productAttributeList, valueList, skuStockList, productVolumeDiscountList, productSpendDiscountList, couponList, flashSaleActive);
+        return new ProductDetail(product, brand, productAttributeList, valueList, skuStockList, couponList);
     }
 
     private CategoryNode covert(Category item, List<Category> allList) {

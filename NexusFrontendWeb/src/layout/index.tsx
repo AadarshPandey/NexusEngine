@@ -7,7 +7,6 @@ import type { RootState, AppDispatch } from '../store';
 import { logout, updateUser } from '../store/slices/authSlice';
 import { loadCartData, clearCart } from '../store/slices/cartSlice';
 import { getCustomerProfile } from '../api/customer';
-import ChatWidget from '../components/ChatWidget';
 
 const Layout: React.FC = () => {
   const { isAuthenticated, user } = useSelector((state: RootState) => state.auth);
@@ -73,8 +72,6 @@ const Layout: React.FC = () => {
           </Typography>
         </Container>
       </Box>
-
-      <ChatWidget />
     </Box>
   );
 };

@@ -3,7 +3,6 @@ import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, 
 import userReducer from './slices/userSlice';
 import appReducer from './slices/appSlice';
 import permissionReducer from './slices/permissionSlice';
-import orderReducer from './slices/orderSlice';
 
 // Custom storage to fix Vite ESM/CJS interop issues with redux-persist
 const storage: Storage = {
@@ -24,7 +23,6 @@ const rootReducer = combineReducers({
   user: userReducer,
   app: appReducer,
   permission: permissionReducer,
-  order: orderReducer,
 });
 
 const persistConfig = {

@@ -12,11 +12,7 @@ import com.nexusengine.core.domain.catalog.repository.ProductPriceChangeReposito
 import com.nexusengine.core.domain.catalog.entity.ProductPriceChange;
 import com.nexusengine.core.domain.iam.entity.AdminUser;
 import com.nexusengine.core.domain.catalog.entity.ProductAttributeValue;
-import com.nexusengine.core.domain.promotion.entity.SpendThresholdDiscount;
-import com.nexusengine.core.domain.promotion.repository.QuantityTierDiscountRepository;
-import com.nexusengine.core.domain.promotion.repository.SpendThresholdDiscountRepository;
 import com.nexusengine.core.domain.catalog.entity.ProductApprovalEvent;
-import com.nexusengine.core.domain.promotion.entity.QuantityTierDiscount;
 import org.springframework.data.domain.Sort;
 import org.springframework.util.StringUtils;
 
@@ -48,8 +44,6 @@ import com.nexusengine.core.admin.catalog.dto.ProductResult;
 public class ProductServiceImpl implements ProductService {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProductServiceImpl.class);
     private final ProductRepository productRepository;
-    private final QuantityTierDiscountRepository productVolumeDiscountRepository;
-    private final SpendThresholdDiscountRepository productSpendDiscountRepository;
     private final ProductSkuRepository skuStockRepository;
     private final ProductAttributeValueRepository productAttributeValueRepository;
 
@@ -67,8 +61,6 @@ public class ProductServiceImpl implements ProductService {
         adminTenantContext.currentBrandId().ifPresent(product::setBrandId);
         productRepository.save(product);
         Long productId = product.getId();
-        saveProductLadderList(productParam.productVolumeDiscountList(), productId);
-        saveProductFullReductionList(productParam.productSpendDiscountList(), productId);
         handleSkuStockCode(productParam.skuStockList(), productId);
         if (productParam.skuStockList() == null || productParam.skuStockList().isEmpty()) {
             ProductSku defaultSku = new ProductSku();
@@ -106,7 +98,7 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(id).orElse(null);
         if (product == null) return null;
         adminTenantContext.assertBrandAccess(product.getBrandId());
-        return new ProductResult(new ProductParam(product, productVolumeDiscountRepository.findByProductId(id), productSpendDiscountRepository.findByProductId(id), skuStockRepository.findByProductId(id), productAttributeValueRepository.findByProductId(id)), null);
+        return new ProductResult(new ProductParam(product, skuStockRepository.findByProductId(id), productAttributeValueRepository.findByProductId(id)), null);
     }
 
     @Override
@@ -121,10 +113,6 @@ public class ProductServiceImpl implements ProductService {
         product.setId(id);
         adminTenantContext.currentBrandId().ifPresent(product::setBrandId);
         productRepository.save(product);
-        productVolumeDiscountRepository.deleteByProductId(id);
-        saveProductLadderList(productParam.productVolumeDiscountList(), id);
-        productSpendDiscountRepository.deleteByProductId(id);
-        saveProductFullReductionList(productParam.productSpendDiscountList(), id);
         handleUpdateSkuStockList(id, productParam);
         productAttributeValueRepository.deleteByProductId(id);
         saveProductAttributeValueList(productParam.productAttributeValueList(), id);
@@ -308,24 +296,6 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findAll(PageRequest.of(0, 1000)).getContent();
     }
 
-
-    private void saveProductLadderList(List<QuantityTierDiscount> dataList, Long productId) {
-        if (CollectionUtils.isEmpty(dataList)) return;
-        for (QuantityTierDiscount item : dataList) {
-            item.setId(null);
-            item.setProductId(productId);
-        }
-        productVolumeDiscountRepository.saveAll(dataList);
-    }
-
-    private void saveProductFullReductionList(List<SpendThresholdDiscount> dataList, Long productId) {
-        if (CollectionUtils.isEmpty(dataList)) return;
-        for (SpendThresholdDiscount item : dataList) {
-            item.setId(null);
-            item.setProductId(productId);
-        }
-        productSpendDiscountRepository.saveAll(dataList);
-    }
 
     private void saveSkuStockList(List<ProductSku> dataList, Long productId) {
         if (CollectionUtils.isEmpty(dataList)) return;

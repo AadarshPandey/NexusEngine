@@ -33,8 +33,6 @@ import {
   Edit,
   FilterList,
   ViewList,
-  MenuOpen,
-  Security,
 } from '@mui/icons-material';
 import { 
   getRoleListAPI, 
@@ -296,22 +294,6 @@ const RoleList: React.FC = () => {
                     </TableCell>
                     <TableCell align="center">
                       <Box sx={{ display: 'flex', justifyContent: 'center', gap: 0.5 }}>
-                        <IconButton
-                          size="small"
-                          onClick={() => navigate(`/iam/allocMenu?roleId=${row.id}`)}
-                          sx={{ color: '#10B981' }}
-                          title="Assign UI Menus to Role"
-                        >
-                          <MenuOpen sx={{ fontSize: 18 }} />
-                        </IconButton>
-                        <IconButton
-                          size="small"
-                          onClick={() => navigate(`/iam/allocResource?roleId=${row.id}`)}
-                          sx={{ color: '#F59E0B' }}
-                          title="Assign API Resources to Role"
-                        >
-                          <Security sx={{ fontSize: 18 }} />
-                        </IconButton>
                         <IconButton
                           size="small"
                           onClick={() => openEditDialog(row)}

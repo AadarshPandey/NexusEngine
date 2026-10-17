@@ -77,16 +77,6 @@ private Long productCategoryId;
 
 private Category productCategory;
 
-        @Column(name = "promotion_name")
-    @Schema(title = "Promotion name")
-
-private String promotionName;
-
-        @Column(name = "promotion_discount_amount")
-    @Schema(title = "Promotion amount")
-
-private BigDecimal promotionAmount;
-
         @Column(name = "coupon_discount_amount")
     @Schema(title = "Coupon amount")
 
@@ -133,9 +123,6 @@ private String productAttr;
         }
         if (productQuantity == null) {
             productQuantity = 1;
-        }
-        if (promotionAmount == null) {
-            promotionAmount = BigDecimal.ZERO;
         }
         if (couponAmount == null) {
             couponAmount = BigDecimal.ZERO;

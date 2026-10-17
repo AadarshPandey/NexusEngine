@@ -4,7 +4,6 @@ import com.nexusengine.core.domain.iam.entity.AdminUser;
 
 import com.nexusengine.core.admin.iam.dto.AdminUserParam;
 import com.nexusengine.core.admin.iam.dto.UpdatePasswordParam;
-import com.nexusengine.core.domain.iam.entity.Permission;
 import com.nexusengine.core.domain.iam.entity.Role;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
@@ -102,14 +101,6 @@ public interface AdminUserService {
      * @return a list of assigned roles
      */
     List<Role> getRoleList(Long adminId);
-
-/**
-     * Retrieves all accessible resources for a specific administrator based on their roles.
-     *
-     * @param adminId the unique identifier of the administrator
-     * @return a list of accessible resources
-     */
-    List<Permission> getResourceList(Long adminId);
 
 /**
      * Updates the password for an administrator.

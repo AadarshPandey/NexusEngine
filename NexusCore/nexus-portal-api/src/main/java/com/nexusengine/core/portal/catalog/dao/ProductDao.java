@@ -11,19 +11,10 @@ import com.nexusengine.core.domain.promotion.entity.Coupon;
 import com.nexusengine.core.domain.promotion.repository.CouponRepository;
 import com.nexusengine.core.domain.promotion.repository.MemberCouponRepository;
 import com.nexusengine.core.domain.promotion.repository.CouponProductRepository;
-import com.nexusengine.core.domain.promotion.entity.SpendThresholdDiscount;
 import com.nexusengine.core.domain.promotion.entity.CouponCategory;
-import com.nexusengine.core.domain.promotion.repository.QuantityTierDiscountRepository;
-import com.nexusengine.core.domain.promotion.repository.SpendThresholdDiscountRepository;
 import com.nexusengine.core.domain.catalog.entity.AttributeDefinition;
 import com.nexusengine.core.domain.catalog.repository.AttributeDefinitionRepository;
-import com.nexusengine.core.domain.promotion.entity.QuantityTierDiscount;
 import org.springframework.data.domain.PageRequest;
-
-
-
-
-
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -34,33 +25,26 @@ import com.nexusengine.core.portal.ordering.dto.CartProduct;
 import com.nexusengine.core.portal.promotion.dto.CouponHistoryDetail;
 import com.nexusengine.core.portal.catalog.dto.PromotionProduct;
 
-
 @Repository
 public class ProductDao {
     private final ProductRepository productRepository;
     private final AttributeDefinitionRepository productAttributeRepository;
     private final ProductSkuRepository skuStockRepository;
-    private final QuantityTierDiscountRepository productVolumeDiscountRepository;
-    private final SpendThresholdDiscountRepository productSpendDiscountRepository;
     private final CouponRepository couponRepository;
     private final CouponProductRepository couponProductRelationRepository;
     private final CouponCategoryRepository couponProductCategoryRelationRepository;
     private final MemberCouponRepository couponHistoryRepository;
 
     public ProductDao(ProductRepository productRepository,
-                            AttributeDefinitionRepository productAttributeRepository,
-                            ProductSkuRepository skuStockRepository,
-                            QuantityTierDiscountRepository productVolumeDiscountRepository,
-                            SpendThresholdDiscountRepository productSpendDiscountRepository,
-                            CouponRepository couponRepository,
-                            CouponProductRepository couponProductRelationRepository,
-                            CouponCategoryRepository couponProductCategoryRelationRepository,
-                            MemberCouponRepository couponHistoryRepository) {
+                      AttributeDefinitionRepository productAttributeRepository,
+                      ProductSkuRepository skuStockRepository,
+                      CouponRepository couponRepository,
+                      CouponProductRepository couponProductRelationRepository,
+                      CouponCategoryRepository couponProductCategoryRelationRepository,
+                      MemberCouponRepository couponHistoryRepository) {
         this.productRepository = productRepository;
         this.productAttributeRepository = productAttributeRepository;
         this.skuStockRepository = skuStockRepository;
-        this.productVolumeDiscountRepository = productVolumeDiscountRepository;
-        this.productSpendDiscountRepository = productSpendDiscountRepository;
         this.couponRepository = couponRepository;
         this.couponProductRelationRepository = couponProductRelationRepository;
         this.couponProductCategoryRelationRepository = couponProductCategoryRelationRepository;
@@ -84,9 +68,7 @@ public class ProductDao {
         List<PromotionProduct> result = new ArrayList<>();
         for (Product product : products) {
             List<ProductSku> skuStockList = skuStockRepository.findByProductId(product.getId());
-            List<QuantityTierDiscount> productVolumeDiscountList = productVolumeDiscountRepository.findByProductId(product.getId());
-            List<SpendThresholdDiscount> productSpendDiscountList = productSpendDiscountRepository.findByProductId(product.getId());
-            result.add(new PromotionProduct(product, skuStockList, productVolumeDiscountList, productSpendDiscountList));
+            result.add(new PromotionProduct(product, skuStockList));
         }
         return result;
     }

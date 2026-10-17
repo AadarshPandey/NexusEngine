@@ -2,8 +2,6 @@ package com.nexusengine.core.admin.iam.controller;
 
 import com.nexusengine.core.admin.iam.service.RoleService;
 import com.nexusengine.core.common.exception.Asserts;
-import com.nexusengine.core.domain.iam.entity.ConsoleMenu;
-import com.nexusengine.core.domain.iam.entity.Permission;
 import com.nexusengine.core.domain.iam.entity.Role;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -90,32 +88,5 @@ public class RoleController {
             Asserts.fail("Failed to update role status");
         }
         return count;
-    }
-
-    @Operation(summary = "List menus for role")
-    @GetMapping("/{roleId}/menus")
-    public List<ConsoleMenu> listMenu(@PathVariable("roleId") Long roleId) {
-        return roleService.listMenu(roleId);
-    }
-
-    @Operation(summary = "List permissions for role")
-    @GetMapping("/{roleId}/permissions")
-    public List<Permission> listResource(@PathVariable("roleId") Long roleId) {
-        return roleService.listResource(roleId);
-    }
-
-    @Operation(summary = "Assign menus to role")
-    @PutMapping("/menus")
-    public Integer allocMenu(
-            @RequestParam("roleId") Long roleId, @RequestParam("menuIds") List<Long> menuIds) {
-        return roleService.allocMenu(roleId, menuIds);
-    }
-
-    @Operation(summary = "Assign permissions to role")
-    @PutMapping("/permissions")
-    public Integer allocResource(
-            @RequestParam("roleId") Long roleId,
-            @RequestParam("resourceIds") List<Long> resourceIds) {
-        return roleService.allocResource(roleId, resourceIds);
     }
 }

@@ -45,13 +45,6 @@ spring:
           auth: true
           starttls:
             enable: true
-  ai:
-    google:
-      genai:
-        api-key: ${GEMINI_API_KEY:sk-your-key-here}
-        chat:
-          options:
-            model: gemini-2.5-flash
 
 razorpay:
   keyId: ${RAZORPAY_KEY_ID:dummy}

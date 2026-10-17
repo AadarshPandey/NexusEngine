@@ -92,7 +92,6 @@ public class ProductSearchDao {
             esProduct.setNewStatus(Boolean.TRUE.equals(product.getIsNewArrival()) ? 1 : 0);
             esProduct.setRecommendStatus(Boolean.TRUE.equals(product.getIsFeatured()) ? 1 : 0);
             esProduct.setStock(stock);
-            esProduct.setPromotionType(product.getPromotionType());
             // Load attribute values
             List<ProductAttributeValue> attrValues = attributeValueRepository.findByProductIdAndProductAttributeIdIn(
                     product.getId(), Collections.emptyList());
