@@ -34,7 +34,7 @@
 
         <!-- Library versions -->
         <springdoc-openapi.version>3.1.1</springdoc-openapi.version>
-        <logstash-logback.version>8.0</logstash-logback.version>
+        <logstash-logback.version>9.0</logstash-logback.version>
         <commons-lang3.version>3.20.0</commons-lang3.version>
         <spring-cloud-aws.version>3.3.1</spring-cloud-aws.version>
         <resilience4j.version>2.4.0</resilience4j.version>
