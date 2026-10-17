@@ -6,7 +6,7 @@
 [![Spring Boot](https://img.shields.io/badge/Spring_Boot-4.1.1-6DB33F.svg?style=flat-square&logo=springboot)](https://spring.io/projects/spring-boot)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7-3178C6.svg?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-19-61DAFB.svg?style=flat-square&logo=react)](https://react.dev/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17_%2B_pgvector-4169E1.svg?style=flat-square&logo=postgresql)](https://www.postgresql.org/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-4169E1.svg?style=flat-square&logo=postgresql)](https://www.postgresql.org/)
 [![Elasticsearch](https://img.shields.io/badge/Elasticsearch-9.1.0-005571.svg?style=flat-square&logo=elasticsearch)](https://www.elastic.co/)
 [![RabbitMQ](https://img.shields.io/badge/RabbitMQ-4.0-FF6600.svg?style=flat-square&logo=rabbitmq)](https://www.rabbitmq.com/)
 [![Redis](https://img.shields.io/badge/Redis-8.0-DC382D.svg?style=flat-square&logo=redis)](https://redis.io/)
@@ -14,7 +14,7 @@
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg?style=flat-square)](LICENSE)
 
 **An enterprise-grade, high-concurrency retail commerce platform architected as a modular micro-monolith.**  
-Engineered with Domain-Driven Design (DDD), Transactional Outbox event messaging, dynamic fail-closed RBAC, and hybrid vector search.
+Engineered with Domain-Driven Design (DDD), Transactional Outbox event messaging, dynamic fail-closed RBAC, and high-performance Elasticsearch catalog search.
 
 [Architecture](#-system-architecture--design-patterns) •
 [Domain Model](#-domain-driven-data-architecture) •
@@ -31,10 +31,10 @@ Engineered with Domain-Driven Design (DDD), Transactional Outbox event messaging
 **NexusEngine** is a modern retail commerce platform designed to demonstrate FAANG-caliber systems engineering, high-throughput distributed transaction patterns, and strict architectural discipline. 
 
 ### Core Architectural Pillars
-- **Modular Monolith with Domain-Driven Design (DDD)**: Eliminates distributed monolith anti-patterns by unifying domain contexts into distinct schemas (`catalog`, `ordering`, `customer`, `iam`, `promotion`, `engagement`, `payment`, `ai`, `messaging`) with strict JPA entity boundaries and zero cross-schema joins.
+- **Modular Monolith with Domain-Driven Design (DDD)**: Eliminates distributed monolith anti-patterns by unifying domain contexts into 8 distinct schemas (`catalog`, `ordering`, `customer`, `iam`, `promotion`, `engagement`, `payment`, `messaging`) with strict JPA entity boundaries and zero cross-schema joins.
 - **Transactional Outbox Pattern**: Guaranteed at-least-once event delivery for orders and catalog mutations via PostgreSQL transaction logs and background polling publishers over RabbitMQ.
 - **Fail-Closed Dynamic RBAC**: Custom Spring Security filter intercepting requests against dynamic permissions in `iam.permission`, defaulting strictly to `403 Forbidden` for unmapped or unauthorized routes.
-- **Hybrid Search Engine**: Combines BM25 tokenized keyword search (Elasticsearch 9) with high-dimensional vector embeddings (`pgvector` via Spring AI) for semantic product recommendations.
+- **High-Performance Catalog Search Engine**: Powered by Elasticsearch 9.1.0 with tokenized BM25 search, real-time RabbitMQ event-driven index synchronization, and automated catalog indexing on application startup.
 - **High-Concurrency Flash Sales**: Redis Lua-scripted atomic stock decrements and Redisson distributed locks preventing overselling under heavy load.
 - **100% Pure TypeScript Frontends**: Dual Vite-powered applications—a customer storefront and an admin dashboard—built with React 19, Material UI 6, Redux Toolkit, and comprehensive type contracts matching backend DTOs.
 - **Automated Observability**: Prometheus metrics collection, Grafana dashboard provisioning, and structured RFC 9457 `ProblemDetail` error responses.
@@ -63,12 +63,12 @@ flowchart TD
         OrderingContext["Ordering & Checkout Domain"]
         CustomerContext["Customer Identity Domain"]
         PromoContext["Promotion & Flash Sale Domain"]
-        SearchContext["Search & Hybrid Retrieval"]
+        SearchContext["Search & Catalog Indexing"]
         OutboxWorker["Transactional Outbox Relay"]
     end
 
     subgraph Storage["Distributed Data & Messaging Layer"]
-        PG[("PostgreSQL 17<br/>9 Context Schemas + pgvector")]
+        PG[("PostgreSQL 17<br/>8 Context Schemas")]
         ES[("Elasticsearch 9.1.0<br/>Full-Text Catalog Index")]
         RMQ{{"RabbitMQ 4.0<br/>VHost: /nexuscore + DLQ"}}
         RedisCache[("Redis 8.0<br/>Caches & Redisson Locks")]
@@ -180,7 +180,7 @@ sequenceDiagram
 
 ## 🗄 Domain-Driven Data Architecture
 
-The underlying database uses PostgreSQL 17 structured across **9 discrete schemas** representing bounded contexts, fully managed and migrated by Flyway (`V1__baseline.sql`, `V2__reference_data.sql`, `V3__demo_catalog.sql`). Every single table and column is strictly wired and utilized end-to-end.
+The underlying database uses PostgreSQL 17 structured across **8 discrete schemas** representing bounded contexts, fully managed and migrated by Flyway (`V1__baseline.sql`, `V2__reference_data.sql`, `V3__demo_catalog.sql`). Every single table and column is strictly wired and utilized end-to-end.
 
 | Bounded Context | Schema | Core Entities & Tables | Domain Responsibility |
 |---|---|---|---|
@@ -191,7 +191,6 @@ The underlying database uses PostgreSQL 17 structured across **9 discrete schema
 | **Promotion** | `promotion` | `coupon`, `coupon_category`, `coupon_product`, `member_coupon`, `banner`, `flash_sale`, `flash_sale_session`, `flash_sale_item`, `flash_sale_log` | Percentage and fixed voucher claiming, category/product discount scoping, promotional hero banners, and high-concurrency flash sales. |
 | **Engagement** | `engagement` | `product_review`, `review_media`, `review_reply`, `product_comment` | Verified buyer star ratings, customer review image attachments, and administrative content moderation. |
 | **Payment** | `payment` | `payment_transaction`, `payment_webhook_event` | Razorpay checkout transactions, idempotent webhook replay protection, and refund ledger records. |
-| **AI** | `ai` | `vector_store` | High-dimensional product embeddings (Spring AI + `pgvector` HNSW indexes) for semantic similarity matching. |
 | **Messaging** | `messaging` | `outbox_event` | Transactional outbox event store for asynchronous distributed event dispatching. |
 
 ### Core Entity Relationships
@@ -232,12 +231,12 @@ erDiagram
 │ Language & Core   │ Java 25 LTS, Spring Boot 4.1.1                     │
 │ Frontend Web      │ React 19, TypeScript 5.7, Vite, MUI v6, Redux      │
 │ Admin Dashboard   │ React 19, TypeScript 5.7, Vite, MUI v6, Recharts   │
-│ Relational Store  │ PostgreSQL 17 (pgvector extension, 9 schemas)      │
+│ Relational Store  │ PostgreSQL 17 (8 Bounded Context Schemas)          │
 │ Full-Text Search  │ Elasticsearch 9.1.0 (Tokenized BM25 search)        │
 │ Cache & Locks     │ Redis 8.0 Alpine, Redisson 4.7.0                   │
 │ Event Broker      │ RabbitMQ 4.0 Management (/nexuscore vhost)         │
 │ Object Storage    │ LocalStack S3 3.8.0 (Bucket: nexus-media)          │
-│ Cloud & AI        │ Spring Cloud AWS 3.3.1, Spring AI (pgvector)       │
+│ Cloud Integration │ Spring Cloud AWS 3.3.1 (S3 Async/Sync Client)      │
 │ Payments          │ Razorpay SDK 1.4.6 (Webhook verification)          │
 │ Resilience        │ Resilience4j 2.4.0 (Circuit Breaker, Rate Limiter) │
 │ Database Tooling  │ Flyway 10 (Squashed V1-V3 Baseline Migrations)     │
