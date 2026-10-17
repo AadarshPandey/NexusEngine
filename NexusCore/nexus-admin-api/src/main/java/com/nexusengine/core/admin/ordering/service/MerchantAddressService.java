@@ -13,4 +13,3 @@ public interface MerchantAddressService {
     MerchantAddress update(Long id, MerchantAddress address);
     int delete(Long id);
 }
-

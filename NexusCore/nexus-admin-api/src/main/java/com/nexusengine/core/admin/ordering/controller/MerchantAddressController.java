@@ -55,4 +55,3 @@ public class MerchantAddressController {
         return companyAddressService.delete(id);
     }
 }
-

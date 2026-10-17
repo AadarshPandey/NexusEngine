@@ -53,4 +53,3 @@ public class MerchantAddressServiceImpl implements MerchantAddressService {
         return 1;
     }
 }
-

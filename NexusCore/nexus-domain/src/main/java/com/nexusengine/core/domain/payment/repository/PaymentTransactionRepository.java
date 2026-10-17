@@ -10,4 +10,3 @@ public interface PaymentTransactionRepository extends JpaRepository<PaymentTrans
     List<PaymentTransaction> findByOrderIdOrderByCreateTimeAsc(Long orderId);
     List<PaymentTransaction> findByOrderIdInOrderByCreateTimeAsc(List<Long> orderIds);
 }
-

@@ -109,6 +109,8 @@ services:
       - "127.0.0.1:15672:15672"
     volumes:
       - rabbitmq-data:/var/lib/rabbitmq
+      - ./resource_setup/rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
+      - ./resource_setup/rabbitmq/definitions.json:/etc/rabbitmq/definitions.json:ro
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
       interval: 10s
@@ -150,7 +152,7 @@ services:
       - EXTRA_CORS_ALLOWED_ORIGINS=https://app.localstack.cloud,http://localhost:5173,http://localhost:5174
     volumes:
       - ./resource_setup/s3-init:/etc/localstack/init/ready.d
-      - ./trash/s3-data:/s3-data:ro
+      - ./resource_setup/s3-data:/s3-data:ro
       - localstack-data:/var/lib/localstack
     networks:
       - nexus-network

@@ -1,0 +1,146 @@
+{
+  "rabbit_version": "4.0.0",
+  "vhosts": [
+    {
+      "name": "/"
+    },
+    {
+      "name": "/nexuscore"
+    }
+  ],
+  "users": [
+    {
+      "name": "guest",
+      "password_hash": "eT3gSZcctCPAmwbBZZoSrBXh3nGko+Qsb+I7SoH7ogir8EeS",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": [
+        "administrator"
+      ],
+      "limits": {}
+    }
+  ],
+  "permissions": [
+    {
+      "user": "guest",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "guest",
+      "vhost": "/nexuscore",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    }
+  ],
+  "exchanges": [
+    {
+      "name": "nexus.flash.direct",
+      "vhost": "/nexuscore",
+      "type": "direct",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "nexus.order.direct",
+      "vhost": "/nexuscore",
+      "type": "direct",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "nexus.order.direct.ttl",
+      "vhost": "/nexuscore",
+      "type": "direct",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "nexuscore.product.sync",
+      "vhost": "/nexuscore",
+      "type": "direct",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    }
+  ],
+  "queues": [
+    {
+      "name": "nexuscore.product.sync.queue",
+      "vhost": "/nexuscore",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-queue-type": "classic"
+      }
+    },
+    {
+      "name": "nexus.order.cancel",
+      "vhost": "/nexuscore",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-queue-type": "classic"
+      }
+    },
+    {
+      "name": "nexus.flash.order",
+      "vhost": "/nexuscore",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-queue-type": "classic"
+      }
+    },
+    {
+      "name": "nexus.order.cancel.ttl",
+      "vhost": "/nexuscore",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-queue-type": "classic",
+        "x-dead-letter-exchange": "nexus.order.direct",
+        "x-dead-letter-routing-key": "nexus.order.cancel"
+      }
+    }
+  ],
+  "bindings": [
+    {
+      "source": "nexuscore.product.sync",
+      "vhost": "/nexuscore",
+      "destination": "nexuscore.product.sync.queue",
+      "destination_type": "queue",
+      "routing_key": "product.change",
+      "arguments": {}
+    },
+    {
+      "source": "nexus.flash.direct",
+      "vhost": "/nexuscore",
+      "destination": "nexus.flash.order",
+      "destination_type": "queue",
+      "routing_key": "nexus.flash.order",
+      "arguments": {}
+    },
+    {
+      "source": "nexus.order.direct",
+      "vhost": "/nexuscore",
+      "destination": "nexus.order.cancel",
+      "destination_type": "queue",
+      "routing_key": "nexus.order.cancel",
+      "arguments": {}
+    },
+    {
+      "source": "nexus.order.direct.ttl",
+      "vhost": "/nexuscore",
+      "destination": "nexus.order.cancel.ttl",
+      "destination_type": "queue",
+      "routing_key": "nexus.order.cancel.ttl",
+      "arguments": {}
+    }
+  ]
+}

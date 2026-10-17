@@ -2440,8 +2440,26 @@ Each card is a commit boundary. If token expires, resume from the first unchecke
   - Display recent admin login events (`iam.admin_login_event`) and Outbox event metrics (`messaging.outbox_event`) in `Dashboard.tsx` and `AdminList.tsx`.
 - [x] **13.4 — Final Zero-Idle-Table & Zero-Idle-Column Verification Gate:**
   - Run `SELECT schemaname||'.'||relname, n_live_tup FROM pg_stat_user_tables` and verify **every single kept table has `> 0` rows** and zero unused columns.
-  - Rebuild Docker containers and verify end-to-end across Storefront (`:5174`), Admin Panel (`:5173` as `admin`, `samsung_admin`, and `nike_admin`), and Backend (`:8080`).
 - [x] Commit: `feat: complete zero-idle-column wiring across customer, engagement, iam, and messaging`
+
+#### Card 14: Modernize Resource Setup for Single-Command Docker Provisioning & Automated Data Seeding
+- [x] **14.1 — Purge Legacy MinIO Cruft to Trash:**
+  - Moved legacy chunked `resource_setup/minio-data` (31 MB, 2,695 `.xl.meta` files) and `extract_data_guide.md` into `trash/legacy_minio_data/`.
+  - Removed stale files from Git tracking index.
+- [x] **14.2 — LocalStack S3 & Media Asset Provisioning:**
+  - Relocated clean flat media assets into `resource_setup/s3-data/nexus-media/`.
+  - Updated `docker-compose.yml` volume mount to `./resource_setup/s3-data:/s3-data:ro`.
+  - Enhanced `resource_setup/s3-init/01-init-s3.sh` with automated bucket creation, CORS, public read policies, asset sync, and automated SVG fallback generation if media directory is empty.
+- [x] **14.3 — Declarative RabbitMQ VHost & Topology:**
+  - Added `resource_setup/rabbitmq/definitions.json` declaring `/nexuscore` vhost, admin permissions, and direct exchanges/queues.
+  - Added `resource_setup/rabbitmq/rabbitmq.conf` to mount into container for deterministic startup.
+- [x] **14.4 — Automated Elasticsearch Index Seeding:**
+  - Implemented `ProductSearchIndexInitializer` (`ApplicationRunner`) in `nexus-search` to detect empty indices on startup and auto-sync all 152 products from Postgres catalog.
+- [x] **14.5 — Single-Command Orchestrator & Makefile Target:**
+  - Created `resource_setup/setup.sh` with prerequisite checks, automated container startup, service healthcheck polling, Flyway/S3/ES verification, and ASCII management dashboard.
+  - Added `make setup` target in root `Makefile`.
+- [x] Commit: `feat(setup): modernize resource_setup for single-command environment initialization`
+
 
 
 

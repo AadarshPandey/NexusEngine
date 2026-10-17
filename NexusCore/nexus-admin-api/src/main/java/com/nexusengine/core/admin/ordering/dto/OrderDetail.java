@@ -19,4 +19,3 @@ public record OrderDetail(
     @Schema(title = "Payment transactions") List<PaymentTransaction> paymentTransactions
 ) {
 }
-

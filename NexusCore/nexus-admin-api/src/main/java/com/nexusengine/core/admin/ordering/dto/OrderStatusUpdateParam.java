@@ -25,4 +25,3 @@ public record OrderStatusUpdateParam(
     @Schema(title = "Status") Integer status
 ) {
 }
-

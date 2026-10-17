@@ -1,4 +1,4 @@
-.PHONY: up down infra-up infra-down ps logs restart clean test test-backend test-frontend format-check help
+.PHONY: setup up down infra-up infra-down ps logs restart clean test test-backend test-frontend format-check help
 
 # Default target
 all: help
@@ -6,6 +6,7 @@ all: help
 help:
 	@echo "NexusEngine Development Makefile"
 	@echo "Usage:"
+	@echo "  make setup          - Single-command bootstrap: starts all containers and seeds all data"
 	@echo "  make up             - Start full stack in background"
 	@echo "  make down           - Stop full stack"
 	@echo "  make infra-up       - Start infrastructure only (Postgres, Redis, RabbitMQ, ES, LocalStack)"
@@ -18,6 +19,9 @@ help:
 	@echo "  make test-frontend  - Run storefront Vitest test suite"
 	@echo "  make format-check   - Check backend Spotless code formatting"
 	@echo "  make clean          - Stop containers and remove volumes"
+
+setup:
+	./resource_setup/setup.sh
 
 up:
 	docker compose up -d
