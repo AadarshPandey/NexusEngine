@@ -18,6 +18,7 @@ Engineered with Domain-Driven Design (DDD), Transactional Outbox event messaging
 
 [Architecture](#-system-architecture--design-patterns) •
 [Domain Model](#-domain-driven-data-architecture) •
+[Resource Setup](#-automated-resource-setup-resource_setup) •
 [Quickstart](#-one-command-quickstart) •
 [Endpoints & Credentials](#-service-endpoints--credentials) •
 [Developer Guide](#-developer-workflows)
@@ -224,61 +225,97 @@ erDiagram
 
 ## 💻 Tech Stack Matrix
 
+| Domain / Layer | Technology | Version & Specification |
+|---|---|---|
+| **Language & Monolith Core** | Java 25 LTS, Spring Boot | 4.1.1 (Modular Monolith with DDD) |
+| **Storefront Web App** | React 19, TypeScript 5.7 | Vite, Material UI v6, Redux Toolkit |
+| **Admin Operations Dashboard** | React 19, TypeScript 5.7 | Vite, Material UI v6, Recharts |
+| **Relational Data Store** | PostgreSQL 17 | 8 Bounded Context Schemas (`catalog`, `ordering`, etc.) |
+| **Full-Text Catalog Search** | Elasticsearch | 9.1.0 (Tokenized BM25 search, index: `pms`) |
+| **Cache & Distributed Locks** | Redis 8.0 Alpine, Redisson | 4.7.0 (Atomic Lua scripts, Redisson locks) |
+| **Message & Event Broker** | RabbitMQ 4.0 Management | Virtual Host `/nexuscore`, DLQ retry topology |
+| **Object & Media Storage** | LocalStack S3 | 3.8.0 (Bucket: `nexus-media`) |
+| **Cloud Storage Integration** | Spring Cloud AWS | 3.3.1 (S3 Async/Sync Client) |
+| **Infrastructure as Code** | Terraform | 1.10+ (Multi-AZ EKS, Aurora, Redis, S3, OAC) |
+| **Payment Gateway Simulation** | Razorpay SDK | 1.4.6 (Webhook verification) |
+| **Fault Tolerance & Resilience** | Resilience4j | 2.4.0 (Circuit Breaker, Rate Limiter) |
+| **Database Migrations** | Flyway | 10 (Baseline migrations `V1`–`V3`) |
+| **Observability & Metrics** | Prometheus 3.1.0, Grafana 11.5.2 | Scraped Actuator endpoints, provisioned dashboards |
+| **Code Quality & CI/CD** | Spotless, JaCoCo, Vitest | Google Java Format, Unit & Component ITs, GitHub Actions |
+
+---
+
+## 📦 Automated Resource Setup (`resource_setup/`)
+
+The [`resource_setup/`](file:///home/aadarsh/Documents/NexusEngine/resource_setup) directory serves as the centralized infrastructure automation and deterministic data seeding suite for NexusEngine. It completely replaces legacy manual SQL dumps and deprecated MinIO services with a modern, zero-configuration bootstrap process that spins up and populates all 11 Docker containers in a single command.
+
+### Automated Infrastructure & Seeding Workflow
+
 ```text
-┌────────────────────────────────────────────────────────────────────────┐
-│                          NEXUSENGINE PLATFORM                          │
-├───────────────────┬────────────────────────────────────────────────────┤
-│ Language & Core   │ Java 25 LTS, Spring Boot 4.1.1                     │
-│ Frontend Web      │ React 19, TypeScript 5.7, Vite, MUI v6, Redux      │
-│ Admin Dashboard   │ React 19, TypeScript 5.7, Vite, MUI v6, Recharts   │
-│ Relational Store  │ PostgreSQL 17 (8 Bounded Context Schemas)          │
-│ Full-Text Search  │ Elasticsearch 9.1.0 (Tokenized BM25 search)        │
-│ Cache & Locks     │ Redis 8.0 Alpine, Redisson 4.7.0                   │
-│ Event Broker      │ RabbitMQ 4.0 Management (/nexuscore vhost)         │
-│ Object Storage    │ LocalStack S3 3.8.0 (Bucket: nexus-media)          │
-│ Cloud Integration │ Spring Cloud AWS 3.3.1 (S3 Async/Sync Client)      │
-│ Payments          │ Razorpay SDK 1.4.6 (Webhook verification)          │
-│ Resilience        │ Resilience4j 2.4.0 (Circuit Breaker, Rate Limiter) │
-│ Database Tooling  │ Flyway 10 (Squashed V1-V3 Baseline Migrations)     │
-│ Observability     │ Prometheus 3.1.0, Grafana 11.5.2, Actuator, Micrometer │
-│ Code Quality      │ Spotless (Google Java Format), JaCoCo, Vitest      │
-└───────────────────┴────────────────────────────────────────────────────┘
+resource_setup/
+├── setup.sh                 # Single-command orchestrator & health verification runner
+├── rabbitmq/
+│   ├── rabbitmq.conf        # Config enabling declarative definition loading
+│   └── definitions.json     # Declarative vhosts (/nexuscore), queues, exchanges, and permissions
+├── s3-init/
+│   └── 01-init-s3.sh        # LocalStack S3 ready.d container hook creating bucket, CORS & seeding assets
+└── s3-data/
+    └── nexus-media/         # 2,190+ catalog media assets (products, category icons, brand banners)
 ```
+
+### Component Provisioning & Seeding Matrix
+
+| Component | Automation Mechanism | Details |
+|---|---|---|
+| **PostgreSQL 17** | Flyway Migrations (`V1` to `V3`) | Automatically provisions 8 domain schemas and 50 tables, seeding 152 catalog products, multi-variant SKUs, brands, promotional coupons, and reviews. No manual SQL imports required. |
+| **LocalStack S3** | `s3-init/01-init-s3.sh` | Executed automatically on container boot via `/etc/localstack/init/ready.d/`. Creates the `nexus-media` bucket, attaches public-read policies and cross-origin CORS rules, and recursively seeds 2,190+ image assets from `s3-data/`. |
+| **RabbitMQ 4.0** | `rabbitmq/definitions.json` | Declaratively loads the `/nexuscore` virtual host, user credentials (`guest`/`guest`), exchanges, queues, and dead-letter queue (DLQ) topology upon container initialization with zero manual web UI configuration. |
+| **Elasticsearch 9.1** | `ProductSearchIndexInitializer` | Spring Boot automatically detects unpopulated search indexes on boot and synchronizes all 152 catalog items into the `pms` Elasticsearch index with tokenized BM25 search mapping. |
 
 ---
 
 ## 🚀 One-Command Quickstart
 
-NexusEngine provides an automated, idempotent setup script that provisions all 11 Docker containers and seeds all database records, LocalStack media assets, and search indexes in a single command.
-
 ### Prerequisites
 - **Docker** 24+ and **Docker Compose** v2+
-- Optional for local compilation: **Java 25**, **Maven 3.9+**, **Node.js 20+**
+- *(Optional for native IDE debugging)*: **Java 25**, **Maven 3.9+**, **Node.js 22+**
 
 ### Single-Command Bootstrap
+
+To build all application containers, spin up the complete 11-container topology, and seed all data:
 
 ```bash
 # Clone the repository
 git clone https://github.com/aadarsh/NexusEngine.git
 cd NexusEngine
 
-# Execute single-command bootstrap (recommended)
+# Option 1: Via root Makefile (recommended)
 make setup
-```
 
-*Alternatively, execute the bootstrap script directly or use standard Docker Compose:*
-```bash
+# Option 2: Directly via the resource setup orchestrator
 ./resource_setup/setup.sh
-# OR:
+
+# Option 3: Standard Docker Compose (all resource_setup seed hooks execute automatically)
 docker compose up -d --build
 ```
 
-### What Happens Automatically Under the Hood
-1. **Container Orchestration**: Spins up PostgreSQL, Redis, RabbitMQ, Elasticsearch, LocalStack, backend API, Storefront, Admin Panel, S3 UI, Prometheus, and Grafana.
-2. **Deterministic RabbitMQ Setup**: Loads `resource_setup/rabbitmq/definitions.json` configuring `/nexuscore` virtual host, user permissions, and dead-letter exchanges.
-3. **LocalStack S3 Bucket & Media Seeding**: LocalStack triggers `s3-init/01-init-s3.sh` on boot, creating the `nexus-media` bucket, CORS rules, public read policies, and syncing 2,190+ product and category image assets.
-4. **Flyway Database Migrations**: `nexus-application` executes Flyway `V1` (9 schemas, 50 tables), `V2` (IAM roles & reference data), and `V3` (152 products, SKUs, brands, coupons, banners, reviews).
-5. **Elasticsearch Auto-Indexing**: Spring Boot's `ProductSearchIndexInitializer` detects when the Elasticsearch `pms` index is unpopulated and automatically synchronizes all 152 catalog products into Elasticsearch.
+### Advanced `resource_setup/setup.sh` Commands
+
+The orchestrator script provides dedicated lifecycle flags for daily engineering tasks:
+
+```bash
+# 1. Start infrastructure dependencies only (Postgres, Redis, RabbitMQ, Elasticsearch, LocalStack)
+# Perfect for running the Java monolith or React frontends natively in your IDE
+./resource_setup/setup.sh --infra-only
+# (or: make infra-up)
+
+# 2. Reset everything from scratch (tears down containers, purges named Docker volumes, and re-seeds)
+./resource_setup/setup.sh --reset
+# (or: make clean && make setup)
+
+# 3. View CLI flag documentation
+./resource_setup/setup.sh --help
+```
 
 ---
 
@@ -288,17 +325,17 @@ Once started, all services are operational at the following endpoints:
 
 | Service | Port / URL | Credentials / Access | Notes |
 |---|---|---|---|
-| **Web Storefront** | http://localhost:5174 | *Public Access* | Modern consumer shopping experience |
-| **Admin Panel** | http://localhost:5173 | **User:** `admin`<br/>**Password:** `macro123` | Full administrative operations suite |
-| **Backend Core API** | http://localhost:8080 | [Swagger UI Docs](http://localhost:8080/swagger-ui.html) | RESTful API & Actuator endpoints |
-| **LocalStack S3 Web GUI** | http://localhost:9001 | *Direct Access* | S3 Manager GUI for `nexus-media` |
-| **LocalStack S3 API** | http://localhost:4566 | **Region:** `us-east-1` | S3 endpoint for images & uploads |
-| **RabbitMQ Management** | http://localhost:15672 | **User:** `guest`<br/>**Password:** `guest` | VHost: `/nexuscore` |
-| **Elasticsearch** | http://localhost:9200 | *Direct Access* | Index: `pms` |
-| **Prometheus** | http://localhost:9090 | *Direct Access* | Metrics scraping & query engine |
-| **Grafana Dashboards** | http://localhost:3000 | **User:** `admin`<br/>**Password:** `admin` | Pre-provisioned system dashboards |
-| **PostgreSQL Database** | `localhost:5433` | **User:** `postgres`<br/>**Password:** `postgres`<br/>**DB:** `nexuscore` | Mapped from internal container port `5432` |
-| **Redis Cache** | `localhost:6379` | *No password (DB: 0)* | Internal cache & distributed locks |
+| **Web Storefront** | [http://localhost:5174](http://localhost:5174) | *Public Access* | Modern consumer shopping experience |
+| **Admin Panel** | [http://localhost:5173](http://localhost:5173) | **User:** `admin`<br/>**Password:** `macro123` | Full administrative operations suite |
+| **Backend Core API** | [http://localhost:8080](http://localhost:8080) | [Swagger UI Docs](http://localhost:8080/swagger-ui.html) | RESTful API & Actuator endpoints |
+| **LocalStack S3 Web GUI** | [http://localhost:9001](http://localhost:9001) | *Direct Access* | S3 Manager GUI for `nexus-media` |
+| **LocalStack S3 API** | [http://localhost:4566](http://localhost:4566) | **Region:** `us-east-1` | S3 endpoint for images & uploads |
+| **RabbitMQ Management** | [http://localhost:15672](http://localhost:15672) | **User:** `guest`<br/>**Password:** `guest` | VHost: `/nexuscore` |
+| **Elasticsearch** | [http://localhost:9200](http://localhost:9200) | *Direct Access* | Index: `pms` |
+| **Prometheus** | [http://localhost:9090](http://localhost:9090) | *Direct Access* | Metrics scraping & query engine |
+| **Grafana Dashboards** | [http://localhost:3000](http://localhost:3000) | **User:** `admin`<br/>**Password:** `admin` | Pre-provisioned system dashboards |
+| **PostgreSQL Database** | [localhost:5433](postgresql://postgres:postgres@localhost:5433/nexuscore) | **User:** `postgres`<br/>**Password:** `postgres`<br/>**DB:** `nexuscore` | Connection URI: `postgresql://postgres:postgres@localhost:5433/nexuscore` |
+| **Redis Cache** | [localhost:6379](redis://localhost:6379) | *No password (DB: 0)* | Connection URI: `redis://localhost:6379` |
 
 ### Additional Pre-Configured Test Accounts
 - **Customer User**: `customer1` / `macro123` (Name: Aarav Sharma, pre-seeded with orders & addresses)
@@ -392,6 +429,7 @@ NexusEngine/
 │   ├── rabbitmq/                       # Declarative RabbitMQ config & definitions (/nexuscore)
 │   ├── s3-init/                        # LocalStack S3 ready.d initialization script
 │   └── s3-data/                        # Flat catalog, banner, and avatar media assets
+├── terraform/                          # Production-grade AWS IaC (Multi-AZ EKS, Aurora, Redis, S3, OAC)
 ├── grafana/                            # Grafana provisioning & telemetry dashboards
 ├── prometheus/                         # Prometheus scraping configuration
 ├── docker-compose.yml                  # Unified 11-container Docker Compose manifest
