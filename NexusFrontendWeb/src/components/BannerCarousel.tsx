@@ -5,6 +5,7 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { resolveImageUrl } from '../utils/media';
 import type { Banner } from '../types/promotion';
+import { recordBannerClick } from '../api/promotion';
 
 interface BannerCarouselProps {
   banners: Banner[];
@@ -37,7 +38,14 @@ const BannerCarousel: React.FC<BannerCarouselProps> = ({ banners }) => {
         return (
           <Box
             key={banner.id || index}
-            onClick={() => linkUrl && navigate(linkUrl)}
+            onClick={() => {
+              if (banner.id) {
+                recordBannerClick(banner.id).catch(() => {});
+              }
+              if (linkUrl) {
+                navigate(linkUrl);
+              }
+            }}
             sx={{
               position: 'absolute',
               top: 0,

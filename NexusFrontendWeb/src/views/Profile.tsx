@@ -25,6 +25,7 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
+  Grid,
 } from '@mui/material';
 import { useSelector } from 'react-redux';
 import type { RootState } from '../store';
@@ -37,6 +38,8 @@ import {
   updateCustomerProfile,
   uploadAvatar,
 } from '../api/customer';
+import { getMemberCoupons } from '../api/promotion';
+import type { Coupon } from '../types/promotion';
 import type { Member, MemberAddress } from '../types/customer';
 import { createRazorpayOrder, verifyRazorpayPayment } from '../api/payment';
 import { resolveImageUrl } from '../utils/media';
@@ -75,6 +78,7 @@ const Profile: React.FC = () => {
   const [memberInfo, setMemberInfo] = useState<Member | null>(null);
   const [orders, setOrders] = useState<CustomerOrder[]>([]);
   const [addresses, setAddresses] = useState<MemberAddress[]>([]);
+  const [coupons, setCoupons] = useState<Coupon[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [openAddAddress, setOpenAddAddress] = useState(false);
@@ -129,14 +133,16 @@ const Profile: React.FC = () => {
     try {
       setLoading(true);
       setError(null);
-      const [memberRes, orderRes, addressRes] = await Promise.all([
+      const [memberRes, orderRes, addressRes, couponRes] = await Promise.all([
         getCustomerProfile(),
         getOrders(-1, 1, 100),
         getCustomerAddresses(),
+        getMemberCoupons(0).catch(() => []),
       ]);
       setMemberInfo(memberRes);
       setOrders(orderRes.content || []);
       setAddresses(addressRes || []);
+      setCoupons(Array.isArray(couponRes) ? couponRes : []);
     } catch (err: unknown) {
       console.error('Failed to load dashboard data', err);
       setError(err instanceof Error ? err.message : 'Failed to load dashboard data');
@@ -287,6 +293,7 @@ const Profile: React.FC = () => {
               <Tab label="Account Info" />
               <Tab label="My Orders" />
               <Tab label="Address Book" />
+              <Tab label="My Coupons" />
             </Tabs>
           </Box>
 
@@ -509,6 +516,70 @@ const Profile: React.FC = () => {
                   </Paper>
                 ))}
               </Box>
+            )}
+          </TabPanel>
+
+          <TabPanel value={tabValue} index={3}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+              <Typography variant="h6">My Claimed Coupons (promotion.member_coupon)</Typography>
+              <Chip label={`${coupons.length} Available`} color="primary" size="small" />
+            </Box>
+            {coupons.length === 0 ? (
+              <Typography color="text.secondary">
+                You have not claimed any coupons yet. Visit product pages to claim applicable discounts!
+              </Typography>
+            ) : (
+              <Grid container spacing={2}>
+                {coupons.map((coupon) => (
+                  <Grid size={{ xs: 12, sm: 6 }} key={coupon.id}>
+                    <Paper
+                      variant="outlined"
+                      sx={{
+                        p: 2.5,
+                        borderRadius: 2,
+                        borderLeft: '5px solid #6366F1',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 1,
+                      }}
+                    >
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                          {coupon.name}
+                        </Typography>
+                        <Chip
+                          label={
+                            coupon.discountType === 0
+                              ? `₹${coupon.discountValue} OFF`
+                              : coupon.discountType === 1
+                              ? `${coupon.discountValue}% OFF`
+                              : 'FREE SHIPPING'
+                          }
+                          color="success"
+                          size="small"
+                          sx={{ fontWeight: 'bold' }}
+                        />
+                      </Box>
+                      {coupon.code && (
+                        <Typography variant="caption" sx={{ fontFamily: 'monospace', bgcolor: '#F1F5F9', px: 1, py: 0.5, borderRadius: 1, width: 'fit-content' }}>
+                          Code: {coupon.code}
+                        </Typography>
+                      )}
+                      <Typography variant="body2" color="text.secondary">
+                        {coupon.minSpendAmount > 0
+                          ? `Valid on orders above ₹${coupon.minSpendAmount}`
+                          : 'No minimum order value required'}
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        Expires:{' '}
+                        {coupon.endsAt
+                          ? new Date(coupon.endsAt).toLocaleDateString()
+                          : 'No expiration date'}
+                      </Typography>
+                    </Paper>
+                  </Grid>
+                ))}
+              </Grid>
             )}
           </TabPanel>
         </Paper>

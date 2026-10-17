@@ -13,6 +13,8 @@ import com.nexusengine.core.domain.catalog.entity.ProductPriceChange;
 import com.nexusengine.core.domain.iam.entity.AdminUser;
 import com.nexusengine.core.domain.catalog.entity.ProductAttributeValue;
 import com.nexusengine.core.domain.catalog.entity.ProductApprovalEvent;
+import com.nexusengine.core.domain.catalog.entity.ProductMedia;
+import com.nexusengine.core.domain.catalog.repository.ProductMediaRepository;
 import org.springframework.data.domain.Sort;
 import org.springframework.util.StringUtils;
 
@@ -46,7 +48,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final ProductSkuRepository skuStockRepository;
     private final ProductAttributeValueRepository productAttributeValueRepository;
-
+    private final ProductMediaRepository productMediaRepository;
 
     private final ProductApprovalEventRepository productApprovalHistoryRepository;
     private final ProductPriceChangeRepository productAuditLogRepository;
@@ -73,7 +75,8 @@ public class ProductServiceImpl implements ProductService {
             saveSkuStockList(productParam.skuStockList(), productId);
         }
         saveProductAttributeValueList(productParam.productAttributeValueList(), productId);
-
+        List<ProductMedia> gallery = productParam.galleryList() != null ? productParam.galleryList() : product.getGalleryList();
+        saveProductMediaList(gallery, productId);
 
         return 1;
     }
@@ -98,7 +101,9 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(id).orElse(null);
         if (product == null) return null;
         adminTenantContext.assertBrandAccess(product.getBrandId());
-        return new ProductResult(new ProductParam(product, skuStockRepository.findByProductId(id), productAttributeValueRepository.findByProductId(id)), null);
+        List<ProductMedia> galleryList = productMediaRepository.findByProductIdOrderBySortOrderAsc(id);
+        product.setGalleryList(galleryList);
+        return new ProductResult(new ProductParam(product, skuStockRepository.findByProductId(id), productAttributeValueRepository.findByProductId(id), galleryList), null);
     }
 
     @Override
@@ -116,7 +121,9 @@ public class ProductServiceImpl implements ProductService {
         handleUpdateSkuStockList(id, productParam);
         productAttributeValueRepository.deleteByProductId(id);
         saveProductAttributeValueList(productParam.productAttributeValueList(), id);
-
+        productMediaRepository.deleteByProductId(id);
+        List<ProductMedia> gallery = productParam.galleryList() != null ? productParam.galleryList() : product.getGalleryList();
+        saveProductMediaList(gallery, id);
 
         return 1;
     }
@@ -142,6 +149,29 @@ public class ProductServiceImpl implements ProductService {
         List<ProductSku> removeSkuList = oriStuList.stream().filter(item -> !updateSkuIds.contains(item.getId())).collect(Collectors.toList());
         handleSkuStockCode(insertSkuList, id);
         handleSkuStockCode(updateSkuList, id);
+
+        // Price change audit logging
+        String username = "admin";
+        try {
+            var auth = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+            if (auth != null && auth.getName() != null) username = auth.getName();
+        } catch (Exception ignored) {}
+
+        for (ProductSku newSku : updateSkuList) {
+            ProductSku oldSku = oriStuList.stream().filter(o -> o.getId().equals(newSku.getId())).findFirst().orElse(null);
+            if (oldSku != null && newSku.getListPrice() != null && oldSku.getListPrice() != null && newSku.getListPrice().compareTo(oldSku.getListPrice()) != 0) {
+                ProductPriceChange log = new ProductPriceChange();
+                log.setProductId(id);
+                log.setCreateTime(java.time.OffsetDateTime.now());
+                log.setOperateMan(username);
+                log.setPriceOld(oldSku.getListPrice());
+                log.setPriceNew(newSku.getListPrice());
+                if (oldSku.getSalePrice() != null) log.setSalePriceOld(oldSku.getSalePrice());
+                if (newSku.getSalePrice() != null) log.setSalePriceNew(newSku.getSalePrice());
+                productAuditLogRepository.save(log);
+            }
+        }
+
         if (!insertSkuList.isEmpty()) {
             for (ProductSku sku : insertSkuList) {
                 sku.setProductId(id);
@@ -313,6 +343,22 @@ public class ProductServiceImpl implements ProductService {
             item.setProductId(productId);
         }
         productAttributeValueRepository.saveAll(dataList);
+    }
+
+    private void saveProductMediaList(List<ProductMedia> galleryList, Long productId) {
+        if (CollectionUtils.isEmpty(galleryList)) return;
+        int order = 1;
+        for (ProductMedia media : galleryList) {
+            media.setId(null);
+            media.setProductId(productId);
+            if (!StringUtils.hasText(media.getMediaType())) {
+                media.setMediaType("image");
+            }
+            if (media.getSortOrder() == null) {
+                media.setSortOrder(order++);
+            }
+        }
+        productMediaRepository.saveAll(galleryList);
     }
 
 

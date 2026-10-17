@@ -220,19 +220,20 @@ const AdvertiseList: React.FC = () => {
                 <TableCell>Time Range</TableCell>
                 <TableCell align="center">Online/Offline</TableCell>
                 <TableCell align="center">Clicks</TableCell>
+                <TableCell align="center">Orders</TableCell>
                 <TableCell align="center">Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={8} sx={{ textAlign: 'center', py: 6 }}>
+                  <TableCell colSpan={9} sx={{ textAlign: 'center', py: 6 }}>
                     <Typography sx={{ color: 'text.secondary' }}>Loading...</Typography>
                   </TableCell>
                 </TableRow>
               ) : list.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={8} sx={{ textAlign: 'center', py: 6 }}>
+                  <TableCell colSpan={9} sx={{ textAlign: 'center', py: 6 }}>
                     <Typography sx={{ color: 'text.secondary' }}>No advertisements found</Typography>
                   </TableCell>
                 </TableRow>
@@ -271,6 +272,7 @@ const AdvertiseList: React.FC = () => {
                       />
                     </TableCell>
                     <TableCell align="center">{row.clickCount || 0}</TableCell>
+                    <TableCell align="center">{row.orderCount || 0}</TableCell>
                     <TableCell align="center">
                       <IconButton
                         size="small"

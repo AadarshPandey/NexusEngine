@@ -2398,19 +2398,20 @@ Each card is a commit boundary. If token expires, resume from the first unchecke
 - [x] Commit: `refactor: prune placebo iam permissions/menus, dead promo tables/columns, ai widget, and frontend clones`
 
 #### Card 11: Wire All Catalog & Promotion Tables/Columns End-to-End (1.5 hrs)
-- [ ] **11.1 — Clean & Wire `ProductAdd.tsx` and `ProductUpdate.tsx` (`AP-5`):**
-  - Remove manual inputs for `Units Sold`, `Reserved Qty`, and `Version` on SKUs.
-  - Add `ProductType` selector (`catalog.product_type`) that loads `catalog.attribute_definition` (`kind = 0` specs & `kind = 1` params) so admins can select/input `productAttributeValueList` (`catalog.product_attribute_value`) and SKU attributes cleanly.
-  - Add multi-image gallery manager (`galleryList` → `catalog.product_media`) and inputs for `searchKeywords` and `description`.
-- [ ] **11.2 — Wire `product_approval_event` and `product_price_change` Audit Logs:**
-  - Populate `reviewer_admin_id` and `changed_by_admin_id` from the authenticated Admin JWT in `ProductServiceImpl` and `ProductSkuServiceImpl`, and display them in `ProductList.tsx` (`openLogModal`).
-- [ ] **11.3 — Wire Coupon Category & Product Scoping (`AP-6`) + Storefront Coupon Claiming (`CF-4`):**
-  - In `CouponAdd.tsx` and `CouponUpdate.tsx`, render a Category multi-select when `applicabilityScope === 1` (`promotion.coupon_category`) and a Product multi-select when `applicabilityScope === 2` (`promotion.coupon_product`). Seed 1 category-scoped coupon and 1 product-scoped coupon in `V3__demo_catalog.sql` & live DB.
-  - On Storefront `ProductDetail.tsx`, render available coupons (`getProductCoupons`) with a `"Claim Coupon"` button (`claimCoupon`), and add a `"My Coupons"` tab in `Profile.tsx` (`getMemberCoupons`).
-- [ ] **11.4 — Wire Banner Click & Order Tracking (`promotion.banner`):**
-  - Add `POST /api/store/home/banners/{id}/click` and trigger it when clicking a banner in `Home.tsx`, and show `clickCount` & `orderCount` in `AdvertiseList.tsx`.
-- [ ] **11.5 — Gate:** `mvn clean compile -DskipTests` and both frontend builds pass.
-- [ ] Commit: `feat: wire catalog attributes, gallery media, audit logs, and scoped coupons end-to-end`
+- [x] **11.1 — Clean & Wire `ProductAdd.tsx` and `ProductUpdate.tsx` (`AP-5`):**
+  - Removed manual inputs for `Units Sold`, `Reserved Qty`, and `Version` on SKUs.
+  - Added `ProductType` selector (`catalog.product_type`) that dynamically loads `catalog.attribute_definition` (`kind = 0` specs & `kind = 1` params) and allows admins to edit `productAttributeValueList` (`catalog.product_attribute_value`) and SKU attributes cleanly.
+  - Added multi-image gallery manager (`galleryList` → `catalog.product_media`) and inputs for `searchKeywords` and `description`.
+- [x] **11.2 — Wire `product_approval_event` and `product_price_change` Audit Logs:**
+  - In `ProductServiceImpl`, authenticated admin reviewer name is populated on approval events, and SKU price changes during product updates are logged to `catalog.product_price_change` with operator, old list/sale price, and new list/sale price. Both logs are viewable in `ProductList.tsx` (`openLogModal`).
+- [x] **11.3 — Wire Coupon Category & Product Scoping (`AP-6`) + Storefront Coupon Claiming (`CF-4`):**
+  - In `CouponForm.tsx`, added Category multi-select when `applicabilityScope === 1` (`promotion.coupon_category`) and Product multi-select when `applicabilityScope === 2` (`promotion.coupon_product`).
+  - Seeded category-scoped coupon (ID 3) and product-scoped coupon (ID 4) in `V3__demo_catalog.sql` & live DB.
+  - On Storefront `ProductDetail.tsx`, rendered available coupons with a `"Claim"` button (`claimCoupon`), and added a `"My Coupons"` tab in `Profile.tsx` (`getMemberCoupons`).
+- [x] **11.4 — Wire Banner Click & Order Tracking (`promotion.banner`):**
+  - Added `POST /api/store/home/banners/{id}/click` and triggered it when clicking a banner in `BannerCarousel.tsx`, and showed `Clicks` & `Orders` in `AdvertiseList.tsx`.
+- [x] **11.5 — Gate:** `mvn clean compile -DskipTests` and both frontend builds pass. Unit tests in `nexus-domain` (Flyway testcontainer), `nexus-admin-api` (22 tests), and `nexus-portal-api` (5 tests) all pass.
+- [x] Commit: `feat: wire catalog attributes, gallery media, audit logs, and scoped coupons end-to-end`
 
 #### Card 12: Wire Ordering, Payment, Merchant Address & Return Lifecycle End-to-End (1.5 hrs)
 - [ ] **12.1 — Wire `ordering.merchant_address` (`AP-7`) & `ordering.order_policy`:**

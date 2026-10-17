@@ -14,13 +14,21 @@ import {
   CircularProgress,
   Snackbar,
   Alert,
+  Autocomplete,
+  Chip,
 } from '@mui/material';
 import { getCouponByIdAPI, couponCreateAPI, couponUpdateByIdAPI } from '@/apis/promotion';
+import { getProductCategoryListWithChildrenAPI, getProductListAPI } from '@/apis/catalog';
 import type { SmsCouponExt } from '@/types/promotion';
 import dayjs from 'dayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+
+interface OptionItem {
+  id: number;
+  label: string;
+}
 
 const CouponForm: React.FC = () => {
   const navigate = useNavigate();
@@ -33,6 +41,9 @@ const CouponForm: React.FC = () => {
   const [saving, setSaving] = useState(false);
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' as 'success' | 'error' });
 
+  const [categories, setCategories] = useState<OptionItem[]>([]);
+  const [products, setProducts] = useState<OptionItem[]>([]);
+
   const [formData, setFormData] = useState<SmsCouponExt>({
     type: 0,
     name: '',
@@ -41,13 +52,45 @@ const CouponForm: React.FC = () => {
     perLimit: 1,
     minOrderAmount: 0,
     useType: 0,
+    productCategoryRelationList: [],
+    productRelationList: [],
   });
 
   useEffect(() => {
+    fetchOptions();
     if (isEdit && id) {
       fetchCoupon(Number(id));
     }
   }, [id, isEdit]);
+
+  const fetchOptions = async () => {
+    try {
+      const [cateRes, prodRes] = await Promise.all([
+        getProductCategoryListWithChildrenAPI(),
+        getProductListAPI({ pageNum: 1, pageSize: 100 }),
+      ]);
+      const flattenedCategories: OptionItem[] = [];
+      if (Array.isArray(cateRes)) {
+        cateRes.forEach((parent: any) => {
+          flattenedCategories.push({ id: parent.id, label: parent.name });
+          if (parent.children) {
+            parent.children.forEach((child: any) => {
+              flattenedCategories.push({ id: child.id, label: `${parent.name} > ${child.name}` });
+            });
+          }
+        });
+      }
+      setCategories(flattenedCategories);
+
+      const prodList: OptionItem[] = (prodRes?.content || []).map((p: any) => ({
+        id: p.id,
+        label: `${p.name} (ID: ${p.id})`,
+      }));
+      setProducts(prodList);
+    } catch (e) {
+      console.error('Failed to load category or product options', e);
+    }
+  };
 
   const fetchCoupon = async (couponId: number) => {
     setLoading(true);
@@ -70,10 +113,12 @@ const CouponForm: React.FC = () => {
   const handleSubmit = async () => {
     setSaving(true);
     try {
-      const payload = {
+      const payload: SmsCouponExt = {
         ...formData,
         startTime: formData.startTime ? new Date(formData.startTime).toISOString() : undefined,
         endTime: formData.endTime ? new Date(formData.endTime).toISOString() : undefined,
+        productCategoryRelationList: formData.useType === 1 ? (formData.productCategoryRelationList || []) : [],
+        productRelationList: formData.useType === 2 ? (formData.productRelationList || []) : [],
       };
       if (isEdit && id) {
         await couponUpdateByIdAPI(Number(id), payload);
@@ -93,6 +138,14 @@ const CouponForm: React.FC = () => {
   if (loading) {
     return <Box sx={{ display: 'flex', justifyContent: 'center', p: 5 }}><CircularProgress /></Box>;
   }
+
+  const selectedCategoryOptions = categories.filter((c) =>
+    (formData.productCategoryRelationList || []).some((r) => r.productCategoryId === c.id)
+  );
+
+  const selectedProductOptions = products.filter((p) =>
+    (formData.productRelationList || []).some((r) => r.productId === p.id)
+  );
 
   return (
     <Box sx={{ maxWidth: 800, mx: 'auto', mt: 4 }}>
@@ -162,17 +215,73 @@ const CouponForm: React.FC = () => {
             </Box>
 
             <FormControl fullWidth>
-              <InputLabel>Usage Type</InputLabel>
+              <InputLabel>Usage Scope (promotion.coupon)</InputLabel>
               <Select
                 value={formData.useType}
-                label="Usage Type"
+                label="Usage Scope (promotion.coupon)"
                 onChange={(e) => setFormData({ ...formData, useType: Number(e.target.value) })}
               >
-                <MenuItem value={0}>All Products</MenuItem>
-                <MenuItem value={1}>Specific Categories</MenuItem>
-                <MenuItem value={2}>Specific Products</MenuItem>
+                <MenuItem value={0}>All Products (Universal)</MenuItem>
+                <MenuItem value={1}>Specific Categories (promotion.coupon_category)</MenuItem>
+                <MenuItem value={2}>Specific Products (promotion.coupon_product)</MenuItem>
               </Select>
             </FormControl>
+
+            {/* Category Selector when useType === 1 */}
+            {formData.useType === 1 && (
+              <Autocomplete
+                multiple
+                options={categories}
+                getOptionLabel={(option) => option.label}
+                isOptionEqualToValue={(option, value) => option.id === value.id}
+                value={selectedCategoryOptions}
+                onChange={(_, selected) => {
+                  setFormData({
+                    ...formData,
+                    productCategoryRelationList: selected.map((s) => ({
+                      productCategoryId: s.id,
+                      productCategoryName: s.label,
+                    })),
+                  });
+                }}
+                renderTags={(value, getTagProps) =>
+                  value.map((option, index) => (
+                    <Chip variant="outlined" label={option.label} {...getTagProps({ index })} key={option.id} />
+                  ))
+                }
+                renderInput={(params) => (
+                  <TextField {...params} label="Select Applicable Categories" placeholder="Categories" />
+                )}
+              />
+            )}
+
+            {/* Product Selector when useType === 2 */}
+            {formData.useType === 2 && (
+              <Autocomplete
+                multiple
+                options={products}
+                getOptionLabel={(option) => option.label}
+                isOptionEqualToValue={(option, value) => option.id === value.id}
+                value={selectedProductOptions}
+                onChange={(_, selected) => {
+                  setFormData({
+                    ...formData,
+                    productRelationList: selected.map((s) => ({
+                      productId: s.id,
+                      productName: s.label,
+                    })),
+                  });
+                }}
+                renderTags={(value, getTagProps) =>
+                  value.map((option, index) => (
+                    <Chip variant="outlined" label={option.label} {...getTagProps({ index })} key={option.id} />
+                  ))
+                }
+                renderInput={(params) => (
+                  <TextField {...params} label="Select Applicable Products" placeholder="Products" />
+                )}
+              />
+            )}
 
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>

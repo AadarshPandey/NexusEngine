@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router';
-import { Box, Typography, Button, Grid, Paper, CircularProgress, Divider, Stack, Chip } from '@mui/material';
+import { Box, Typography, Button, Grid, Paper, CircularProgress, Divider, Stack, Chip, Snackbar, Alert } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch, RootState } from '../store';
 import { getProductDetail } from '../api/catalog';
 import type { ProductDetailResult } from '../api/catalog';
 import type { ProductSku } from '../types/catalog';
 import { addItemToCart } from '../store/slices/cartSlice';
+import { claimCoupon } from '../api/promotion';
 import ReactMarkdown from 'react-markdown';
 import { ReviewSection } from '../components/ReviewSection';
 import { resolveImageUrl } from '../utils/media';
@@ -28,6 +29,28 @@ const ProductDetail: React.FC = () => {
   // SKU Selection State
   const [selectedAttributes, setSelectedAttributes] = useState<Record<string, string>>({});
   const [activeSku, setActiveSku] = useState<ProductSku | null>(null);
+
+  // Coupon Claiming State
+  const [claimedCoupons, setClaimedCoupons] = useState<number[]>([]);
+  const [claimingCouponId, setClaimingCouponId] = useState<number | null>(null);
+  const [couponSnackbar, setCouponSnackbar] = useState({ open: false, message: '', severity: 'success' as 'success' | 'info' | 'error' });
+
+  const handleClaimCoupon = async (couponId: number) => {
+    if (!isAuthenticated) {
+      navigate('/login');
+      return;
+    }
+    setClaimingCouponId(couponId);
+    try {
+      await claimCoupon(couponId);
+      setClaimedCoupons((prev) => [...prev, couponId]);
+      setCouponSnackbar({ open: true, message: 'Coupon claimed successfully! View in Profile > My Coupons.', severity: 'success' });
+    } catch (e: any) {
+      setCouponSnackbar({ open: true, message: e?.message || 'Failed to claim coupon', severity: 'error' });
+    } finally {
+      setClaimingCouponId(null);
+    }
+  };
 
   useEffect(() => {
     if (id) {
@@ -262,8 +285,57 @@ const ProductDetail: React.FC = () => {
             <Typography variant="subtitle1" color={displayStock && displayStock > 0 ? "text.secondary" : "error"} gutterBottom sx={{ mt: 2 }}>
               {displayStock && displayStock > 0 ? `Available Stock: ${displayStock} (In Cart: ${currentCartQuantity})` : 'Out of Stock'}
             </Typography>
+
+            {/* Available Coupons & Offers */}
+            {productDetail.couponList && productDetail.couponList.length > 0 && (
+              <Box sx={{ my: 3, p: 2, bgcolor: '#F8FAFC', borderRadius: 2, border: '1px dashed #CBD5E1' }}>
+                <Typography variant="subtitle2" sx={{ fontWeight: 'bold', mb: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
+                  🏷️ Available Coupons & Offers
+                </Typography>
+                <Stack spacing={1}>
+                  {productDetail.couponList.map((coupon) => {
+                    const isClaimed = claimedCoupons.includes(coupon.id);
+                    return (
+                      <Box
+                        key={coupon.id}
+                        sx={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          p: 1.5,
+                          bgcolor: '#FFFFFF',
+                          borderRadius: 1,
+                          border: '1px solid #E2E8F0',
+                        }}
+                      >
+                        <Box>
+                          <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                            {coupon.name}
+                          </Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            {coupon.discountType === 0 && `Flat ₹${coupon.discountValue} OFF`}
+                            {coupon.discountType === 1 && `${coupon.discountValue}% OFF`}
+                            {coupon.discountType === 2 && `Free Shipping`}
+                            {coupon.minSpendAmount > 0 && ` on orders above ₹${coupon.minSpendAmount}`}
+                          </Typography>
+                        </Box>
+                        <Button
+                          size="small"
+                          variant={isClaimed ? 'outlined' : 'contained'}
+                          color={isClaimed ? 'inherit' : 'primary'}
+                          disabled={isClaimed || claimingCouponId === coupon.id}
+                          onClick={() => handleClaimCoupon(coupon.id)}
+                        >
+                          {claimingCouponId === coupon.id ? 'Claiming...' : isClaimed ? 'Claimed ✓' : 'Claim'}
+                        </Button>
+                      </Box>
+                    );
+                  })}
+                </Stack>
+              </Box>
+            )}
             
-            <Box sx={{ mt: 4 }}>
+            <Box sx={{ mt: 3 }}>
               <Button 
                 variant="contained" 
                 size="large" 
@@ -284,6 +356,17 @@ const ProductDetail: React.FC = () => {
         </Grid>
       </Paper>
       <ReviewSection productId={product.id} />
+
+      <Snackbar
+        open={couponSnackbar.open}
+        autoHideDuration={3000}
+        onClose={() => setCouponSnackbar((s) => ({ ...s, open: false }))}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert severity={couponSnackbar.severity} onClose={() => setCouponSnackbar((s) => ({ ...s, open: false }))}>
+          {couponSnackbar.message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

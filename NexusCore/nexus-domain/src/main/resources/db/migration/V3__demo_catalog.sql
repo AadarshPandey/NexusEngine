@@ -1917,8 +1917,19 @@ ON CONFLICT (id) DO NOTHING;
 -- 10. Demo Coupons
 INSERT INTO promotion.coupon (id, discount_type, name, remaining_quantity, discount_value, per_member_limit, min_spend_amount, starts_at, ends_at, applicability_scope, claimed_count, code, max_discount_amount, version) VALUES
 (1, 0, 'Welcome Promo', 99, 10.00, 1, 0.00, '2026-01-01 00:00:00+00'::timestamptz, '2027-12-31 23:59:59+00'::timestamptz, 0, 0, 'WELCOME10', 50.00, 0),
-(2, 1, 'Mega Tech Sale 15% Off', 200, 15.00, 2, 1000.00, '2026-01-01 00:00:00+00'::timestamptz, '2027-12-31 23:59:59+00'::timestamptz, 0, 0, 'TECH15', 500.00, 0)
+(2, 1, 'Mega Tech Sale 15% Off', 200, 15.00, 2, 1000.00, '2026-01-01 00:00:00+00'::timestamptz, '2027-12-31 23:59:59+00'::timestamptz, 0, 0, 'TECH15', 500.00, 0),
+(3, 0, 'Electronics Category ₹500 OFF', 500, 500.00, 2, 2000.00, '2026-01-01 00:00:00+00'::timestamptz, '2027-12-31 23:59:59+00'::timestamptz, 1, 0, 'ELECTRO500', 500.00, 0),
+(4, 0, 'iPhone 17 Exclusive ₹2000 OFF', 300, 2000.00, 1, 50000.00, '2026-01-01 00:00:00+00'::timestamptz, '2027-12-31 23:59:59+00'::timestamptz, 2, 0, 'IPHONE2000', 2000.00, 0)
 ON CONFLICT (id) DO NOTHING;
+
+INSERT INTO promotion.coupon_category (id, coupon_id, product_category_id) VALUES
+(1, 3, 1)
+ON CONFLICT (id) DO NOTHING;
+
+INSERT INTO promotion.coupon_product (id, coupon_id, product_id) VALUES
+(1, 4, 1)
+ON CONFLICT (id) DO NOTHING;
+
 
 -- 11. Merchant Fulfillment Addresses
 INSERT INTO ordering.merchant_address (id, label, is_default_ship_from, is_default_return_to, contact_name, contact_phone, state, city, address_line) VALUES
@@ -2022,6 +2033,8 @@ SELECT setval(pg_get_serial_sequence('catalog.product_approval_event', 'id'), CO
 SELECT setval(pg_get_serial_sequence('catalog.product_price_change', 'id'), COALESCE((SELECT MAX(id) FROM catalog.product_price_change), 1));
 SELECT setval(pg_get_serial_sequence('promotion.banner', 'id'), COALESCE((SELECT MAX(id) FROM promotion.banner), 1));
 SELECT setval(pg_get_serial_sequence('promotion.coupon', 'id'), COALESCE((SELECT MAX(id) FROM promotion.coupon), 1));
+SELECT setval(pg_get_serial_sequence('promotion.coupon_category', 'id'), COALESCE((SELECT MAX(id) FROM promotion.coupon_category), 1));
+SELECT setval(pg_get_serial_sequence('promotion.coupon_product', 'id'), COALESCE((SELECT MAX(id) FROM promotion.coupon_product), 1));
 SELECT setval(pg_get_serial_sequence('promotion.member_coupon', 'id'), COALESCE((SELECT MAX(id) FROM promotion.member_coupon), 1));
 SELECT setval(pg_get_serial_sequence('customer.member', 'id'), COALESCE((SELECT MAX(id) FROM customer.member), 1));
 SELECT setval(pg_get_serial_sequence('customer.member_address', 'id'), COALESCE((SELECT MAX(id) FROM customer.member_address), 1));

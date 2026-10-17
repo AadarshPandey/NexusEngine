@@ -29,3 +29,7 @@ export const getFlashSaleDetails = (flashSaleId: number) => {
 export const getPromotionalBanners = () => {
   return request.get<unknown, PromotionalBanner[]>('/home');
 };
+
+export const recordBannerClick = (bannerId: number) => {
+  return request.post<unknown, void>(`/home/banners/${bannerId}/click`);
+};

@@ -104,4 +104,13 @@ public class HomeServiceImpl implements HomeService {
     private List<Banner> getHomeAdvertiseList() {
         return advertiseRepository.findByStatusOrderByDisplayOrderDesc(true);
     }
+
+    @Override
+    @org.springframework.transaction.annotation.Transactional
+    public void recordBannerClick(Long id) {
+        advertiseRepository.findById(id).ifPresent(banner -> {
+            banner.setClickCount(banner.getClickCount() == null ? 1 : banner.getClickCount() + 1);
+            advertiseRepository.save(banner);
+        });
+    }
 }

@@ -14,7 +14,11 @@ import {
   ListSubheader,
   Snackbar,
   Alert,
+  IconButton,
+  Divider,
 } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import {
   productCreateAPI,
   productUpdateByIdAPI,
@@ -22,7 +26,9 @@ import {
   getBrandListAPI,
   getProductCategoryListWithChildrenAPI,
   getProductAttributeCategoryListAPI,
+  getProductAttributeListAPI,
 } from '@/apis/catalog';
+import type { AttributeDefinition, ProductAttributeValue } from '@/types/catalog';
 import { resolveImageUrl } from '@/utils/media';
 import { useNavigate, useParams, useSearchParams } from 'react-router';
 import { useAppSelector } from '@/store/hooks';
@@ -60,6 +66,10 @@ const ProductForm: React.FC = () => {
   const [categories, setCategories] = useState<import('@/types/catalog').PmsProductCategory[]>([]);
   const [productTypes, setProductTypes] = useState<any[]>([]);
 
+  // Attribute definitions for selected product type
+  const [paramDefinitions, setParamDefinitions] = useState<AttributeDefinition[]>([]);
+  const [specDefinitions, setSpecDefinitions] = useState<AttributeDefinition[]>([]);
+
   const [loading, setLoading] = useState(isEdit);
   const [saving, setSaving] = useState(false);
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' as 'success' | 'error' | 'warning' });
@@ -68,8 +78,10 @@ const ProductForm: React.FC = () => {
     name: '',
     description: '',
     primaryImageUrl: '',
+    galleryList: [] as string[],
     productCategoryId: '',
     productAttributeCategoryId: '',
+    productAttributeValueList: [] as ProductAttributeValue[],
     brandId: userBrandId ? String(userBrandId) : '',
     keywords: '',
     isPublished: 1,
@@ -92,6 +104,29 @@ const ProductForm: React.FC = () => {
     }
   }, [id, isEdit]);
 
+  // Load attribute definitions whenever productAttributeCategoryId changes
+  useEffect(() => {
+    if (formData.productAttributeCategoryId) {
+      loadAttributeDefinitions(Number(formData.productAttributeCategoryId));
+    } else {
+      setParamDefinitions([]);
+      setSpecDefinitions([]);
+    }
+  }, [formData.productAttributeCategoryId]);
+
+  const loadAttributeDefinitions = async (typeId: number) => {
+    try {
+      const [specRes, paramRes] = await Promise.all([
+        getProductAttributeListAPI(typeId, { type: 0, pageSize: 100 }),
+        getProductAttributeListAPI(typeId, { type: 1, pageSize: 100 }),
+      ]);
+      setSpecDefinitions(specRes?.content || []);
+      setParamDefinitions(paramRes?.content || []);
+    } catch (e) {
+      console.error('Failed to fetch attribute definitions for product type', e);
+    }
+  };
+
   const fetchDependencies = async () => {
     try {
       const [brandRes, cateRes, typeRes] = await Promise.all([
@@ -113,12 +148,20 @@ const ProductForm: React.FC = () => {
       const prodRes = await getPruductUpdateInfoAPI(productId);
       if (prodRes) {
         const prod = prodRes as any;
+        const galleryUrls: string[] = (prod.galleryList || []).map((m: any) => m.url || m.mediaUrl || '').filter(Boolean);
+        const attrValues: ProductAttributeValue[] = (prod.productAttributeValueList || []).map((a: any) => ({
+          productAttributeId: a.productAttributeId || a.attributeId,
+          value: a.value || '',
+        }));
+
         setFormData({
           name: prod.name || '',
           description: prod.description || '',
           primaryImageUrl: prod.primaryImageUrl || prod.pic || '',
+          galleryList: galleryUrls,
           productCategoryId: prod.productCategoryId?.toString() || prod.categoryId?.toString() || '',
           productAttributeCategoryId: prod.productAttributeCategoryId?.toString() || prod.productTypeId?.toString() || '',
+          productAttributeValueList: attrValues,
           brandId: userBrandId ? String(userBrandId) : (prod.brandId?.toString() || ''),
           keywords: Array.isArray(prod.searchKeywords)
             ? prod.searchKeywords.join(',')
@@ -212,6 +255,49 @@ const ProductForm: React.FC = () => {
     });
   };
 
+  // Gallery Management
+  const handleAddGalleryImage = () => {
+    setFormData((prev) => ({
+      ...prev,
+      galleryList: [...prev.galleryList, ''],
+    }));
+  };
+
+  const handleGalleryImageChange = (index: number, url: string) => {
+    setFormData((prev) => {
+      const updated = [...prev.galleryList];
+      updated[index] = url;
+      return { ...prev, galleryList: updated };
+    });
+  };
+
+  const handleRemoveGalleryImage = (index: number) => {
+    setFormData((prev) => {
+      const updated = [...prev.galleryList];
+      updated.splice(index, 1);
+      return { ...prev, galleryList: updated };
+    });
+  };
+
+  // Parameter Value Management
+  const handleAttributeValueChange = (attributeId: number, value: string) => {
+    setFormData((prev) => {
+      const existing = [...prev.productAttributeValueList];
+      const idx = existing.findIndex((a) => a.productAttributeId === attributeId);
+      if (idx >= 0) {
+        existing[idx] = { ...existing[idx], value };
+      } else {
+        existing.push({ productAttributeId: attributeId, value });
+      }
+      return { ...prev, productAttributeValueList: existing };
+    });
+  };
+
+  const getAttributeCurrentValue = (attributeId: number): string => {
+    const item = formData.productAttributeValueList.find((a) => a.productAttributeId === attributeId);
+    return item?.value || '';
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -242,8 +328,20 @@ const ProductForm: React.FC = () => {
         skuAttributes: sku.spDataList && sku.spDataList.length > 0 ? JSON.stringify(sku.spDataList) : undefined,
       }));
 
+      const formattedGallery = formData.galleryList
+        .filter((url) => Boolean(url && url.trim()))
+        .map((url, idx) => ({
+          mediaType: 'image',
+          url: url.trim(),
+          sortOrder: idx + 1,
+        }));
+
+      const formattedAttributeValues = formData.productAttributeValueList.filter((a) => Boolean(a.value && a.value.trim()));
+
       const payload = {
         ...formData,
+        galleryList: formattedGallery,
+        productAttributeValueList: formattedAttributeValues,
         skuStockList: formattedSkus,
       } as unknown as import('@/types/catalog').PmsProductParam;
 
@@ -279,6 +377,7 @@ const ProductForm: React.FC = () => {
       <Paper sx={{ p: 4 }}>
         <form onSubmit={handleSubmit}>
           <Grid container spacing={3}>
+            {/* Basic Info */}
             <Grid size={{ xs: 12 }}>
               <TextField
                 fullWidth
@@ -346,7 +445,7 @@ const ProductForm: React.FC = () => {
             <Grid size={{ xs: 12, md: 6 }}>
               <TextField
                 fullWidth
-                label="Image URL"
+                label="Primary Image URL"
                 value={formData.primaryImageUrl}
                 onChange={(e) => setFormData({ ...formData, primaryImageUrl: e.target.value })}
               />
@@ -381,11 +480,116 @@ const ProductForm: React.FC = () => {
               />
             </Grid>
 
+            {/* Media Gallery Section */}
             <Grid size={{ xs: 12 }}>
-              <Box sx={{ mt: 2, mb: 2 }}>
-                <Typography variant="h6" sx={{ mb: 2 }}>
-                  Product SKUs (Variants)
+              <Divider sx={{ my: 2 }} />
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                <Typography variant="h6">Product Media Gallery (catalog.product_media)</Typography>
+                <Button
+                  size="small"
+                  variant="outlined"
+                  startIcon={<AddPhotoAlternateIcon />}
+                  onClick={handleAddGalleryImage}
+                >
+                  + Add Gallery Image
+                </Button>
+              </Box>
+              {formData.galleryList.length === 0 ? (
+                <Typography variant="body2" color="text.secondary">
+                  No additional gallery images added yet. Click "+ Add Gallery Image" to add extra product photos.
                 </Typography>
+              ) : (
+                <Grid container spacing={2}>
+                  {formData.galleryList.map((url, idx) => (
+                    <Grid size={{ xs: 12, md: 6 }} key={idx}>
+                      <Paper variant="outlined" sx={{ p: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
+                        {url ? (
+                          <img
+                            src={resolveImageUrl(url)}
+                            alt={`Gallery ${idx + 1}`}
+                            style={{ width: 60, height: 60, objectFit: 'contain', borderRadius: 4 }}
+                          />
+                        ) : (
+                          <Box sx={{ width: 60, height: 60, bgcolor: '#f0f0f0', borderRadius: 1 }} />
+                        )}
+                        <TextField
+                          fullWidth
+                          size="small"
+                          label={`Image #${idx + 1} URL`}
+                          value={url}
+                          onChange={(e) => handleGalleryImageChange(idx, e.target.value)}
+                        />
+                        <IconButton color="error" size="small" onClick={() => handleRemoveGalleryImage(idx)}>
+                          <DeleteIcon />
+                        </IconButton>
+                      </Paper>
+                    </Grid>
+                  ))}
+                </Grid>
+              )}
+            </Grid>
+
+            {/* Specifications & Parameters Section */}
+            {paramDefinitions.length > 0 && (
+              <Grid size={{ xs: 12 }}>
+                <Divider sx={{ my: 2 }} />
+                <Typography variant="h6" sx={{ mb: 2 }}>
+                  Product Parameters & Specs (catalog.product_attribute_value)
+                </Typography>
+                <Grid container spacing={2}>
+                  {paramDefinitions.map((param) => {
+                    const curVal = getAttributeCurrentValue(param.id!);
+                    const allowed = param.allowedValues || param.inputList;
+                    const options = allowed
+                      ? (Array.isArray(allowed) ? allowed : String(allowed).split(',')).map((s) => s.trim()).filter(Boolean)
+                      : [];
+
+                    return (
+                      <Grid size={{ xs: 12, md: 4 }} key={param.id}>
+                        {options.length > 0 ? (
+                          <FormControl fullWidth size="small">
+                            <InputLabel>{param.name}</InputLabel>
+                            <Select
+                              label={param.name}
+                              value={curVal}
+                              onChange={(e) => handleAttributeValueChange(param.id!, e.target.value as string)}
+                            >
+                              <MenuItem value=""><em>None</em></MenuItem>
+                              {options.map((opt) => (
+                                <MenuItem key={opt} value={opt}>
+                                  {opt}
+                                </MenuItem>
+                              ))}
+                            </Select>
+                          </FormControl>
+                        ) : (
+                          <TextField
+                            fullWidth
+                            size="small"
+                            label={param.name}
+                            value={curVal}
+                            onChange={(e) => handleAttributeValueChange(param.id!, e.target.value)}
+                          />
+                        )}
+                      </Grid>
+                    );
+                  })}
+                </Grid>
+              </Grid>
+            )}
+
+            {/* Product SKUs (Variants) */}
+            <Grid size={{ xs: 12 }}>
+              <Divider sx={{ my: 2 }} />
+              <Box sx={{ mt: 1, mb: 2 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                  <Typography variant="h6">
+                    Product SKUs / Variants (catalog.product_sku)
+                  </Typography>
+                  <Button variant="outlined" size="small" onClick={handleAddSku}>
+                    + Add SKU
+                  </Button>
+                </Box>
                 {formData.skuStockList.map((sku, index: number) => (
                   <Paper key={index} variant="outlined" sx={{ p: 2, mb: 2 }}>
                     <Grid container spacing={2} alignItems="center">
@@ -421,7 +625,7 @@ const ProductForm: React.FC = () => {
                       <Grid size={{ xs: 12, md: 3 }}>
                         <TextField
                           fullWidth
-                          label="Stock"
+                          label="Stock (On Hand)"
                           required
                           size="small"
                           value={sku.onHandQty || ''}
@@ -456,7 +660,7 @@ const ProductForm: React.FC = () => {
 
                       <Grid size={{ xs: 12 }}>
                         <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                          Attributes
+                          Variant Attributes (e.g. Color, Size, Storage)
                         </Typography>
                         {(sku.spDataList || []).map((attr, attrIndex: number) => (
                           <Box key={attrIndex} sx={{ display: 'flex', gap: 1, mb: 1 }}>
@@ -484,12 +688,10 @@ const ProductForm: React.FC = () => {
                     </Grid>
                   </Paper>
                 ))}
-                <Button variant="outlined" onClick={handleAddSku} sx={{ mt: 1 }}>
-                  + Add SKU
-                </Button>
               </Box>
             </Grid>
 
+            {/* Actions */}
             <Grid size={{ xs: 12 }} sx={{ mt: 3, display: 'flex', gap: 2 }}>
               <Button type="submit" variant="contained" color="primary" disabled={saving}>
                 {saving ? (isEdit ? 'Saving...' : 'Creating...') : (isEdit ? 'Update Product' : 'Create Product')}

@@ -58,4 +58,10 @@ public interface HomeService {
      * @return the result of the operation
      */
     List<Product> newProductList(Integer pageNum, Integer pageSize);
+
+    /**
+     * Records a banner click event and increments its click counter.
+     * @param id the banner id
+     */
+    void recordBannerClick(Long id);
 }
