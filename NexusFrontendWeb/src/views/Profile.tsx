@@ -26,10 +26,20 @@ import {
   FormControl,
   InputLabel,
   Grid,
+  IconButton,
+  Collapse,
 } from '@mui/material';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { useSelector } from 'react-redux';
 import type { RootState } from '../store';
-import { getOrders, submitReturnApply, getReturnReasons, cancelUserOrder } from '../api/ordering';
+import {
+  getOrders,
+  submitReturnApply,
+  getReturnReasons,
+  cancelUserOrder,
+  confirmReceiveOrder,
+} from '../api/ordering';
 import { OrderStatus, type CustomerOrder, type OrderLine, type ReturnRequest } from '../types/ordering';
 import {
   getCustomerProfile,
@@ -43,6 +53,7 @@ import type { Coupon } from '../types/promotion';
 import type { Member, MemberAddress } from '../types/customer';
 import { createRazorpayOrder, verifyRazorpayPayment } from '../api/payment';
 import { resolveImageUrl } from '../utils/media';
+
 import { useNavigate } from 'react-router';
 
 interface TabPanelProps {
@@ -119,7 +130,15 @@ const Profile: React.FC = () => {
   const [refundOrder, setRefundOrder] = useState<CustomerOrder | null>(null);
   const [selectedRefundItems, setSelectedRefundItems] = useState<(OrderLine & { returnQuantity: number })[]>([]);
   const [refundReason, setRefundReason] = useState('');
+  const [evidenceUrlsText, setEvidenceUrlsText] = useState('');
   const [returnReasonsList, setReturnReasonsList] = useState<{ id: number; name: string }[]>([]);
+  const [expandedOrderIds, setExpandedOrderIds] = useState<number[]>([]);
+
+  const toggleOrderExpand = (orderId: number) => {
+    setExpandedOrderIds((prev) =>
+      prev.includes(orderId) ? prev.filter((id) => id !== orderId) : [...prev, orderId]
+    );
+  };
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -172,6 +191,7 @@ const Profile: React.FC = () => {
     setRefundOrder(order);
     setSelectedRefundItems([]);
     setRefundReason('');
+    setEvidenceUrlsText('');
     try {
       const res = await getReturnReasons();
       const reasons = res || [];
@@ -236,6 +256,8 @@ const Profile: React.FC = () => {
             unitRefundAmount: itemAmt / itemQty,
             reason: refundReason,
             customerComment: refundReason,
+            evidenceUrls: evidenceUrlsText.trim() ? evidenceUrlsText.trim() : undefined,
+            proofPics: evidenceUrlsText.trim() ? evidenceUrlsText.trim() : undefined,
           });
         }),
       );
@@ -247,6 +269,7 @@ const Profile: React.FC = () => {
       console.error(e);
     }
   };
+
 
   if (!isAuthenticated) return null;
 
@@ -326,6 +349,7 @@ const Profile: React.FC = () => {
                 <Table>
                   <TableHead>
                     <TableRow>
+                      <TableCell width={50} />
                       <TableCell>Order Number</TableCell>
                       <TableCell>Date</TableCell>
                       <TableCell>Status</TableCell>
@@ -336,6 +360,7 @@ const Profile: React.FC = () => {
                   <TableBody>
                     {orders.map((order) => {
                       const items = order.orderLines ?? [];
+                      const isExpanded = expandedOrderIds.includes(order.id);
                       const totalOrderQty =
                         items.reduce(
                           (sum: number, item: OrderLine) => sum + (item.quantity ?? 0),
@@ -349,142 +374,294 @@ const Profile: React.FC = () => {
                       const isOrderFullyRefunded = totalOrderQty > 0 && totalReturnedQty >= totalOrderQty;
 
                       return (
-                        <TableRow key={order.id}>
-                          <TableCell>{order.orderNumber}</TableCell>
-                          <TableCell>{new Date(order.createdAt).toLocaleDateString()}</TableCell>
-                          <TableCell>
-                            <Typography variant="body2">
-                              {isOrderFullyRefunded
-                                ? 'Refunded'
-                                : (ORDER_STATUS_LABELS[order.status] ?? 'Unknown')}
-                            </Typography>
-                            {order.returnApplyList && order.returnApplyList.length > 0 && (
-                              <Chip
-                                label={`${order.returnApplyList.length} Return(s) Logged`}
+                        <React.Fragment key={order.id}>
+                          <TableRow hover sx={{ '& > *': { borderBottom: 'unset' } }}>
+                            <TableCell>
+                              <IconButton
+                                aria-label="expand row"
                                 size="small"
-                                color="warning"
-                                sx={{ mt: 0.5, fontSize: '0.7rem', height: 20 }}
-                              />
-                            )}
-                            <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
-                              Ordered: {totalOrderQty} | Refunded: {totalReturnedQty} | Remaining:{' '}
-                              {Math.max(0, totalOrderQty - totalReturnedQty)}
-                            </Typography>
-                          </TableCell>
-                          <TableCell align="right">
-                            ₹{(order.grandTotalAmount ?? 0).toFixed(2)}
-                          </TableCell>
-                          <TableCell align="center">
-                            {order.status === 0 && (
-                              <Button
-                                variant="contained"
-                                size="small"
-                                color="primary"
-                                onClick={async () => {
-                                  try {
-                                    // 1. Get Razorpay Order details from backend
-                                    const res = await createRazorpayOrder(order.id);
-                                    const { razorpayOrderId, keyId, amount } = res;
-
-                                    // 2. Load Razorpay script dynamically
-                                    const loadScript = (src: string) =>
-                                      new Promise((resolve) => {
-                                        if (window.Razorpay) {
-                                          resolve(true);
-                                          return;
-                                        }
-                                        const script = document.createElement('script');
-                                        script.src = src;
-                                        script.onload = () => resolve(true);
-                                        script.onerror = () => resolve(false);
-                                        document.body.appendChild(script);
-                                      });
-                                    const scriptLoaded = await loadScript(
-                                      'https://checkout.razorpay.com/v1/checkout.js',
-                                    );
-                                    if (!scriptLoaded) {
-                                      alert('Failed to load Razorpay SDK. Are you online?');
-                                      return;
-                                    }
-
-                                    // 3. Open Razorpay Checkout
-                                    const options: RazorpayOptions = {
-                                      key: keyId,
-                                      amount: amount,
-                                      currency: 'INR',
-                                      name: 'Nexus Engine',
-                                      description: `Payment for Order #${order.orderNumber}`,
-                                      order_id: razorpayOrderId,
-                                      handler: async function (response: RazorpayResponse) {
-                                        try {
-                                          // 4. Verify payment on backend
-                                          await verifyRazorpayPayment(
-                                            order.id,
-                                            response.razorpay_payment_id,
-                                            response.razorpay_order_id,
-                                            response.razorpay_signature,
-                                          );
-                                          alert('Payment successful!');
-                                          loadDashboardData();
-                                        } catch {
-                                          alert('Payment verification failed.');
-                                        }
-                                      },
-                                      prefill: {
-                                        name: memberInfo?.displayName || memberInfo?.username || 'Test Customer',
-                                        email: memberInfo?.email || 'test@example.com',
-                                        contact: memberInfo?.phoneE164 || '9000090000',
-                                      },
-                                      theme: { color: '#3399cc' },
-                                    };
-                                    const rzp = new window.Razorpay(options);
-                                    rzp.on('payment.failed', function (response: RazorpayFailedResponse) {
-                                      alert(`Payment Failed: ${response.error.description}`);
-                                    });
-                                    rzp.open();
-                                  } catch (e: unknown) {
-                                    alert('Failed to initiate payment. Please try again later.');
-                                    console.error(e);
-                                  }
-                                }}
+                                onClick={() => toggleOrderExpand(order.id)}
                               >
-                                Pay Now
-                              </Button>
-                            )}
-                            {order.status === 0 && (
-                              <Button
-                                variant="outlined"
-                                size="small"
-                                color="error"
-                                sx={{ ml: 1 }}
-                                onClick={async () => {
-                                  if (window.confirm('Are you sure you want to cancel this order?')) {
+                                {isExpanded ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                              </IconButton>
+                            </TableCell>
+                            <TableCell sx={{ fontWeight: 600 }}>{order.orderNumber}</TableCell>
+                            <TableCell>{new Date(order.createdAt).toLocaleDateString()}</TableCell>
+                            <TableCell>
+                              <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                                {isOrderFullyRefunded
+                                  ? 'Refunded'
+                                  : (ORDER_STATUS_LABELS[order.status] ?? 'Unknown')}
+                              </Typography>
+                              {order.returnApplyList && order.returnApplyList.length > 0 && (
+                                <Chip
+                                  label={`${order.returnApplyList.length} Return(s) Logged`}
+                                  size="small"
+                                  color="warning"
+                                  sx={{ mt: 0.5, fontSize: '0.7rem', height: 20 }}
+                                />
+                              )}
+                              <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.5 }}>
+                                Qty: {totalOrderQty} | Refunded: {totalReturnedQty}
+                              </Typography>
+                            </TableCell>
+                            <TableCell align="right" sx={{ fontWeight: 600 }}>
+                              ₹{(order.grandTotalAmount ?? 0).toFixed(2)}
+                            </TableCell>
+                            <TableCell align="center">
+                              {order.status === 0 && (
+                                <Button
+                                  variant="contained"
+                                  size="small"
+                                  color="primary"
+                                  onClick={async () => {
                                     try {
-                                      await cancelUserOrder(order.id);
-                                      alert('Order cancelled successfully.');
-                                      loadDashboardData();
-                                    } catch (e) {
-                                      alert('Failed to cancel order.');
+                                      // 1. Get Razorpay Order details from backend
+                                      const res = await createRazorpayOrder(order.id);
+                                      const { razorpayOrderId, keyId, amount } = res;
+
+                                      // 2. Load Razorpay script dynamically
+                                      const loadScript = (src: string) =>
+                                        new Promise((resolve) => {
+                                          if (window.Razorpay) {
+                                            resolve(true);
+                                            return;
+                                          }
+                                          const script = document.createElement('script');
+                                          script.src = src;
+                                          script.onload = () => resolve(true);
+                                          script.onerror = () => resolve(false);
+                                          document.body.appendChild(script);
+                                        });
+                                      const scriptLoaded = await loadScript(
+                                        'https://checkout.razorpay.com/v1/checkout.js',
+                                      );
+                                      if (!scriptLoaded) {
+                                        alert('Failed to load Razorpay SDK. Are you online?');
+                                        return;
+                                      }
+
+                                      // 3. Open Razorpay Checkout
+                                      const options: RazorpayOptions = {
+                                        key: keyId,
+                                        amount: amount,
+                                        currency: 'INR',
+                                        name: 'Nexus Engine',
+                                        description: `Payment for Order #${order.orderNumber}`,
+                                        order_id: razorpayOrderId,
+                                        handler: async function (response: RazorpayResponse) {
+                                          try {
+                                            // 4. Verify payment on backend
+                                            await verifyRazorpayPayment(
+                                              order.id,
+                                              response.razorpay_payment_id,
+                                              response.razorpay_order_id,
+                                              response.razorpay_signature,
+                                            );
+                                            alert('Payment successful!');
+                                            loadDashboardData();
+                                          } catch {
+                                            alert('Payment verification failed.');
+                                          }
+                                        },
+                                        prefill: {
+                                          name: memberInfo?.displayName || memberInfo?.username || 'Test Customer',
+                                          email: memberInfo?.email || 'test@example.com',
+                                          contact: memberInfo?.phoneE164 || '9000090000',
+                                        },
+                                        theme: { color: '#3399cc' },
+                                      };
+                                      const rzp = new window.Razorpay(options);
+                                      rzp.on('payment.failed', function (response: RazorpayFailedResponse) {
+                                        alert(`Payment Failed: ${response.error.description}`);
+                                      });
+                                      rzp.open();
+                                    } catch (e: unknown) {
+                                      alert('Failed to initiate payment. Please try again later.');
                                       console.error(e);
                                     }
-                                  }
-                                }}
-                              >
-                                Cancel Order
-                              </Button>
-                            )}
-                            {[1, 2, 3, 5].includes(order.status) && !isOrderFullyRefunded && (
-                              <Button
-                                variant="outlined"
-                                size="small"
-                                color="secondary"
-                                onClick={() => handleOpenRefund(order)}
-                              >
-                                {order.status === 3 ? 'Request Refund' : 'Request Cancellation'}
-                              </Button>
-                            )}
-                          </TableCell>
-                        </TableRow>
+                                  }}
+                                >
+                                  Pay Now
+                                </Button>
+                              )}
+                              {order.status === 0 && (
+                                <Button
+                                  variant="outlined"
+                                  size="small"
+                                  color="error"
+                                  sx={{ ml: 1 }}
+                                  onClick={async () => {
+                                    if (window.confirm('Are you sure you want to cancel this order?')) {
+                                      try {
+                                        await cancelUserOrder(order.id);
+                                        alert('Order cancelled successfully.');
+                                        loadDashboardData();
+                                      } catch (e) {
+                                        alert('Failed to cancel order.');
+                                        console.error(e);
+                                      }
+                                    }
+                                  }}
+                                >
+                                  Cancel Order
+                                </Button>
+                              )}
+                              {order.status === 2 && (
+                                <Button
+                                  variant="contained"
+                                  size="small"
+                                  color="success"
+                                  sx={{ mr: 1 }}
+                                  onClick={async () => {
+                                    if (window.confirm('Have you received your shipment? Confirm receipt now.')) {
+                                      try {
+                                        await confirmReceiveOrder(order.id);
+                                        alert('Order receipt confirmed! Thank you.');
+                                        loadDashboardData();
+                                      } catch (e) {
+                                        console.error(e);
+                                        alert('Failed to confirm order receipt');
+                                      }
+                                    }
+                                  }}
+                                >
+                                  Confirm Receipt
+                                </Button>
+                              )}
+                              {[1, 2, 3, 5].includes(order.status) && !isOrderFullyRefunded && (
+                                <Button
+                                  variant="outlined"
+                                  size="small"
+                                  color="secondary"
+                                  onClick={() => handleOpenRefund(order)}
+                                >
+                                  {order.status === 3 ? 'Request Refund' : 'Request Cancellation'}
+                                </Button>
+                              )}
+                            </TableCell>
+                          </TableRow>
+
+                          {/* Expandable Order Detail Accordion Row */}
+                          <TableRow>
+                            <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+                              <Collapse in={isExpanded} timeout="auto" unmountOnExit>
+                                <Box sx={{ py: 2, px: 3, bgcolor: '#f9fafb', borderRadius: 1.5, my: 1.5, border: '1px solid #e5e7eb' }}>
+                                  {/* 1. Ordered Products */}
+                                  <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
+                                    Ordered Products ({items.length})
+                                  </Typography>
+                                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mb: 2 }}>
+                                    {items.map((item: OrderLine) => (
+                                      <Box
+                                        key={item.id}
+                                        sx={{
+                                          display: 'flex',
+                                          alignItems: 'center',
+                                          gap: 2,
+                                          bgcolor: 'background.paper',
+                                          p: 1.5,
+                                          borderRadius: 1,
+                                          border: '1px solid #f0f0f0',
+                                        }}
+                                      >
+                                        <Box
+                                          component="img"
+                                          src={resolveImageUrl(item.productImageUrl)}
+                                          alt={item.productName}
+                                          sx={{ width: 44, height: 44, objectFit: 'contain', borderRadius: 1 }}
+                                        />
+                                        <Box sx={{ flex: 1 }}>
+                                          <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                                            {item.productName}
+                                          </Typography>
+                                          <Typography variant="caption" color="text.secondary">
+                                            {item.brandName ? `Brand: ${item.brandName} | ` : ''}
+                                            {item.skuAttributes ? `Specs: ${typeof item.skuAttributes === 'object' ? JSON.stringify(item.skuAttributes) : item.skuAttributes} | ` : ''}
+                                            Qty: {item.quantity} × ₹{Number(item.unitPrice).toFixed(2)}
+                                          </Typography>
+                                        </Box>
+                                        <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                                          ₹{Number(item.lineTotalAmount).toFixed(2)}
+                                        </Typography>
+                                      </Box>
+                                    ))}
+                                    {items.length === 0 && (
+                                      <Typography variant="caption" color="text.secondary">
+                                        No item details found.
+                                      </Typography>
+                                    )}
+                                  </Box>
+
+                                  {/* 2. Shipping & Timeline */}
+                                  <Divider sx={{ my: 1.5 }} />
+                                  <Grid container spacing={2}>
+                                    <Grid size={{ xs: 12, sm: 4 }}>
+                                      <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>Carrier / Logistics</Typography>
+                                      <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                                        {order.carrierName || order.deliveryCompany || 'Standard Logistics'}
+                                      </Typography>
+                                    </Grid>
+                                    <Grid size={{ xs: 12, sm: 4 }}>
+                                      <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>Tracking Number</Typography>
+                                      <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                                        {order.trackingNumber || order.deliverySn || 'Pending carrier scan'}
+                                      </Typography>
+                                    </Grid>
+                                    <Grid size={{ xs: 12, sm: 4 }}>
+                                      <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>Delivery / Receipt</Typography>
+                                      <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                                        {order.isReceiptConfirmed ? 'Confirmed by Buyer' : (order.status === 3 ? 'Completed' : 'In Transit')}
+                                      </Typography>
+                                    </Grid>
+                                    <Grid size={{ xs: 12, sm: 4 }}>
+                                      <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>Paid Time</Typography>
+                                      <Typography variant="caption">
+                                        {order.paidAt || order.paymentTime ? new Date(order.paidAt || order.paymentTime!).toLocaleString() : 'Unpaid'}
+                                      </Typography>
+                                    </Grid>
+                                    <Grid size={{ xs: 12, sm: 4 }}>
+                                      <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>Shipped Time</Typography>
+                                      <Typography variant="caption">
+                                        {order.shippedAt || order.deliveryTime ? new Date(order.shippedAt || order.deliveryTime!).toLocaleString() : 'Awaiting Shipment'}
+                                      </Typography>
+                                    </Grid>
+                                    <Grid size={{ xs: 12, sm: 4 }}>
+                                      <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>Completed Time</Typography>
+                                      <Typography variant="caption">
+                                        {order.deliveredAt || order.receiveTime ? new Date(order.deliveredAt || order.receiveTime!).toLocaleString() : '-'}
+                                      </Typography>
+                                    </Grid>
+                                  </Grid>
+
+                                  {/* 3. Payment Transactions */}
+                                  {order.paymentTransactions && order.paymentTransactions.length > 0 && (
+                                    <Box sx={{ mt: 2 }}>
+                                      <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.5, fontWeight: 600 }}>
+                                        Payment & Refund Audit Records:
+                                      </Typography>
+                                      <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                                        {order.paymentTransactions.map((tx, idx) => {
+                                          const isRefund = (tx.transactionType || tx.txnType || '').toUpperCase() === 'REFUND';
+
+                                          return (
+                                            <Chip
+                                              key={tx.id || idx}
+                                              label={`${tx.transactionType || tx.txnType}: ₹${Number(tx.amount).toFixed(2)} (${tx.status}) — ${tx.transactionId || tx.providerTxnId}`}
+                                              color={isRefund ? 'warning' : 'success'}
+                                              variant="outlined"
+                                              size="small"
+                                            />
+                                          );
+                                        })}
+                                      </Box>
+                                    </Box>
+                                  )}
+                                </Box>
+                              </Collapse>
+                            </TableCell>
+                          </TableRow>
+                        </React.Fragment>
                       );
                     })}
                   </TableBody>
@@ -749,6 +926,18 @@ const Profile: React.FC = () => {
                 ))}
               </Select>
             </FormControl>
+
+            <TextField
+              fullWidth
+              size="small"
+              multiline
+              rows={2}
+              label="Evidence Photo URLs (optional, comma-separated)"
+              placeholder="e.g. https://images.unsplash.com/photo-defective-item.jpg"
+              value={evidenceUrlsText}
+              onChange={(e) => setEvidenceUrlsText(e.target.value)}
+              sx={{ mt: 2 }}
+            />
           </Box>
         </DialogContent>
         <DialogActions>

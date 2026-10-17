@@ -54,6 +54,30 @@ private String status;
         @Column(name = "created_at")
         private OffsetDateTime createTime;
 
+    public String getProviderTxnId() {
+        return transactionId;
+    }
+
+    public void setProviderTxnId(String providerTxnId) {
+        this.transactionId = providerTxnId;
+    }
+
+    public String getTxnType() {
+        return transactionType;
+    }
+
+    public void setTxnType(String txnType) {
+        this.transactionType = txnType;
+    }
+
+    public OffsetDateTime getCreatedAt() {
+        return createTime;
+    }
+
+    public void setCreatedAt(OffsetDateTime createdAt) {
+        this.createTime = createdAt;
+    }
+
     @PrePersist
     protected void onCreate() {
         if (createTime == null) {
@@ -61,3 +85,4 @@ private String status;
         }
     }
 }
+

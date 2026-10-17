@@ -169,6 +169,58 @@ const OrderDetail: React.FC = () => {
         </TableContainer>
       </Paper>
 
+      <Paper sx={{ p: 3, mb: 3 }} variant="outlined">
+        <Typography variant="h6" gutterBottom>Payment & Settlement Transactions</Typography>
+        <TableContainer>
+          <Table size="small">
+            <TableHead>
+              <TableRow sx={{ bgcolor: 'grey.50' }}>
+                <TableCell>Transaction ID</TableCell>
+                <TableCell>Type</TableCell>
+                <TableCell>Amount</TableCell>
+                <TableCell>Status</TableCell>
+                <TableCell>Created At</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {(detail.paymentTransactions || []).map((tx: any, idx: number) => {
+                const isRefund = (tx.transactionType || tx.txnType || '').toUpperCase() === 'REFUND';
+                return (
+                  <TableRow key={tx.id || idx}>
+                    <TableCell sx={{ fontFamily: 'monospace', fontWeight: 600 }}>
+                      {tx.transactionId || tx.providerTxnId}
+                    </TableCell>
+                    <TableCell>
+                      <Chip
+                        label={tx.transactionType || tx.txnType || 'CAPTURE'}
+                        color={isRefund ? 'warning' : 'success'}
+                        size="small"
+                      />
+                    </TableCell>
+                    <TableCell sx={{ fontWeight: 600, color: isRefund ? 'warning.main' : 'text.primary' }}>
+                      {isRefund ? '- ' : ''}₹{Number(tx.amount || 0).toFixed(2)}
+                    </TableCell>
+                    <TableCell>
+                      <Chip label={tx.status || 'SUCCESS'} color="primary" variant="outlined" size="small" />
+                    </TableCell>
+                    <TableCell>
+                      {(tx.createTime || tx.createdAt)
+                        ? new Date(tx.createTime || tx.createdAt).toLocaleString()
+                        : '-'}
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+              {(!detail.paymentTransactions || detail.paymentTransactions.length === 0) && (
+                <TableRow>
+                  <TableCell colSpan={5} align="center">No payment transactions recorded for this order.</TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Paper>
+
       <Paper sx={{ p: 3 }} variant="outlined">
         <Typography variant="h6" gutterBottom>Order Status History</Typography>
         <TableContainer>

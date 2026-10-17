@@ -19,9 +19,13 @@ export interface CustomerOrder {
   status: number // 0: PENDING_PAYMENT, 1: AWAITING_SHIPMENT, 2: SHIPPED, 3: COMPLETED, 4: CANCELLED
   orderType: number // 0: STANDARD, 1: FLASH_SALE
   carrierName?: string
+  deliveryCompany?: string
   trackingNumber?: string
+  deliverySn?: string
   recipientName: string
+  receiverName?: string
   recipientPhone: string
+  receiverPhone?: string
   shippingPostalCode?: string
   shippingAddressLine?: string
   shippingCity?: string
@@ -30,14 +34,20 @@ export interface CustomerOrder {
   customerNote?: string
   isReceiptConfirmed?: boolean
   paidAt?: string
+  paymentTime?: string
   shippedAt?: string
+  deliveryTime?: string
   deliveredAt?: string
+  receiveTime?: string
   reviewedAt?: string
+  commentTime?: string
   createdAt: string
   updatedAt?: string
   orderLines?: OrderLine[]
   returnApplyList?: ReturnRequest[]
+  paymentTransactions?: PaymentTransaction[]
 }
+
 
 export interface OrderLine {
   id: number
@@ -96,18 +106,40 @@ export interface ReturnRequest {
   memberId?: number
   quantity: number
   productId?: number
+  productName?: string
+  productImageUrl?: string
+  productPic?: string
+  brandName?: string
+  productBrand?: string
+  skuAttributes?: string | Record<string, any>
   unitRefundAmount?: number
   contactName?: string
   contactPhone?: string
   reason?: string
   reasonId?: number
   customerComment?: string
-  evidenceUrls?: string[]
+  description?: string
+  evidenceUrls?: string[] | string
+  proofPics?: string
   status: number // 0: PENDING, 1: APPROVED, 2: COMPLETED, 3: REJECTED
   reviewNote?: string
   handleNote?: string
   createdAt?: string
 }
+
+export interface PaymentTransaction {
+  id: number
+  orderId: number
+  transactionId: string
+  providerTxnId?: string
+  transactionType: string
+  txnType?: string
+  amount: number
+  status: string
+  createdAt?: string
+  createTime?: string
+}
+
 
 export const PaymentMethod = {
   UNSET: 0,

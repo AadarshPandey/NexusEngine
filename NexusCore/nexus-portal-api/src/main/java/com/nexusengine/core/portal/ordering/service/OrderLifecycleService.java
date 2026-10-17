@@ -205,13 +205,20 @@ public class OrderLifecycleService {
         List<Long> orderIds = orderList.stream().map(CustomerOrder::getId).collect(Collectors.toList());
         List<OrderLine> allOrderItems = orderItemRepository.findByOrderIdIn(orderIds);
         List<ReturnRequest> allApplies = returnApplyRepository.findByOrderIdIn(orderIds);
+        List<PaymentTransaction> allTxns = paymentTransactionRepository.findByOrderIdInOrderByCreateTimeAsc(orderIds);
 
         Map<Long, List<OrderLine>> itemMap = allOrderItems.stream().collect(Collectors.groupingBy(OrderLine::getOrderId));
         Map<Long, List<ReturnRequest>> applyMap = allApplies.stream().collect(Collectors.groupingBy(ReturnRequest::getOrderId));
+        Map<Long, List<PaymentTransaction>> txnMap = allTxns.stream().collect(Collectors.groupingBy(PaymentTransaction::getOrderId));
 
         List<OrderDetail> orderDetailList = new ArrayList<>();
         for (CustomerOrder customerOrder : orderList) {
-            OrderDetail orderDetail = new OrderDetail(customerOrder, itemMap.getOrDefault(customerOrder.getId(), Collections.emptyList()), applyMap.getOrDefault(customerOrder.getId(), Collections.emptyList()));
+            OrderDetail orderDetail = new OrderDetail(
+                customerOrder,
+                itemMap.getOrDefault(customerOrder.getId(), Collections.emptyList()),
+                applyMap.getOrDefault(customerOrder.getId(), Collections.emptyList()),
+                txnMap.getOrDefault(customerOrder.getId(), Collections.emptyList())
+            );
             orderDetailList.add(orderDetail);
         }
         return new PageImpl<>(orderDetailList, pageRequest, orderPage.getTotalElements());

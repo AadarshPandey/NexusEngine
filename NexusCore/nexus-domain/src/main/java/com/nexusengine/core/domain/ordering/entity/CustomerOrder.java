@@ -237,6 +237,14 @@ public class CustomerOrder {
         this.receiverDetailAddress = shippingAddressLine;
     }
 
+    public Boolean getIsReceiptConfirmed() {
+        return confirmStatus;
+    }
+
+    public void setIsReceiptConfirmed(Boolean isReceiptConfirmed) {
+        this.confirmStatus = isReceiptConfirmed;
+    }
+
     @PrePersist
     protected void onCreate() {
         if (createTime == null) {

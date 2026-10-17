@@ -31,6 +31,7 @@ public class OrderDao {
 
     private final ProductRepository productRepository;
     private final ReturnRequestRepository returnApplyRepository;
+    private final com.nexusengine.core.domain.payment.repository.PaymentTransactionRepository paymentTransactionRepository;
 
     public OrderDetail getDetail(Long orderId) {
         CustomerOrder order = orderRepository.findById(orderId).orElse(null);
@@ -38,7 +39,8 @@ public class OrderDao {
 
         List<OrderLine> orderItemList = orderItemRepository.findByOrderId(orderId);
         List<ReturnRequest> applyList = returnApplyRepository.findByOrderIdIn(java.util.Collections.singletonList(orderId));
-        return new OrderDetail(order, orderItemList, applyList);
+        List<com.nexusengine.core.domain.payment.entity.PaymentTransaction> txns = paymentTransactionRepository.findByOrderIdOrderByCreateTimeAsc(orderId);
+        return new OrderDetail(order, orderItemList, applyList, txns);
     }
 
     public List<OrderDetail> getTimeOutOrders(Integer minutes) {
@@ -50,7 +52,7 @@ public class OrderDao {
 
             List<OrderLine> orderItemList = orderItemRepository.findByOrderId(order.getId());
             List<ReturnRequest> applyList = returnApplyRepository.findByOrderIdIn(java.util.Collections.singletonList(order.getId()));
-            result.add(new OrderDetail(order, orderItemList, applyList));
+            result.add(new OrderDetail(order, orderItemList, applyList, java.util.Collections.emptyList()));
         }
         return result;
     }

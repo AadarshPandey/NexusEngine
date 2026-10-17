@@ -35,6 +35,7 @@ public class OrderServiceImpl implements OrderService {
     private final ProductRepository productRepository;
     private final BrandRepository brandRepository;
     private final com.nexusengine.core.admin.security.AdminTenantContext adminTenantContext;
+    private final com.nexusengine.core.domain.payment.repository.PaymentTransactionRepository paymentTransactionRepository;
 
     @Override
     public List<CustomerOrder> list(OrderQueryParam queryParam, Integer pageSize, Integer pageNum) {
@@ -169,7 +170,9 @@ public class OrderServiceImpl implements OrderService {
                     || (l.getProductId() != null && productRepository.findById(l.getProductId())
                         .map(p -> brandId.equals(p.getBrandId())).orElse(false))).collect(Collectors.toList());
         }
-        return new OrderDetail(order, lines, orderOperateHistoryRepository.findByOrderId(id));
+        List<com.nexusengine.core.domain.payment.entity.PaymentTransaction> txns =
+                paymentTransactionRepository.findByOrderIdOrderByCreateTimeAsc(id);
+        return new OrderDetail(order, lines, orderOperateHistoryRepository.findByOrderId(id), txns);
     }
 
     @Override

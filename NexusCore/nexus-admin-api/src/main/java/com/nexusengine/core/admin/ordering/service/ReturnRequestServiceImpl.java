@@ -19,6 +19,8 @@ public class ReturnRequestServiceImpl implements ReturnRequestService {
     private final ReturnRequestRepository returnApplyRepository;
     private final com.nexusengine.core.domain.catalog.repository.BrandRepository brandRepository;
     private final com.nexusengine.core.admin.security.AdminTenantContext adminTenantContext;
+    private final com.nexusengine.core.domain.payment.repository.PaymentTransactionRepository paymentTransactionRepository;
+    private final com.nexusengine.core.domain.ordering.repository.MerchantAddressRepository merchantAddressRepository;
 
     private void assertReturnBrandAccess(ReturnRequest apply) {
         adminTenantContext.currentBrandId().ifPresent(brandId -> {
@@ -76,20 +78,35 @@ public class ReturnRequestServiceImpl implements ReturnRequestService {
         Integer status = statusParam.status();
         if (status.equals(1)) {
             returnApply.setStatus(1);
-            returnApply.setReturnAmount(statusParam.returnAmount());
+            if (statusParam.returnAmount() != null) {
+                returnApply.setReturnAmount(statusParam.returnAmount());
+            }
             returnApply.setCompanyAddressId(statusParam.companyAddressId());
             returnApply.setHandleTime(java.time.OffsetDateTime.now());
-            returnApply.setHandleMan(statusParam.handleMan());
+            returnApply.setHandleMan(statusParam.handleMan() != null ? statusParam.handleMan() : "admin");
             returnApply.setHandleNote(statusParam.handleNote());
         } else if (status.equals(2)) {
             returnApply.setStatus(2);
             returnApply.setReceiveTime(java.time.OffsetDateTime.now());
-            returnApply.setReceiveMan(statusParam.receiveMan());
+            returnApply.setReceiveMan(statusParam.receiveMan() != null ? statusParam.receiveMan() : "admin");
             returnApply.setReceiveNote(statusParam.receiveNote());
+
+            // Record payment refund in payment.payment_transaction
+            if (returnApply.getOrderId() != null && returnApply.getReturnAmount() != null) {
+                com.nexusengine.core.domain.payment.entity.PaymentTransaction refundTxn = new com.nexusengine.core.domain.payment.entity.PaymentTransaction();
+                refundTxn.setOrderId(returnApply.getOrderId());
+                refundTxn.setTransactionId("REF-" + System.currentTimeMillis() + "-" + returnApply.getId());
+                refundTxn.setTransactionType("REFUND");
+                refundTxn.setAmount(returnApply.getReturnAmount());
+                refundTxn.setStatus("SUCCESS");
+                refundTxn.setCreateTime(java.time.OffsetDateTime.now());
+                refundTxn.setWebhookPayload("{\"source\":\"admin_return_approval\",\"returnRequestId\":" + returnApply.getId() + "}");
+                paymentTransactionRepository.save(refundTxn);
+            }
         } else if (status.equals(3)) {
             returnApply.setStatus(3);
             returnApply.setHandleTime(java.time.OffsetDateTime.now());
-            returnApply.setHandleMan(statusParam.handleMan());
+            returnApply.setHandleMan(statusParam.handleMan() != null ? statusParam.handleMan() : "admin");
             returnApply.setHandleNote(statusParam.handleNote());
         } else {
             return 0;
@@ -103,6 +120,10 @@ public class ReturnRequestServiceImpl implements ReturnRequestService {
         ReturnRequest apply = returnApplyRepository.findById(id).orElse(null);
         if (apply == null) return null;
         assertReturnBrandAccess(apply);
-        return new ReturnRequestResult(apply, null);
+        com.nexusengine.core.domain.ordering.entity.MerchantAddress companyAddress = null;
+        if (apply.getCompanyAddressId() != null) {
+            companyAddress = merchantAddressRepository.findById(apply.getCompanyAddressId()).orElse(null);
+        }
+        return new ReturnRequestResult(apply, companyAddress);
     }
 }

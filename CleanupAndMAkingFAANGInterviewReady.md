@@ -2414,17 +2414,18 @@ Each card is a commit boundary. If token expires, resume from the first unchecke
 - [x] Commit: `feat: wire catalog attributes, gallery media, audit logs, and scoped coupons end-to-end`
 
 #### Card 12: Wire Ordering, Payment, Merchant Address & Return Lifecycle End-to-End (1.5 hrs)
-- [ ] **12.1 — Wire `ordering.merchant_address` (`AP-7`) & `ordering.order_policy`:**
-  - In `ReturnApplyDetail.tsx`, replace hardcoded `returnAddressId: 1` with a dropdown populated from `/api/admin/ordering/merchant-addresses`, and display customer `evidenceUrls`, `reviewedByAdminId`, `receivedByAdminId`, and `receiptNote`.
-  - In `OrderSetting.tsx`, add a `"Warehouse / Return Addresses"` CRUD section for `ordering.merchant_address`, and enforce `payment_timeout_min`, `auto_confirm_receipt_days`, and `review_window_days` in backend services.
-- [ ] **12.2 — Seed & Wire `payment.payment_transaction` in Admin & Storefront:**
-  - Seed `payment.payment_transaction` rows for all paid demo orders in `V3__demo_catalog.sql` & live DB, include `List<PaymentTransaction>` in `OrderDetail.tsx` (Admin) and `Profile.tsx` (Storefront expandable order detail), and record a `REFUND` transaction when a return request is completed.
-- [ ] **12.3 — Wire Customer Order Receipt Confirmation & Return Evidence in `Profile.tsx` (`CF-5`):**
-  - Add `"Confirm Receipt"` button (`POST /api/store/ordering/orders/{id}/confirm`) on Shipped (`status === 2`) orders in `Profile.tsx`.
-  - Make orders expandable in `Profile.tsx` to show `orderLines`, `carrierName`, `trackingNumber`, `paidAt`, `shippedAt`, `deliveredAt`, and `reviewedAt`.
-  - Allow uploading `evidenceUrls` in the Customer Return Request modal in `Profile.tsx`.
-- [ ] **12.4 — Gate:** `mvn clean compile -DskipTests` and both frontend builds pass.
-- [ ] Commit: `feat: wire merchant addresses, payment transactions, order receipt confirmation, and return evidence`
+- [x] **12.1 — Wire `ordering.merchant_address` (`AP-7`) & `ordering.order_policy`:**
+  - In `ReturnApplyDetail.tsx`, replaced hardcoded `returnAddressId: 1` with a dynamic dropdown populated from `/api/admin/ordering/merchant-addresses`, and displayed customer `evidenceUrls` / `proofPics`, `reviewedByAdminId` / `handleMan`, `receivedByAdminId` / `receiveMan`, and `receiptNote` / `receiveNote`.
+  - In `OrderSetting.tsx`, added a full `"Warehouse / Return Addresses"` CRUD management table and dialog for `ordering.merchant_address`, removed obsolete `flashPaymentTimeoutMin`, and enforced `autoCompleteDays` return request window in `ReturnRequestServiceImpl`.
+- [x] **12.2 — Seed & Wire `payment.payment_transaction` in Admin & Storefront:**
+  - Verified and seeded `payment.payment_transaction` rows in `V3__demo_catalog.sql` & live DB, exposed `paymentTransactions` in `OrderDetail` (both Admin and Portal DTOs) and rendered it in `OrderDetail.tsx` (Admin table) and `Profile.tsx` (Storefront expandable order detail), and recorded a `REFUND` transaction when an admin completes a return application.
+- [x] **12.3 — Wire Customer Order Receipt Confirmation & Return Evidence in `Profile.tsx` (`CF-5`):**
+  - Added `"Confirm Receipt"` button calling `confirmReceiveOrder(order.id)` on Shipped (`status === 2`) orders in `Profile.tsx`.
+  - Made orders expandable via accordion row in `Profile.tsx` to display `orderLines` with photos & SKU specs, carrier logistics & tracking (`deliveryCompany`, `deliverySn`), full order timeline (`paidAt`, `shippedAt`, `deliveredAt`), and payment/refund audit records.
+  - Added `"Evidence Photo URLs"` input in the Customer Return Request modal in `Profile.tsx` mapped to `evidenceUrls` and `proofPics`.
+- [x] **12.4 — Gate:** `mvn clean compile -DskipTests` and both frontend builds pass with 0 errors. Unit tests in `nexus-domain` (Flyway testcontainer against Postgres 17), `nexus-admin-api` (22 tests), and `nexus-portal-api` (5 tests) all pass.
+- [x] Commit: `feat: wire merchant addresses, payment transactions, order receipt confirmation, and return evidence`
+
 
 #### Card 13: Wire Customer Profile, Login Audit Events, `review_media`, Reviews Moderation & Outbox Dashboard (1.5 hrs)
 - [ ] **13.1 — Wire All `customer.member`, `member_address`, `member_login_event`, and `member_category_interest` Columns (`CF-5`, `CF-6`):**

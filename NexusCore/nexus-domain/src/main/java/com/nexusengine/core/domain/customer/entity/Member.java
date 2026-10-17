@@ -76,6 +76,10 @@ private String email;
         return contactPhone;
     }
 
+    public String getPhone() {
+        return contactPhone;
+    }
+
     public void setPhoneE164(String phoneE164) {
         this.contactPhone = phoneE164;
     }

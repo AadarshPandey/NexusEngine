@@ -1933,8 +1933,10 @@ ON CONFLICT (id) DO NOTHING;
 
 -- 11. Merchant Fulfillment Addresses
 INSERT INTO ordering.merchant_address (id, label, is_default_ship_from, is_default_return_to, contact_name, contact_phone, state, city, address_line) VALUES
-(1, 'Main Warehouse', true, true, 'Operations Manager', '+919876543210', 'Karnataka', 'Bengaluru', '42 Tech Park Avenue, Electronic City Phase 1')
+(1, 'Main Warehouse', true, true, 'Operations Manager', '+919876543210', 'Karnataka', 'Bengaluru', '42 Tech Park Avenue, Electronic City Phase 1'),
+(2, 'North Fulfillment Hub', false, false, 'Regional Dispatcher', '+919812345678', 'Delhi', 'New Delhi', 'Plot 15, Okhla Industrial Area Phase 3')
 ON CONFLICT (id) DO NOTHING;
+
 
 
 -- 13. Catalog Approval & Price Change Audit Logs
