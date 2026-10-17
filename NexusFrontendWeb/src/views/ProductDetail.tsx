@@ -288,8 +288,16 @@ const ProductDetail: React.FC = () => {
 
             {/* Available Coupons & Offers */}
             {productDetail.couponList && productDetail.couponList.length > 0 && (
-              <Box sx={{ my: 3, p: 2, bgcolor: '#F8FAFC', borderRadius: 2, border: '1px dashed #CBD5E1' }}>
-                <Typography variant="subtitle2" sx={{ fontWeight: 'bold', mb: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Box
+                sx={{
+                  my: 3,
+                  p: 2,
+                  bgcolor: 'rgba(99, 102, 241, 0.08)',
+                  borderRadius: 2,
+                  border: '1px dashed #6366F1',
+                }}
+              >
+                <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1.5, display: 'flex', alignItems: 'center', gap: 1, color: '#90caf9' }}>
                   🏷️ Available Coupons & Offers
                 </Typography>
                 <Stack spacing={1}>
@@ -303,16 +311,18 @@ const ProductDetail: React.FC = () => {
                           justifyContent: 'space-between',
                           alignItems: 'center',
                           p: 1.5,
-                          bgcolor: '#FFFFFF',
-                          borderRadius: 1,
-                          border: '1px solid #E2E8F0',
+                          bgcolor: 'background.paper',
+                          borderRadius: 1.5,
+                          border: '1px solid',
+                          borderColor: 'divider',
+                          borderLeft: '4px solid #6366F1',
                         }}
                       >
                         <Box>
-                          <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                          <Typography variant="body2" sx={{ fontWeight: 600, color: 'text.primary' }}>
                             {coupon.name}
                           </Typography>
-                          <Typography variant="caption" color="text.secondary">
+                          <Typography variant="caption" sx={{ color: 'text.secondary' }}>
                             {coupon.discountType === 0 && `Flat ₹${coupon.discountValue} OFF`}
                             {coupon.discountType === 1 && `${coupon.discountValue}% OFF`}
                             {coupon.discountType === 2 && `Free Shipping`}
