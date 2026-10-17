@@ -99,7 +99,7 @@ make_svg(f"{base}/marketing/banners/special-discount.svg", "Special 50% Discount
 make_svg(f"{base}/marketing/homepage/hero.svg", "NexusEngine Hero", "#059669")
 
 # Avatars
-make_svg(f"{base}/users/avatars/1/avatar.svg", "User Avatar", "#475569")
+make_svg(f"{base}/users/avatars/1/avatar.svg", "Aadarsh Pandey", "#475569")
 
 # Category Icons (1..30)
 for cid in range(1, 31):

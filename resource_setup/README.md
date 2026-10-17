@@ -61,6 +61,11 @@ resource_setup/
 | **Prometheus** | http://localhost:9090 | Metrics scraper |
 | **Grafana** | http://localhost:3000 | `admin` / `admin` |
 
+### Additional Pre-Configured Test Accounts
+- **Customer User**: `customer1` / `macro123` (Name: Aadarsh Pandey, pre-seeded with orders & addresses)
+- **Brand Admin (Samsung)**: `samsung_admin` / `macro123`
+- **Brand Admin (Nike)**: `nike_admin` / `macro123`
+
 ---
 
 ## Advanced Operations
