@@ -963,7 +963,7 @@ Also:
   public class AdminProductController { ... }
   ```
 
-- [ ] Commit: `git commit -m "refactor: DTO records, kill CommonResult, REST URLs, pagination, validation"`
+- [x] Commit: `git commit -m "refactor: DTO records, kill CommonResult, REST URLs, pagination, validation"`
 
 **✅ Gate: `mvn clean compile -DskipTests` passes. App boots. Swagger UI shows clean namespaced endpoints with proper verbs.**
 
@@ -1110,7 +1110,7 @@ Also:
 > [!NOTE]
 > This phase depends on the backend API changes from Phases 2-5. Only start this after the backend compiles and boots.
 
-- [ ] **6.1 — Update API base paths** in both apps.
+- [x] **6.1 — Update API base paths** in both apps.
   - Admin: all API calls go to `/api/admin/<context>/<resource>` (matching Phase 3.4 backend URLs)
   - Storefront: all API calls go to `/api/store/<context>/<resource>`
   - Update Axios/http client `baseURL` and every API function.
@@ -1135,7 +1135,7 @@ Also:
   payment.ts:   /portal/order/createRazorpayOrder → POST /api/store/payment/razorpay/orders
   ```
 
-- [ ] **6.2 — Update TypeScript types to match new DTO shapes.** After Phase 3, the backend returns clean record DTOs, NOT entity JSON. Update `src/types/` in both apps to match exactly:
+- [x] **6.2 — Update TypeScript types to match new DTO shapes.** After Phase 3, the backend returns clean record DTOs, NOT entity JSON. Update `src/types/` in both apps to match exactly:
   - Field names match DTO record field names (camelCase, no aliases)
   - Booleans are `boolean` (not `number`)
   - Timestamps are ISO `string`
@@ -1143,7 +1143,7 @@ Also:
   - Money is `number`
   - No `||` fallback chains — the DTO has ONE name for each field
 
-- [ ] **6.3 — Update pagination.** Both apps must use the new Spring Data `Page<T>` response shape:
+- [x] **6.3 — Update pagination.** Both apps must use the new Spring Data `Page<T>` response shape:
   ```typescript
   interface PageResponse<T> {
     content: T[];
@@ -1157,7 +1157,7 @@ Also:
   ```
   Update all list pages to send `?page=0&size=20&sort=createdAt,desc` instead of `?pageNum=1&pageSize=5`.
 
-- [ ] **6.4 — Kill dead fallback chains.** Search for and eliminate ALL patterns like:
+- [x] **6.4 — Kill dead fallback chains.** Search for and eliminate ALL patterns like:
   ```typescript
   // KILL THESE:
   const img = item.pic || item.primaryImageUrl || item.imageUrl || '/placeholder.png';
@@ -1166,19 +1166,19 @@ Also:
   ```
   Replace with the single canonical field name from the DTO.
 
-- [ ] **6.5 — Kill integer-as-boolean.** Search for and eliminate ALL `=== 1`, `=== 0` comparisons on status/boolean fields:
+- [x] **6.5 — Kill integer-as-boolean.** Search for and eliminate ALL `=== 1`, `=== 0` comparisons on status/boolean fields:
   ```typescript
   // KILL: if (product.publishStatus === 1)
   // USE:  if (product.isPublished)
   ```
 
-- [ ] **6.6 — Update auth flow** for new JWT endpoints:
+- [x] **6.6 — Update auth flow** for new JWT endpoints:
   - Login: `POST /api/store/auth/login` (storefront), `POST /api/admin/auth/login` (admin)
   - Store access token in memory/Redux (not localStorage for XSS safety)
   - Refresh token comes in HttpOnly cookie (browser handles it automatically)
   - Axios interceptor: on 401, call `/api/<X>/auth/refresh` (cookie sent automatically), retry
 
-- [ ] **6.7 — Update error handling** for RFC 9457 ProblemDetail:
+- [x] **6.7 — Update error handling** for RFC 9457 ProblemDetail:
   ```typescript
   interface ProblemDetail {
     type: string;
@@ -1197,7 +1197,7 @@ Also:
   }
   ```
 
-- [ ] **6.8 — Remove hardcoded MinIO URLs.** The `MemberController.uploadAvatar` with hardcoded `minioadmin:minioadmin` at `localhost:9000` must be removed. All uploads go through the backend `/api/admin/s3/upload` or `/api/store/s3/upload` endpoint. Frontend never talks directly to S3/MinIO.
+- [x] **6.8 — Remove hardcoded MinIO URLs.** The `MemberController.uploadAvatar` with hardcoded `minioadmin:minioadmin` at `localhost:9000` must be removed. All uploads go through the backend `/api/admin/s3/upload` or `/api/store/s3/upload` endpoint. Frontend never talks directly to S3/MinIO.
 
 - [x] **6.9 — Upgrade frontend dependencies** (verify latest GA on npmjs.com):
 
@@ -1217,7 +1217,7 @@ Also:
   > [!IMPORTANT]
   > The frontends use **TypeScript 7.x**, **Vite 8.x**, **React Router 8.x**, and one uses **MUI 9.x**. These are MORE modern than the plan assumed. Verify compatibility and align both apps to the same major versions.
 
-- [ ] Commit: `git commit -m "feat: frontend aligned with new API, clean types, no fallbacks"`
+- [x] Commit: `git commit -m "feat: frontend aligned with new API, clean types, no fallbacks"`
 
 **✅ Gate: Both apps `tsc -b && vite build` pass. No TypeScript errors. No console warnings about missing fields in dev mode.**
 
@@ -1230,14 +1230,14 @@ Also:
 > [!WARNING]
 > The subagent analysis revealed the admin panel is in much worse shape than previously noted. The bounded-context `src/apis/catalog/` etc. directories are **one-line re-export shims** — the real API logic is in 25+ legacy root files. Pages are still under `src/pages/pms/`, `src/pages/oms/`, `src/pages/sms/`, `src/pages/ums/`.
 
-- [ ] **7.1 — Move real API logic into bounded-context folders.** Currently:
+- [x] **7.1 — Move real API logic into bounded-context folders.** Currently:
   ```
   src/apis/catalog/product.ts  →  export * from '../product';  // shim!
   src/apis/product.ts          →  actual API functions here
   ```
   Fix: move the actual logic FROM `src/apis/product.ts` INTO `src/apis/catalog/product.ts`. Delete the shim pattern. Delete the legacy root files. Do this for ALL 25+ legacy files.
 
-- [ ] **7.2 — Move pages from `pms/oms/sms/ums` to bounded-context directories:**
+- [x] **7.2 — Move pages from `pms/oms/sms/ums` to bounded-context directories:**
   ```
   src/pages/pms/ProductList.tsx  →  src/pages/catalog/ProductList.tsx
   src/pages/pms/BrandList.tsx    →  src/pages/catalog/BrandList.tsx
@@ -1247,7 +1247,7 @@ Also:
   ```
   Update all import paths in `router/index.tsx`.
 
-- [ ] **7.3 — Kill the duplicate route tree.** The router currently registers BOTH:
+- [x] **7.3 — Kill the duplicate route tree.** The router currently registers BOTH:
   - `/catalog/products` (modern)
   - `/pms/product` (legacy)
 
@@ -1263,11 +1263,11 @@ Also:
   // USE:  navigate('/promotion/coupons/new')
   ```
 
-- [ ] **7.4 — Delete `ROUTE_NAME_ALIASES` triple-fallback** in `permissionSlice.ts`. After route cleanup, there's only one name per route. Delete the 35-line alias dictionary and the triple-check for `isHidden` / `is_hidden` / `hidden !== 0`.
+- [x] **7.4 — Delete `ROUTE_NAME_ALIASES` triple-fallback** in `permissionSlice.ts`. After route cleanup, there's only one name per route. Delete the 35-line alias dictionary and the triple-check for `isHidden` / `is_hidden` / `hidden !== 0`.
 
-- [ ] **7.5 — Fix the type collision.** Both `src/types/catalog.d.ts` AND `src/types/product.d.ts` export `PmsProduct` with different shapes. Delete ALL legacy type files (`product.d.ts`, `order.d.ts`, `brand.d.ts`, `skuStock.d.ts`, `homeAdvertist.d.ts`, `prefrenceArea.d.ts`, etc.). Keep only the clean bounded-context types.
+- [x] **7.5 — Fix the type collision.** Both `src/types/catalog.d.ts` AND `src/types/product.d.ts` export `PmsProduct` with different shapes. Delete ALL legacy type files (`product.d.ts`, `order.d.ts`, `brand.d.ts`, `skuStock.d.ts`, `homeAdvertist.d.ts`, `prefrenceArea.d.ts`, etc.). Keep only the clean bounded-context types.
 
-- [ ] **7.6 — Fix critical UI bugs found by analysis:**
+- [x] **7.6 — Fix critical UI bugs found by analysis:**
   | Bug | Location | Fix |
   |---|---|---|
   | Product category filter binds to `permissionGroupId` | `ProductList.tsx` search | Bind to `categoryId` |
@@ -1276,7 +1276,7 @@ Also:
   | Machine-translated Chinese UI strings | `ProductList.tsx` and others | Replace with clean English: "Search", "Reset", "Results", "Product Image", "SKU Code", "Stock", etc. |
   | `deletedAt: 1` passed to API instead of boolean | `ProductList.tsx` | Pass `true` or don't pass — backend handles soft delete |
 
-- [ ] **7.7 — Fix proxy bypass.** In `src/utils/http.ts`, axios `baseURL` is hardcoded to `http://localhost:8080`, bypassing the Vite proxy. Fix:
+- [x] **7.7 — Fix proxy bypass.** In `src/utils/http.ts`, axios `baseURL` is hardcoded to `http://localhost:8080`, bypassing the Vite proxy. Fix:
   ```typescript
   // Remove hardcoded baseURL — use Vite proxy
   const http = axios.create({
@@ -1285,19 +1285,19 @@ Also:
   });
   ```
 
-- [ ] **7.8 — Fix ESLint.** The `package.json` has `"lint": "eslint . --fix --cache"` but ESLint is not installed. Either:
+- [x] **7.8 — Fix ESLint.** The `package.json` has `"lint": "eslint . --fix --cache"` but ESLint is not installed. Either:
   - Install `eslint` + `@eslint/js` + `typescript-eslint` and configure, OR
   - Replace with `oxlint` (like the storefront uses — faster, no config needed)
 
-- [ ] **7.9 — Add Vitest** to the admin panel (currently 0 tests):
+- [x] **7.9 — Add Vitest** to the admin panel (currently 0 tests):
   ```bash
   npm i -D vitest @testing-library/react @testing-library/jest-dom jsdom
   ```
   Add at least 3-5 smoke tests for critical pages (ProductList, OrderList, AdminLogin).
 
-- [ ] **7.10 — Align auth token handling.** The admin panel does `tokenHead + token` concatenation. Standardize to `Bearer ${token}` matching the storefront.
+- [x] **7.10 — Align auth token handling.** The admin panel does `tokenHead + token` concatenation. Standardize to `Bearer ${token}` matching the storefront.
 
-- [ ] Commit: `git commit -m "refactor: admin panel real cleanup, kill legacy routes/apis/types, fix bugs"`
+- [x] Commit: `git commit -m "refactor: admin panel real cleanup, kill legacy routes/apis/types, fix bugs"`
 
 **✅ Gate: `tsc -b && vite build` passes. No legacy `pms/oms/sms/ums` directories remain. Router has no duplicate routes.**
 
@@ -1310,7 +1310,7 @@ Also:
 > [!WARNING]
 > The subagent analysis found the storefront's `src/api/catalog.ts` performs runtime response patching (`pic → primaryImageUrl`, `stock → onHandQty`), type definitions carry massive legacy alias fields, and `Profile.tsx` has 12+ fallback chains.
 
-- [ ] **8.1 — Kill response patching in API clients.** `catalog.ts` manually patches backend responses:
+- [x] **8.1 — Kill response patching in API clients.** `catalog.ts` manually patches backend responses:
   ```typescript
   // KILL THIS:
   products.forEach(p => {
@@ -1322,7 +1322,7 @@ Also:
   ```
   After Phase 2-3, the backend returns clean DTOs. The API client should just pass them through.
 
-- [ ] **8.2 — Kill legacy type aliases.** Delete ALL re-exports at the bottom of type files:
+- [x] **8.2 — Kill legacy type aliases.** Delete ALL re-exports at the bottom of type files:
   ```typescript
   // KILL THESE in src/types/catalog.d.ts, ordering.d.ts, etc.:
   export type PmsProduct = Product;
@@ -1334,7 +1334,7 @@ Also:
   ```
   Any component still using `PmsProduct` must be updated to use `Product`.
 
-- [ ] **8.3 — Kill legacy optional fields on types.** Remove ALL the `?` aliases:
+- [x] **8.3 — Kill legacy optional fields on types.** Remove ALL the `?` aliases:
   ```typescript
   // KILL THESE from CustomerOrder:
   orderSn?: string;         // use orderNumber
@@ -1345,7 +1345,7 @@ Also:
   ```
   Same for `OrderLine`, `Member`, `MemberAddress`.
 
-- [ ] **8.4 — Fix Profile.tsx** (the worst offender — 12+ fallback chains):
+- [x] **8.4 — Fix Profile.tsx** (the worst offender — 12+ fallback chains):
   ```typescript
   // KILL: order.orderNumber || order.orderSn
   // USE:  order.orderNumber
@@ -1357,7 +1357,7 @@ Also:
   // USE:  addr.recipientName
   ```
 
-- [ ] **8.5 — Fix Checkout.tsx** — remove magic numbers, use typed constants:
+- [x] **8.5 — Fix Checkout.tsx** — remove magic numbers, use typed constants:
   ```typescript
   // KILL: payType: 2
   // USE:  paymentMethod: PaymentMethod.RAZORPAY
@@ -1366,7 +1366,7 @@ Also:
   // USE:  coupon.discountType === CouponType.FIXED_AMOUNT
   ```
 
-- [ ] **8.6 — Fix ProductDetail.tsx** — simplify price display:
+- [x] **8.6 — Fix ProductDetail.tsx** — simplify price display:
   ```typescript
   // KILL the nested ternary:
   // displayPrice = activeSku ? (isPromotionActive && activeSku.salePrice ? ...
@@ -1374,7 +1374,7 @@ Also:
   const displayPrice = activeSku?.salePrice ?? activeSku?.listPrice ?? product.price;
   ```
 
-- [ ] **8.7 — Fix status display** — use enum maps instead of inline ternary chains:
+- [x] **8.7 — Fix status display** — use enum maps instead of inline ternary chains:
   ```typescript
   const ORDER_STATUS_LABELS: Record<number, string> = {
     0: 'Pending Payment',
@@ -1386,7 +1386,7 @@ Also:
   // USE: ORDER_STATUS_LABELS[order.status] ?? 'Unknown'
   ```
 
-- [ ] **8.8 — Fix Vite proxy config.** Currently proxies `/api/search` to `localhost:8081` (separate search service). After Phase 4 (search merged into monolith), route ALL `/api` traffic to one backend:
+- [x] **8.8 — Fix Vite proxy config.** Currently proxies `/api/search` to `localhost:8081` (separate search service). After Phase 4 (search merged into monolith), route ALL `/api` traffic to one backend:
   ```typescript
   server: {
     proxy: {
@@ -1399,9 +1399,9 @@ Also:
   }
   ```
 
-- [ ] **8.9 — MUI version alignment.** The storefront uses `@mui/material ^9.4.0` while admin uses `^7.3.11`. Verify if MUI 9 is stable (it should be by Oct 2026). If stable, upgrade admin to 9.x. If not, downgrade storefront to 7.x. **Both apps must use the same MUI major version.**
+- [x] **8.9 — MUI version alignment.** The storefront uses `@mui/material ^9.4.0` while admin uses `^7.3.11`. Verify if MUI 9 is stable (it should be by Oct 2026). If stable, upgrade admin to 9.x. If not, downgrade storefront to 7.x. **Both apps must use the same MUI major version.**
 
-- [ ] Commit: `git commit -m "refactor: storefront kill fallbacks, legacy aliases, response patching"`
+- [x] Commit: `git commit -m "refactor: storefront kill fallbacks, legacy aliases, response patching"`
 
 **✅ Gate: `tsc -b && vite build` passes. `grep -r "orderSn\|payAmount\|totalAmount\|productPic\|deleteStatus" NexusFrontendWeb/src/` returns 0 results.**
 
@@ -1930,30 +1930,30 @@ nexus-domain/src/main/resources/db/migration/
 **Gate: `OrderServiceImpl` < 200 lines. No `RedisService`. `mvn clean compile -DskipTests` passes.**
 
 #### Card 5: Security Overhaul (2 hrs)
-- [ ] **5.1** DELETE these 8 files from `nexus-security`:
+- [x] **5.1** DELETE these 8 files from `nexus-security`:
   - `CacheException.java`, `RedisCacheAspect.java`, `DynamicAuthorizationManager.java`, `DynamicSecurityMetadataSource.java`, `DynamicSecurityService.java`, `JwtAuthenticationTokenFilter.java`, `RestAuthenticationEntryPoint.java`, `RestfulAccessDeniedHandler.java`, `IgnoreUrlsConfig.java`
-- [ ] **5.2** DELETE `JwtTokenUtil.java` (has hutool imports).
-- [ ] **5.3** REWRITE `SecurityConfig.java` with Spring OAuth2 Resource Server pattern (see §3 Phase 5.1).
-- [ ] **5.4** Create `NimbusJwtEncoder`/`NimbusJwtDecoder` beans.
-- [ ] **5.5** Two `SecurityFilterChain` beans: admin chain (`/api/admin/**`) + store chain (`/api/store/**`).
-- [ ] **5.6** Add `@PreAuthorize` on admin endpoints.
-- [ ] **5.7** JWT secret must fail fast if missing (no fallback default).
-- [ ] **5.8** Delete `DynamicAuthorizationManagerTest.java`, `JwtTokenUtilTest.java`. Add new security tests.
-- [ ] Commit: `refactor: Spring Security OAuth2 RS, kill custom JWT, @PreAuthorize`
+- [x] **5.2** DELETE `JwtTokenUtil.java` (has hutool imports).
+- [x] **5.3** REWRITE `SecurityConfig.java` with Spring OAuth2 Resource Server pattern (see §3 Phase 5.1).
+- [x] **5.4** Create `NimbusJwtEncoder`/`NimbusJwtDecoder` beans.
+- [x] **5.5** Two `SecurityFilterChain` beans: admin chain (`/api/admin/**`) + store chain (`/api/store/**`).
+- [x] **5.6** Add `@PreAuthorize` on admin endpoints.
+- [x] **5.7** JWT secret must fail fast if missing (no fallback default).
+- [x] **5.8** Delete `DynamicAuthorizationManagerTest.java`, `JwtTokenUtilTest.java`. Add new security tests.
+- [x] Commit: `refactor: Spring Security OAuth2 RS, kill custom JWT, @PreAuthorize`
 
-**Gate: Zero `admin:` / `member:` prefix strings. Zero `DynamicAuthorizationManager` references. App boots with `JWT_SECRET` env var.**
+**Gate: Zero `admin:` / `member:` prefix strings. Zero `DynamicAuthorizationManager` references. App boots with `JWT_SECRET` env var. ✅ PASSED**
 
 #### Card 6: Frontend Dependency Alignment (1 hr)
-- [ ] **6.1** Align both apps to SAME versions:
+- [x] **6.1** Align both apps to SAME versions:
   - React: both → latest 19.x (currently admin=19.1.0, storefront=19.2.8)
   - React Router: both → latest 8.x (currently admin=8.4.0, storefront=8.3.1)
   - MUI: **CRITICAL — admin=7.3.11, storefront=9.4.0** — pick ONE major version for both. Verify MUI 9 is GA-stable on npmjs.com. If yes → upgrade admin to 9.x. If not → downgrade storefront to 7.x.
   - Axios: both → latest 1.x (currently admin=1.13.2, storefront=1.20.0)
-- [ ] **6.2** Install Vitest in admin panel: `npm i -D vitest @testing-library/react @testing-library/jest-dom jsdom`
-- [ ] **6.3** Run `npm install && npx tsc -b && npx vite build` in BOTH apps.
-- [ ] Commit: `chore: align frontend dependency versions`
+- [x] **6.2** Install Vitest in admin panel: `npm i -D vitest @testing-library/react @testing-library/jest-dom jsdom`
+- [x] **6.3** Run `npm install && npx tsc -b && npx vite build` in BOTH apps.
+- [x] Commit: `chore: align frontend dependency versions`
 
-**Gate: Both apps `tsc -b && vite build` pass. Same MUI major version in both `package.json`.**
+**Gate: Both apps `tsc -b && vite build` pass. Same MUI major version in both `package.json`. ✅ PASSED**
 
 #### Card 7: Admin Panel Real Cleanup (2 hrs)
 - [x] **7.1** Move REAL API logic FROM root files (`src/apis/product.ts`, `brand.ts`, ...) INTO bounded-context dirs (`src/apis/catalog/product.ts`, `catalog/brand.ts`, ...). Delete root legacy files. Delete shim re-exports.
