@@ -35,6 +35,12 @@ logs/
 
 # Trash & Scratch
 trash/
+Cleanup.md
+CleanupAndMAkingFAANGInterviewReady.md
+FrontendMigrationPlan.md
+BackendMigrationPlan.md
+schema_redesign.md
+Schema_Migration_SOP.md
 
 # Local binary DB data
 resource_setup/postgres-data/
