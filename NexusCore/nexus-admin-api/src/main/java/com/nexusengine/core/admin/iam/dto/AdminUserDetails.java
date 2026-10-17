@@ -60,4 +60,12 @@ public class AdminUserDetails implements UserDetails {
     public boolean isEnabled() {
         return Boolean.TRUE.equals(adminUser.getStatus());
     }
+
+    public Long getBrandId() {
+        return adminUser != null ? adminUser.getBrandId() : null;
+    }
+
+    public AdminUser getAdminUser() {
+        return adminUser;
+    }
 }

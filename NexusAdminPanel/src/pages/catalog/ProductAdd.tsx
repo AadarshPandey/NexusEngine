@@ -6,9 +6,11 @@ import { getProductCategoryListWithChildrenAPI } from '@/apis/catalog';
 import { getProductAttributeCategoryListAPI } from '@/apis/catalog';
 import { resolveImageUrl } from '@/utils/media';
 import { useNavigate } from 'react-router';
+import { useAppSelector } from '@/store/hooks';
 
 const ProductAdd: React.FC = () => {
   const navigate = useNavigate();
+  const userBrandId = useAppSelector((state) => state.user.userInfo.brandId);
   const [brands, setBrands] = useState<import('@/types/catalog').PmsBrand[]>([]);
   const [categories, setCategories] = useState<import('@/types/catalog').PmsProductCategory[]>([]);
   const [productTypes, setProductTypes] = useState<any[]>([]);
@@ -19,7 +21,7 @@ const ProductAdd: React.FC = () => {
     primaryImageUrl: '',
     productCategoryId: '',
     productAttributeCategoryId: '',
-    brandId: '',
+    brandId: userBrandId ? String(userBrandId) : '',
     keywords: '',
     isPublished: 1,
     isNewArrival: 1,
@@ -27,6 +29,12 @@ const ProductAdd: React.FC = () => {
     approvalStatus: 1,
     skuStockList: [{ skuCode: '', listPrice: '', onHandQty: '', promotionPrice: '', lowStock: '', pic: '', sale: '', lockStock: '', spDataList: [] as {key: string, value: string}[], version: '' }]
   });
+
+  useEffect(() => {
+    if (userBrandId) {
+      setFormData(prev => ({ ...prev, brandId: String(userBrandId) }));
+    }
+  }, [userBrandId]);
 
   useEffect(() => {
     fetchDependencies();
@@ -169,11 +177,15 @@ const ProductAdd: React.FC = () => {
               </FormControl>
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
-              <FormControl fullWidth required>
+              <FormControl fullWidth required disabled={Boolean(userBrandId)}>
                 <InputLabel>Brand</InputLabel>
-                <Select label="Brand" value={formData.brandId} onChange={e => setFormData({...formData, brandId: e.target.value as string})}>
+                <Select
+                  label="Brand"
+                  value={formData.brandId}
+                  onChange={e => setFormData({...formData, brandId: e.target.value as string})}
+                >
                   {brands.map((b: import('@/types/catalog').PmsBrand) => (
-                    <MenuItem key={b.id} value={b.id}>{b.name}</MenuItem>
+                    <MenuItem key={b.id} value={b.id?.toString() || ''}>{b.name}</MenuItem>
                   ))}
                 </Select>
               </FormControl>

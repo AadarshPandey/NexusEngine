@@ -2354,18 +2354,18 @@ Each card is a commit boundary. If token expires, resume from the first unchecke
 > 3. Commit and mark the checkboxes `[x]` in this file immediately.
 
 #### Card 9: Multi-Tenant Brand-Scoped Isolation (`samsung_admin` & `nike_admin`) (2 hrs)
-- [ ] **9.1 — Schema & Seed Migration (`V1__baseline.sql`, `V2__reference_data.sql`, `V3__demo_catalog.sql`, and live DB):**
+- [x] **9.1 — Schema & Seed Migration (`V1__baseline.sql`, `V2__reference_data.sql`, `V3__demo_catalog.sql`, and live DB):**
   - Add `brand_id BIGINT REFERENCES catalog.brand(id) ON DELETE SET NULL` to `iam.admin_user`.
   - Bind `samsung_admin` (`id=2`) to `brand_id = 86` (`Samsung`) and `nike_admin` (`id=3`) to `brand_id = 62` (`Nike`), with their matching S3 brand logos (`brands/86/logo.svg`, `brands/62/logo.svg`).
   - Seed Samsung (`Galaxy S26`, `Odyssey G6 27`) and Nike (`Air Max 270`, `Heritage Backpack`) orders, order lines, payment transactions, and return requests in `V3__demo_catalog.sql` and live PostgreSQL.
-- [ ] **9.2 — Backend `AdminTenantContext` & Service Scoping (`NexusCore`):**
+- [x] **9.2 — Backend `AdminTenantContext` & Service Scoping (`NexusCore`):**
   - Add `brandId` to `AdminUser.java` and `brandId` + `brandName` to `AdminInfoResponse.java`.
   - Create `AdminTenantContext` and enforce `currentBrandId()` filtering + `assertBrandAccess()` across `DashboardServiceImpl`, `ProductServiceImpl`, `ProductSkuServiceImpl`, `BrandServiceImpl`, `OrderServiceImpl`, and `ReturnRequestServiceImpl`.
-- [ ] **9.3 — Admin Panel Brand Portal UX (`NexusAdminPanel`):**
+- [x] **9.3 — Admin Panel Brand Portal UX (`NexusAdminPanel`):**
   - Store `brandId` and `brandName` from `/api/admin/iam/users/me` in Redux (`userSlice` / `auth`).
   - Show `"Samsung Brand Portal"` / `"Nike Brand Portal"` chip in the Admin header, pre-filter/lock the Brand selector in `ProductList.tsx`, `ProductAdd.tsx`, and `ProductUpdate.tsx`, and grant `Brand Manager` access to `Dashboard`, `Catalog (Products, Add Product, Brand)`, and `Ordering (Order List, Return Requests)`.
-- [ ] **9.4 — Gate:** Log in as `samsung_admin` / `macro123` → verify ONLY Samsung products (`2`), Samsung brand (`1`), Samsung orders (`2`), Samsung returns (`1`), and Samsung dashboard KPIs appear. Log in as `nike_admin` / `macro123` → verify ONLY Nike products (`2`), Nike brand (`1`), Nike orders (`2`), Nike returns (`1`), and Nike dashboard KPIs appear. Log in as `admin` / `macro123` → verify all 152 products and 104 brands appear.
-- [ ] Commit: `feat: implement brand-scoped multi-tenant isolation for samsung_admin and nike_admin`
+- [x] **9.4 — Gate:** Log in as `samsung_admin` / `macro123` → verified ONLY Samsung products (`2`), Samsung brand (`1`), Samsung orders (`2`), Samsung returns (`1`), and Samsung dashboard KPIs appear. Log in as `nike_admin` / `macro123` → verified ONLY Nike products (`2`), Nike brand (`1`), Nike orders (`2`), Nike returns (`1`), and Nike dashboard KPIs appear. Log in as `admin` / `macro123` → verified all 152 products and 104 brands appear. IDOR verified: cross-brand access returns HTTP 403 Forbidden.
+- [x] Commit: `feat: implement brand-scoped multi-tenant isolation for samsung_admin and nike_admin`
 
 #### Card 10: Prune Unwanted Subsystems, Dependent Backend Classes, Dead DB Tables/Columns & Frontend Clones (2.5 hrs)
 - [ ] **10.1 — Drop dead tables & dependent columns from `V1__baseline.sql`, `V2__reference_data.sql`, `V3__demo_catalog.sql`, and live PostgreSQL (`§13.2.1`):**

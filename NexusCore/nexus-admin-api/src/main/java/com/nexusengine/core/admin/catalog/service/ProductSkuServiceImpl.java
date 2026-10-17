@@ -9,6 +9,7 @@ import com.nexusengine.core.domain.catalog.entity.ProductPriceChange;
 
 import org.springframework.util.StringUtils;
 import com.nexusengine.core.domain.catalog.repository.ProductSkuRepository;
+import com.nexusengine.core.domain.catalog.entity.Product;
 import com.nexusengine.core.domain.catalog.entity.ProductSku;
 import org.springframework.stereotype.Service;
 
@@ -24,9 +25,15 @@ import java.util.stream.Collectors;
 public class ProductSkuServiceImpl implements ProductSkuService {
     private final ProductSkuRepository skuStockRepository;
     private final ProductPriceChangeRepository productAuditLogRepository;
+    private final com.nexusengine.core.domain.catalog.repository.ProductRepository productRepository;
+    private final com.nexusengine.core.admin.security.AdminTenantContext adminTenantContext;
 
     @Override
     public List<ProductSku> getList(Long pid, String keyword) {
+        Product product = productRepository.findById(pid).orElse(null);
+        if (product != null) {
+            adminTenantContext.assertBrandAccess(product.getBrandId());
+        }
         if (StringUtils.hasText(keyword)) {
             return skuStockRepository.findByProductIdAndSkuCodeContaining(pid, keyword);
         }
@@ -35,6 +42,10 @@ public class ProductSkuServiceImpl implements ProductSkuService {
 
     @Override
     public int update(Long pid, List<ProductSku> skuStockList) {
+        Product product = productRepository.findById(pid).orElse(null);
+        if (product != null) {
+            adminTenantContext.assertBrandAccess(product.getBrandId());
+        }
         List<ProductSku> filterSkuList = skuStockList.stream()
                 .filter(item -> pid.equals(item.getProductId()))
                 .collect(Collectors.toList());

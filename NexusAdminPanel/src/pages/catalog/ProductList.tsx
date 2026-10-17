@@ -16,6 +16,7 @@ import {
   getProductCategoryListWithChildrenAPI,
 } from '@/apis/catalog';
 import { resolveImageUrl } from '@/utils/media';
+import { useAppSelector } from '@/store/hooks';
 
 interface PmsProductAuditLog {
   id?: number;
@@ -48,6 +49,9 @@ interface PmsSpData {
 }
 
 const ProductList: React.FC = () => {
+  const userBrandId = useAppSelector((state) => state.user.userInfo.brandId);
+  const userBrandName = useAppSelector((state) => state.user.userInfo.brandName);
+
   const [products, setProducts] = useState<import('@/types/catalog').PmsProduct[]>([]);
   const [brands, setBrands] = useState<import('@/types/catalog').PmsBrand[]>([]);
   const [categories, setCategories] = useState<import('@/types/catalog').PmsProductCategory[]>([]);
@@ -56,7 +60,7 @@ const ProductList: React.FC = () => {
     keyword: '',
     productCode: '',
     productCategoryId: '',
-    brandId: '',
+    brandId: userBrandId ? String(userBrandId) : '',
     isPublished: '',
     approvalStatus: '',
     pageNum: 1,
@@ -146,6 +150,12 @@ const ProductList: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    if (userBrandId) {
+      setSearchParams((prev) => ({ ...prev, brandId: String(userBrandId) }));
+    }
+  }, [userBrandId]);
+
+  useEffect(() => {
     fetchProducts(searchParams);
   }, [searchParams.pageNum, searchParams.pageSize]);
 
@@ -179,7 +189,16 @@ const ProductList: React.FC = () => {
   };
 
   const handleReset = () => {
-    const resetParams = { ...searchParams, keyword: '', productCode: '', productCategoryId: '', brandId: '', isPublished: '', approvalStatus: '', pageNum: 1 };
+    const resetParams = {
+      ...searchParams,
+      keyword: '',
+      productCode: '',
+      productCategoryId: '',
+      brandId: userBrandId ? String(userBrandId) : '',
+      isPublished: '',
+      approvalStatus: '',
+      pageNum: 1
+    };
     setSearchParams(resetParams);
     fetchProducts(resetParams);
   };
@@ -250,10 +269,14 @@ const ProductList: React.FC = () => {
             </FormControl>
           </Grid>
           <Grid size={{ xs: 12, md: 4 }}>
-            <FormControl fullWidth size="small">
+            <FormControl fullWidth size="small" disabled={Boolean(userBrandId)}>
               <InputLabel>Product brand</InputLabel>
-              <Select label="Product brand" value={searchParams.brandId} onChange={(e) => setSearchParams({ ...searchParams, brandId: e.target.value as string })}>
-                <MenuItem value="">Please select brand</MenuItem>
+              <Select
+                label="Product brand"
+                value={userBrandId ? String(userBrandId) : searchParams.brandId}
+                onChange={(e) => setSearchParams({ ...searchParams, brandId: e.target.value as string })}
+              >
+                {!userBrandId && <MenuItem value="">Please select brand</MenuItem>}
                 {brands.map((b: import('@/types/catalog').PmsBrand) => (
                   <MenuItem key={b.id} value={b.id}>{b.name}</MenuItem>
                 ))}

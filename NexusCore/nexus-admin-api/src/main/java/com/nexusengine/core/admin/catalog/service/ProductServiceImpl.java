@@ -56,6 +56,7 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductApprovalEventRepository productApprovalHistoryRepository;
     private final ProductPriceChangeRepository productAuditLogRepository;
+    private final com.nexusengine.core.admin.security.AdminTenantContext adminTenantContext;
 
     @Override
     @org.springframework.transaction.annotation.Transactional(rollbackFor = Exception.class)
@@ -63,6 +64,7 @@ public class ProductServiceImpl implements ProductService {
         Product product = new Product();
         BeanUtils.copyProperties(productParam, product);
         product.setId(null);
+        adminTenantContext.currentBrandId().ifPresent(product::setBrandId);
         productRepository.save(product);
         Long productId = product.getId();
         saveProductLadderList(productParam.productVolumeDiscountList(), productId);
@@ -103,15 +105,21 @@ public class ProductServiceImpl implements ProductService {
     public ProductResult getUpdateInfo(Long id) {
         Product product = productRepository.findById(id).orElse(null);
         if (product == null) return null;
+        adminTenantContext.assertBrandAccess(product.getBrandId());
         return new ProductResult(new ProductParam(product, productVolumeDiscountRepository.findByProductId(id), productSpendDiscountRepository.findByProductId(id), skuStockRepository.findByProductId(id), productAttributeValueRepository.findByProductId(id)), null);
     }
 
     @Override
     @org.springframework.transaction.annotation.Transactional(rollbackFor = Exception.class)
     public int update(Long id, ProductParam productParam) {
+        Product rawProduct = productRepository.findById(id).orElse(null);
+        if (rawProduct != null) {
+            adminTenantContext.assertBrandAccess(rawProduct.getBrandId());
+        }
         Product product = new Product();
         BeanUtils.copyProperties(productParam, product);
         product.setId(id);
+        adminTenantContext.currentBrandId().ifPresent(product::setBrandId);
         productRepository.save(product);
         productVolumeDiscountRepository.deleteByProductId(id);
         saveProductLadderList(productParam.productVolumeDiscountList(), id);
@@ -182,7 +190,9 @@ public class ProductServiceImpl implements ProductService {
             if (StringUtils.hasText(queryParam.productCode())) {
                 predicates.add(cb.equal(root.get("productCode"), queryParam.productCode()));
             }
-            if (queryParam.brandId() != null) {
+            if (adminTenantContext.isBrandScoped()) {
+                predicates.add(cb.equal(root.get("brandId"), adminTenantContext.currentBrandId().get()));
+            } else if (queryParam.brandId() != null) {
                 predicates.add(cb.equal(root.get("brandId"), queryParam.brandId()));
             }
             if (queryParam.productCategoryId() != null) {
@@ -193,8 +203,15 @@ public class ProductServiceImpl implements ProductService {
     }
 
     private void checkVendorAuthorization(List<Long> ids) {
-        String username = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getName();
-        AdminUser admin = adminService.getAdminByUsername(username);
+        if (CollectionUtils.isEmpty(ids)) return;
+        adminTenantContext.currentBrandId().ifPresent(brandId -> {
+            List<Product> products = productRepository.findAllById(ids);
+            for (Product p : products) {
+                if (p.getBrandId() == null || !brandId.equals(p.getBrandId())) {
+                    throw new com.nexusengine.core.common.exception.ApiException(com.nexusengine.core.common.api.ResultCode.FORBIDDEN);
+                }
+            }
+        });
     }
 
     @Override
@@ -271,8 +288,17 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<Product> list(String keyword) {
-        String username = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getName();
-        AdminUser admin = adminService.getAdminByUsername(username);
+        if (adminTenantContext.isBrandScoped()) {
+            Long brandId = adminTenantContext.currentBrandId().get();
+            return productRepository.findAll((root, query, cb) -> {
+                var predicates = new java.util.ArrayList<jakarta.persistence.criteria.Predicate>();
+                predicates.add(cb.equal(root.get("brandId"), brandId));
+                if (StringUtils.hasText(keyword)) {
+                    predicates.add(cb.like(cb.lower(root.get("name")), "%" + keyword.toLowerCase() + "%"));
+                }
+                return cb.and(predicates.toArray(new jakarta.persistence.criteria.Predicate[0]));
+            }, PageRequest.of(0, 1000)).getContent();
+        }
 
         boolean hasKeyword = StringUtils.hasText(keyword);
 

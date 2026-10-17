@@ -156,6 +156,10 @@ INSERT INTO catalog.brand (id, name, is_visible, logo_url) VALUES (102, 'Zara', 
 INSERT INTO catalog.brand (id, name, is_visible, logo_url) VALUES (103, 'Zebronics', true, 'http://localhost:4566/nexus-media/public/catalog/brands/103/logo.svg') ON CONFLICT (id) DO NOTHING;
 INSERT INTO catalog.brand (id, name, is_visible, logo_url) VALUES (104, 'boAt', true, 'http://localhost:4566/nexus-media/public/catalog/brands/104/logo.svg') ON CONFLICT (id) DO NOTHING;
 
+-- Link Vendor Admins to Brands
+UPDATE iam.admin_user SET brand_id = 86 WHERE id = 2;
+UPDATE iam.admin_user SET brand_id = 62 WHERE id = 3;
+
 -- 3. Product Types
 INSERT INTO catalog.product_type (id, name) VALUES (1, 'Electronics Specs') ON CONFLICT (id) DO NOTHING;
 INSERT INTO catalog.product_type (id, name) VALUES (2, 'Headphones & Earbuds Specs') ON CONFLICT (id) DO NOTHING;
@@ -1961,26 +1965,55 @@ ON CONFLICT (id) DO NOTHING;
 -- 15. Demo Customer Orders, Lines, History & Return Request
 INSERT INTO ordering.customer_order (id, member_id, coupon_id, order_number, created_at, subtotal_amount, grand_total_amount, shipping_amount, promotion_discount_amount, coupon_discount_amount, manual_adjustment_amount, payment_method, status, order_type, carrier_name, tracking_number, recipient_name, recipient_phone, shipping_postal_code, shipping_address_line, customer_note, is_receipt_confirmed, paid_at, shipped_at, delivered_at, version) VALUES
 (1, 1, 2, 'NX-20261017-0001', CURRENT_TIMESTAMP - INTERVAL '2 hours', 53430.00, 52930.00, 0.00, 0.00, 500.00, 0.00, 1, 3, 0, 'BlueDart Express', 'BD900128371', 'Aarav Sharma', '+919876500001', '560100', 'Flat 402, Prestige Sunrise Park, Electronic City Phase 1, Bengaluru, Karnataka', 'Leave at security desk', true, CURRENT_TIMESTAMP - INTERVAL '2 hours', CURRENT_TIMESTAMP - INTERVAL '1 hour', CURRENT_TIMESTAMP - INTERVAL '30 minutes', 0),
-(2, 1, NULL, 'NX-20261017-0002', CURRENT_TIMESTAMP - INTERVAL '1 hour', 34990.00, 34990.00, 0.00, 0.00, 0.00, 0.00, 1, 1, 0, NULL, NULL, 'Aarav Sharma', '+919876500001', '560100', 'Flat 402, Prestige Sunrise Park, Electronic City Phase 1, Bengaluru, Karnataka', 'Call before delivery', false, CURRENT_TIMESTAMP - INTERVAL '50 minutes', NULL, NULL, 0)
+(2, 1, NULL, 'NX-20261017-0002', CURRENT_TIMESTAMP - INTERVAL '1 hour', 34990.00, 34990.00, 0.00, 0.00, 0.00, 0.00, 1, 1, 0, NULL, NULL, 'Aarav Sharma', '+919876500001', '560100', 'Flat 402, Prestige Sunrise Park, Electronic City Phase 1, Bengaluru, Karnataka', 'Call before delivery', false, CURRENT_TIMESTAMP - INTERVAL '50 minutes', NULL, NULL, 0),
+(3, 1, NULL, 'NX-20261017-0003', CURRENT_TIMESTAMP - INTERVAL '1 hour', 68520.00, 68520.00, 0.00, 0.00, 0.00, 0.00, 1, 1, 0, NULL, NULL, 'Aarav Sharma', '+919876500001', '560100', 'Flat 402, Prestige Sunrise Park, Electronic City Phase 1, Bengaluru, Karnataka', 'Handle with care - fragile electronics', false, CURRENT_TIMESTAMP - INTERVAL '50 minutes', NULL, NULL, 0),
+(4, 1, NULL, 'NX-20261017-0004', CURRENT_TIMESTAMP - INTERVAL '3 hours', 11010.00, 11010.00, 0.00, 0.00, 0.00, 0.00, 1, 3, 0, 'Delhivery', 'DL982144122', 'Aarav Sharma', '+919876500001', '560100', 'Flat 402, Prestige Sunrise Park, Electronic City Phase 1, Bengaluru, Karnataka', 'Deliver during daytime', true, CURRENT_TIMESTAMP - INTERVAL '3 hours', CURRENT_TIMESTAMP - INTERVAL '2 hours', CURRENT_TIMESTAMP - INTERVAL '30 minutes', 0),
+(5, 1, NULL, 'NX-20261017-0005', CURRENT_TIMESTAMP - INTERVAL '4 hours', 9820.00, 9820.00, 0.00, 0.00, 0.00, 0.00, 1, 2, 0, 'BlueDart Express', 'BD449102811', 'Aarav Sharma', '+919876500001', '560100', 'Flat 402, Prestige Sunrise Park, Electronic City Phase 1, Bengaluru, Karnataka', 'Leave package at front door', false, CURRENT_TIMESTAMP - INTERVAL '4 hours', CURRENT_TIMESTAMP - INTERVAL '1 hour', NULL, 0),
+(6, 1, NULL, 'NX-20261017-0006', CURRENT_TIMESTAMP - INTERVAL '6 hours', 1150.00, 1150.00, 0.00, 0.00, 0.00, 0.00, 1, 3, 0, 'BlueDart Express', 'BD110948211', 'Aarav Sharma', '+919876500001', '560100', 'Flat 402, Prestige Sunrise Park, Electronic City Phase 1, Bengaluru, Karnataka', 'Standard delivery', true, CURRENT_TIMESTAMP - INTERVAL '6 hours', CURRENT_TIMESTAMP - INTERVAL '4 hours', CURRENT_TIMESTAMP - INTERVAL '1 hour', 0)
 ON CONFLICT (id) DO NOTHING;
 
 INSERT INTO ordering.order_line (id, order_id, product_id, sku_id, category_id, product_image_url, product_name, brand_name, unit_price, quantity, promotion_name, promotion_discount_amount, coupon_discount_amount, line_total_amount, sku_attributes) VALUES
 (1, 1, 1, 3, 3, 'http://localhost:4566/nexus-media/public/catalog/skus/APPLE-IP17-SLV-128/main.svg', 'iPhone 17', 'Apple', 53430.00, 1, NULL, 0.00, 500.00, 52930.00, '[{"key": "Color", "value": "Silver"}, {"key": "Storage", "value": "128GB"}]'),
-(2, 2, 16, 49, 2, 'http://localhost:4566/nexus-media/public/catalog/skus/SONY-WH6-BLK/main.svg', 'WH-1000XM6', 'Sony', 34990.00, 1, NULL, 0.00, 0.00, 34990.00, '[{"key": "Color", "value": "Black"}]')
+(2, 2, 16, 49, 2, 'http://localhost:4566/nexus-media/public/catalog/skus/SONY-WH6-BLK/main.svg', 'WH-1000XM6', 'Sony', 34990.00, 1, NULL, 0.00, 0.00, 34990.00, '[{"key": "Color", "value": "Black"}]'),
+(3, 3, 2, 5, 3, 'http://localhost:4566/nexus-media/public/catalog/skus/SAMSUNG-GS26-BLK-128/main.svg', 'Galaxy S26', 'Samsung', 68520.00, 1, NULL, 0.00, 0.00, 68520.00, '[{"key": "Color", "value": "Black"}, {"key": "Storage", "value": "128GB"}]'),
+(4, 4, 18, 53, 5, 'http://localhost:4566/nexus-media/public/catalog/skus/SAMSUNG-ODG6-27-QHD/main.svg', 'Odyssey G6 27', 'Samsung', 11010.00, 1, NULL, 0.00, 0.00, 11010.00, '[{"key": "Display", "value": "27-inch QHD"}]'),
+(5, 5, 30, 96, 4, 'http://localhost:4566/nexus-media/public/catalog/skus/NIKE-AM270-BLK-8/main.svg', 'Air Max 270', 'Nike', 9820.00, 1, NULL, 0.00, 0.00, 9820.00, '[{"key": "Color", "value": "Black"}, {"key": "Size", "value": "US 8"}]'),
+(6, 6, 37, 119, 4, 'http://localhost:4566/nexus-media/public/catalog/skus/NIKE-HBPK-BLK/main.svg', 'Heritage Backpack', 'Nike', 1150.00, 1, NULL, 0.00, 0.00, 1150.00, '[{"key": "Color", "value": "Black"}]')
 ON CONFLICT (id) DO NOTHING;
 
 INSERT INTO ordering.order_status_history (id, order_id, actor_ref, to_status, note) VALUES
 (1, 1, 'SYSTEM', 1, 'Payment confirmed via Razorpay'),
 (2, 1, 'admin', 2, 'Order shipped via BlueDart Express'),
 (3, 1, 'customer1', 3, 'Delivery confirmed by customer'),
-(4, 2, 'SYSTEM', 1, 'Payment confirmed via Razorpay')
+(4, 2, 'SYSTEM', 1, 'Payment confirmed via Razorpay'),
+(5, 3, 'SYSTEM', 1, 'Payment confirmed via Razorpay'),
+(6, 4, 'SYSTEM', 1, 'Payment confirmed via Razorpay'),
+(7, 4, 'admin', 2, 'Shipped via Delhivery'),
+(8, 4, 'customer1', 3, 'Delivery confirmed by customer'),
+(9, 5, 'SYSTEM', 1, 'Payment confirmed via Razorpay'),
+(10, 5, 'admin', 2, 'Shipped via BlueDart Express'),
+(11, 6, 'SYSTEM', 1, 'Payment confirmed via Razorpay'),
+(12, 6, 'admin', 2, 'Shipped via BlueDart Express'),
+(13, 6, 'customer1', 3, 'Delivered and confirmed')
 ON CONFLICT (id) DO NOTHING;
 
 INSERT INTO ordering.return_request (id, order_id, return_address_id, order_line_id, order_sn, member_username, refund_amount, contact_name, contact_phone, status, product_pic, product_name, product_brand, product_attr, quantity, product_price, unit_refund_amount, reason_id, customer_comment) VALUES
-(1, 1, 1, 1, 'NX-20261017-0001', 'customer1', 52930.00, 'Aarav Sharma', '+919876500001', 0, 'http://localhost:4566/nexus-media/public/catalog/skus/APPLE-IP17-SLV-128/main.svg', 'iPhone 17', 'Apple', 'Color: Silver; Storage: 128GB', 1, 53430.00, 52930.00, 'Changed mind / Not needed', 'Want to upgrade to 256GB storage variant instead.')
+(1, 1, 1, 1, 'NX-20261017-0001', 'customer1', 52930.00, 'Aarav Sharma', '+919876500001', 0, 'http://localhost:4566/nexus-media/public/catalog/skus/APPLE-IP17-SLV-128/main.svg', 'iPhone 17', 'Apple', 'Color: Silver; Storage: 128GB', 1, 53430.00, 52930.00, 'Changed mind / Not needed', 'Want to upgrade to 256GB storage variant instead.'),
+(2, 4, 1, 4, 'NX-20261017-0004', 'customer1', 11010.00, 'Aarav Sharma', '+919876500001', 0, 'http://localhost:4566/nexus-media/public/catalog/skus/SAMSUNG-ODG6-27-QHD/main.svg', 'Odyssey G6 27', 'Samsung', 'Display: 27-inch QHD', 1, 11010.00, 11010.00, 'Defective or damaged product', 'Minor dead pixel on top right corner.'),
+(3, 6, 1, 6, 'NX-20261017-0006', 'customer1', 1150.00, 'Aarav Sharma', '+919876500001', 0, 'http://localhost:4566/nexus-media/public/catalog/skus/NIKE-HBPK-BLK/main.svg', 'Heritage Backpack', 'Nike', 'Color: Black', 1, 1150.00, 1150.00, 'Wrong item sent', 'Ordered black but need replacement.')
 ON CONFLICT (id) DO NOTHING;
 
--- 16. Demo Product Reviews & Claimed Coupon
+-- 16. Demo Payment Transactions
+INSERT INTO payment.payment_transaction (id, order_id, provider_txn_id, txn_type, amount, status) VALUES
+(1, 1, 'pay_demo_apple_001', 'CAPTURE', 52930.00, 'SUCCESS'),
+(2, 2, 'pay_demo_sony_002', 'CAPTURE', 34990.00, 'SUCCESS'),
+(3, 3, 'pay_demo_samsung_003', 'CAPTURE', 68520.00, 'SUCCESS'),
+(4, 4, 'pay_demo_samsung_004', 'CAPTURE', 11010.00, 'SUCCESS'),
+(5, 5, 'pay_demo_nike_005', 'CAPTURE', 9820.00, 'SUCCESS'),
+(6, 6, 'pay_demo_nike_006', 'CAPTURE', 1150.00, 'SUCCESS')
+ON CONFLICT (id) DO NOTHING;
+
+-- 17. Demo Product Reviews & Claimed Coupon
 INSERT INTO engagement.product_review (id, product_id, member_id, rating, body, helpful_count, moderation_status) VALUES
 (1, 1, 1, 5, 'Outstanding display and battery life! Delivery was super fast.', 4, 1),
 (2, 16, 1, 5, 'Best noise cancelling headphones in the market.', 2, 1)
@@ -1991,7 +2024,7 @@ INSERT INTO promotion.member_coupon (id, coupon_id, member_id, acquisition_chann
 (2, 1, 1, 1, 0, NULL, NULL)
 ON CONFLICT (id) DO NOTHING;
 
--- 17. Synchronize Identity Sequences
+-- 18. Synchronize Identity Sequences
 SELECT setval(pg_get_serial_sequence('catalog.category', 'id'), COALESCE((SELECT MAX(id) FROM catalog.category), 1));
 SELECT setval(pg_get_serial_sequence('catalog.brand', 'id'), COALESCE((SELECT MAX(id) FROM catalog.brand), 1));
 SELECT setval(pg_get_serial_sequence('catalog.product_type', 'id'), COALESCE((SELECT MAX(id) FROM catalog.product_type), 1));
@@ -2015,4 +2048,5 @@ SELECT setval(pg_get_serial_sequence('ordering.customer_order', 'id'), COALESCE(
 SELECT setval(pg_get_serial_sequence('ordering.order_line', 'id'), COALESCE((SELECT MAX(id) FROM ordering.order_line), 1));
 SELECT setval(pg_get_serial_sequence('ordering.order_status_history', 'id'), COALESCE((SELECT MAX(id) FROM ordering.order_status_history), 1));
 SELECT setval(pg_get_serial_sequence('ordering.return_request', 'id'), COALESCE((SELECT MAX(id) FROM ordering.return_request), 1));
+SELECT setval(pg_get_serial_sequence('payment.payment_transaction', 'id'), COALESCE((SELECT MAX(id) FROM payment.payment_transaction), 1));
 SELECT setval(pg_get_serial_sequence('engagement.product_review', 'id'), COALESCE((SELECT MAX(id) FROM engagement.product_review), 1));

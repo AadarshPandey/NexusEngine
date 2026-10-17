@@ -81,6 +81,8 @@ export interface AdminUser {
   status?: boolean | number
   roles?: Role[]
   menus?: ConsoleMenu[]
+  brandId?: number
+  brandName?: string
   lastLoginAt?: string
   loginTime?: string
   createdAt?: string
@@ -104,6 +106,8 @@ export interface AdminInfoResponse {
   iconUrl?: string
   avatarUrl?: string
   roles: string[]
+  brandId?: number
+  brandName?: string
 }
 
 export interface UserInfo {
@@ -115,6 +119,8 @@ export interface UserInfo {
   avatar?: string
   avatarUrl?: string
   displayName?: string
+  brandId?: number
+  brandName?: string
 }
 
 export interface AdminUserParam {

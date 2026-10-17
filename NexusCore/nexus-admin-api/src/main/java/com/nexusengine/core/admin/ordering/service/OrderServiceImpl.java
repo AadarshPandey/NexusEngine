@@ -13,36 +13,86 @@ import com.nexusengine.core.admin.ordering.dto.OrderReceiverInfoParam;
 
 
 
+import com.nexusengine.core.domain.catalog.repository.BrandRepository;
+import com.nexusengine.core.domain.catalog.repository.ProductRepository;
 import com.nexusengine.core.domain.ordering.repository.CustomerOrderRepository;
 import com.nexusengine.core.domain.ordering.repository.OrderLineRepository;
 import com.nexusengine.core.domain.ordering.repository.OrderStatusHistoryRepository;
 import com.nexusengine.core.domain.ordering.entity.CustomerOrder;
 import com.nexusengine.core.domain.ordering.entity.OrderStatusHistory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service("adminOrderServiceImpl")
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class OrderServiceImpl implements OrderService {
     private final CustomerOrderRepository orderRepository;
     private final OrderLineRepository orderItemRepository;
     private final OrderStatusHistoryRepository orderOperateHistoryRepository;
-
-    private final AdminUserService adminService;
+    private final ProductRepository productRepository;
+    private final BrandRepository brandRepository;
+    private final com.nexusengine.core.admin.security.AdminTenantContext adminTenantContext;
 
     @Override
     public List<CustomerOrder> list(OrderQueryParam queryParam, Integer pageSize, Integer pageNum) {
-        String username = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getName();
-        AdminUser admin = adminService.getAdminByUsername(username);
+        return orderRepository.findAll((root, query, cb) -> {
+            var predicates = new java.util.ArrayList<jakarta.persistence.criteria.Predicate>();
+            if (queryParam != null) {
+                if (org.springframework.util.StringUtils.hasText(queryParam.orderSn())) {
+                    predicates.add(cb.equal(root.get("orderSn"), queryParam.orderSn()));
+                }
+                if (queryParam.status() != null) {
+                    predicates.add(cb.equal(root.get("status"), queryParam.status()));
+                }
+                if (org.springframework.util.StringUtils.hasText(queryParam.receiverKeyword())) {
+                    predicates.add(cb.or(
+                            cb.like(root.get("receiverName"), "%" + queryParam.receiverKeyword() + "%"),
+                            cb.like(root.get("receiverPhone"), "%" + queryParam.receiverKeyword() + "%")
+                    ));
+                }
+                if (queryParam.orderType() != null) {
+                    predicates.add(cb.equal(root.get("orderType"), queryParam.orderType()));
+                }
+            }
+            adminTenantContext.currentBrandId().ifPresent(brandId -> {
+                jakarta.persistence.criteria.Subquery<Long> subquery = query.subquery(Long.class);
+                jakarta.persistence.criteria.Root<com.nexusengine.core.domain.ordering.entity.OrderLine> lineRoot =
+                        subquery.from(com.nexusengine.core.domain.ordering.entity.OrderLine.class);
+                subquery.select(lineRoot.get("orderId"));
+                subquery.where(
+                        cb.equal(lineRoot.get("orderId"), root.get("id")),
+                        cb.equal(lineRoot.get("product").get("brandId"), brandId)
+                );
+                predicates.add(cb.exists(subquery));
+            });
+            return cb.and(predicates.toArray(new jakarta.persistence.criteria.Predicate[0]));
+        }, org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.DESC, "createTime"));
+    }
 
-        return orderRepository.findAll(org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.DESC, "createTime"));
+    private void assertOrderBrandAccess(Long orderId) {
+        adminTenantContext.currentBrandId().ifPresent(brandId -> {
+            String brandName = brandRepository.findById(brandId)
+                    .map(com.nexusengine.core.domain.catalog.entity.Brand::getName)
+                    .orElse(null);
+            boolean hasBrandLine = orderItemRepository.findByOrderId(orderId).stream()
+                    .anyMatch(l -> (brandName != null && brandName.equalsIgnoreCase(l.getProductBrand()))
+                            || (l.getProductId() != null && productRepository.findById(l.getProductId())
+                                .map(p -> brandId.equals(p.getBrandId())).orElse(false)));
+            if (!hasBrandLine) {
+                throw new com.nexusengine.core.common.exception.ApiException(com.nexusengine.core.common.api.ResultCode.FORBIDDEN);
+            }
+        });
     }
 
     @Override
+    @Transactional
     public int delivery(List<OrderDeliveryParam> deliveryParamList) {
         int count = 0;
         for (OrderDeliveryParam param : deliveryParamList) {
+            assertOrderBrandAccess(param.orderId());
             CustomerOrder order = orderRepository.findById(param.orderId()).orElse(null);
             if (order != null) {
                 order.setDeliverySn(param.deliverySn());
@@ -67,7 +117,11 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     public int close(List<Long> ids, String note) {
+        for (Long id : ids) {
+            assertOrderBrandAccess(id);
+        }
         List<CustomerOrder> orders = orderRepository.findAllById(ids);
         for (CustomerOrder order : orders) {
             order.setStatus(4);
@@ -87,7 +141,11 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     public int delete(List<Long> ids) {
+        for (Long id : ids) {
+            assertOrderBrandAccess(id);
+        }
         List<CustomerOrder> orders = orderRepository.findAllById(ids);
         for (CustomerOrder order : orders) {
             order.setDeletedAt(java.time.Instant.now());
@@ -100,11 +158,26 @@ public class OrderServiceImpl implements OrderService {
     public OrderDetail detail(Long id) {
         CustomerOrder order = orderRepository.findById(id).orElse(null);
         if (order == null) return null;
-        return new OrderDetail(order, orderItemRepository.findByOrderId(id), orderOperateHistoryRepository.findByOrderId(id));
+        assertOrderBrandAccess(id);
+        List<com.nexusengine.core.domain.ordering.entity.OrderLine> lines = orderItemRepository.findByOrderId(id);
+        if (adminTenantContext.isBrandScoped()) {
+            Long brandId = adminTenantContext.currentBrandId().get();
+            String brandName = brandRepository.findById(brandId)
+                    .map(com.nexusengine.core.domain.catalog.entity.Brand::getName)
+                    .orElse(null);
+            lines = lines.stream().filter(l -> (brandName != null && brandName.equalsIgnoreCase(l.getProductBrand()))
+                    || (l.getProductId() != null && productRepository.findById(l.getProductId())
+                        .map(p -> brandId.equals(p.getBrandId())).orElse(false))).collect(Collectors.toList());
+        }
+        return new OrderDetail(order, lines, orderOperateHistoryRepository.findByOrderId(id));
     }
 
     @Override
+    @Transactional
     public int updateReceiverInfo(OrderReceiverInfoParam receiverInfoParam) {
+        if (receiverInfoParam != null && receiverInfoParam.orderId() != null) {
+            assertOrderBrandAccess(receiverInfoParam.orderId());
+        }
         CustomerOrder order = orderRepository.findById(receiverInfoParam.orderId()).orElse(null);
         if (order == null) return 0;
         order.setReceiverName(receiverInfoParam.receiverName());
@@ -125,7 +198,11 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     public int updateMoneyInfo(OrderMoneyInfoParam moneyInfoParam) {
+        if (moneyInfoParam != null && moneyInfoParam.orderId() != null) {
+            assertOrderBrandAccess(moneyInfoParam.orderId());
+        }
         CustomerOrder order = orderRepository.findById(moneyInfoParam.orderId()).orElse(null);
         if (order == null) return 0;
         order.setFreightAmount(moneyInfoParam.freightAmount());
@@ -143,7 +220,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     public int updateNote(Long id, String note, Integer status) {
+        assertOrderBrandAccess(id);
         CustomerOrder order = orderRepository.findById(id).orElse(null);
         if (order == null) return 0;
         order.setNote(note);
@@ -160,7 +239,11 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     public int updateStatus(List<Long> ids, Integer status, String note) {
+        for (Long id : ids) {
+            assertOrderBrandAccess(id);
+        }
         List<CustomerOrder> orders = orderRepository.findAllById(ids);
         for (CustomerOrder order : orders) {
             order.setStatus(status);

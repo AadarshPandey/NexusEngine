@@ -6,9 +6,11 @@ import { getProductCategoryListWithChildrenAPI } from '@/apis/catalog';
 import { getProductAttributeCategoryListAPI } from '@/apis/catalog';
 import { resolveImageUrl } from '@/utils/media';
 import { useNavigate, useParams, useSearchParams } from 'react-router';
+import { useAppSelector } from '@/store/hooks';
 
 const ProductUpdate: React.FC = () => {
   const navigate = useNavigate();
+  const userBrandId = useAppSelector((state) => state.user.userInfo.brandId);
   const { id: paramId } = useParams<{ id: string }>();
   const [searchParams] = useSearchParams();
   const id = paramId || searchParams.get('id');
@@ -231,7 +233,7 @@ const ProductUpdate: React.FC = () => {
               </FormControl>
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
-              <FormControl fullWidth required>
+              <FormControl fullWidth required disabled={Boolean(userBrandId)}>
                 <InputLabel>Brand</InputLabel>
                 <Select label="Brand" value={formData.brandId} onChange={e => setFormData({...formData, brandId: e.target.value as string})}>
                   {brands.map((b: import('@/types/catalog').PmsBrand) => (

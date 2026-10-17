@@ -97,12 +97,16 @@ const userSlice = createSlice({
       state.userInfo.avatar = avatar;
       state.userInfo.avatarUrl = avatar;
       state.userInfo.displayName = (data as any).displayName || (data as any).nickName || state.userInfo.username;
+      state.userInfo.brandId = data.brandId;
+      state.userInfo.brandName = data.brandName;
       state.adminUser = {
         username: data.username,
         avatarUrl: avatar,
         displayName: state.userInfo.displayName,
         roles: data.roles as any,
         menus: data.menus as any,
+        brandId: data.brandId,
+        brandName: data.brandName,
         isEnabled: true,
       };
       state.isAuthenticated = true;

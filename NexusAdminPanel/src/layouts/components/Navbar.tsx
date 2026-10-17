@@ -85,6 +85,7 @@ const Navbar: React.FC<NavbarProps> = ({ onMobileMenuToggle }) => {
   const device = useAppSelector((state) => state.app.device);
   const avatar = useAppSelector((state) => state.user.userInfo.avatar);
   const username = useAppSelector((state) => state.user.userInfo.username);
+  const brandName = useAppSelector((state) => state.user.userInfo.brandName);
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const menuOpen = Boolean(anchorEl);
@@ -171,6 +172,19 @@ const Navbar: React.FC<NavbarProps> = ({ onMobileMenuToggle }) => {
 
         {/* User menu */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          {brandName && (
+            <Chip
+              label={`${brandName} Brand Portal`}
+              size="small"
+              sx={{
+                background: 'linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%)',
+                color: '#fff',
+                fontWeight: 600,
+                fontSize: '0.75rem',
+                boxShadow: '0 2px 4px rgba(79, 70, 229, 0.25)',
+              }}
+            />
+          )}
           <Chip
             label={username || 'Admin'}
             size="small"

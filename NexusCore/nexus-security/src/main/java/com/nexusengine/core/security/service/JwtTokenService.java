@@ -43,12 +43,16 @@ public class JwtTokenService {
     }
 
     public String generateToken(String username, List<String> roles) {
+        return generateToken(username, roles, null);
+    }
+
+    public String generateToken(String username, List<String> roles, Long brandId) {
         Instant now = Instant.now();
         String userType =
                 roles != null && roles.stream().anyMatch(r -> r.contains("ADMIN"))
                         ? "ADMIN"
                         : "CUSTOMER";
-        JwtClaimsSet claims =
+        JwtClaimsSet.Builder builder =
                 JwtClaimsSet.builder()
                         .issuer("https://nexusengine.com")
                         .issuedAt(now)
@@ -58,8 +62,11 @@ public class JwtTokenService {
                         .claim("typ", userType)
                         .claim("roles", roles != null ? roles : Collections.emptyList())
                         .claim("authorities", roles != null ? roles : Collections.emptyList())
-                        .claim("scope", roles != null ? String.join(" ", roles) : "")
-                        .build();
+                        .claim("scope", roles != null ? String.join(" ", roles) : "");
+        if (brandId != null) {
+            builder.claim("brand_id", brandId);
+        }
+        JwtClaimsSet claims = builder.build();
 
         JwsHeader header = JwsHeader.with(MacAlgorithm.HS256).build();
         return jwtEncoder.encode(JwtEncoderParameters.from(header, claims)).getTokenValue();

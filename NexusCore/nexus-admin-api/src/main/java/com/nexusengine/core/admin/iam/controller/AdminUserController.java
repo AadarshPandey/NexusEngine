@@ -51,6 +51,7 @@ public class AdminUserController {
 
     private final AdminUserService adminService;
     private final RoleService roleService;
+    private final com.nexusengine.core.domain.catalog.repository.BrandRepository brandRepository;
 
     @Operation(summary = "Register admin user")
     @PostMapping("/register")
@@ -97,11 +98,20 @@ public class AdminUserController {
                 (roleList != null && !roleList.isEmpty())
                         ? roleList.stream().map(Role::getName).collect(Collectors.toList())
                         : Collections.emptyList();
+        Long brandId = adminUser.getBrandId();
+        String brandName = null;
+        if (brandId != null) {
+            brandName = brandRepository.findById(brandId)
+                    .map(com.nexusengine.core.domain.catalog.entity.Brand::getName)
+                    .orElse(null);
+        }
         return new AdminInfoResponse(
                 adminUser.getUsername(),
                 roleService.getMenuList(adminUser.getId()),
                 adminUser.getIcon(),
-                roles);
+                roles,
+                brandId,
+                brandName);
     }
 
     @Operation(summary = "Logout admin user")

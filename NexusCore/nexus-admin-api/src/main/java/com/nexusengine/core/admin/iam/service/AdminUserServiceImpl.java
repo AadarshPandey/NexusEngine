@@ -39,6 +39,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import com.nexusengine.core.admin.iam.dto.AdminUserParam;
 import com.nexusengine.core.admin.iam.dto.UpdatePasswordParam;
@@ -104,7 +105,11 @@ public class AdminUserServiceImpl implements AdminUserService {
             }
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            token = jwtTokenService.generateToken(userDetails);
+            Long brandId = (userDetails instanceof AdminUserDetails aud) ? aud.getBrandId() : null;
+            List<String> roles = userDetails.getAuthorities() != null
+                    ? userDetails.getAuthorities().stream().map(Object::toString).toList()
+                    : Collections.emptyList();
+            token = jwtTokenService.generateToken(username, roles, brandId);
             insertLoginLog(username);
         } catch (AuthenticationException e) {
             LOGGER.warn("Login exception: {}", e.getMessage());

@@ -53,4 +53,8 @@ public class AdminUser {
     @Schema(title = "Status")
     @Column(name = "is_enabled")
     private Boolean status;
+
+    @Schema(title = "Brand ID (scoped vendor admin)")
+    @Column(name = "brand_id")
+    private Long brandId;
 }

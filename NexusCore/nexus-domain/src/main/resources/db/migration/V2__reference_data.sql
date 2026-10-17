@@ -16,18 +16,21 @@ ON CONFLICT (id) DO UPDATE SET
 
 -- 2. IAM Admin Users (Demo password: macro123 / $2a$10$yBHlid11MRH9e6vDsETdJufyIgz/AASiNSUJdsirodt8IUr16xWDO)
 INSERT INTO iam.admin_user (id, username, password_hash, avatar_url, email, nick_name, note, is_enabled) VALUES
-(1, 'admin', '$2a$10$yBHlid11MRH9e6vDsETdJufyIgz/AASiNSUJdsirodt8IUr16xWDO', '/assets/default-avatar.png', 'admin@nexusengine.com', 'System Administrator', 'System Administrator', true),
-(2, 'samsung_admin', '$2a$10$yBHlid11MRH9e6vDsETdJufyIgz/AASiNSUJdsirodt8IUr16xWDO', NULL, 'samsung@nexusengine.com', 'Samsung Admin', 'Samsung Brand Administrator', true),
-(3, 'nike_admin', '$2a$10$yBHlid11MRH9e6vDsETdJufyIgz/AASiNSUJdsirodt8IUr16xWDO', NULL, 'nike@nexusengine.com', 'Nike Admin', 'Nike Brand Administrator', true)
+(1, 'admin', '$2a$10$yBHlid11MRH9e6vDsETdJufyIgz/AASiNSUJdsirodt8IUr16xWDO', 'http://localhost:4566/nexus-media/public/users/avatars/1/avatar.svg', 'admin@nexusengine.com', 'System Administrator', 'System Administrator', true),
+(2, 'samsung_admin', '$2a$10$yBHlid11MRH9e6vDsETdJufyIgz/AASiNSUJdsirodt8IUr16xWDO', 'http://localhost:4566/nexus-media/public/catalog/brands/86/logo.svg', 'samsung@nexusengine.com', 'Samsung Admin', 'Samsung Brand Administrator', true),
+(3, 'nike_admin', '$2a$10$yBHlid11MRH9e6vDsETdJufyIgz/AASiNSUJdsirodt8IUr16xWDO', 'http://localhost:4566/nexus-media/public/catalog/brands/62/logo.svg', 'nike@nexusengine.com', 'Nike Admin', 'Nike Brand Administrator', true)
 ON CONFLICT (id) DO UPDATE SET
     password_hash = EXCLUDED.password_hash,
+    avatar_url = EXCLUDED.avatar_url,
     email = EXCLUDED.email;
 
 -- 3. IAM Admin User Roles
 INSERT INTO iam.admin_user_role (id, admin_id, role_id) VALUES
 (1, 1, 1),
 (2, 2, 2),
-(3, 3, 2)
+(3, 3, 2),
+(4, 2, 3),
+(5, 3, 3)
 ON CONFLICT (admin_id, role_id) DO NOTHING;
 
 -- 4. IAM Permission Groups
