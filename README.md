@@ -338,7 +338,7 @@ Once started, all services are operational at the following endpoints:
 | **Redis Cache** | [localhost:6379](redis://localhost:6379) | *No password (DB: 0)* | Connection URI: `redis://localhost:6379` |
 
 ### Additional Pre-Configured Test Accounts
-- **Customer User**: `customer1` / `macro123` (Name: Aarav Sharma, pre-seeded with orders & addresses)
+- **Customer User**: `customer1` / `macro123` (Name: Aadarsh Pandey, pre-seeded with orders & addresses)
 - **Brand Admin (Samsung)**: `samsung_admin` / `macro123`
 - **Brand Admin (Nike)**: `nike_admin` / `macro123`
 
