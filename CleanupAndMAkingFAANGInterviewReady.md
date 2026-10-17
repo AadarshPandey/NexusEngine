@@ -2116,3 +2116,330 @@ Each card is a commit boundary. If token expires, resume from the first unchecke
   - Updated `customer1`, `demo_user`, and `iam.admin_user` avatars to `http://localhost:4566/nexus-media/public/users/avatars/1/avatar.svg` (`"User 1 Avatar"`), and fixed `AdminUserServiceImpl.insertLoginLog` / `update` so `password_hash` is never overwritten with `null` after Redis cache hits.
 - [x] **12.11 — Restore `s3-ui` (`http://localhost:9001`) in `docker-compose.yml`:**
   - Restored the `s3-ui` (`cloudlena/s3manager:latest`, port `9001:8080`, connected to `http://localstack:4566`) service in `docker-compose.yml` and removed the obsolete `nexus-search` orphan container.
+
+---
+
+## 13. Feature Bloat Prune, Multi-Tenant Brand Isolation & Zero-Idle-Column Master Plan (Oct 17, 2026)
+
+> [!IMPORTANT]
+> **Core Engineering Principles for FAANG SDE-2 Review:**
+> 1. **Zero Dead / Placebo Features:** Half-baked UI screens with dead `onClick`-less buttons, disconnected backend subsystems, or placebo security tables immediately fail an SDE-2 code walkthrough. Every feature must either be **DROPPED completely** (DB table + Entity + Repository + Service + Controller + Frontend UI) or **WIRED 100% END-TO-END**.
+> 2. **Zero Idle Tables or Columns ("Not for the Future"):** Every table in `V1__baseline.sql` and every column on every kept table must be actively read and written by real application workflows and surfaced in the DTOs/UI — never left `NULL` or `0 rows` "for future expansion".
+> 3. **True Multi-Tenant Brand Isolation (`samsung_admin` & `nike_admin`):** Vendor admins (`samsung_admin` → Samsung `brand_id = 86`, `nike_admin` → Nike `brand_id = 62`) must be strictly isolated at the **JWT + Spring Security + JPA Service/Specification layer** so they can only view and mutate their own brand's products, SKUs, orders, returns, and analytics KPIs.
+
+### 13.0 Progress Tracker (Resume Point for §13)
+
+- [x] **13.0.1** — Architectural Critique & Verdict on Section 13 (Where We Agree vs. Where We Disagree for a FAANG SDE-2 Java/Spring Boot Showcase)
+- [x] **13.1** — Customer Storefront (`NexusFrontendWeb`) Unwanted / Half-Baked / Low-Priority Feature Audit
+- [x] **13.2** — Admin Panel (`NexusAdminPanel`) Unwanted / Half-Baked / Low-Priority Feature Audit
+- [x] **13.3** — Verified 49-Table & Column End-to-End Usage Matrix (100% aligned with `V1__baseline.sql`)
+- [x] **13.4** — Multi-Tenant Brand-Scoped Isolation Architecture (`samsung_admin` & `nike_admin`)
+- [x] **13.5** — Step-by-Step Execution Cards (Cards 9–13) for Gemini 3.1 Pro
+
+---
+
+### 13.0.1 Architectural Review & Verdict — Agree vs. Disagree for FAANG SDE-2
+
+| Topic | Previous Draft Proposal | FAANG SDE-2 Verdict (Agree vs. Disagree & Why) |
+|---|---|---|
+| **1. Placebo IAM URL Permissions & DB Menu CRUD (`iam.permission*`, `iam.console_menu*`)** | Drop 5 tables (`iam.permission`, `iam.permission_group`, `iam.role_permission`, `iam.console_menu`, `iam.role_menu`) and 7 Admin CRUD pages | ✅ **STRONGLY AGREE (DROP).**<br>`DynamicAuthorizationManager` was deleted in Card 5 when migrating to Spring Security 6 OAuth2 Resource Server. Keeping 3 Admin pages (`ResourceList`, `ResourceCategoryList`, `AllocResource`) that edit a table (`iam.permission`) that Spring Security never reads is a major red flag in a code review. Likewise, React routes are compiled in TypeScript (`routeConfig.ts`); role visibility belongs in role-based route metadata (`roles: ['Super Admin', 'Product Manager']`), not a 4-page database menu editor. |
+| **2. Legacy `macrozheng/mall` Ladder & Spend-Threshold Tables (`quantity_tier_discount`, `spend_threshold_discount`, `category_attribute`)** | Drop 3 tables (`0 rows`, zero Admin/Storefront UI) | ✅ **STRONGLY AGREE (DROP).**<br>All 3 tables have `0 rows` in live PostgreSQL and zero frontend/backend wiring. Keeping empty tables "for the future" violates your strict zero-idle-table rule. |
+| **3. External LLM Chatbot & Empty `pgvector` Table (`ai.vector_store`, `ai.chat_message`, `ChatWidget.tsx`)** | Drop `nexus-ai` (`ai.vector_store` has `0 rows`, `ChatWidget` fails without external `GEMINI_API_KEY`) | ✅ **AGREE (DROP).**<br>`ai.vector_store` has `0 rows` and `ai.chat_message` leaves `member_id`, `model_name`, and `token_count` as `NULL`. Dropping `nexus-ai` makes the entire modular monolith 100% self-contained without needing an external paid LLM key during an interview demo. |
+| **4. Multi-Tenant Brand Isolation (`samsung_admin` & `nike_admin`)** | *Missed in previous draft* | 🔴 **CRITICAL ADDITION (MUST WIRE — SEE §13.4 & CARD 9).**<br>`V2__reference_data.sql` seeds `samsung_admin` (`id=2`) and `nike_admin` (`id=3`), **but `iam.admin_user` has no `brand_id` column!** Right now, logging in as `samsung_admin` or `nike_admin` shows all 152 products across all 104 brands and Apple/Sony orders. Adding `brand_id BIGINT REFERENCES catalog.brand(id)` to `iam.admin_user`, embedding `brandId` in the JWT token, and enforcing row-level brand filtering across **Dashboard, Products, SKUs, Brands, Orders, and Returns** is an **elite FAANG SDE-2 talking point** (Marketplace Seller Central multi-tenancy + IDOR prevention). |
+| **5. High-Concurrency Flash Sale Subsystem (`promotion.flash_sale*` — 4 tables)** | Previous draft suggested dropping Flash Sales because Admin buttons lacked `onClick` handlers | ⚠️ **NUANCED VERDICT:**<br>• **Why it matters for Java/Spring Boot SDE-2:** In a FAANG backend interview, *"How do you prevent overselling during a Flash Sale?"* (Redis Lua/atomic stock pre-warming + RabbitMQ async order creation) is a top system-design showcase, and `FlashSaleServiceImpl.prewarmStock()` + `FlashSaleOrderReceiver.java` already exist in `NexusCore`!<br>• **However**, in the current state (`0 rows` in `flash_sale_purchase`, dead buttons in `FlashSessionList.tsx` / `FlashProductRelation.tsx`, unrendered on `Home.tsx`), it is broken.<br>• **Decision Rule:** Either **DROP all 4 tables + 4 Admin pages** (Option A — fastest path to 100% clean code) **OR WIRE the 3 Admin buttons + `Home.tsx` Flash Sale strip + checkout recording** (Option B — best Java/Redis/RabbitMQ SDE-2 showcase). Both options are specified in Card 9 below so you can choose Option A or Option B cleanly. |
+| **6. Factual Table & Column Accuracy in `§13.3`** | Previous draft listed 50 tables including 6 tables that do not exist in `V1__baseline.sql` | 🔧 **FIXED IN §13.3 BELOW.**<br>Verified directly against `V1__baseline.sql` and `pg_stat_user_tables`: there are **49 user tables** in `V1__baseline.sql`. Removed the 6 non-existent table names (`ordering.return_status_history`, `engagement.review_vote`, `engagement.wishlist_item`, `engagement.browsing_history`, `messaging.processed_message`, `messaging.dead_letter_event`), added the actual `engagement.review_media` table (`0 rows` in DB), and matched every column name 1-to-1 with `V1__baseline.sql`. |
+
+---
+
+### 13.1 Customer Storefront (`NexusFrontendWeb`) — Unwanted, Half-Baked & Low-Priority Features
+
+| # | Feature / Component | Exact Files & Line Numbers | What Is Broken / Half-Baked / Over-Engineered | FAANG SDE-2 Verdict: **DROP** vs. **WIRE** |
+|---|---|---|---|---|
+| **CF-1** | **Flash Sale Subsystem (4 DB tables + Redis Pre-Warm + RabbitMQ Consumer)** | • `NexusFrontendWeb/src/views/Home.tsx` (`L146-191`)<br>• `NexusFrontendWeb/src/store/slices/homeSlice.ts` (`L51`)<br>• `NexusCore/nexus-portal-api/.../HomeServiceImpl.java` (`L75-115`)<br>• `NexusCore/nexus-portal-api/.../FlashSaleOrderReceiver.java` | 1. `HomeServiceImpl.java` queries `promotion.flash_sale`, `flash_sale_slot`, and `flash_sale_item` and returns `homeFlashPromotion` in `/api/store/home`, and `homeSlice.ts` stores it in Redux — **but `Home.tsx` never renders `body.homeFlashPromotion` anywhere!**<br>2. When a user buys a product via `Checkout.tsx`, `CheckoutService` ignores `flash_sale_item.flash_price` and `per_member_limit`, never decrements `flash_sale_item.flash_stock`, and `promotion.flash_sale_purchase` has **0 rows**.<br>3. The Admin Flash Sale pages (`FlashSessionList.tsx`, `FlashProductRelation.tsx`) have dead buttons with no `onClick` handlers. | 🔴 **Option A (Lean): DROP COMPLETELY** (delete 4 `promotion.flash_sale*` tables, `FlashSaleOrderReceiver`, and 4 Admin pages; use `product_sku.sale_price` for discounts).<br>🟢 **Option B (SDE-2 Concurrency Showcase): WIRE END-TO-END** (render `homeFlashPromotion` on `Home.tsx`, wire `Pre-warm Redis` & CRUD buttons in `FlashProductRelation.tsx`/`FlashSessionList.tsx`, and record `flash_sale_purchase` on checkout). |
+| **CF-2** | **AI Chatbot Widget & Vector Store (`ChatWidget.tsx` + `ai.vector_store` + `ai.chat_message`)** | • `NexusFrontendWeb/src/components/ChatWidget.tsx` (`L1-244`)<br>• `NexusFrontendWeb/src/api/ai.ts`<br>• `NexusCore/nexus-ai/.../ShoppingAssistantController.java`<br>• `V1__baseline.sql` (`ai.chat_message`, `ai.vector_store`) | 1. `ai.vector_store` has **0 rows** — no code in `catalog` or `nexus-ai` ever generates embeddings or populates `ai.vector_store`.<br>2. `ai.chat_message` has **0 rows** (`member_id`, `model_name`, and `token_count` are never populated).<br>3. `ChatWidget.tsx` relies on an external `GEMINI_API_KEY` at runtime; without a live key, clicking the floating chat icon produces errors during an interviewer demo. | 🔴 **DROP COMPLETELY.**<br>Drop `nexus-ai` module, `ai.chat_message`, `ai.vector_store`, `pgvector` dependency, and `ChatWidget.tsx`. |
+| **CF-3** | **Recursive Multi-Level Review Replies & Unused `engagement.review_media` (`0 rows`)** | • `NexusFrontendWeb/src/components/ReviewSection.tsx` (`L206-285`)<br>• `NexusCore/nexus-portal-api/.../ReviewServiceImpl.java` (`L95-145`)<br>• `engagement.product_review` (`parent_review_id`, `moderation_status`)<br>• `engagement.review_media` (`0 rows`) | 1. `ReviewSection.tsx` implements infinite recursive nested replies (`replies` inside `replies`) and `ReviewServiceImpl.java` has a fragile `temp_<userId>` S3 bucket copy hack (`L105-123`).<br>2. `engagement.review_media` has **0 rows** in `V3__demo_catalog.sql`!<br>3. `ordering.customer_order.reviewed_at` and `ordering.order_policy.review_window_days` exist in `V1__baseline.sql` to enforce verified-purchase reviews within the window, and `engagement.product_review.moderation_status` exists for admin moderation, **but none of those columns are wired to the UI!** | 🟡 **SIMPLIFY & WIRE END-TO-END:**<br>1. Drop recursive replies-on-replies (`parent_review_id` on `product_review`) and the `temp_` S3 copy hack in `ReviewServiceImpl.java` (upload review media directly via `/api/store/s3/upload` into `engagement.review_media`, and seed demo rows in `engagement.review_media`).<br>2. Enforce `ordering.order_policy.review_window_days` and stamp `ordering.customer_order.reviewed_at` when a customer reviews a delivered order.<br>3. Wire `moderation_status` in Admin Panel so admins can approve/hide reviews. |
+| **CF-4** | **Coupon Claiming Missing on Storefront (`ProductDetail.tsx` / `Profile.tsx` vs `Checkout.tsx`)** | • `NexusFrontendWeb/src/views/Checkout.tsx` (`L236-262`)<br>• `NexusFrontendWeb/src/api/promotion.ts` (`L7-46`)<br>• `NexusFrontendWeb/src/views/ProductDetail.tsx`<br>• `NexusFrontendWeb/src/views/Profile.tsx` | 1. `api/promotion.ts` defines `claimCoupon(couponId)`, `getMemberCoupons(useStatus)`, and `getProductCoupons(productId)`, and `Checkout.tsx` lets customers apply claimed coupons.<br>2. However, **neither `ProductDetail.tsx` nor `Profile.tsx` calls `getProductCoupons` or `claimCoupon`!** Customers have zero UI to discover or claim coupons created in the Admin Panel. | 🟢 **WIRE END-TO-END:**<br>1. On `ProductDetail.tsx`, call `getProductCoupons(product.id)` and render a clean `"Available Coupons — Click to Claim"` chip bar calling `claimCoupon(coupon.id)`.<br>2. In `Profile.tsx`, add a `"My Coupons"` section displaying `getMemberCoupons()` (`Unused` / `Used` / `Expired`) and showing `code`, `discount_value`, `min_spend_amount`, and `ends_at`. |
+| **CF-5** | **Customer Order Lifecycle & Address Book Gaps in `Profile.tsx`** | • `NexusFrontendWeb/src/views/Profile.tsx` (`L293-515`)<br>• `NexusFrontendWeb/src/api/ordering.ts` (`L52-88`)<br>• `NexusFrontendWeb/src/api/customer.ts` (`L35-62`) | 1. `api/ordering.ts` has `confirmReceiveOrder(orderId)` (`POST /api/store/ordering/orders/{id}/confirm`), which sets `is_receipt_confirmed = true` and `delivered_at = now()`, **but `Profile.tsx` has no `"Confirm Receipt"` button for Shipped (`status === 2`) orders!**<br>2. `Profile.tsx` order table does not display the order's line items (`orderLines`), `carrier_name`, `tracking_number`, or `payment_transaction` reference.<br>3. `Profile.tsx` Address Book (`L500-511`) only has `"Add New"`, with **no Edit, Delete, or Set Default buttons**, even though `updateCustomerAddress` and `deleteCustomerAddress` already exist in `api/customer.ts`.<br>4. `Profile.tsx` Account Details (`L293-309`) ignores `email`, `gender`, `signup_channel`, and `created_at` from `customer.member`, and never displays recent login events from `customer.member_login_event`. | 🟢 **WIRE END-TO-END:**<br>1. Add `"Confirm Receipt"` button on Shipped (`status === 2`) orders in `Profile.tsx` and expandable row details showing `orderLines`, `carrierName`, `trackingNumber`, and payment status.<br>2. Add `Edit`, `Delete`, and `Set Default` actions on address cards in `Profile.tsx`.<br>3. Display & allow editing `email` and `gender` in `Profile.tsx`, and show `createdAt`, `signupChannel`, and the last 5 login events (`customer.member_login_event`). |
+| **CF-6** | **Personalized Recommendations (`member_category_interest` — `0 rows`) Never Rendered on `Home.tsx`** | • `NexusFrontendWeb/src/store/slices/homeSlice.ts` (`L26-38`)<br>• `NexusFrontendWeb/src/views/Home.tsx`<br>• `customer.member_category_interest` (`0 rows`) | `CheckoutService` writes to `customer.member_category_interest` when a user purchases items, and `homeSlice.ts` defines `fetchRecommendations` (`/api/store/home/recommendProductList`), **but `customer.member_category_interest` has `0 rows` in `V3__demo_catalog.sql` and `Home.tsx` never dispatches `fetchRecommendations` or renders `recommendations`!** | 🟢 **WIRE END-TO-END:**<br>Seed initial `customer.member_category_interest` rows in `V3__demo_catalog.sql`, dispatch `fetchRecommendations({ page: 0, size: 8 })` in `Home.tsx`, and render a `"Recommended For You"` section. |
+
+---
+
+### 13.2 Admin Panel (`NexusAdminPanel`) — Unwanted, Half-Baked & Low-Priority Features
+
+| # | Feature / Page | Exact Files & Line Numbers | What Is Broken / Half-Baked / Over-Engineered | FAANG SDE-2 Verdict: **DROP** vs. **WIRE** |
+|---|---|---|---|---|
+| **AP-1** | **Placebo Dynamic URL Permission Management (`ResourceList.tsx`, `ResourceCategoryList.tsx`, `AllocResource.tsx`)** | • `NexusAdminPanel/src/pages/iam/ResourceList.tsx`<br>• `NexusAdminPanel/src/pages/iam/ResourceCategoryList.tsx`<br>• `NexusAdminPanel/src/pages/iam/AllocResource.tsx`<br>• `iam.permission`, `iam.permission_group`, `iam.role_permission` | In Card 5, `DynamicAuthorizationManager` and `DynamicSecurityMetadataSource` were **deleted** when migrating to Spring Security 6 OAuth2 Resource Server (`SecurityConfig.java`).<br>Consequently, the 3 Admin pages (`/iam/resources`, `/iam/resource-categories`, `/iam/roles/alloc-resource`) and the 3 DB tables (`iam.permission`, `iam.permission_group`, `iam.role_permission`) are **100% placebos**: creating or assigning URL patterns like `/api/example/**` in the UI has **zero effect** on backend authorization! | 🔴 **DROP COMPLETELY.**<br>Delete `ResourceList.tsx`, `ResourceCategoryList.tsx`, `AllocResource.tsx`, `src/apis/iam/resource.ts`, `src/apis/iam/resourceCategory.ts`, `PermissionController.java`, `PermissionGroupController.java`, and drop `iam.permission`, `iam.permission_group`, and `iam.role_permission`. Keep clean, standard RBAC via `iam.admin_user`, `iam.role`, and `iam.admin_user_role`. |
+| **AP-2** | **Over-Engineered DB Menu Tree CRUD (`MenuList.tsx`, `MenuAdd.tsx`, `MenuUpdate.tsx`, `AllocMenu.tsx`)** | • `NexusAdminPanel/src/pages/iam/MenuList.tsx`<br>• `NexusAdminPanel/src/pages/iam/MenuAdd.tsx`<br>• `NexusAdminPanel/src/pages/iam/MenuUpdate.tsx`<br>• `NexusAdminPanel/src/pages/iam/AllocMenu.tsx`<br>• `iam.console_menu`, `iam.role_menu` | Legacy `macrozheng/mall` stored frontend sidebar menus in the database (`ums_menu`) so admins could add/edit React routes via a form. In a modern React + TypeScript SPA (`router/index.tsx`), routes are statically compiled in code — adding a "menu" row in PostgreSQL cannot create a new React page component! Maintaining 4 Admin CRUD pages and 2 DB tables (`iam.console_menu`, `iam.role_menu`) just to render a static sidebar is classic legacy bloat. | 🔴 **DROP COMPLETELY.**<br>Delete `MenuList.tsx`, `MenuAdd.tsx`, `MenuUpdate.tsx`, `AllocMenu.tsx`, `src/apis/iam/menu.ts`, `ConsoleMenuController.java`, and drop `iam.console_menu` and `iam.role_menu`. Filter the Admin sidebar in `permissionSlice.ts` directly using static `roles?: string[]` metadata on `routeConfig.ts` (`Super Admin` sees all; `Brand Admin` / `Product Manager` sees `Catalog` + `Ordering`; `Order Manager` sees `Ordering`). |
+| **AP-3** | **Non-Functional Flash Sale Admin Pages (`FlashList.tsx`, `FlashSessionList.tsx`, `SelectSession.tsx`, `FlashProductRelation.tsx`)** | • `NexusAdminPanel/src/pages/promotion/FlashList.tsx`<br>• `NexusAdminPanel/src/pages/promotion/FlashSessionList.tsx` (`L34, L60-61`)<br>• `NexusAdminPanel/src/pages/promotion/SelectSession.tsx`<br>• `NexusAdminPanel/src/pages/promotion/FlashProductRelation.tsx` (`L49, L95-96`) | 1. In `FlashSessionList.tsx`, the `Add Session` (`L34`), `Edit` (`L60`), and `Delete` (`L61`) buttons have **no `onClick` handlers at all**.<br>2. In `FlashProductRelation.tsx`, the `🚀 Pre-warm Redis` (`L49`), `Save Config` (`L95`), and `Unbind` (`L96`) buttons have **no `onClick` handlers at all**. | See **CF-1**: Either **DROP** all 4 pages & 4 tables (Option A) OR **WIRE** the `onClick` handlers to the existing backend endpoints (`/api/admin/promotion/flash-sale-slots`, `/api/admin/promotion/flash-sale-items`, `/api/admin/promotion/flash-sales/{id}/prewarm`) (Option B). |
+| **AP-4** | **Dead Ladder & Spend-Threshold Promotion Tables (`quantity_tier_discount`, `spend_threshold_discount`)** | • `V1__baseline.sql` (`promotion.quantity_tier_discount`, `promotion.spend_threshold_discount`)<br>• `NexusCore/nexus-domain/.../QuantityTierDiscount.java`, `SpendThresholdDiscount.java` | Both tables have **0 rows** in the database, **zero Admin UI inputs** in `ProductAdd.tsx` / `ProductUpdate.tsx`, and **zero Storefront UI** on `ProductDetail.tsx` or `Checkout.tsx`. They are leftover tables from `macrozheng/mall` (`pms_product_ladder` and `pms_product_full_reduction`). | 🔴 **DROP COMPLETELY.**<br>Drop `promotion.quantity_tier_discount` and `promotion.spend_threshold_discount` (and their entities/repositories), plus drop `catalog.product.promotion_type`. Discounts are cleanly handled by `catalog.product_sku.sale_price` (SKU-level sale price) and `promotion.coupon` (order/category/product coupons). |
+| **AP-5** | **Product Form Exposes Internal System Columns & Bypasses `ProductType` / `AttributeDefinition` (`ProductAdd.tsx`, `ProductUpdate.tsx`)** | • `NexusAdminPanel/src/pages/catalog/ProductAdd.tsx` (`L160-255`)<br>• `NexusAdminPanel/src/pages/catalog/ProductUpdate.tsx` (`L195-290`)<br>• `catalog.category_attribute` (`0 rows`) | 1. `ProductAdd.tsx` (`L220-239`) asks the admin to manually type `Units Sold`, `Reserved Qty`, and `Version` (optimistic lock counter!) when creating a SKU.<br>2. `ProductAdd.tsx` / `ProductUpdate.tsx` have no `ProductType` selector and never load `catalog.attribute_definition` (`allowed_values`) to populate `catalog.product_attribute_value` or SKU variant attributes.<br>3. `ProductAdd.tsx` / `ProductUpdate.tsx` only let the admin upload a single `primaryImageUrl`, with no UI to manage `catalog.product_media` (`galleryList`).<br>4. `catalog.category_attribute` has **0 rows** and is redundant with `attribute_definition.product_type_id`. | 🟢 **CLEAN UP & WIRE END-TO-END:**<br>1. **DROP** `catalog.category_attribute` (0 rows, unused bridge table).<br>2. Remove manual inputs for `Units Sold`, `Reserved Qty`, and `Version` from `ProductAdd.tsx` and `ProductUpdate.tsx`.<br>3. Add `ProductType` dropdown in `ProductAdd.tsx` / `ProductUpdate.tsx` that loads `AttributeDefinition` specs (`kind=0` for variant specs, `kind=1` for product parameters) and populates `productAttributeValueList` + SKU combinations, plus multi-image `galleryList` (`catalog.product_media`). |
+| **AP-6** | **Coupon Category & Product Scoping Missing in `CouponAdd.tsx` / `CouponUpdate.tsx`** | • `NexusAdminPanel/src/pages/promotion/CouponAdd.tsx` (`L128-140`)<br>• `NexusAdminPanel/src/pages/promotion/CouponUpdate.tsx`<br>• `promotion.coupon_category` (`0 rows`), `promotion.coupon_product` (`0 rows`) | `CouponAdd.tsx` lets the admin select `Applicable Scope`: `0 = All Products`, `1 = Specific Categories`, `2 = Specific Products`, and `CheckoutService` checks `coupon_category` and `coupon_product` when validating coupons — **but `CouponAdd.tsx` and `CouponUpdate.tsx` render no category or product picker when `1` or `2` is selected**, leaving `promotion.coupon_category` and `promotion.coupon_product` with **0 rows**! | 🟢 **WIRE END-TO-END:**<br>In `CouponAdd.tsx` and `CouponUpdate.tsx`, conditionally render a multi-select Category picker when `useType === 1` (populating `productCategoryRelationList` → `promotion.coupon_category`) and a multi-select Product picker when `useType === 2` (populating `productRelationList` → `promotion.coupon_product`), and seed 1 category-scoped coupon + 1 product-scoped coupon in `V3__demo_catalog.sql`. |
+| **AP-7** | **Hardcoded Return Warehouse Address (`returnAddressId: 1`) & Unused `MerchantAddress` Table (`ReturnApplyDetail.tsx`)** | • `NexusAdminPanel/src/pages/ordering/ReturnApplyDetail.tsx` (`L58`)<br>• `ordering.merchant_address` (`1 row`)<br>• `MerchantAddressController.java` | `ReturnApplyDetail.tsx` hardcodes `returnAddressId: 1` when approving a return request (`L58`), never calls `/api/admin/ordering/merchant-addresses`, and there is no Admin UI to view or manage `ordering.merchant_address` (`label`, `contact_name`, `contact_phone`, `state`, `city`, `address_line`, `is_default_ship_from`, `is_default_return_to`). | 🟢 **WIRE END-TO-END:**<br>1. In `ReturnApplyDetail.tsx`, fetch `/api/admin/ordering/merchant-addresses` and render a `"Return Warehouse Address"` selector (defaulting to the row where `isDefaultReturnTo === true`) when approving a return, plus display customer `evidenceUrls` and `refundAmount`.<br>2. In `OrderSetting.tsx`, add a `"Merchant / Warehouse Addresses"` section to view, create, edit, and delete `ordering.merchant_address` records. |
+| **AP-8** | **Zero Brand Isolation for `samsung_admin` & `nike_admin`** | • `V2__reference_data.sql` (`L19-21`)<br>• `AdminUser.java`<br>• `ProductServiceImpl.java`, `BrandServiceImpl.java`, `OrderServiceImpl.java`, `ReturnRequestServiceImpl.java`, `DashboardServiceImpl.java` | `samsung_admin` (`id=2`) and `nike_admin` (`id=3`) are seeded in `V2__reference_data.sql` as Brand Administrators, **but `iam.admin_user` has no `brand_id` column**, and no backend service filters by the logged-in admin's brand! Logging in as `samsung_admin` shows Apple, Sony, and Nike products/orders. | 🟢 **WIRE END-TO-END (SEE §13.4 & CARD 9):**<br>Add `brand_id` FK on `iam.admin_user` (`samsung_admin -> 86`, `nike_admin -> 62`, `admin -> NULL`), include `brandId` in JWT & `/api/admin/iam/users/me`, and enforce server-side brand scoping across all Catalog, Ordering, Return, and Dashboard APIs. |
+| **AP-9** | **Copy-Pasted `*Add.tsx` / `*Update.tsx` Form Clones (10 Files Doing the Work of 5)** | • `BrandAdd.tsx` + `BrandUpdate.tsx`<br>• `ProductCategoryAdd.tsx` + `ProductCategoryUpdate.tsx`<br>• `AdvertiseAdd.tsx` + `AdvertiseUpdate.tsx` (10-line wrappers around `AdvertiseDetail.tsx`)<br>• `CouponAdd.tsx` + `CouponUpdate.tsx`<br>• `ProductAdd.tsx` + `ProductUpdate.tsx` | Legacy `macrozheng/mall` created separate `Add` and `Update` files for every entity by copy-pasting 90% of the form code. In React Router 7/8, `/new` and `/:id/edit` should mount a single unified form component (determining edit mode via `useParams().id`) or use a clean modal on the list page for 3-field entities like `Brand`. | 🔴 **CONSOLIDATE 10 FILES → 5:**<br>• Route `/promotion/advertisements/new` & `/:id/edit` directly to `AdvertiseForm.tsx` (delete `AdvertiseAdd.tsx` & `AdvertiseUpdate.tsx`).<br>• Merge `BrandAdd` + `BrandUpdate` → `BrandForm.tsx`, `ProductCategoryAdd` + `ProductCategoryUpdate` → `ProductCategoryForm.tsx`, `CouponAdd` + `CouponUpdate` → `CouponForm.tsx`, and `ProductAdd` + `ProductUpdate` → `ProductForm.tsx`. |
+| **AP-10** | **Dead Redux Slice, Unused Utility Files & Legacy `mall-admin-web` Image Assets** | • `NexusAdminPanel/src/store/slices/orderSlice.ts` (0 dispatches/selectors)<br>• `NexusAdminPanel/src/utils/cookie.ts` (0 imports, plus `js-cookie` dep)<br>• `NexusAdminPanel/src/utils/validate.ts` (0 imports)<br>• `NexusAdminPanel/src/assets/images/*` (7 unused legacy PNGs/GIFs)<br>• `src/assets/{hero.png,react.svg,vite.svg}` & `src/App.css` in both frontends | Leftover files from the Vue-to-React migration and Vite starter template that are never imported anywhere in `NexusAdminPanel` or `NexusFrontendWeb`. | 🔴 **DROP COMPLETELY.**<br>Move all dead utils (`cookie.ts`, `validate.ts`), dead slice (`orderSlice.ts`), and unused image assets (`src/assets/images/*`, `hero.png`, `react.svg`, `vite.svg`, unused `App.css`) to `trash/`, and remove `js-cookie` from `NexusAdminPanel/package.json`. |
+
+---
+
+### 13.2.1 Dependent Backend Classes, Database Tables & Columns to Drop With Frontend Bloat
+
+> [!CAUTION]
+> Removing bloat from `NexusFrontendWeb` and `NexusAdminPanel` without removing the dependent backend controllers, services, DTOs, entities, tables, and columns would leave **orphaned backend code and idle DB columns**. Every frontend cut below maps 1-to-1 to its exact backend and database cleanup:
+
+| Frontend Bloat Removed | Dependent Backend Classes / Methods to Move to `trash/` | Dependent DB Tables & Columns to Drop (`V1`–`V3` & Live DB) |
+|---|---|---|
+| **1. Placebo IAM URL Permissions & DB Menu CRUD (`AP-1`, `AP-2`)**<br>• `ResourceList.tsx`, `ResourceCategoryList.tsx`, `AllocResource.tsx`<br>• `MenuList.tsx`, `MenuAdd.tsx`, `MenuUpdate.tsx`, `AllocMenu.tsx`<br>• `apis/iam/{permission,permissionGroup,menu}.ts` | **Controllers & Services (`nexus-admin-api`):**<br>• `PermissionController.java`, `PermissionService.java`, `PermissionServiceImpl.java`<br>• `PermissionGroupController.java`, `PermissionGroupService.java`, `PermissionGroupServiceImpl.java`<br>• `ConsoleMenuController.java`, `ConsoleMenuService.java`, `ConsoleMenuServiceImpl.java`<br>• `MenuNode.java`<br>• Remove `listMenu`, `listResource`, `allocMenu`, `allocResource`, `getMenuList` from `RoleController` / `RoleService*`<br>• Remove `getResourceList`, `delResourceList`, `setResourceList` from `AdminUserService*` / `AdminUserCacheService*`, remove `menus` from `AdminInfoResponse.java`, and remove `resourceList` from `AdminUserDetails.java`<br>**Entities & Repositories (`nexus-domain`):**<br>• `Permission.java`, `PermissionRepository.java`<br>• `PermissionGroup.java`, `PermissionGroupRepository.java`<br>• `RolePermission.java`, `RolePermissionRepository.java`<br>• `ConsoleMenu.java`, `ConsoleMenuRepository.java`<br>• `RoleMenu.java`, `RoleMenuRepository.java` | **Drop 5 Tables:**<br>• `iam.permission`<br>• `iam.permission_group`<br>• `iam.role_permission`<br>• `iam.console_menu`<br>• `iam.role_menu` |
+| **2. Flash Sale Subsystem (`CF-1`, `AP-3` — Option A) & Ladder / Spend-Threshold Promos (`AP-4`) & `CategoryAttribute` (`AP-5`)**<br>• `FlashList.tsx`, `FlashSessionList.tsx`, `SelectSession.tsx`, `FlashProductRelation.tsx`<br>• `apis/promotion/flashSale.ts`<br>• `homeFlashPromotion` in `homeSlice.ts` | **Admin API (`nexus-admin-api`):**<br>• `FlashSaleController.java`, `FlashSaleSlotController.java`, `FlashSaleService.java`, `FlashSaleServiceImpl.java`<br>• Remove `productLadderList` & `productFullReductionList` from `ProductParam.java`, `ProductResult.java`, and `ProductServiceImpl.java`<br>**Portal API (`nexus-portal-api`):**<br>• `FlashOrderController.java`, `FlashSaleOrderService.java`, `FlashSaleOrderServiceImpl.java`, `FlashSaleOrderReceiver.java`<br>• `FlashOrderResponse.java`, `FlashSaleOrderMessage.java`, `FlashPromotionProduct.java`, `HomeFlashPromotion.java`, `FlashSaleWarmupServiceImpl.java`<br>• `PromotionCalculationService.java`, `PromotionCalculationServiceImpl.java` (replace ladder/full-reduction calculation with direct `ProductSku.salePrice`)<br>• Remove `homeFlashPromotion` from `HomeContentResult.java` and `HomeServiceImpl.java`<br>**Entities & Repositories (`nexus-domain`):**<br>• `FlashSale*`, `QuantityTierDiscount*`, `SpendThresholdDiscount*`, `CategoryAttribute*` (14 entity + repo files) | **Drop 7 Tables:**<br>• `promotion.flash_sale`<br>• `promotion.flash_sale_slot`<br>• `promotion.flash_sale_item`<br>• `promotion.flash_sale_purchase`<br>• `promotion.quantity_tier_discount`<br>• `promotion.spend_threshold_discount`<br>• `catalog.category_attribute`<br>**Drop 6 Dependent Columns on Kept Tables:**<br>• `catalog.product.promotion_type`<br>• `ordering.order_policy.flash_payment_timeout_min`<br>• `ordering.customer_order.order_type`<br>• `ordering.customer_order.promotion_discount_amount`<br>• `ordering.order_line.promotion_name`<br>• `ordering.order_line.promotion_discount_amount` |
+| **3. AI Chatbot Widget & Vector Store (`CF-2`)**<br>• `ChatWidget.tsx`<br>• `src/api/ai.ts` | **Entire `nexus-ai` Module:**<br>• `AiAutoConfiguration.java`, `MockEmbeddingConfig.java`, `ChatRequest.java`, `ChatResponse.java`, `JpaChatMemory.java`, `AbstractNexusChatService.java`, `NexusChatService.java`<br>• Remove `nexus-ai`, `spring-ai`, and `pgvector` from `NexusCore/pom.xml` and `nexus-application/pom.xml` | **Drop 1 Schema, 2 Tables & 1 Extension:**<br>• `DROP SCHEMA ai CASCADE;` (`ai.chat_message`, `ai.vector_store`)<br>• `DROP EXTENSION IF EXISTS vector;` |
+| **4. Recursive Review Replies (`CF-3`) & Orphaned Backend Helpers**<br>• Flatten `ReviewSection.tsx` to 1-level verified reviews | **Portal & Admin API Cleanup:**<br>• Remove `parentReviewId` and `temp_<userId>` S3 copy hack from `ReviewParam.java` and `ReviewServiceImpl.java`<br>• Move orphaned `OrderTimeOutCancelTask.java` (`@Scheduled` duplicate of RabbitMQ TTL+DLX) to `trash/`<br>• Move unused Alibaba OSS DTOs (`BucketPolicyConfigDto.java`, `S3CallbackResult.java`, `S3PolicyResult.java`) to `trash/` | **Drop 1 Column & Index:**<br>• `engagement.product_review.parent_review_id`<br>• `idx_product_review_parent_id` |
+
+---
+
+### 13.3 Verified 49-Table & Column End-to-End Usage Matrix (100% Aligned with `V1__baseline.sql` & `pg_stat_user_tables`)
+
+> [!WARNING]
+> **Ground-Truth Verification:** `V1__baseline.sql` defines exactly **49 user tables** across 9 schemas.
+> - **10 to 14 Tables Marked 🔴 DROP:**
+>   - **10 Mandatory Drops:** `catalog.category_attribute` (0 rows), `promotion.quantity_tier_discount` (0 rows), `promotion.spend_threshold_discount` (0 rows), `iam.permission` (32 rows), `iam.permission_group` (6 rows), `iam.role_permission` (52 rows), `iam.console_menu` (20 rows), `iam.role_menu` (31 rows), `ai.vector_store` (0 rows), `ai.chat_message` (0 rows).
+>   - **4 Optional Drops (Flash Sale):** `promotion.flash_sale` (1 row), `promotion.flash_sale_slot` (2 rows), `promotion.flash_sale_item` (3 rows), `promotion.flash_sale_purchase` (0 rows) — either drop all 4 (Option A) or wire all 4 end-to-end (Option B).
+> - **Every Kept Table (35–39 Tables):** Must have **`> 0` rows** in `V3__demo_catalog.sql` and **100% of its columns wired** end-to-end.
+
+#### 1. `catalog` Schema (10 Kept Tables, 1 Dropped)
+
+| Table (`V1__baseline.sql`) | Live Rows | Verdict | Exact Columns in `V1__baseline.sql` & End-to-End Wiring Action |
+|---|---|---|---|
+| `catalog.brand` | 104 | 🟢 **KEEP** | `id`, `name`, `logo_url`, `is_visible` — All 4 columns active. **Action:** Scope `BrandServiceImpl` so `samsung_admin` only sees/edits `id=86` (`Samsung`) and `nike_admin` only sees/edits `id=62` (`Nike`). |
+| `catalog.category` | 43 | 🟢 **KEEP** | `id`, `parent_id`, `name`, `depth`, `product_count`, `is_in_navigation`, `is_visible`, `icon_url` — All 8 columns active in `ProductCateList.tsx` and `Home.tsx`. |
+| `catalog.product_type` | 43 | 🟢 **KEEP** | `id`, `name` — Active in `ProductAttrList.tsx`. **Action:** Add `ProductType` dropdown in `ProductAdd.tsx` / `ProductUpdate.tsx`. |
+| `catalog.attribute_definition` | 132 | 🟢 **KEEP** | `id`, `product_type_id`, `name`, `selection_mode`, `input_mode`, `allowed_values`, `kind` — Active in `ProductAttrDetailList.tsx`. **Action:** Load attributes by `product_type_id` in `ProductAdd.tsx` / `ProductUpdate.tsx`. |
+| `catalog.product` | 152 | 🟢 **KEEP** | `id`, `brand_id`, `category_id`, `product_type_id`, `name`, `primary_image_url`, `product_code`, `deleted_at`, `is_published`, `is_new_arrival`, `is_featured`, `approval_status`, `units_sold`, `search_keywords`, `promotion_type`, `description`, `version`.<br>**Action:** **DROP `promotion_type`** (legacy `0..5` flag), enforce `brand_id` scoping for `samsung_admin` (`86`) / `nike_admin` (`62`), and wire `search_keywords` & `product_type_id` in `ProductAdd.tsx` / `ProductUpdate.tsx`. |
+| `catalog.product_media` | 456 | 🟢 **KEEP** | `id`, `product_id`, `media_type`, `url`, `display_order` — Rendered on `ProductDetail.tsx`. **Action:** Add gallery manager in `ProductAdd.tsx` / `ProductUpdate.tsx`. |
+| `catalog.product_sku` | 400 | 🟢 **KEEP** | `id`, `product_id`, `sku_code`, `list_price`, `sale_price`, `on_hand_qty`, `reserved_qty`, `low_stock_threshold`, `image_url`, `units_sold`, `sku_attributes`, `version` — All 12 columns active. **Action:** Remove manual inputs for `units_sold`, `reserved_qty`, and `version` in `ProductAdd.tsx` / `ProductUpdate.tsx`. |
+| `catalog.product_attribute_value` | 552 | 🟢 **KEEP** | `id`, `product_id`, `attribute_id`, `value` — Rendered on `ProductDetail.tsx`. **Action:** Populate from `ProductAdd.tsx` / `ProductUpdate.tsx`. |
+| `catalog.product_approval_event` | 2 | 🟢 **KEEP** | `id`, `product_id`, `created_at`, `reviewer_admin_id`, `decision`, `comment` — Queried in `ProductList.tsx` (`openLogModal`). **Action:** Populate `reviewer_admin_id` from authenticated Admin JWT in `ProductServiceImpl.updateVerifyStatus`. |
+| `catalog.product_price_change` | 2 | 🟢 **KEEP** | `id`, `product_id`, `old_list_price`, `new_list_price`, `old_sale_price`, `new_sale_price`, `changed_by_admin_id`, `changed_at` — Queried in `ProductList.tsx` (`openLogModal`). **Action:** Populate `changed_by_admin_id` from authenticated Admin JWT whenever SKU prices are updated. |
+| `catalog.category_attribute` | 0 | 🔴 **DROP** | **0 rows.** Redundant with `attribute_definition.product_type_id`. Drop table + `CategoryAttribute` entity/repo. |
+
+#### 2. `customer` Schema (4 Kept Tables, 0 Dropped)
+
+| Table (`V1__baseline.sql`) | Live Rows | Verdict | Exact Columns in `V1__baseline.sql` & End-to-End Wiring Action |
+|---|---|---|---|
+| `customer.member` | 2 | 🟢 **KEEP** | `id`, `username`, `password_hash`, `display_name`, `phone_e164`, `email`, `account_status`, `created_at`, `avatar_url`, `gender`, `signup_channel` — **Action:** Wire `email`, `gender`, `signup_channel`, and `created_at` in `Profile.tsx`. |
+| `customer.member_address` | 1 | 🟢 **KEEP** | `id`, `member_id`, `recipient_name`, `recipient_phone`, `is_default`, `postal_code`, `state`, `city`, `district`, `address_line` — **Action:** Wire `Edit`, `Delete`, and `Set Default` buttons in `Profile.tsx` Address Book. |
+| `customer.member_category_interest` | 0 | 🟢 **KEEP** | `id`, `member_id`, `category_id` — **Currently 0 rows!** Written by `CheckoutService` on order creation and read by `HomeServiceImpl.recommendProductList`. **Action:** Seed initial rows for `customer1` in `V3__demo_catalog.sql` and render `"Recommended For You"` on `Home.tsx`. |
+| `customer.member_login_event` | 2 | 🟢 **KEEP** | `id`, `member_id`, `occurred_at`, `ip_address`, `city`, `login_method`, `region` — Written on customer login. **Action:** Expose `GET /api/store/auth/login-history` and display recent logins in `Profile.tsx`. |
+
+#### 3. `engagement` Schema (2 Kept Tables, 0 Dropped)
+
+| Table (`V1__baseline.sql`) | Live Rows | Verdict | Exact Columns in `V1__baseline.sql` & End-to-End Wiring Action |
+|---|---|---|---|
+| `engagement.product_review` | 2 | 🟢 **KEEP** | `id`, `product_id`, `member_id`, `parent_review_id`, `rating`, `body`, `helpful_count`, `not_helpful_count`, `moderation_status`, `created_at`.<br>**Action:** **DROP `parent_review_id`** (flatten to 1-level verified-buyer reviews), wire `not_helpful_count` alongside `helpful_count`, and add review moderation (`moderation_status`) in Admin Panel (brand-scoped for `samsung_admin` / `nike_admin`). |
+| `engagement.review_media` | 0 | 🟢 **KEEP** | `id`, `review_id`, `media_type`, `url`, `display_order` — **Currently 0 rows!** **Action:** Remove the `temp_<userId>` S3 copy hack in `ReviewServiceImpl.java` so uploaded S3 media URLs save directly into `engagement.review_media`, and seed 2 demo review media rows in `V3__demo_catalog.sql`. |
+
+#### 4. `iam` Schema (4 Kept Tables, 5 Dropped)
+
+| Table (`V1__baseline.sql`) | Live Rows | Verdict | Exact Columns in `V1__baseline.sql` & End-to-End Wiring Action |
+|---|---|---|---|
+| `iam.admin_user` | 3 | 🟢 **KEEP** | `id`, `username`, `password_hash`, `avatar_url`, `email`, `nick_name`, `note`, `created_at`, `last_login_at`, `is_enabled` + **ADD `brand_id BIGINT REFERENCES catalog.brand(id)`** (`NULL` for `admin`, `86` for `samsung_admin`, `62` for `nike_admin`). |
+| `iam.role` | 3 | 🟢 **KEEP** | `id`, `name`, `description`, `created_at`, `is_active`, `display_order` — All 6 columns active in `RoleList.tsx`. |
+| `iam.admin_user_role` | 3 | 🟢 **KEEP** | `id`, `admin_id`, `role_id` — Active in `AdminList.tsx` and JWT role resolution. |
+| `iam.admin_login_event` | 14 | 🟢 **KEEP** | `id`, `admin_user_id`, `occurred_at`, `ip_address` — Written on admin login. **Action:** Display recent login audit events in `Dashboard.tsx` / `AdminList.tsx` (scoped to current admin for brand admins). |
+| `iam.permission` | 32 | 🔴 **DROP** | Placebo dynamic URL RBAC table (`DynamicAuthorizationManager` was deleted in Card 5). |
+| `iam.permission_group` | 6 | 🔴 **DROP** | Grouping table for placebo `iam.permission`. |
+| `iam.role_permission` | 52 | 🔴 **DROP** | Join table for placebo `iam.permission`. |
+| `iam.console_menu` | 20 | 🔴 **DROP** | Legacy DB sidebar menu table; replace with static role metadata on `routeConfig.ts`. |
+| `iam.role_menu` | 31 | 🔴 **DROP** | Join table for `iam.console_menu`. |
+
+#### 5. `ordering` Schema (8 Kept Tables, 0 Dropped)
+
+| Table (`V1__baseline.sql`) | Live Rows | Verdict | Exact Columns in `V1__baseline.sql` & End-to-End Wiring Action |
+|---|---|---|---|
+| `ordering.order_policy` | 1 | 🟢 **KEEP** | `id`, `flash_payment_timeout_min`, `payment_timeout_min`, `auto_confirm_receipt_days`, `auto_complete_days`, `review_window_days` — Edited in `OrderSetting.tsx` (Super Admin only). **Action:** Enforce `payment_timeout_min`, `auto_confirm_receipt_days`, and `review_window_days` in order/review services. |
+| `ordering.merchant_address` | 1 | 🟢 **KEEP** | `id`, `label`, `is_default_ship_from`, `is_default_return_to`, `contact_name`, `contact_phone`, `state`, `city`, `address_line` — **Action:** Wire dropdown in `ReturnApplyDetail.tsx` and CRUD table in `OrderSetting.tsx`. |
+| `ordering.return_reason` | 4 | 🟢 **KEEP** | `id`, `label`, `display_order`, `is_active`, `created_at` — Active in `ReturnReasonList.tsx` and `Profile.tsx` return modal. |
+| `ordering.customer_order` | 2 | 🟢 **KEEP** | `id`, `member_id`, `coupon_id`, `order_number`, `created_at`, `subtotal_amount`, `grand_total_amount`, `shipping_amount`, `promotion_discount_amount`, `coupon_discount_amount`, `manual_adjustment_amount`, `payment_method`, `status`, `order_type`, `carrier_name`, `tracking_number`, `recipient_name`, `recipient_phone`, `shipping_postal_code`, `shipping_address_line`, `customer_note`, `is_receipt_confirmed`, `deleted_at`, `paid_at`, `shipped_at`, `delivered_at`, `reviewed_at`, `updated_at`, `version`.<br>**Action:** Seed Samsung (`brand_id=86`) and Nike (`brand_id=62`) orders in `V3__demo_catalog.sql`, scope Admin order queries by brand for `samsung_admin` / `nike_admin`, and wire `"Confirm Receipt"` + `reviewed_at` in `Profile.tsx`. |
+| `ordering.order_line` | 2 | 🟢 **KEEP** | `id`, `order_id`, `product_id`, `sku_id`, `category_id`, `product_image_url`, `product_name`, `brand_name`, `unit_price`, `quantity`, `promotion_name`, `promotion_discount_amount`, `coupon_discount_amount`, `line_total_amount`, `sku_attributes` — **Action:** Render expandable `orderLines` in `Profile.tsx` and filter order lines by `brand_id` for brand-scoped admins. |
+| `ordering.cart_item` | 0 | 🟢 **KEEP** | `id`, `product_id`, `sku_id`, `member_id`, `quantity`, `unit_price_at_add`, `created_at`, `updated_at` — Active in `Cart.tsx`. Seed 2 active cart items for `customer1` in `V3__demo_catalog.sql` so `cart_item` has `> 0` rows on boot. |
+| `ordering.order_status_history` | 4 | 🟢 **KEEP** | `id`, `order_id`, `actor_ref`, `created_at`, `to_status`, `note` — Active and displayed in `OrderDetail.tsx`. |
+| `ordering.return_request` | 1 | 🟢 **KEEP** | `id`, `order_id`, `return_address_id`, `order_line_id`, `order_sn`, `created_at`, `member_username`, `refund_amount`, `contact_name`, `contact_phone`, `status`, `reviewed_at`, `product_pic`, `product_name`, `product_brand`, `product_attr`, `quantity`, `product_price`, `unit_refund_amount`, `reason_id`, `customer_comment`, `evidence_urls`, `review_note`, `reviewed_by_admin_id`, `received_by_admin_id`, `received_at`, `receipt_note`.<br>**Action:** Seed Samsung & Nike return requests in `V3__demo_catalog.sql`, scope `ReturnRequestServiceImpl` by brand for `samsung_admin` / `nike_admin`, and wire `return_address_id` & `evidence_urls` in `ReturnApplyDetail.tsx` and `Profile.tsx`. |
+
+#### 6. `payment` Schema (1 Kept Table, 0 Dropped)
+
+| Table (`V1__baseline.sql`) | Live Rows | Verdict | Exact Columns in `V1__baseline.sql` & End-to-End Wiring Action |
+|---|---|---|---|
+| `payment.payment_transaction` | 0 | 🟢 **KEEP** | `id`, `order_id`, `provider_txn_id`, `txn_type`, `amount`, `status`, `provider_payload`, `created_at` — **Currently 0 rows in `V3__demo_catalog.sql`!** **Action:** Seed `CAPTURE` payment transactions for all paid demo orders in `V3__demo_catalog.sql`, record `REFUND` transactions when a return request is refunded, and display `paymentTransactions` in Admin `OrderDetail.tsx` and Customer `Profile.tsx`. |
+
+#### 7. `promotion` Schema (5 Kept Tables, 2 Mandatory Drops, 4 Flash-Sale Tables Option A/B)
+
+| Table (`V1__baseline.sql`) | Live Rows | Verdict | Exact Columns in `V1__baseline.sql` & End-to-End Wiring Action |
+|---|---|---|---|
+| `promotion.banner` | 3 | 🟢 **KEEP** | `id`, `title`, `placement`, `image_url`, `starts_at`, `ends_at`, `is_active`, `click_count`, `order_count`, `target_url`, `internal_note`, `display_order` — **Action:** Wire banner click counter (`click_count`) on `Home.tsx` and display `click_count` & `order_count` in `AdvertiseList.tsx`. |
+| `promotion.coupon` | 2 | 🟢 **KEEP** | `id`, `discount_type`, `name`, `remaining_quantity`, `discount_value`, `per_member_limit`, `min_spend_amount`, `starts_at`, `ends_at`, `applicability_scope`, `claimed_count`, `code`, `max_discount_amount`, `version` — Active in `CouponList.tsx` & `CheckoutService`. |
+| `promotion.coupon_category` | 0 | 🟢 **KEEP** | `id`, `coupon_id`, `product_category_id` — **Currently 0 rows!** **Action:** Wire Category picker in `CouponAdd.tsx` / `CouponUpdate.tsx` when `applicability_scope === 1` and seed 1 category coupon in `V3__demo_catalog.sql`. |
+| `promotion.coupon_product` | 0 | 🟢 **KEEP** | `id`, `coupon_id`, `product_id` — **Currently 0 rows!** **Action:** Wire Product picker in `CouponAdd.tsx` / `CouponUpdate.tsx` when `applicability_scope === 2` and seed 1 product coupon in `V3__demo_catalog.sql`. |
+| `promotion.member_coupon` | 2 | 🟢 **KEEP** | `id`, `coupon_id`, `member_id`, `acquisition_channel`, `claimed_at`, `status`, `redeemed_at`, `order_id` — Active in `CouponDetail.tsx` and `Checkout.tsx`. **Action:** Wire claiming on `ProductDetail.tsx` and `"My Coupons"` in `Profile.tsx`. |
+| `promotion.quantity_tier_discount` | 0 | 🔴 **DROP** | **0 rows.** Legacy `pms_product_ladder`, no UI. |
+| `promotion.spend_threshold_discount` | 0 | 🔴 **DROP** | **0 rows.** Legacy `pms_product_full_reduction`, no UI. |
+| `promotion.flash_sale`<br>`promotion.flash_sale_slot`<br>`promotion.flash_sale_item`<br>`promotion.flash_sale_purchase` | 1<br>2<br>3<br>0 | 🔴 **Option A: DROP**<br>🟢 **Option B: WIRE** | Either drop all 4 tables + 4 Admin pages (Option A) OR wire `Home.tsx` Flash Sale banner, Admin `onClick` handlers (`FlashSessionList.tsx`, `FlashProductRelation.tsx`), and `flash_sale_purchase` checkout persistence (Option B). |
+
+#### 8. `messaging` Schema (1 Kept Table, 0 Dropped)
+
+| Table (`V1__baseline.sql`) | Live Rows | Verdict | Exact Columns in `V1__baseline.sql` & End-to-End Wiring Action |
+|---|---|---|---|
+| `messaging.outbox_event` | 0 | 🟢 **KEEP** | `id`, `aggregate_type`, `aggregate_id`, `event_type`, `payload`, `status`, `attempt_count`, `created_at` — Core Transactional Outbox table (`OutboxPublisher.java`). **Action:** Seed 2 `PUBLISHED` outbox events in `V3__demo_catalog.sql` so `outbox_event` has `> 0` rows on startup, and display Outbox event counts (`PUBLISHED` / `PENDING` / `FAILED`) on Admin `Dashboard.tsx` (Super Admin view). |
+
+#### 9. `ai` Schema (0 Kept Tables, 2 Dropped)
+
+| Table (`V1__baseline.sql`) | Live Rows | Verdict | Exact Columns in `V1__baseline.sql` & End-to-End Wiring Action |
+|---|---|---|---|
+| `ai.chat_message` | 0 | 🔴 **DROP** | **0 rows.** Drop table + `nexus-ai` module + `ChatWidget.tsx`. |
+| `ai.vector_store` | 0 | 🔴 **DROP** | **0 rows.** Drop table + `pgvector` extension/dependency. |
+
+---
+
+### 13.4 Multi-Tenant Brand-Scoped Admin Isolation (`samsung_admin` & `nike_admin`)
+
+> [!IMPORTANT]
+> **Requirement:** When `samsung_admin` logs into `NexusAdminPanel`, they must **ONLY** see and manage Samsung (`brand_id = 86`) data. When `nike_admin` logs in, they must **ONLY** see and manage Nike (`brand_id = 62`) data. When `admin` (Super Admin) logs in, they see all brands (`brand_id = NULL`).
+
+#### 1. Database & Seed Data Design (`V1__baseline.sql`, `V2__reference_data.sql`, `V3__demo_catalog.sql`)
+- **`iam.admin_user` Schema (`V1__baseline.sql`):**
+  Add `brand_id BIGINT REFERENCES catalog.brand(id) ON DELETE SET NULL` and `CREATE INDEX idx_admin_user_brand_id ON iam.admin_user(brand_id);`.
+- **Admin User Bindings (`V2__reference_data.sql` / `V3__demo_catalog.sql`):**
+  - `id = 1` (`admin`, Role `1 = Super Admin`): `brand_id = NULL` (unrestricted platform-wide access).
+  - `id = 2` (`samsung_admin`, Role `2 = Brand Manager`): `brand_id = 86` (`Samsung`, `avatar_url = 'http://localhost:4566/nexus-media/public/catalog/brands/86/logo.svg'`).
+  - `id = 3` (`nike_admin`, Role `2 = Brand Manager`): `brand_id = 62` (`Nike`, `avatar_url = 'http://localhost:4566/nexus-media/public/catalog/brands/62/logo.svg'`).
+- **Demo Orders & Returns for Samsung and Nike (`V3__demo_catalog.sql`):**
+  Currently `V3__demo_catalog.sql` only seeds orders for Apple (`iPhone 17`) and Sony (`WH-1000XM6`). Seed dedicated orders, order lines, payment transactions, and return requests for:
+  - **Samsung (`brand_id = 86`):** Order `NX-20261017-0003` (`Galaxy S26`, `product_id = 2`, `sku_id = 5`, `brand_name = 'Samsung'`) + Order `NX-20261017-0004` (`Odyssey G6 27`, `product_id = 18`, `brand_name = 'Samsung'`) + Return Request for `Galaxy S26`.
+  - **Nike (`brand_id = 62`):** Order `NX-20261017-0005` (`Air Max 270`, `product_id = 30`, `brand_name = 'Nike'`) + Order `NX-20261017-0006` (`Heritage Backpack`, `product_id = 37`, `brand_name = 'Nike'`) + Return Request for `Air Max 270`.
+
+#### 2. Backend Security Context & Server-Side Enforcement (`NexusCore`)
+- **`AdminUser.java` & `AdminInfoResponse.java`:**
+  Add `private Long brandId;` to `AdminUser.java` and `Long brandId, String brandName` to `AdminInfoResponse.java` (`/api/admin/iam/users/me`).
+- **`AdminTenantContext` Helper (`nexus-admin-api`):**
+  Create a clean `@Component public class AdminTenantContext` that resolves the current authenticated `AdminUser` from `SecurityContextHolder`:
+  - `Optional<Long> currentBrandId()`: returns `Optional.of(86L)` for `samsung_admin`, `Optional.of(62L)` for `nike_admin`, and `Optional.empty()` for `admin` (Super Admin).
+  - `void assertBrandAccess(Long resourceBrandId)`: throws `AccessDeniedException` (HTTP 403 ProblemDetail) if `currentBrandId().isPresent() && !currentBrandId().get().equals(resourceBrandId)`.
+- **Endpoint-by-Endpoint Server-Side Scoping:**
+  1. **`DashboardServiceImpl.getDashboardData()`:**
+     When `currentBrandId()` is present (`bId`), compute `totalProducts`, `publishedProducts`, `unpublishedProducts`, `lowStockSkus`, `totalOrders`, `pendingShipments`, `pendingReturns`, and `totalSalesAmount` strictly for `brand_id = bId`!
+  2. **`ProductServiceImpl` (`list`, `getUpdateInfo`, `create`, `update`, `updatePublishStatus`, `updateVerifyStatus`, `delete`):**
+     - `list`: Force `predicates.add(cb.equal(root.get("brandId"), bId))` when `currentBrandId()` is present (ignoring any spoofed `brandId` query param).
+     - `create` / `update` / `getUpdateInfo`: Call `tenantContext.assertBrandAccess(product.getBrandId())` and automatically set `product.setBrandId(bId)`.
+  3. **`ProductSkuServiceImpl` (`getList`, `update`):**
+     Verify parent `Product.getBrandId()` via `tenantContext.assertBrandAccess(...)` before reading or updating SKU stock/prices.
+  4. **`BrandServiceImpl` (`listBrand`, `listAllBrand`, `getBrand`, `updateBrand`):**
+     When `currentBrandId()` is present (`bId`), return only `Brand` `id = bId` (`Samsung` for `samsung_admin`, `Nike` for `nike_admin`), and forbid creating/deleting other brands.
+  5. **`OrderServiceImpl` (`list`, `detail`, `delivery`, `close`, `updateNote`):**
+     When `currentBrandId()` is present (`bId`), filter `ordering.customer_order` via a subquery joining `ordering.order_line ol` and `catalog.product p` where `p.brand_id = bId`, and in `detail(id)` verify the order contains at least one line for `bId` (and filter `orderLines` to `bId`).
+  6. **`ReturnRequestServiceImpl` (`list`, `getItem`, `updateStatus`):**
+     When `currentBrandId()` is present (`bId`), filter `ordering.return_request` where `product_brand` matches the brand name (or join `ordering.order_line` / `catalog.product` on `brand_id = bId`).
+
+#### 3. Admin Panel UI Experience (`NexusAdminPanel`)
+- **Sidebar & Route Access for Brand Admins (`Role 2: Brand Manager`):**
+  - `samsung_admin` and `nike_admin` see: **Dashboard**, **Catalog** (`Product List`, `Add Product`, `Brand Management`), and **Ordering** (`Order List`, `Return Request Processing`).
+  - Platform-global settings (**Product Category**, **Product Type**, **Order Settings**, **Return Reason Settings**, **Promotions**, and **IAM Users/Roles**) are restricted to **Super Admin (`admin`)**.
+- **Locked Brand Selector in `ProductList.tsx`, `ProductAdd.tsx`, `ProductUpdate.tsx`:**
+  - When `auth.brandId` is non-null (`samsung_admin` or `nike_admin`), pre-select and lock the Brand dropdown to their brand (`Samsung` or `Nike`) and show a `"Samsung Brand Portal"` / `"Nike Brand Portal"` badge in the top navbar.
+
+---
+
+### 13.5 Step-by-Step Execution Cards (Cards 9–13) for Gemini 3.1 Pro
+
+> [!IMPORTANT]
+> Execute Cards 9–13 in order. After each card:
+> 1. Run the verification gate (`mvn clean compile`, `npx tsc -b && npx vite build`).
+> 2. Move any deleted files into `/home/aadarsh/Documents/NexusEngine/trash/` (never leave clutter in the workspace).
+> 3. Commit and mark the checkboxes `[x]` in this file immediately.
+
+#### Card 9: Multi-Tenant Brand-Scoped Isolation (`samsung_admin` & `nike_admin`) (2 hrs)
+- [ ] **9.1 — Schema & Seed Migration (`V1__baseline.sql`, `V2__reference_data.sql`, `V3__demo_catalog.sql`, and live DB):**
+  - Add `brand_id BIGINT REFERENCES catalog.brand(id) ON DELETE SET NULL` to `iam.admin_user`.
+  - Bind `samsung_admin` (`id=2`) to `brand_id = 86` (`Samsung`) and `nike_admin` (`id=3`) to `brand_id = 62` (`Nike`), with their matching S3 brand logos (`brands/86/logo.svg`, `brands/62/logo.svg`).
+  - Seed Samsung (`Galaxy S26`, `Odyssey G6 27`) and Nike (`Air Max 270`, `Heritage Backpack`) orders, order lines, payment transactions, and return requests in `V3__demo_catalog.sql` and live PostgreSQL.
+- [ ] **9.2 — Backend `AdminTenantContext` & Service Scoping (`NexusCore`):**
+  - Add `brandId` to `AdminUser.java` and `brandId` + `brandName` to `AdminInfoResponse.java`.
+  - Create `AdminTenantContext` and enforce `currentBrandId()` filtering + `assertBrandAccess()` across `DashboardServiceImpl`, `ProductServiceImpl`, `ProductSkuServiceImpl`, `BrandServiceImpl`, `OrderServiceImpl`, and `ReturnRequestServiceImpl`.
+- [ ] **9.3 — Admin Panel Brand Portal UX (`NexusAdminPanel`):**
+  - Store `brandId` and `brandName` from `/api/admin/iam/users/me` in Redux (`userSlice` / `auth`).
+  - Show `"Samsung Brand Portal"` / `"Nike Brand Portal"` chip in the Admin header, pre-filter/lock the Brand selector in `ProductList.tsx`, `ProductAdd.tsx`, and `ProductUpdate.tsx`, and grant `Brand Manager` access to `Dashboard`, `Catalog (Products, Add Product, Brand)`, and `Ordering (Order List, Return Requests)`.
+- [ ] **9.4 — Gate:** Log in as `samsung_admin` / `macro123` → verify ONLY Samsung products (`2`), Samsung brand (`1`), Samsung orders (`2`), Samsung returns (`1`), and Samsung dashboard KPIs appear. Log in as `nike_admin` / `macro123` → verify ONLY Nike products (`2`), Nike brand (`1`), Nike orders (`2`), Nike returns (`1`), and Nike dashboard KPIs appear. Log in as `admin` / `macro123` → verify all 152 products and 104 brands appear.
+- [ ] Commit: `feat: implement brand-scoped multi-tenant isolation for samsung_admin and nike_admin`
+
+#### Card 10: Prune Unwanted Subsystems, Dependent Backend Classes, Dead DB Tables/Columns & Frontend Clones (2.5 hrs)
+- [ ] **10.1 — Drop dead tables & dependent columns from `V1__baseline.sql`, `V2__reference_data.sql`, `V3__demo_catalog.sql`, and live PostgreSQL (`§13.2.1`):**
+  - **Drop 10–14 Tables:**
+    - `catalog.category_attribute`
+    - `promotion.quantity_tier_discount`, `promotion.spend_threshold_discount`
+    - `iam.permission`, `iam.permission_group`, `iam.role_permission`, `iam.console_menu`, `iam.role_menu`
+    - `DROP SCHEMA ai CASCADE;` (`ai.vector_store`, `ai.chat_message`) + `DROP EXTENSION IF EXISTS vector;`
+    - *(If Option A chosen for Flash Sales)*: `promotion.flash_sale`, `promotion.flash_sale_slot`, `promotion.flash_sale_item`, `promotion.flash_sale_purchase`
+  - **Drop 7 Dependent Columns on Kept Tables:**
+    - `catalog.product.promotion_type`
+    - `engagement.product_review.parent_review_id` (plus `idx_product_review_parent_id`)
+    - `ordering.order_policy.flash_payment_timeout_min` *(if Flash Sale Option A)*
+    - `ordering.customer_order.order_type` *(if Flash Sale Option A)*
+    - `ordering.customer_order.promotion_discount_amount`
+    - `ordering.order_line.promotion_name`
+    - `ordering.order_line.promotion_discount_amount`
+- [ ] **10.2 — Move corresponding backend entities, repositories, services, controllers, and orphaned helpers to `trash/` (`§13.2.1`):**
+  - `CategoryAttribute*`, `QuantityTierDiscount*`, `SpendThresholdDiscount*`, `Permission*`, `PermissionGroup*`, `RolePermission*`, `ConsoleMenu*`, `RoleMenu*`, `MenuNode.java`, `PromotionCalculationService*`, `OrderTimeOutCancelTask.java`, `BucketPolicyConfigDto.java`, `S3CallbackResult.java`, `S3PolicyResult.java`, and the entire `nexus-ai` module (remove `nexus-ai`, `spring-ai`, `pgvector` from `pom.xml`).
+  - *(If Option A)* Move `FlashSale*`, `FlashOrder*`, `FlashPromotionProduct.java`, `HomeFlashPromotion.java`, and `FlashSaleWarmupServiceImpl.java` to `trash/`.
+  - Remove `productLadderList` / `productFullReductionList` from `ProductParam`, `ProductResult`, and `ProductServiceImpl`; remove `menus` / `resourceList` from `AdminInfoResponse`, `AdminUserDetails`, `AdminUserService*`, and `RoleController` / `RoleService*`.
+- [ ] **10.3 — Move corresponding Admin Panel & Storefront bloat to `trash/`, consolidate `*Add`/`*Update` clones (`AP-9`), and delete dead utils/assets (`AP-10`):**
+  - Move `NexusAdminPanel/src/pages/iam/{ResourceList,ResourceCategoryList,AllocResource,MenuList,MenuAdd,MenuUpdate,AllocMenu}.tsx` and `src/apis/iam/{permission,permissionGroup,menu}.ts` to `trash/`.
+  - Move `NexusFrontendWeb/src/components/ChatWidget.tsx` and `src/api/ai.ts` to `trash/`, and remove `<ChatWidget />` from `NexusFrontendWeb/src/layout/index.tsx`.
+  - *(If Option A)* Move `NexusAdminPanel/src/pages/promotion/{FlashList,FlashSessionList,SelectSession,FlashProductRelation}.tsx` and `src/apis/promotion/flashSale.ts` to `trash/`.
+  - Consolidate 10 duplicate `*Add.tsx` / `*Update.tsx` files into 5 unified form components (`BrandForm.tsx`, `ProductCategoryForm.tsx`, `AdvertiseForm.tsx`, `CouponForm.tsx`, `ProductForm.tsx`).
+  - Move dead frontend files (`orderSlice.ts`, `cookie.ts`, `validate.ts`, `src/assets/images/*`, `hero.png`, `react.svg`, `vite.svg`, unused `App.css`) to `trash/`, and remove `js-cookie` from `NexusAdminPanel/package.json`.
+  - Update `NexusAdminPanel/src/store/slices/permissionSlice.ts` to filter `asyncRouterMap` using role metadata (`roles: ['Super Admin', 'Product Manager']`) instead of `iam.console_menu`.
+- [ ] **10.4 — Gate:** `mvn clean compile -DskipTests` and `npx tsc -b && npx vite build` in both frontend apps pass with 0 errors.
+- [ ] Commit: `refactor: prune placebo iam permissions/menus, dead promo tables/columns, ai widget, and frontend clones`
+
+#### Card 11: Wire All Catalog & Promotion Tables/Columns End-to-End (1.5 hrs)
+- [ ] **11.1 — Clean & Wire `ProductAdd.tsx` and `ProductUpdate.tsx` (`AP-5`):**
+  - Remove manual inputs for `Units Sold`, `Reserved Qty`, and `Version` on SKUs.
+  - Add `ProductType` selector (`catalog.product_type`) that loads `catalog.attribute_definition` (`kind = 0` specs & `kind = 1` params) so admins can select/input `productAttributeValueList` (`catalog.product_attribute_value`) and SKU attributes cleanly.
+  - Add multi-image gallery manager (`galleryList` → `catalog.product_media`) and inputs for `searchKeywords` and `description`.
+- [ ] **11.2 — Wire `product_approval_event` and `product_price_change` Audit Logs:**
+  - Populate `reviewer_admin_id` and `changed_by_admin_id` from the authenticated Admin JWT in `ProductServiceImpl` and `ProductSkuServiceImpl`, and display them in `ProductList.tsx` (`openLogModal`).
+- [ ] **11.3 — Wire Coupon Category & Product Scoping (`AP-6`) + Storefront Coupon Claiming (`CF-4`):**
+  - In `CouponAdd.tsx` and `CouponUpdate.tsx`, render a Category multi-select when `applicabilityScope === 1` (`promotion.coupon_category`) and a Product multi-select when `applicabilityScope === 2` (`promotion.coupon_product`). Seed 1 category-scoped coupon and 1 product-scoped coupon in `V3__demo_catalog.sql` & live DB.
+  - On Storefront `ProductDetail.tsx`, render available coupons (`getProductCoupons`) with a `"Claim Coupon"` button (`claimCoupon`), and add a `"My Coupons"` tab in `Profile.tsx` (`getMemberCoupons`).
+- [ ] **11.4 — Wire Banner Click & Order Tracking (`promotion.banner`):**
+  - Add `POST /api/store/home/banners/{id}/click` and trigger it when clicking a banner in `Home.tsx`, and show `clickCount` & `orderCount` in `AdvertiseList.tsx`.
+- [ ] **11.5 — Gate:** `mvn clean compile -DskipTests` and both frontend builds pass.
+- [ ] Commit: `feat: wire catalog attributes, gallery media, audit logs, and scoped coupons end-to-end`
+
+#### Card 12: Wire Ordering, Payment, Merchant Address & Return Lifecycle End-to-End (1.5 hrs)
+- [ ] **12.1 — Wire `ordering.merchant_address` (`AP-7`) & `ordering.order_policy`:**
+  - In `ReturnApplyDetail.tsx`, replace hardcoded `returnAddressId: 1` with a dropdown populated from `/api/admin/ordering/merchant-addresses`, and display customer `evidenceUrls`, `reviewedByAdminId`, `receivedByAdminId`, and `receiptNote`.
+  - In `OrderSetting.tsx`, add a `"Warehouse / Return Addresses"` CRUD section for `ordering.merchant_address`, and enforce `payment_timeout_min`, `auto_confirm_receipt_days`, and `review_window_days` in backend services.
+- [ ] **12.2 — Seed & Wire `payment.payment_transaction` in Admin & Storefront:**
+  - Seed `payment.payment_transaction` rows for all paid demo orders in `V3__demo_catalog.sql` & live DB, include `List<PaymentTransaction>` in `OrderDetail.tsx` (Admin) and `Profile.tsx` (Storefront expandable order detail), and record a `REFUND` transaction when a return request is completed.
+- [ ] **12.3 — Wire Customer Order Receipt Confirmation & Return Evidence in `Profile.tsx` (`CF-5`):**
+  - Add `"Confirm Receipt"` button (`POST /api/store/ordering/orders/{id}/confirm`) on Shipped (`status === 2`) orders in `Profile.tsx`.
+  - Make orders expandable in `Profile.tsx` to show `orderLines`, `carrierName`, `trackingNumber`, `paidAt`, `shippedAt`, `deliveredAt`, and `reviewedAt`.
+  - Allow uploading `evidenceUrls` in the Customer Return Request modal in `Profile.tsx`.
+- [ ] **12.4 — Gate:** `mvn clean compile -DskipTests` and both frontend builds pass.
+- [ ] Commit: `feat: wire merchant addresses, payment transactions, order receipt confirmation, and return evidence`
+
+#### Card 13: Wire Customer Profile, Login Audit Events, `review_media`, Reviews Moderation & Outbox Dashboard (1.5 hrs)
+- [ ] **13.1 — Wire All `customer.member`, `member_address`, `member_login_event`, and `member_category_interest` Columns (`CF-5`, `CF-6`):**
+  - Seed initial `customer.member_category_interest` and `ordering.cart_item` rows in `V3__demo_catalog.sql` & live DB.
+  - In `Profile.tsx`, display and allow editing `displayName`, `phoneE164`, `email`, and `gender`, display read-only `signupChannel` and `createdAt`, add `Edit` / `Delete` / `Set Default` buttons on `member_address` cards, and display the last 5 login events from `customer.member_login_event`.
+  - In `Home.tsx`, dispatch `fetchRecommendations` and render the `"Recommended For You"` section backed by `customer.member_category_interest`.
+- [ ] **13.2 — Simplify Reviews & Wire `engagement.review_media`, `moderation_status`, `reviewed_at`, and `review_window_days` (`CF-3`):**
+  - Simplify `ReviewSection.tsx` and `ReviewServiceImpl.java` to flat 1-level verified-buyer reviews (remove `temp_` S3 copy hack so uploaded media saves directly into `engagement.review_media`, and seed 2 demo rows in `engagement.review_media`).
+  - Enforce `order_policy.review_window_days`, stamp `customer_order.reviewed_at`, and add Admin review moderation (`moderation_status`) in `NexusAdminPanel`.
+- [ ] **13.3 — Wire `iam.admin_login_event` & `messaging.outbox_event` in Admin `Dashboard.tsx`:**
+  - Seed 2 `PUBLISHED` rows in `messaging.outbox_event` in `V3__demo_catalog.sql` & live DB.
+  - Display recent admin login events (`iam.admin_login_event`) and Outbox event metrics (`messaging.outbox_event`) in `Dashboard.tsx` and `AdminList.tsx`.
+- [ ] **13.4 — Final Zero-Idle-Table & Zero-Idle-Column Verification Gate:**
+  - Run `SELECT schemaname||'.'||relname, n_live_tup FROM pg_stat_user_tables` and verify **every single kept table has `> 0` rows** and zero unused columns.
+  - Rebuild Docker containers and verify end-to-end across Storefront (`:5174`), Admin Panel (`:5173` as `admin`, `samsung_admin`, and `nike_admin`), and Backend (`:8080`).
+- [ ] Commit: `feat: complete zero-idle-column wiring across customer, engagement, iam, and messaging`
+
+
+
